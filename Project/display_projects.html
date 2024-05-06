@@ -1,10 +1,78 @@
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    table,
+    th,
+    td {
+        border: 1px solid black;
+    }
+
+    th,
+    td {
+        padding: 5px;
+        text-align: left;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    tr:nth-child(odd) {
+        background-color: #ffffff;
+    }
+
+    tr:hover {
+        background-color: #e6e6e6;
+    }
+
+    button {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #45a049;
+    }
+
+    button:active {
+        background-color: #3e8e41;
+    }
+
+    button:focus {
+        outline: none;
+    }
+
+    button:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+    }
+</style>
+
 <body>
     <!-- Afficher la liste des projets en cours -->
     <table>
-        <tr>
-        </tr>
+        <thead>
+            <tr>
+                <th>Nom du projet</th>
+                <th>Date de début</th>
+                <th>Date de fin</th>
+                <th>Pays</th>
+                <th>Référent</th>
+                <th>Statut</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
         <tbody id="projectsList"></tbody>
-        <div id="loader"></div>
     </table>
 
 
@@ -18,28 +86,12 @@
         var userId;
         var userEmail = '';
         var userRole = '';
+        var buttonText = '';
 
-        // Fonction qui affiche barre de chargement pendant le chargement des données
-        function showLoader() {
-            var loader = document.getElementById('loader');
-            loader.style.position = 'fixed';
-            loader.style.top = '0';
-            loader.style.left = '0';
-            loader.style.width = '100%';
-            loader.style.height = '100%';
-            loader.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
-            loader.style.display = 'flex';
-            loader.style.justifyContent = 'center';
-            loader.style.alignItems = 'center';
-            var spinner = document.createElement('div');
-            spinner.className = 'spinner-border text-primary';
-            spinner.style.width = '5rem';
-            spinner.style.height = '5rem';
-            loader.appendChild(spinner);
-        }
 
-        // Récupérer l'adresse mail et l'ID de l'utilisateur connecté depuis la base de données
-        fetch('https://lab.padem.org/wp-json/mo/v1/getUserEmailAndState', {
+        // Récupérer la liste des projets depuis la base de données (à partir de l'API (https://lab.padem.org/wp-json/mo/v1/getProjects))
+        // les projets sont affichés dans des lignes individuelles avec un bouton cliquables pour les modifier
+        fetch('https://lab.padem.org/wp-json/mo/v1/getProjects', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -48,94 +100,52 @@
             .then(response => response.json())
             .then(data => {
                 console.log(data);
-                userId = data.ID;
-                userEmail = data.user_email;
-                console.log(userId);
-                console.log(userEmail);
-            })
-        // Récupérer le rôle de l'utilisateur connecté depuis la base de données
-        fetch('https://lab.padem.org/wp-json/mo/v1/getUserID', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        })
-            .then(response => response.json())
-            .then(data => {
-                userRole = JSON.parse(data['meta_value'].meta_value);
-                console.log(userRole);
-            })
-
-        // Récupérer les données depuis la base de données
-        if (userRole === 'administrator' || userRole === 'chef-de-projet' || userRole === 'consultant' || userRole === 'comptable' || userRole === 'partenaire') {
-            fetch('https://lab.padem.org/wp-json/mo/v1/getProjects', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-
-            })
-                .then(response => response.json())
-                .then(data => {
-                    console.log(data);
-                    data.forEach(project => {
-                        // Créer une ligne pour chaque projet
-                        var tr = document.createElement('tr');
-                        // Créer une cellule pour chaque projet
-                        var td = document.createElement('td');
-                        // Ajouter le nom du projet dans la cellule
-                        td.innerHTML = project.name;
-                        td.style.cursor = 'pointer';
-                        td.style.textAlign = 'center';
-                        td.style.padding = '10px';
-                        td.style.border = '1px solid black';
-                        td.style.borderRadius = '5px';
-                        td.style.backgroundColor = 'lightgrey';
-                        // Ajouter la cellule dans la ligne
-                        tr.appendChild(td);
-                        // Ajouter la ligne dans la liste des projets
-                        document.getElementById('projectsList').appendChild(tr);
-                        // Ajouter un événement de clic sur la cellule
-                        td.addEventListener('click', () => {
-                            // Rediriger l'utilisateur vers la page de modification du projet
-                            window.location.href = 'https://lab.padem.org/projet/edit_project.html?project_id=' + project.project_id;
-                        });
-                    });
-                })
-        } else {
-            fetch('https://lab.padem.org/wp-json/mo/v1/getProjects', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
+                var colorStatusText = {
+                    'En cours': 'green',
+                    'Terminé': 'lightred',
+                    'En pause': 'lightblue',
+                    'Annulé': 'gray',
+                    'Non commencé': 'orange',
                 }
-            })
-                .then(response => response.json())
-                .then(data => {
-                    console.log(data);
-                    data.forEach(project => {
-                        // Créer une ligne pour chaque projet
-                        var tr = document.createElement('tr');
-                        // Créer une cellule pour chaque projet
-                        var td = document.createElement('td');
-                        // Ajouter le nom du projet dans la cellule
-                        td.innerHTML = project.name;
-                        td.style.cursor = 'pointer';
-                        td.style.textAlign = 'center';
-                        td.style.padding = '10px';
-                        td.style.border = '1px solid black';
-                        td.style.borderRadius = '5px';
-                        td.style.backgroundColor = 'lightgrey';
-                        // Ajouter la cellule dans la ligne
-                        tr.appendChild(td);
-                        // Ajouter la ligne dans la liste des projets
-                        document.getElementById('projectsList').appendChild(tr);
-                        // Ajouter un événement de clic sur la cellule
-                        td.addEventListener('click', () => {
-                            // Rediriger l'utilisateur vers la page de modification du projet
-                            window.location.href = 'https://lab.padem.org/projet/edit_project.html?project_id=' + project.project_id;
-                        });
+                // Parcourir la liste des projets
+                data.forEach(project => {
+                    // Créer une ligne pour chaque projet
+                    var tr = document.createElement('tr');
+                    var trSpacer = document.createElement('tr');
+                    // Ajouter le titre du projet, la date de début, la date de fin, le pays, le référent et le statut dans des lignes individuelles
+                    tr.style.color = 'black';
+                    tr.style.textAlign = 'left';
+                    tr.style.border = 'none';
+                    tr.style.borderRadius = '15px';
+                    tr.style.backgroundColor = 'white';
+                    tr.style.height = 'auto';
+                    tr.style.width = '50%';
+
+                    trSpacer.innerHTML = `
+                        <div style="margin-top: 10px; margin-bottom: 10px"></div>
+                    `;
+
+                    // Ajouter les données dans la ligne
+                    tr.innerHTML = `
+                        <td>${project.project_title}</td>
+                        <td>${project.start_date}</td>
+                        <td>${project.end_date}</td>
+                        <td>${project.project_location}</td>
+                        <td>${project.project_referent_email}</td>
+                        <td style="text-transform: capitalize; font-weight: bold; color: ${colorStatusText[project.project_status]}; background: white" id="status_${project.project_id}">${project.project_status}</td>
+                        <td>
+                            <button class="buttonModifier">Modifier</button>
+                        </td>
+                    `;
+                    // Ajouter un événement de clic sur le bouton "Modifier"    
+                    tr.querySelector('button').addEventListener('click', () => {
+                        // Rediriger l'utilisateur vers la page de modification du projet
+                        window.location.href = 'https://lab.padem.org/projet/edit_project.html?project_id=' + project.project_id;
                     });
-                })
-        }
+                    // Ajouter la ligne dans la liste des projets
+                    document.getElementById('projectsList').appendChild(tr);
+                    document.getElementById('projectsList').appendChild(trSpacer);
+                });
+            })
     });
 </script>
