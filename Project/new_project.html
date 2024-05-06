@@ -42,22 +42,35 @@
                         <input type="text" id="projectTitle" name="projectTitle"><br><br>
                         <label for="projectType">Type de projet:</label>
                         <input type="text" id="projectType" name="projectType"><br><br>
-                        <label for="projectDate">Date de début:</label>
+                        <label for="projectDate">Date de début prévisionnelle:</label>
                         <input type="date" id="projectDate" name="projectDate"><br><br>
-                        <label for="projectEndDate2">Date de fin:</label>
+                        <label for="projectEndDate2">Date de fin prévisionnelle:</label>
                         <input type="date" id="projectEndDate2" name="projectEndDate2"><br><br>
                         <label for="projectLocation">Pays de réalisation du projet:</label>
                         <input type="text" id="projectLocation" name="projectLocation"><br><br>
                         <label for="projectStatus">Statut initial du projet:</label>
                         <select id="projectStatus" name="projectStatus">
+                            <option value="">Choisissez un statut</option>
+                            <option value="Non commencé">Non commencé</option>
                             <option value="En cours">En cours</option>
                             <option value="En pause">En pause</option>
                             <option value="Terminé">Terminé</option>
                         </select><br><br>
+                        <label for="pademResponsible">Responsable Padem:</label>
+                        <input type="text" id="pademResponsible" name="pademResponsible"><br><br>
+                        <label for="pademResponsibleEmail">Email du responsable Padem:</label>
+                        <input type="email" id="pademResponsibleEmail" name="pademResponsibleEmail"><br><br>
+                        <label for="projectReferent">Référent du projet:</label>
+                        <input type="text" id="projectReferent" name="projectReferent"><br><br>
+                        <label for="projectReferentEmail">Email du référent du projet:</label>
+                        <input type="email" id="projectReferentEmail" name="projectReferentEmail"><br><br>
+
                         <!-- Description du projet -->
-                        <label for="projectDescription">Description du projet:</label>
-                        <textarea id="projectDescription" name="projectDescription" rows="4"
-                            cols="50"></textarea><br><br>
+                        <div>
+                            <p>Description du projet:</p>
+                            <textarea id="projectDescription" name="projectDescription" rows="4"
+                                cols="50"></textarea><br><br>
+                        </div>
                         <div class="action-buttons" style="display: flex; justify-content: flex-end;">
                             <!-- Bouton pour annuler le projet -->
                             <button type="button" onclick="cancelProject()" style="width: auto;">
@@ -79,62 +92,71 @@
         <div style="margin-top: 10px; margin-bottom: 10px"></div>
     </form>
     <script>
-        var dataInfosPreliminaires = {
-            project_title: '',
-            project_type: '',
-            start_date: '',
-            end_date: '',
-            project_location: '',
-            project_status: ''
-        };
-        if (document.getElementById('projectForm') != null) {
-            document.getElementById('projectForm').addEventListener('submit', function (event) {
-                event.preventDefault();
-                dataInfosPreliminaires.projectTitle = document.getElementById('projectTitle').value;
-                dataInfosPreliminaires.projectType = document.getElementById('projectType').value;
-                dataInfosPreliminaires.projectDate = document.getElementById('projectDate').value;
-                dataInfosPreliminaires.projectEndDate2 = document.getElementById('projectEndDate2').value;
-                dataInfosPreliminaires.projectLocation = document.getElementById('projectLocation').value;
-                dataInfosPreliminaires.projectStatus = document.getElementById('projectStatus').value;
+        function saveFormData() {
+            var dataInfosPreliminaires = {
+                project_title: '',
+                project_type: '',
+                start_date: '',
+                end_date: '',
+                project_location: '',
+                project_status: '',
+                padem_responsible: '',
+                padem_responsible_email: '',
+                project_referent: '',
+                project_referent_email: '',
+                project_description: JSON.stringify('')
+            };
+            if (document.getElementById('projectForm') != null) {
+                dataInfosPreliminaires.project_title = document.getElementById('projectTitle').value;
+                dataInfosPreliminaires.project_type = document.getElementById('projectType').value;
+                dataInfosPreliminaires.start_date = document.getElementById('projectDate').value;
+                dataInfosPreliminaires.end_date = document.getElementById('projectEndDate2').value;
+                dataInfosPreliminaires.project_location = document.getElementById('projectLocation').value;
+                dataInfosPreliminaires.project_status = document.getElementById('projectStatus').value;
+                dataInfosPreliminaires.padem_responsible = document.getElementById('pademResponsible').value;
+                dataInfosPreliminaires.padem_responsible_email = document.getElementById('pademResponsibleEmail').value
+                dataInfosPreliminaires.project_referent = document.getElementById('projectReferent').value;
+                dataInfosPreliminaires.project_referent_email = document.getElementById('projectReferentEmail').value;
+                dataInfosPreliminaires.project_description = JSON.stringify(document.getElementById('projectDescription').value);
                 console.log(dataInfosPreliminaires);
-            });
-        }
-        // 1. Create a new project
-        // 2. Add the project to the database
-        // 3. Redirect to the project page
-        fetch('https://lab.padem.org/wp-json/mo/v1/createProject', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(dataInfosPreliminaires),
-        }).then(response => {
-            if (!response.ok) {
-                throw new Error('Erreur lors de la requête vers l\'API.');
             }
-            return response.json();
-        })
-            .then(data => {
-                console.log('Success:', data);
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Projet créé avec succès',
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-                showAndHide('projectForm');
-                // Recharger la page
-                window.location.href = "https://lab.padem.org/projet";
+            // 1. Create a new project
+            // 2. Add the project to the database
+            // 3. Redirect to the project page
+            fetch('https://lab.padem.org/wp-json/mo/v1/createProject', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(dataInfosPreliminaires),
+            }).then(response => {
+                if (!response.ok) {
+                    throw new Error('Erreur lors de la requête vers l\'API.');
+                }
+                return response.json();
             })
-            .catch((error) => {
-                console.error('Error:', error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Erreur lors de la création du projet',
-                    showConfirmButton: false,
-                    timer: 1500
+                .then(data => {
+                    console.log('Success:', data);
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Projet créé avec succès',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    showAndHide('projectForm');
+                    // Recharger la page
+                    window.location.href = "https://lab.padem.org/projet";
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Erreur lors de la création du projet',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
                 });
-            });
+        }
 
 
         // Fonction pour afficher/masquer le formulaire de création de projet
@@ -293,15 +315,6 @@
             }
         }
 
-        // Initialisation des variables
-        var increment = 1;
-        var incrementChief = 1;
-        var incrementConsultant = 1;
-        var incrementComptable = 1;
-        var incrementPartner = 1;
-        var incrementBailleur = 1;
-        var incrementLink = 1;
-
         // Fonction pour afficher le contenu des cartes
         function showCardContent(id) {
             var cardContent = document.getElementById(id);
@@ -309,139 +322,6 @@
                 cardContent.style.display = "flex";
             } else {
                 cardContent.style.display = "none";
-            }
-        }
-
-        // Fonction pour ajouter un chef de projet
-        function addChief() {
-            var chiefs = document.getElementById("chiefs");
-            incrementChief += 1;
-            chiefs.innerHTML += "<div><label for='projectChief" + incrementChief + "'>Chef de projet " + incrementChief + ":</label><input type='text' id='projectChief" + incrementChief + "' name='projectChief" + incrementChief + "'><br><br><label for='chiefEmailAdress" + incrementChief + "'>Son email:</label><input type='text' id='chiefEmailAdress" + incrementChief + "' name='chiefEmailAdress" + incrementChief + "'><br><br></div>\n";
-        }
-
-        // Fonction pour supprimer un chef de projet
-        function removeChief() {
-            var chiefs = document.getElementById("chiefs");
-            var elements = chiefs.innerHTML.split('\n');
-            elements.pop();
-            elements.pop();
-            chiefs.innerHTML = elements.join('\n');
-            if (incrementChief <= 0) {
-                incrementChief = 1;
-            }
-        }
-
-        // Fonction pour ajouter un consultant
-        function addConsultant() {
-            var consultants = document.getElementById("consultants");
-            incrementConsultant += 1;
-            consultants.innerHTML += "<div><label for='projectConsultant" + incrementConsultant + "'>Consultant " + incrementConsultant + ":</label><input type='text' id='projectConsultant" + incrementConsultant + "' name='projectConsultant" + incrementConsultant + "'><br><br><label for='consultantEmailAdress" + incrementConsultant + "'>Son email:</label><input type='text' id='consultantEmailAdress" + incrementConsultant + "' name='consultantEmailAdress" + incrementConsultant + "'><br><br></div>\n";
-        }
-
-        // Fonction pour supprimer un consultant
-        function removeConsultant() {
-            var consultants = document.getElementById("consultants");
-            var elements = consultants.innerHTML.split('\n');
-            elements.pop();
-            elements.pop();
-            consultants.innerHTML = elements.join('\n');
-            if (incrementConsultant <= 0) {
-                incrementConsultant = 1;
-            }
-        }
-
-        // Fonction pour ajouter un comptable
-        function addComptable() {
-            var comptables = document.getElementById("comptables");
-            incrementComptable += 1;
-            comptables.innerHTML += "<div><label for='projectComptable" + incrementComptable + "'>Comptable " + incrementComptable + ":</label><input type='text' id='projectComptable" + incrementComptable + "' name='projectComptable" + incrementComptable + "'><br><br><label for='comptableEmailAdress" + incrementComptable + "'>Son email:</label><input type='text' id='comptableEmailAdress" + incrementComptable + "' name='comptableEmailAdress" + incrementComptable + "'><br><br></div>\n";
-        }
-        // Fonction pour supprimer un comptable
-        function removeComptable() {
-            var comptables = document.getElementById("comptables");
-            var elements = comptables.innerHTML.split('\n');
-            elements.pop();
-            elements.pop();
-            comptables.innerHTML = elements.join('\n');
-            if (incrementComptable <= 0) {
-                incrementComptable = 1;
-            }
-        }
-
-        // Fonction pour ajouter un partenaire
-        function addPartner() {
-            var partners = document.getElementById("partners");
-            incrementPartner += 1;
-            partners.innerHTML += "<div><label for='partner" + incrementPartner + "'>Partenaire " + incrementPartner + ":</label><input type='text' id='partner" + incrementPartner + "' name='partner" + incrementPartner + "'><br><br><label for='partnerEmailAdress" + incrementPartner + "'>Son email:</label><input type='text' id='partnerEmailAdress" + incrementPartner + "' name='partnerEmailAdress" + incrementPartner + "'><br><br></div>\n";
-        }
-        // Fonction pour supprimer un partenaire
-        function removePartner() {
-            var partners = document.getElementById("partners");
-            var elements = partners.innerHTML.split('\n');
-            elements.pop();
-            elements.pop();
-            partners.innerHTML = elements.join('\n');
-            if (incrementPartner <= 0) {
-                incrementPartner = 1;
-            }
-        }
-
-        // Fonction pour ajouter un bailleur
-        function addBailleur() {
-            var bailleurs = document.getElementById("bailleurs");
-            incrementBailleur += 1;
-            bailleurs.innerHTML += "<div><label for='projectBailleur" + incrementBailleur + "'>Bailleur de fond " + incrementBailleur + ":</label><input type='text' id='projectBailleur" + incrementBailleur + "' name='projectBailleur" + incrementBailleur + "'><br><br><label for='Pays" + incrementBailleur + "'>Pays:</label><input type='text' id='Pays" + incrementBailleur + "' name='Pays" + incrementBailleur + "'><br><br></div>\n";
-        }
-        // Fonction pour supprimer un bailleur
-        function removeBailleur() {
-            var bailleurs = document.getElementById("bailleurs");
-            var elements = bailleurs.innerHTML.split('\n');
-            elements.pop();
-            elements.pop();
-            bailleurs.innerHTML = elements.join('\n');
-            if (incrementBailleur <= 0) {
-                incrementBailleur = 1;
-            }
-        }
-
-        // Fonction pour ajouter un lien
-        function addLink() {
-            var links = document.getElementById("links");
-            incrementLink += 1;
-            links.innerHTML += "<div><label for='projectLink" + incrementLink + "'>Lien du projet:</label><input type='text' id='projectLink" + incrementLink + "' name='projectLink" + incrementLink + "'><br><br></div>\n";
-        }
-        // Fonction pour supprimer un lien
-        function removeLink() {
-            var links = document.getElementById("links");
-            var elements = links.innerHTML.split('\n');
-            elements.pop();
-            elements.pop();
-            links.innerHTML = elements.join('\n');
-            incrementLink -= 1;
-            if (incrementLink <= 0) {
-                incrementLink = 1;
-            }
-        }
-
-        // Fonction pour lister les rapports attendus
-        function listDesRapports() {
-            var projectExpectedReports = document.getElementById("projectExpectedReports").value;
-            var listRapports = document.getElementById("listRapports");
-            listRapports.innerHTML = "";
-            for (var i = 1; i <= projectExpectedReports; i++) {
-                listRapports.innerHTML += "<div><p>Date du rapport N°" + i + " </p><input type='date' id='projectExpectedReport" + i + "' name='projectExpectedReport" + i + "' placeholder='Date du rapport " + i + "'>" + "<br><br></div>\n";
-            }
-        }
-        // Fonction pour supprimer un rapport
-        function removeRapport() {
-            var listRapports = document.getElementById("listRapports");
-            var elements = listRapports.innerHTML.split('\n');
-            elements.pop();
-            elements.pop();
-            listRapports.innerHTML = elements.join('\n');
-            projectExpectedReports -= 1;
-            if (projectExpectedReports <= 0) {
-                projectExpectedReports = 1;
             }
         }
     </script>
