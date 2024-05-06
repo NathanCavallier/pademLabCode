@@ -45,7 +45,7 @@
 
                     // Ajouter les données dans la carte
                     var td = document.createElement('td');
-                    
+
                     td.style.borderRadius = '15px';
                     td.style.backgroundColor = 'white';
                     tr.style.height = 'auto';
@@ -56,15 +56,21 @@
                     tr.style.margin = '10px';
                     tr.style.padding = '10px';
 
+                    var dateDebut = new Date(project.start_date);
+                    var dateFin = new Date(project.end_date);
+                    var dateDebutFormattee = dateDebut.toLocaleDateString();
+                    var dateFinFormattee = dateFin.toLocaleDateString();
+
+
                     td.innerHTML = `
                         <div class="card">
-                            <div class="card-header">
+                            <div class="card-header" id="status_${project.project_id}">
                                 <h4 style="text-transform: capitalize; font-weight: bold; color: #29A6A7;">${project.project_title}</h4>
-                                <p style="text-transform: capitalize; font-weight: bold; color: ${colorStatusText[project.project_status]}; background: white" id="status_${project.project_id}">${project.project_status}</p>
+                                <p style="text-transform: capitalize; font-weight: lighter; color: ${colorStatusText[project.project_status]}; background: none;" id="status_${project.project_id}">${project.project_status}</p>
                             </div>
                             <div class="card-body">
-                                <p>Date de début : ${project.start_date}</p>
-                                <p>Date de fin : ${project.end_date}</p>
+                            <p>Date de début : ${dateDebutFormattee}</p>
+                            <p>Date de fin : ${dateFinFormattee}</p>
                                 <p>Lieu du projet : ${project.project_location}</p>
                                 <p>Email du référent : ${project.project_referent_email}</p>
                             </div>
@@ -86,14 +92,16 @@
                     stepper++;
                     if (stepper === 3) {
                         // Ajouter la ligne à la liste des projets
+                        tr.style.display = 'flex';
                         document.getElementById('projectsList_dashboard').appendChild(tr);
                         tr = document.createElement('tr');
                         td = document.createElement('td');
-                        tr.className = 'card';
+                        tr.style.display = 'flex';
                         stepper = 0;
                     }
                 });
-                if (stepper > 0) {
+                if (stepper < 3) {
+                    tr.style.display = 'flex';
                     document.getElementById('projectsList_dashboard').appendChild(tr);
                 }
             })
