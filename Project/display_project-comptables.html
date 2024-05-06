@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste des Projets</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+
+<body>
+
+    <h3>Liste des Projets</h3>
+    <div class="col-6 offset-3">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th> Nom</th>
+                    <th> Date de création </th>
+                    <th> Début du projet </th>
+                    <th> Fin du projet </th>
+                    <th> Référent </th>
+                    <th> Modification </th>
+                </tr>
+            </thead>
+            <tbody id="formsList">
+
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // Récupérer la liste des projets depuis l'API REST de WordPress
+        document.addEventListener("DOMContentLoaded", function () {
+            fetch('https://lab.padem.org/wp-json/mo/v1/getDB7forms')
+                .then(response => response.json())
+                .then(forms => {
+                    forms.forEach(form => {
+                        var formHTML = `
+                                <tr>
+                                    <div class="form-item">
+                                        <td  style="width: auto;"> 
+                                        <a href='https://lab.padem.org/wp-admin/post.php?post=${form.form_post_id}&action=edit'> Nom du projet: ${form.form_name} </a>
+                                        </td>
+                                        <td> 
+                                            ${form.form_date}
+                                        </td>
+                                        <td> 
+                                            ${form.form_start_date}
+                                        </td>
+                                        <td> 
+                                            ${form.form_end_date}
+                                        </td>
+                                        <td> 
+                                            ${form.form_referent}
+                                        </td>
+                                        <td  style="width: auto;">
+                                            <button type="button" class="btn btn-primary" style="width: auto;" onclick="window.location.href='https://lab.padem.org/projets/projets-comptables/${form.form_post_id}/?projectId=${form.form_post_id}'">Voir le projet</button>
+                                        </th>
+                                    </div>
+                                </tr>`;
+                        document.getElementById('formsList').innerHTML += formHTML;
+                    });
+                })
+                .catch(error => console.log('Error retrieving forms:', error));
+        });
+
+        // Supprimer un projet
+        function deleteForm(formId) {
+            fetch('https://lab.padem.org/wp-json/mo/v1/deleteDB7form', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    form_id: formId
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    alert('Projet supprimé avec succès:', data);
+                    window.location.reload();
+                })
+                .catch(error => console.log('Error deleting form:', error));
+        }
+    </script>
+</body>
+
+</html>

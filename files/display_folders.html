@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="utf-8">
+    <title>Explorateur de fichiers</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        /* Styles CSS pour l'explorateur de fichiers */
+        .folder {
+            display: inline-block;
+            margin: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .folder:hover {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="foldersContainer"></div>
+
+    <script>
+        // Fonction pour récupérer les dossiers depuis l'API de FileBird
+        document.addEventListener('DOMContentLoaded', () => {
+            fetch('https://lab.padem.org/wp-json/filebird/public/v1/folders')
+                .then(response => response.json())
+                .then(data => {
+                    const foldersContainer = document.getElementById('foldersContainer');
+                    data.forEach(folder => {
+                        const folderElement = document.createElement('div');
+                        folderElement.classList.add('folder');
+                        folderElement.textContent = folder.name;
+                        folderElement.addEventListener('click', () => {
+                            // Code pour afficher le contenu du dossier ou effectuer d'autres actions
+                            console.log('Dossier sélectionné :', folder.name);
+                        });
+                        foldersContainer.appendChild(folderElement);
+                    });
+                })
+                .catch(error => {
+                    console.error('Erreur lors de la récupération des dossiers :', error);
+                });
+        });
+
+        // Appel de la fonction pour récupérer les dossiers au chargement de la page
+        getFolders();
+    </script>
+</body>
+
+</html>

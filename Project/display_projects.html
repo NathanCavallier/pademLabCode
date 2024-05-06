@@ -1,0 +1,141 @@
+<body>
+    <!-- Afficher la liste des projets en cours -->
+    <table>
+        <tr>
+        </tr>
+        <tbody id="projectsList"></tbody>
+        <div id="loader"></div>
+    </table>
+
+
+</body>
+
+
+<script>
+    // Projet: Récurérer les données depuis la base de données et les afficher dans des cellules individuels cliquables pour les modifier
+    document.addEventListener('DOMContentLoaded', () => {
+        // Déclarer les variables
+        var userId;
+        var userEmail = '';
+        var userRole = '';
+
+        // Fonction qui affiche barre de chargement pendant le chargement des données
+        function showLoader() {
+            var loader = document.getElementById('loader');
+            loader.style.position = 'fixed';
+            loader.style.top = '0';
+            loader.style.left = '0';
+            loader.style.width = '100%';
+            loader.style.height = '100%';
+            loader.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+            loader.style.display = 'flex';
+            loader.style.justifyContent = 'center';
+            loader.style.alignItems = 'center';
+            var spinner = document.createElement('div');
+            spinner.className = 'spinner-border text-primary';
+            spinner.style.width = '5rem';
+            spinner.style.height = '5rem';
+            loader.appendChild(spinner);
+        }
+
+        // Récupérer l'adresse mail et l'ID de l'utilisateur connecté depuis la base de données
+        fetch('https://lab.padem.org/wp-json/mo/v1/getUserEmailAndState', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                userId = data.ID;
+                userEmail = data.user_email;
+                console.log(userId);
+                console.log(userEmail);
+            })
+        // Récupérer le rôle de l'utilisateur connecté depuis la base de données
+        fetch('https://lab.padem.org/wp-json/mo/v1/getUserID', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                userRole = JSON.parse(data['meta_value'].meta_value);
+                console.log(userRole);
+            })
+
+        // Récupérer les données depuis la base de données
+        if (userRole === 'administrator' || userRole === 'chef-de-projet' || userRole === 'consultant' || userRole === 'comptable' || userRole === 'partenaire') {
+            fetch('https://lab.padem.org/wp-json/mo/v1/getProjects', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    data.forEach(project => {
+                        // Créer une ligne pour chaque projet
+                        var tr = document.createElement('tr');
+                        // Créer une cellule pour chaque projet
+                        var td = document.createElement('td');
+                        // Ajouter le nom du projet dans la cellule
+                        td.innerHTML = project.name;
+                        td.style.cursor = 'pointer';
+                        td.style.textAlign = 'center';
+                        td.style.padding = '10px';
+                        td.style.border = '1px solid black';
+                        td.style.borderRadius = '5px';
+                        td.style.backgroundColor = 'lightgrey';
+                        // Ajouter la cellule dans la ligne
+                        tr.appendChild(td);
+                        // Ajouter la ligne dans la liste des projets
+                        document.getElementById('projectsList').appendChild(tr);
+                        // Ajouter un événement de clic sur la cellule
+                        td.addEventListener('click', () => {
+                            // Rediriger l'utilisateur vers la page de modification du projet
+                            window.location.href = 'https://lab.padem.org/projet/edit_project.html?project_id=' + project.project_id;
+                        });
+                    });
+                })
+        } else {
+            fetch('https://lab.padem.org/wp-json/mo/v1/getProjects', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    data.forEach(project => {
+                        // Créer une ligne pour chaque projet
+                        var tr = document.createElement('tr');
+                        // Créer une cellule pour chaque projet
+                        var td = document.createElement('td');
+                        // Ajouter le nom du projet dans la cellule
+                        td.innerHTML = project.name;
+                        td.style.cursor = 'pointer';
+                        td.style.textAlign = 'center';
+                        td.style.padding = '10px';
+                        td.style.border = '1px solid black';
+                        td.style.borderRadius = '5px';
+                        td.style.backgroundColor = 'lightgrey';
+                        // Ajouter la cellule dans la ligne
+                        tr.appendChild(td);
+                        // Ajouter la ligne dans la liste des projets
+                        document.getElementById('projectsList').appendChild(tr);
+                        // Ajouter un événement de clic sur la cellule
+                        td.addEventListener('click', () => {
+                            // Rediriger l'utilisateur vers la page de modification du projet
+                            window.location.href = 'https://lab.padem.org/projet/edit_project.html?project_id=' + project.project_id;
+                        });
+                    });
+                })
+        }
+    });
+</script>

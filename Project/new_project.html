@@ -1,0 +1,448 @@
+<body>
+    <div style="display: flex;" class="action-buttons">
+        <!-- Bouton pour afficher/masquer le formulaire de création de projet -->
+        <button type="button"
+            onclick="showAndHideProjectForm(); showAndHideCancelButton(); switchAddProjectButtonIcon('add-file')"
+            id="addProjectButton" class="action-buttons" style="width: auto; height: auto;">
+            <img src="https://lab.padem.org/wp-content/uploads/plus.png" alt="add-file" id="add-file"
+                title="Ajouter un projet" />
+        </button>
+        <div style="margin-left: auto; margin-right: auto;"></div>
+        <div class="action-buttons">
+            <!-- Bouton pour annuler le projet -->
+            <button type="button" onclick="cancelProject()" id="cancelProjectButton"
+                style=" display: none; width: auto;" title="Annuler">
+                <img src="https://lab.padem.org/wp-content/uploads/Annuler.png" alt="cancel" id="cancel" />
+            </button>
+        </div>
+    </div>
+    <form id="projectForm" style="display: none;">
+        <ul class="file-list">
+            <li id="id-preliminaires" class="rectangle">
+                <div class="file-details">
+                    <div style="display: flex; justify-content: space-between;" class="header-color">
+                        <a href="javascript:void(0)" class="file-name"
+                            onclick="showAndHide('step1'); switchCellBackground('id-preliminaires'); switchFormsIcons('preliminaires')">
+                            <h6 style="margin-top: 20px;">Informations préliminaires</h6>
+                        </a>
+                        <button type="button"
+                            onclick="showAndHide('step1'); switchCellBackground('id-preliminaires'); switchFormsIcons('preliminaires')"
+                            style="font-size: large;">
+                            <img src="https://lab.padem.org/wp-content/uploads/plus.png" alt="preliminaires"
+                                id="preliminaires" style="background-color: none; margin-top: -10px;" />
+                        </button>
+                    </div>
+                    <div style="margin-top: 10px; margin-bottom: 10px"></div>
+                    <!-- Ajout d'un espace entre les cartes -->
+                    <div id="step1" style="display: none">
+                        <p>Remplissez les champs suivants:</p>
+                        <hr class="gray-border">
+                        <div style="margin-top: 10px; margin-bottom: 10px"></div>
+                        <label for="projectTitle">Titre du projet:</label>
+                        <input type="text" id="projectTitle" name="projectTitle"><br><br>
+                        <label for="projectType">Type de projet:</label>
+                        <input type="text" id="projectType" name="projectType"><br><br>
+                        <label for="projectDate">Date de début:</label>
+                        <input type="date" id="projectDate" name="projectDate"><br><br>
+                        <label for="projectEndDate2">Date de fin:</label>
+                        <input type="date" id="projectEndDate2" name="projectEndDate2"><br><br>
+                        <label for="projectLocation">Pays de réalisation du projet:</label>
+                        <input type="text" id="projectLocation" name="projectLocation"><br><br>
+                        <label for="projectStatus">Statut initial du projet:</label>
+                        <select id="projectStatus" name="projectStatus">
+                            <option value="En cours">En cours</option>
+                            <option value="En pause">En pause</option>
+                            <option value="Terminé">Terminé</option>
+                        </select><br><br>
+                        <!-- Description du projet -->
+                        <label for="projectDescription">Description du projet:</label>
+                        <textarea id="projectDescription" name="projectDescription" rows="4"
+                            cols="50"></textarea><br><br>
+                        <div class="action-buttons" style="display: flex; justify-content: flex-end;">
+                            <!-- Bouton pour annuler le projet -->
+                            <button type="button" onclick="cancelProject()" style="width: auto;">
+                                <p style="width: auto; margin-top: 20px; margin-right: 5px;">Annuler</p>
+                                <img src="https://lab.padem.org/wp-content/uploads/Annuler.png" alt="cancel"
+                                    style="width: 35px; height: 35px;" />
+                            </button>
+                            <!-- Bouton pour sauvegarder le projet -->
+                            <button type="submit" onclick="saveFormData()" style="width: auto;" id="saveProjectButton">
+                                <p style="width: auto; margin-top: 20px; margin-right: 5px;">Sauvegarder</p>
+                                <img src="https://lab.padem.org/wp-content/uploads/save.png" alt="save"
+                                    style="width: 35px; height: 35px;" />
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+        <div style="margin-top: 10px; margin-bottom: 10px"></div>
+    </form>
+    <script>
+        var dataInfosPreliminaires = {
+            project_title: '',
+            project_type: '',
+            start_date: '',
+            end_date: '',
+            project_location: '',
+            project_status: ''
+        };
+        if (document.getElementById('projectForm') != null) {
+            document.getElementById('projectForm').addEventListener('submit', function (event) {
+                event.preventDefault();
+                dataInfosPreliminaires.projectTitle = document.getElementById('projectTitle').value;
+                dataInfosPreliminaires.projectType = document.getElementById('projectType').value;
+                dataInfosPreliminaires.projectDate = document.getElementById('projectDate').value;
+                dataInfosPreliminaires.projectEndDate2 = document.getElementById('projectEndDate2').value;
+                dataInfosPreliminaires.projectLocation = document.getElementById('projectLocation').value;
+                dataInfosPreliminaires.projectStatus = document.getElementById('projectStatus').value;
+                console.log(dataInfosPreliminaires);
+            });
+        }
+        // 1. Create a new project
+        // 2. Add the project to the database
+        // 3. Redirect to the project page
+        fetch('https://lab.padem.org/wp-json/mo/v1/createProject', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(dataInfosPreliminaires),
+        }).then(response => {
+            if (!response.ok) {
+                throw new Error('Erreur lors de la requête vers l\'API.');
+            }
+            return response.json();
+        })
+            .then(data => {
+                console.log('Success:', data);
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Projet créé avec succès',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                showAndHide('projectForm');
+                // Recharger la page
+                window.location.href = "https://lab.padem.org/projet";
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Erreur lors de la création du projet',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            });
+
+
+        // Fonction pour afficher/masquer le formulaire de création de projet
+        function showAndHideProjectForm() {
+            var element = document.getElementById("projectForm");
+            if (element.style.display === "none") {
+                element.style.display = "block";
+                element.style.title = "Masquer le formuliaire";
+            } else {
+                element.style.display = "none";
+                element.style.title = "Afficher le formulaire";
+            }
+        }
+
+
+        // Fonction pour masquer/afficher le bouton Annuler
+        function showAndHideCancelButton() {
+            var element = document.getElementById("cancelProjectButton");
+            if (element.style.display === "none") {
+                element.style.display = "block";
+            } else {
+                element.style.display = "none";
+            }
+        }
+
+        // Fonction pour afficher/masquer les boutons de création de projet
+        function showAndHide(id) {
+            var element = document.getElementById(id);
+            if (element.style.display === "none") {
+                element.style.display = "block";
+            } else {
+                element.style.display = "none";
+            }
+        }
+
+        // Fonction pour changer la couleur de fond de la cellule
+        function switchCellBackground(id) {
+            var element = document.getElementById(id);
+            if (element.style.display != "block") {
+                element.style.background = "white";
+                element.style.width = "100%";
+                element.style.height = "auto";
+                element.style.borderRadius = "15px";
+            } else {
+                element.style.background = "white";
+                element.style.width = "100%";
+                element.style.height = "75px";
+                element.style.borderRadius = "15px";
+            }
+        }
+
+        // Fonction pour annuler le projet
+        function cancelProject() {
+            var projectForm = document.getElementById("projectForm");
+
+            // Réinitialiser les champs du formulaire
+            if (projectForm.body != null) {
+                Swal.fire({
+                    title: 'Êtes-vous sûr de vouloir annuler?',
+                    text: "Vous ne pourrez pas revenir en arrière!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#29A6A7',
+                    confirmButtonText: 'Oui',
+                    cancelButtonText: 'Non'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire(
+                            'Annulé!',
+                            'Votre projet a été annulé.',
+                            'success'
+                        )
+                        projectForm.reset();
+                        document.getElementById("projectForm").style.display = "none";
+                        document.getElementById("add-file").style.title = "Ajouter un projet";
+
+                        document.getElementById("cancelProjectButton").style.display = "none";
+                        document.getElementById("saveProjectButton").style.display = "none";
+                        document.getElementById("step1").style.display = "none";
+                        document.getElementById("step2").style.display = "none";
+                        document.getElementById("step3").style.display = "none";
+                        document.getElementById("step4").style.display = "none";
+                        document.getElementById("step5").style.display = "none";
+                        document.getElementById("step6").style.display = "none";
+                        document.getElementById("step7").style.display = "none";
+                        document.getElementById("step8").style.display = "none";
+                        document.getElementById("step9").style.display = "none";
+                        document.getElementById("step10").style.display = "none";
+                        document.getElementById("liens").style.display = "none";
+                        document.getElementById("referants").style.display = "none";
+
+                        document.getElementById("add-file").src = "https://lab.padem.org/wp-content/uploads/plus.png";
+                        document.getElementById("preliminaires").src = "https://lab.padem.org/wp-content/uploads/plus.png";
+                        document.getElementById("projet").src = "https://lab.padem.org/wp-content/uploads/plus.png";
+                        document.getElementById("consultants-1").src = "https://lab.padem.org/wp-content/uploads/plus.png";
+                        document.getElementById("comptables").src = "https://lab.padem.org/wp-content/uploads/plus.png";
+                        document.getElementById("partners").src = "https://lab.padem.org/wp-content/uploads/plus.png";
+                        document.getElementById("bailleurs-1").src = "https://lab.padem.org/wp-content/uploads/plus.png";
+                        document.getElementById("objectifs").src = "https://lab.padem.org/wp-content/uploads/plus.png";
+                        document.getElementById("financement").src = "https://lab.padem.org/wp-content/uploads/plus.png";
+                        document.getElementById("rapports-attendus").src = "https://lab.padem.org/wp-content/uploads/plus.png";
+                        document.getElementById("fichiers").src = "https://lab.padem.org/wp-content/uploads/plus.png";
+                        document.getElementById("liens").src = "https://lab.padem.org/wp-content/uploads/plus.png";
+                        document.getElementById("referants").src = "https://lab.padem.org/wp-content/uploads/plus.png";
+                    }
+                });
+            } else {
+                // Masquer le formulaire
+                projectForm.style.display = "none";
+
+                // Masquer les boutons Annuler et Sauvegarder
+                showAndHideCancelButton();
+                showAndHideSaveButton();
+
+                document.getElementById("add-file").src = "https://lab.padem.org/wp-content/uploads/plus.png";
+                document.getElementById("preliminaires").src = "https://lab.padem.org/wp-content/uploads/plus.png";
+                document.getElementById("projet").src = "https://lab.padem.org/wp-content/uploads/plus.png";
+                document.getElementById("consultants-1").src = "https://lab.padem.org/wp-content/uploads/plus.png";
+                document.getElementById("comptables-1").src = "https://lab.padem.org/wp-content/uploads/plus.png";
+                document.getElementById("partners").src = "https://lab.padem.org/wp-content/uploads/plus.png";
+                document.getElementById("bailleurs-1").src = "https://lab.padem.org/wp-content/uploads/plus.png";
+                document.getElementById("objectifs").src = "https://lab.padem.org/wp-content/uploads/plus.png";
+                document.getElementById("financement").src = "https://lab.padem.org/wp-content/uploads/plus.png";
+                document.getElementById("rapports-attendus").src = "https://lab.padem.org/wp-content/uploads/plus.png";
+                document.getElementById("fichiers").src = "https://lab.padem.org/wp-content/uploads/plus.png";
+                document.getElementById("liens-1").src = "https://lab.padem.org/wp-content/uploads/plus.png";
+                document.getElementById("referants-1").src = "https://lab.padem.org/wp-content/uploads/plus.png";
+            }
+        }
+
+        // Fonction pour switcher les images des boutons
+        function switchFormsIcons(id) {
+            var element = document.getElementById(id);
+            if (element.src.match("https://lab.padem.org/wp-content/uploads/plus.png")) {
+                element.src = "https://lab.padem.org/wp-content/uploads/voire.png";
+            } else if (element.src.match("https://lab.padem.org/wp-content/uploads/voire.png")) {
+                element.src = "https://lab.padem.org/wp-content/uploads/masquer.png";
+            } else {
+                element.src = "https://lab.padem.org/wp-content/uploads/voire.png";
+            }
+        }
+
+        // Fonction pour switcher les images du bouton Ajouter un projet
+        function switchAddProjectButtonIcon() {
+            var element = document.getElementById("add-file");
+            if (element.src.match("https://lab.padem.org/wp-content/uploads/plus.png") && document.getElementById('projectForm').style.display === 'none') {
+                element.src = "https://lab.padem.org/wp-content/uploads/voire.png";
+                element.title = "Afficher le formulaire";
+            } else if ((document.getElementById("cancelProjectButton").style.display === "block") && (element.src.match("https://lab.padem.org/wp-content/uploads/masquer.png"))) {
+                element.src = "https://lab.padem.org/wp-content/uploads/voire.png";
+                element.title = "Masquer le formulaire";
+            } else {
+                element.src = "https://lab.padem.org/wp-content/uploads/masquer.png";
+                element.title = "Afficher le formulaire";
+            }
+        }
+
+        // Initialisation des variables
+        var increment = 1;
+        var incrementChief = 1;
+        var incrementConsultant = 1;
+        var incrementComptable = 1;
+        var incrementPartner = 1;
+        var incrementBailleur = 1;
+        var incrementLink = 1;
+
+        // Fonction pour afficher le contenu des cartes
+        function showCardContent(id) {
+            var cardContent = document.getElementById(id);
+            if (cardContent.style.display === "none") {
+                cardContent.style.display = "flex";
+            } else {
+                cardContent.style.display = "none";
+            }
+        }
+
+        // Fonction pour ajouter un chef de projet
+        function addChief() {
+            var chiefs = document.getElementById("chiefs");
+            incrementChief += 1;
+            chiefs.innerHTML += "<div><label for='projectChief" + incrementChief + "'>Chef de projet " + incrementChief + ":</label><input type='text' id='projectChief" + incrementChief + "' name='projectChief" + incrementChief + "'><br><br><label for='chiefEmailAdress" + incrementChief + "'>Son email:</label><input type='text' id='chiefEmailAdress" + incrementChief + "' name='chiefEmailAdress" + incrementChief + "'><br><br></div>\n";
+        }
+
+        // Fonction pour supprimer un chef de projet
+        function removeChief() {
+            var chiefs = document.getElementById("chiefs");
+            var elements = chiefs.innerHTML.split('\n');
+            elements.pop();
+            elements.pop();
+            chiefs.innerHTML = elements.join('\n');
+            if (incrementChief <= 0) {
+                incrementChief = 1;
+            }
+        }
+
+        // Fonction pour ajouter un consultant
+        function addConsultant() {
+            var consultants = document.getElementById("consultants");
+            incrementConsultant += 1;
+            consultants.innerHTML += "<div><label for='projectConsultant" + incrementConsultant + "'>Consultant " + incrementConsultant + ":</label><input type='text' id='projectConsultant" + incrementConsultant + "' name='projectConsultant" + incrementConsultant + "'><br><br><label for='consultantEmailAdress" + incrementConsultant + "'>Son email:</label><input type='text' id='consultantEmailAdress" + incrementConsultant + "' name='consultantEmailAdress" + incrementConsultant + "'><br><br></div>\n";
+        }
+
+        // Fonction pour supprimer un consultant
+        function removeConsultant() {
+            var consultants = document.getElementById("consultants");
+            var elements = consultants.innerHTML.split('\n');
+            elements.pop();
+            elements.pop();
+            consultants.innerHTML = elements.join('\n');
+            if (incrementConsultant <= 0) {
+                incrementConsultant = 1;
+            }
+        }
+
+        // Fonction pour ajouter un comptable
+        function addComptable() {
+            var comptables = document.getElementById("comptables");
+            incrementComptable += 1;
+            comptables.innerHTML += "<div><label for='projectComptable" + incrementComptable + "'>Comptable " + incrementComptable + ":</label><input type='text' id='projectComptable" + incrementComptable + "' name='projectComptable" + incrementComptable + "'><br><br><label for='comptableEmailAdress" + incrementComptable + "'>Son email:</label><input type='text' id='comptableEmailAdress" + incrementComptable + "' name='comptableEmailAdress" + incrementComptable + "'><br><br></div>\n";
+        }
+        // Fonction pour supprimer un comptable
+        function removeComptable() {
+            var comptables = document.getElementById("comptables");
+            var elements = comptables.innerHTML.split('\n');
+            elements.pop();
+            elements.pop();
+            comptables.innerHTML = elements.join('\n');
+            if (incrementComptable <= 0) {
+                incrementComptable = 1;
+            }
+        }
+
+        // Fonction pour ajouter un partenaire
+        function addPartner() {
+            var partners = document.getElementById("partners");
+            incrementPartner += 1;
+            partners.innerHTML += "<div><label for='partner" + incrementPartner + "'>Partenaire " + incrementPartner + ":</label><input type='text' id='partner" + incrementPartner + "' name='partner" + incrementPartner + "'><br><br><label for='partnerEmailAdress" + incrementPartner + "'>Son email:</label><input type='text' id='partnerEmailAdress" + incrementPartner + "' name='partnerEmailAdress" + incrementPartner + "'><br><br></div>\n";
+        }
+        // Fonction pour supprimer un partenaire
+        function removePartner() {
+            var partners = document.getElementById("partners");
+            var elements = partners.innerHTML.split('\n');
+            elements.pop();
+            elements.pop();
+            partners.innerHTML = elements.join('\n');
+            if (incrementPartner <= 0) {
+                incrementPartner = 1;
+            }
+        }
+
+        // Fonction pour ajouter un bailleur
+        function addBailleur() {
+            var bailleurs = document.getElementById("bailleurs");
+            incrementBailleur += 1;
+            bailleurs.innerHTML += "<div><label for='projectBailleur" + incrementBailleur + "'>Bailleur de fond " + incrementBailleur + ":</label><input type='text' id='projectBailleur" + incrementBailleur + "' name='projectBailleur" + incrementBailleur + "'><br><br><label for='Pays" + incrementBailleur + "'>Pays:</label><input type='text' id='Pays" + incrementBailleur + "' name='Pays" + incrementBailleur + "'><br><br></div>\n";
+        }
+        // Fonction pour supprimer un bailleur
+        function removeBailleur() {
+            var bailleurs = document.getElementById("bailleurs");
+            var elements = bailleurs.innerHTML.split('\n');
+            elements.pop();
+            elements.pop();
+            bailleurs.innerHTML = elements.join('\n');
+            if (incrementBailleur <= 0) {
+                incrementBailleur = 1;
+            }
+        }
+
+        // Fonction pour ajouter un lien
+        function addLink() {
+            var links = document.getElementById("links");
+            incrementLink += 1;
+            links.innerHTML += "<div><label for='projectLink" + incrementLink + "'>Lien du projet:</label><input type='text' id='projectLink" + incrementLink + "' name='projectLink" + incrementLink + "'><br><br></div>\n";
+        }
+        // Fonction pour supprimer un lien
+        function removeLink() {
+            var links = document.getElementById("links");
+            var elements = links.innerHTML.split('\n');
+            elements.pop();
+            elements.pop();
+            links.innerHTML = elements.join('\n');
+            incrementLink -= 1;
+            if (incrementLink <= 0) {
+                incrementLink = 1;
+            }
+        }
+
+        // Fonction pour lister les rapports attendus
+        function listDesRapports() {
+            var projectExpectedReports = document.getElementById("projectExpectedReports").value;
+            var listRapports = document.getElementById("listRapports");
+            listRapports.innerHTML = "";
+            for (var i = 1; i <= projectExpectedReports; i++) {
+                listRapports.innerHTML += "<div><p>Date du rapport N°" + i + " </p><input type='date' id='projectExpectedReport" + i + "' name='projectExpectedReport" + i + "' placeholder='Date du rapport " + i + "'>" + "<br><br></div>\n";
+            }
+        }
+        // Fonction pour supprimer un rapport
+        function removeRapport() {
+            var listRapports = document.getElementById("listRapports");
+            var elements = listRapports.innerHTML.split('\n');
+            elements.pop();
+            elements.pop();
+            listRapports.innerHTML = elements.join('\n');
+            projectExpectedReports -= 1;
+            if (projectExpectedReports <= 0) {
+                projectExpectedReports = 1;
+            }
+        }
+    </script>
+</body>

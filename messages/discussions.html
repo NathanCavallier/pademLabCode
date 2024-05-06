@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instant Messaging</title>
+    <link rel="stylesheet" href="styles_messages.css">
+</head>
+
+<body>
+    <div id="message-list"></div>
+    <form id="message-form">
+        <input type="text" id="sender" placeholder="Your Name" required>
+        <textarea id="content" placeholder="Type your message..." required></textarea>
+        <button type="submit">Send</button>
+    </form>
+    <script src="script_messages.js"></script>
+</body>
+
+<script>
+    // Description: Gestion des messages pour la page de discussion
+    // Récupérer la liste des messages et les afficher
+    function fetchMessages() {
+        fetch('fetch_messages.php')
+            .then(response => response.json())
+            .then(messages => {
+                const messageList = document.getElementById('message-list');
+                messageList.innerHTML = ''; // Clear previous messages
+                messages.forEach(message => {
+                    const messageElement = document.createElement('div');
+                    messageElement.textContent = `${message.sender}: ${message.content}`;
+                    messageList.appendChild(messageElement);
+                });
+                messageList.scrollTop = messageList.scrollHeight; // Scroll to bottom
+            })
+            .catch(error => console.error('Error fetching messages:', error));
+    }
+
+    // Envoyer un nouveau message
+    document.getElementById('message-form').addEventListener('submit', function (event) {
+        event.preventDefault();
+        const sender = document.getElementById('sender').value.trim();
+        const content = document.getElementById('content').value.trim();
+        if (sender !== '' && content !== '') {
+            fetch('send_message.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ sender: sender, content: content })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data.message);
+                    document.getElementById('sender').value = '';
+                    document.getElementById('content').value = '';
+                    fetchMessages(); // Refresh message list
+                })
+                .catch(error => console.error('Error sending message:', error));
+        }
+    });
+
+    // Rafraîchir la liste des messages toutes les 5 secondes
+    setInterval(fetchMessages, 5000);
+
+</script>
+
+</html>
