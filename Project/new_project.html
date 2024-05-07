@@ -72,6 +72,42 @@
                             <textarea id="projectDescription" name="projectDescription" rows="4"
                                 cols="50"></textarea><br><br>
                         </div>
+
+                        <!-- Sélectionner une image de fond pour le card-body parmis la liste d'images ci-dessous -->
+                        <div>
+                            <p>Sélectionner une image de fond pour la pastille du projet:</p>
+                            <select id="backgroundImage" name="backgroundImage">
+                                <option value="">Choisissez une image</option>
+                                <option value="https://lab.padem.org/wp-content/uploads/1.jpg">Image 1</option>
+                                <option value="https://lab.padem.org/wp-content/uploads/2.jpg">Image 2</option>
+                                <option value="https://lab.padem.org/wp-content/uploads/3.jpg">Image 3</option>
+                                <option value="https://lab.padem.org/wp-content/uploads/4.jpg">Image 4</option>
+                                <option value="https://lab.padem.org/wp-content/uploads/5.jpg">Image 5</option>
+                                <option value="https://lab.padem.org/wp-content/uploads/6.jpg">Image 6</option>
+                                <option value="https://lab.padem.org/wp-content/uploads/7.jpg">Image 7</option>
+                                <option value="https://lab.padem.org/wp-content/uploads/8.jpg">Image 8</option>
+                                <option value="https://lab.padem.org/wp-content/uploads/9.jpg">Image 9</option>
+                                <option value="https://lab.padem.org/wp-content/uploads/10.jpg">Image 10</option>
+                            </select>
+                        </div>
+
+                        <!-- Sélectionner une couleur de fond pour le card-body du projet parmis la liste des couleurs ci-dessous -->
+                        <div>
+                            <p>Sélectionner une couleur de fond pour la pastille du projet:</p>
+                            <select id="backgroundColor" name="backgroundColor">
+                                <option value="">Choisissez une couleur</option>
+                                <option value="red">Rouge</option>
+                                <option value="blue">Bleu</option>
+                                <option value="green">Vert</option>
+                                <option value="yellow">Jaune</option>
+                                <option value="purple">Violet</option>
+                                <option value="orange">Orange</option>
+                                <option value="pink">Rose</option>
+                                <option value="brown">Marron</option>
+                                <option value="black">Noir</option>
+                                <option value="white">Blanc</option>
+                            </select>
+                        </div>
                         <div class="action-buttons" style="display: flex; justify-content: flex-end;">
                             <!-- Bouton pour annuler le projet -->
                             <button type="button" onclick="cancelProject()" style="width: auto;">
