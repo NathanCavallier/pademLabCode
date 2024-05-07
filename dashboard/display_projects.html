@@ -1,10 +1,7 @@
 <body>
     <!-- Afficher la liste des projets en cours -->
-    <table>
-        <tbody id="projectsList_dashboard"></tbody>
-    </table>
-
-
+    <div id="projectContainer">
+    </div>
 </body>
 
 
@@ -31,79 +28,91 @@
                 console.log(data);
                 var stepper = 0;
                 var colorStatusText = {
-                    'En cours': 'green',
+                    'En cours': 'lightgreen',
                     'Terminé': 'lightred',
                     'En pause': 'lightblue',
+                    'Annulé': 'lightgray',
+                    'Non commencé': 'lightorange',
+                };
+                var textColor = {
+                    'En cours': 'green',
+                    'Terminé': 'red',
+                    'En pause': 'blue',
                     'Annulé': 'gray',
                     'Non commencé': 'orange',
-                }
-                var tr = document.createElement('tr');
-                tr.className = 'card';
+                };
+                var projectContainer = document.getElementById('projectContainer');
                 // Parcourir la liste des projets
                 data.forEach(project => {
-                    // Ajouter le titre du projet, la date de début, la date de fin, le pays, le référent et le statut dans des lignes individuelles
 
-                    // Ajouter les données dans la carte
-                    var td = document.createElement('td');
-
-                    td.style.borderRadius = '15px';
-                    td.style.backgroundColor = 'white';
-                    tr.style.height = 'auto';
-                    td.style.width = '33%';
-                    td.style.margin = '10px';
-                    td.style.padding = '10px';
-                    tr.style.width = '100%';
-                    tr.style.margin = '10px';
-                    tr.style.padding = '10px';
+                    var card = document.createElement('div');
+                    card.className = 'card';
+                    card.style.borderRadius = '15px';
+                    card.style.backgroundColor = 'white';
+                    card.style.height = 'auto';
+                    card.style.width = 'auto';
+                    card.style.margin = '10px';
+                    card.style.border = '1px ${colorStatusText[project.project_status]}';
 
                     var dateDebut = new Date(project.start_date);
                     var dateFin = new Date(project.end_date);
-                    var dateDebutFormattee = dateDebut.toLocaleDateString();
-                    var dateFinFormattee = dateFin.toLocaleDateString();
+                    var dateDuJour = new Date();
 
+                    var dureeTotale = dateFin.getTime() - dateDebut.getTime();
+                    var dureeEcoulee = dateDuJour.getTime() - dateDebut.getTime();
 
-                    td.innerHTML = `
+                    var progression = (dureeEcoulee / dureeTotale) * 100;
+
+                    var barreProgression = document.createElement('progress');
+                    barreProgression.id = 'progress_' + project.project_id;
+                    barreProgression.value = progression;
+                    barreProgression.max = 100;
+                    barreProgression.style.width = '100%';
+                    barreProgression.style.height = '10px';
+                    barreProgression.style.backgroundColor = 'none';
+                    barreProgression.style.borderRadius = '10px';
+
+                    card.style.fontSize = '14px'; // Change la taille de la police
+                    card.style.fontFamily = 'Arial'; // Change la police
+                    card.style.color = 'gray'; // Change la couleur de la police
+
+                    card.innerHTML = `
                         <div class="card">
-                            <div class="card-header" id="status_${project.project_id}">
-                                <h4 style="text-transform: capitalize; font-weight: bold; color: #29A6A7;">${project.project_title}</h4>
-                                <p style="text-transform: capitalize; font-weight: lighter; color: ${colorStatusText[project.project_status]}; background: none;" id="status_${project.project_id}">${project.project_status}</p>
-                            </div>
-                            <div class="card-body">
-                            <p>Date de début : ${dateDebutFormattee}</p>
-                            <p>Date de fin : ${dateFinFormattee}</p>
-                                <p>Lieu du projet : ${project.project_location}</p>
-                                <p>Email du référent : ${project.project_referent_email}</p>
+                            <div id="card-body" class="card-body" style="backgroundColor: none;">
+                                <div style="margin-top: 150px; margin-bottom: 10px"></div>
+                                <h4 style="text-fon; font-weight: bold; color: #29A6A7;">${project.project_title}</h4>
+                                <p style="font-weight: bold;">${project.project_location}</p>
+                                ${barreProgression.outerHTML}
                             </div>
                             <div class="card-footer">
+                                <p style="font-weight: lighter; color: ${textColor[project.project_status]}; background: ${colorStatusText[project.project_status]}; margin: 5px; border-radius: 5px; fontSize: 9px;" id="status_${project.project_id}">${project.project_status}</p>
                                 <button class="buttonModifier">Voir le projet</button>
                             </div>
                         </div>
                     `;
 
                     // Ajouter la cellule dans la ligne
-                    tr.appendChild(td);
+                    projectContainer.appendChild(card);
 
                     // Ajouter un événement de clic sur le bouton "Modifier"    
-                    td.querySelector('button').addEventListener('click', () => {
+                    card.querySelector('button').addEventListener('click', () => {
                         // Rediriger l'utilisateur vers la page de modification du projet
                         window.location.href = 'https://lab.padem.org/projet/edit_project.html?project_id=' + project.project_id;
                     });
 
+                    // Ajouter l'image en arrière-plan du card-body
+                    card.querySelector('#card-body').style.backgroundImage = `url(${project.background_image_link})`;
+                    card.querySelector('#card-body').style.backgroundSize = 'cover';
+                    card.querySelector('#card-body').style.backgroundPosition = 'center';
+                    card.querySelector('#card-body').style.backgroundRepeat = 'no-repeat';
+
+                    // incrémenter le stepper
                     stepper++;
                     if (stepper === 3) {
-                        // Ajouter la ligne à la liste des projets
-                        tr.style.display = 'flex';
-                        document.getElementById('projectsList_dashboard').appendChild(tr);
-                        tr = document.createElement('tr');
-                        td = document.createElement('td');
-                        tr.style.display = 'flex';
+                        card = document.createElement('div');
                         stepper = 0;
                     }
                 });
-                if (stepper < 3) {
-                    tr.style.display = 'flex';
-                    document.getElementById('projectsList_dashboard').appendChild(tr);
-                }
             })
     });
 </script>
