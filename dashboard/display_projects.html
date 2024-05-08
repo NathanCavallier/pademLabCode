@@ -1,4 +1,33 @@
 <body>
+    <!-- Afficher le menu de navigation -->
+    <div style="display: flex; justify-content: space-between;">
+        <form id="searchForm" style="margin: 10px; padding: 10px; border-radius: 25px; background-color: gray; color: white;">
+            <input type="text" id="searchInput" placeholder="Rechercher...">
+            <button type="submit" style="background-color: gray;">Rechercher</button>
+        </form>
+
+        <!-- Boutons de trie -->
+        <div style="display: flex; justify-content: flex-end, space-evenly;">
+            <button class="button" id="all" onclick="filter = null;"
+                style="margin: 10px; padding: 10px; border-radius: 25px; border-color: gray; background-color: white; color: gray; font-weight: bold; font-size: 12px;">
+                Tout</button>
+            <button class="button" id="en_cours" onclick="filter = 'En cours';"
+                style="margin: 10px; padding: 10px; border-radius: 25px; border-color: gray; background-color: white; color: gray; font-size: 12px;">
+                En cours</button>
+            <button class="button" id="en_attente" onclick="filter = 'Pas encore commencé';"
+                style="margin: 10px; padding: 10px; border-radius: 25px; border-color: gray; background-color: white; color: gray; font-size: 12px;">
+                En attente</button>
+            <button class="button" id="annule" onclick="filter = 'Annulé';"
+                style="margin: 10px; padding: 10px; border-radius: 25px; border-color: gray; background-color: white; color: gray; font-size: 12px;">
+                Annulés</button>
+            <button class="button" id="presque_termine" onclick="filter = 'Presque terminé';"
+                style="margin: 10px; padding: 10px; border-radius: 25px; border-color: gray; background-color: white; color: gray; font-size: 12px;">
+                Bientôt terminé</button>
+            <button class="button" id="termine" onclick="filter = 'Terminé';"
+                style="margin: 10px; padding: 10px; border-radius: 25px; border-color: gray; background-color: white; color: gray; font-size: 12px;">
+                Terminés</button>
+        </div>
+    </div>
     <!-- Afficher la liste des projets en cours -->
     <div id="projectContainer">
     </div>
@@ -6,7 +35,36 @@
 
 
 <script>
+    // Récupérer les informations de l'utilisateur connecté
+    var userId;
+    
+
     // Projet: Récurérer les données depuis la base de données et les afficher dans des cellules individuels cliquables pour les modifier
+    var filter = null;
+
+    function getButtonId(id) {
+        switch (id) {
+            case 'all':
+                filter = null;
+                break;
+            case 'en_cours':
+                filter = 'En cours';
+                break;
+            case 'termine':
+                filter = 'Terminé';
+                break;
+            case 'annule':
+                filter = 'Annulé';
+                break;
+            case 'en_attente':
+                filter = 'Pas encore commencé';
+                break;
+            case 'presque_termine':
+                filter = 'Presque terminé';
+                break;
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
         // Déclarer les variables
         var userId;
@@ -28,6 +86,7 @@
             'Annulé': 'gray',
             'Presque terminé': 'orange',
         };
+
         function getMonth(month) {
             switch (month) {
                 case 0:
@@ -56,6 +115,8 @@
                     return 'Décembre';
             }
         }
+
+        // Récupérer les informations de l'utilisateur connecté
 
         // Récupérer la liste des projets depuis la base de données (à partir de l'API (https://lab.padem.org/wp-json/mo/v1/getProjects))
         // les projets sont affichés dans des lignes individuelles avec un bouton cliquables pour les modifier
@@ -130,10 +191,11 @@
                     card.style.fontFamily = 'Arial'; // Change la police
                     card.style.color = 'gray'; // Change la couleur de la police
 
-                    card.innerHTML = `
+                    if (filter === null) {
+                        card.innerHTML = `
                         <div class="card">
                             <div id="card-body" class="card-body" style="backgroundColor: none; ">
-                                <div style="width: 40%; padding: 5px; background: lightgrey; border-radius: 10px">
+                                <div style="width: 40%; align-items: center;">
                                     <p style="font-weight: lighter; font-size: 10px">${start_date} - ${end_date}</p>
                                 </div>
                                 <div style="margin-top: 150px; margin-bottom: 10px"></div>
@@ -149,6 +211,34 @@
                             </div>
                         </div>
                     `;
+                    } else if (filter === status) {
+                        card.innerHTML = `
+                        <div class="card">
+                            <div id="card-body" class="card-body" style="backgroundColor: none; ">
+                                <div style="width: 40%; align-items: center;">
+                                    <p style="font-weight: lighter; font-size: 10px">${start_date} - ${end_date}</p>
+                                </div>
+                                <div style="margin-top: 150px; margin-bottom: 10px"></div>
+                                <a href='https://lab.padem.org/projet/edit_project.html?project_id=${project.project_id}' style="font-size: 20px; font-weight: bold; color: #29A6A7;">${project.project_title}</a>
+                                <div style="margin-top: 0px">
+                                    <p style="font-weight: bold;">${project.project_location}</p>
+                                </div>
+                                ${barreProgression.outerHTML}
+                            </div>
+                            <div class="card-footer">
+                                <p style="font-weight: lighter; color: ${colorStatusText[status]}; margin: 5px; border-radius: 5px; fontSize: 9px;" id="status_${project.project_id}">${parseInt(progression)}% - ${status}</p>
+                                <button class="buttonModifier">Voir le projet</button>
+                            </div>
+                        </div>
+                    `;
+                    } else {
+                        // Afficher un message disant qu'il n'y a pas de projet
+                        card.innerHTML = `
+                        <p style="color: gray;">
+                            Aucun projet trouvé pour le filtre sélectionné !
+                        </p>
+                    `;
+                    }
 
                     // Ajouter la cellule dans la ligne
                     projectContainer.appendChild(card);
