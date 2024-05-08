@@ -14,6 +14,48 @@
         var userRole = '';
         var buttonText = '';
 
+        var numberOfMembers = 0;
+        var nomberOfNewReports = 0;
+        var numberOfNewMessages = 0;
+        var numberOfNewNotifications = 0;
+
+        var colorStatusText = {
+            'Pas encore commencé': 'gray',
+            'Début': '#29A6A7',
+            'En cours': 'green',
+            'Terminé': 'red',
+            'En pause': 'blue',
+            'Annulé': 'gray',
+            'Presque terminé': 'orange',
+        };
+        function getMonth(month) {
+            switch (month) {
+                case 0:
+                    return 'Janvier';
+                case 1:
+                    return 'Février';
+                case 2:
+                    return 'Mars';
+                case 3:
+                    return 'Avril';
+                case 4:
+                    return 'Mai';
+                case 5:
+                    return 'Juin';
+                case 6:
+                    return 'Juillet';
+                case 7:
+                    return 'Août';
+                case 8:
+                    return 'Septembre';
+                case 9:
+                    return 'Octobre';
+                case 10:
+                    return 'Novembre';
+                case 11:
+                    return 'Décembre';
+            }
+        }
 
         // Récupérer la liste des projets depuis la base de données (à partir de l'API (https://lab.padem.org/wp-json/mo/v1/getProjects))
         // les projets sont affichés dans des lignes individuelles avec un bouton cliquables pour les modifier
@@ -27,20 +69,6 @@
             .then(data => {
                 console.log(data);
                 var stepper = 0;
-                var colorStatusText = {
-                    'En cours': 'lightgreen',
-                    'Terminé': 'lightred',
-                    'En pause': 'lightblue',
-                    'Annulé': 'lightgray',
-                    'Non commencé': 'lightorange',
-                };
-                var textColor = {
-                    'En cours': 'green',
-                    'Terminé': 'red',
-                    'En pause': 'blue',
-                    'Annulé': 'gray',
-                    'Non commencé': 'orange',
-                };
                 var projectContainer = document.getElementById('projectContainer');
                 // Parcourir la liste des projets
                 data.forEach(project => {
@@ -58,10 +86,32 @@
                     var dateFin = new Date(project.end_date);
                     var dateDuJour = new Date();
 
+                    var start_date = `${getMonth(dateDebut.getMonth())} ${dateDebut.getFullYear()}`;
+                    var end_date = `${dateFin.getDate()} ${getMonth(dateFin.getMonth())} ${dateFin.getFullYear()}`;
+
                     var dureeTotale = dateFin.getTime() - dateDebut.getTime();
                     var dureeEcoulee = dateDuJour.getTime() - dateDebut.getTime();
 
                     var progression = (dureeEcoulee / dureeTotale) * 100;
+
+                    function getStatus() {
+                        if (progression < 0) {
+                            progression = 0;
+                            return 'Pas encore commencé';
+                        } else if (progression < 25) {
+                            return 'Début';
+                        } else if (progression > 25 && progression < 50) {
+                            return 'En cours';
+                        } else if (progression > 50 && progression < 75) {
+                            return 'En cours';
+                        } else if (progression > 75 && progression < 100) {
+                            return 'Presque terminé';
+                        } else {
+                            return 'Terminé';
+                        }
+                    }
+
+                    var status = getStatus();
 
                     var barreProgression = document.createElement('progress');
                     barreProgression.id = 'progress_' + project.project_id;
@@ -71,6 +121,10 @@
                     barreProgression.style.height = '10px';
                     barreProgression.style.backgroundColor = 'none';
                     barreProgression.style.borderRadius = '10px';
+                    barreProgression.classList.add('animated');
+                    setTimeout(function () {
+                        barreProgression.classList.remove('animated');
+                    }, 1000);
 
                     card.style.fontSize = '14px'; // Change la taille de la police
                     card.style.fontFamily = 'Arial'; // Change la police
@@ -78,14 +132,19 @@
 
                     card.innerHTML = `
                         <div class="card">
-                            <div id="card-body" class="card-body" style="backgroundColor: none;">
+                            <div id="card-body" class="card-body" style="backgroundColor: none; ">
+                                <div style="width: 40%; padding: 5px; background: lightgrey; border-radius: 10px">
+                                    <p style="font-weight: lighter; font-size: 10px">${start_date} - ${end_date}</p>
+                                </div>
                                 <div style="margin-top: 150px; margin-bottom: 10px"></div>
-                                <h4 style="text-fon; font-weight: bold; color: #29A6A7;">${project.project_title}</h4>
-                                <p style="font-weight: bold;">${project.project_location}</p>
+                                <a href='https://lab.padem.org/projet/edit_project.html?project_id=${project.project_id}' style="font-size: 20px; font-weight: bold; color: #29A6A7;">${project.project_title}</a>
+                                <div style="margin-top: 0px">
+                                    <p style="font-weight: bold;">${project.project_location}</p>
+                                </div>
                                 ${barreProgression.outerHTML}
                             </div>
                             <div class="card-footer">
-                                <p style="font-weight: lighter; color: ${textColor[project.project_status]}; background: ${colorStatusText[project.project_status]}; margin: 5px; border-radius: 5px; fontSize: 9px;" id="status_${project.project_id}">${project.project_status}</p>
+                                <p style="font-weight: lighter; color: ${colorStatusText[status]}; margin: 5px; border-radius: 5px; fontSize: 9px;" id="status_${project.project_id}">${parseInt(progression)}% - ${status}</p>
                                 <button class="buttonModifier">Voir le projet</button>
                             </div>
                         </div>
@@ -101,10 +160,13 @@
                     });
 
                     // Ajouter l'image en arrière-plan du card-body
+                    /*
                     card.querySelector('#card-body').style.backgroundImage = `url(${project.background_image_link})`;
                     card.querySelector('#card-body').style.backgroundSize = 'cover';
                     card.querySelector('#card-body').style.backgroundPosition = 'center';
                     card.querySelector('#card-body').style.backgroundRepeat = 'no-repeat';
+                    card.querySelector('#card-body').style.borderRadius = '25px'; 
+                    */
 
                     // incrémenter le stepper
                     stepper++;

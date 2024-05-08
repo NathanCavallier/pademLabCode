@@ -74,7 +74,7 @@
                         </div>
                         <!-- Uploader une image de couverture -->
                         <div>
-                            <p>Uploader une image de couverture pour le projet:</p>
+                            <p>Ajoutez une image de couverture pour le projet:</p>
                             <input type="file" id="projectCover" name="projectCover" accept="image/*"><br><br>
                         </div>
                         <div style="margin-top: 10px; margin-bottom: 10px"></div>
@@ -111,8 +111,53 @@
                 padem_responsible_email: '',
                 project_referent: '',
                 project_referent_email: '',
-                project_description: JSON.stringify('')
+                project_description: JSON.stringify(''),
+                background_image_link: 'https://lab.padem.org/wp-content/uploads/default_background-white.png',
             };
+
+            // Récupérer l'image de couverture du projet
+            var projectCover = document.getElementById('projectCover').files[0];
+            var formData = new FormData();
+            formData.append('file', projectCover);
+            
+            // Envoi de l'image de couverture du projet
+            fetch('https://lab.padem.org/wp-json/mo/v1/uploadFile', {
+                method: 'POST',
+                body: formData,
+            }).then(response => {
+                if (!response.ok) {
+                    throw new Error('Erreur lors de la requête vers l\'API.');
+                }
+                return response.json();
+            })
+                .then(data => {
+                    console.log('Success:', data);
+                    dataInfosPreliminaires.background_image_link = data.url;
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+
+            // Récupérer le lien de l'image de couverture du projet
+            fetch('https://lab.padem.org/wp-json/mo/v1/getFileLink', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            }).then(response => {
+                if (!response.ok) {
+                    throw new Error('Erreur lors de la requête vers l\'API.');
+                }
+                return response.json();
+            })
+                .then(data => {
+                    console.log('Success:', data);
+                    dataInfosPreliminaires.background_image_link = data.url;
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+
             if (document.getElementById('projectForm') != null) {
                 dataInfosPreliminaires.project_title = document.getElementById('projectTitle').value;
                 dataInfosPreliminaires.project_type = document.getElementById('projectType').value;
