@@ -18,7 +18,8 @@
             <button class="button" id="annule" onclick="getButtonId('annule'); setFilter('Annulé');"
                 style="margin: 10px; padding: 10px; border-radius: 25px; border-color: gray; background-color: white; color: gray; font-size: 12px; width: fit-content;">
                 Annulés</button>
-            <button class="button" id="presque_termine" onclick="getButtonId('presque_termine'); setFilter('Presque terminé');"
+            <button class="button" id="presque_termine"
+                onclick="getButtonId('presque_termine'); setFilter('Presque terminé');"
                 style="margin: 10px; padding: 10px; border-radius: 25px; border-color: gray; background-color: white; color: gray; font-size: 12px; width: fit-content;">
                 Bientôt terminé</button>
             <button class="button" id="termine" onclick="getButtonId('termine'); setFilter('Terminé');"
@@ -33,17 +34,16 @@
 
 
 <script>
-    // Récupérer les informations de l'utilisateur connecté
-    var userId;
-    var userEmail = '';
-    var userFirstName = '';
-    var userLastName = '';
-    var userRole = [];
-    var buttonText = '';
+    // Récupérer le nombre d'utilisateurs inscrits sur le site via l'API (https://lab.padem.org/wp-json/mo/v1/getUserEmailAndState)
+    var numberOfMembers = 0;
+    var numberOfMembersOnline = 0;
+    var nomberOfNewReports = 0;
+    var numberOfNewMessages = 0;
+    var numberOfNewNotifications = 0;
 
-    function getUserInfos() {
-        // Récupérer les informations de l'utilisateur connecté
-        fetch('https://lab.padem.org/wp-json/mo/v1/getUserInfo', {
+    function getNumberOfMembers() {
+        // Récupérer le nombre d'utilisateurs inscrits sur le site
+        fetch('https://lab.padem.org/wp-json/mo/v1/getUserEmailAndState', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -52,27 +52,26 @@
             .then(response => response.json())
             .then(data => {
                 console.log(data);
-                userId = data.user_infos._id;
-                userEmail = data.user_infos.email;
-                userFirstName = data.user_infos.first_name;
-                userLastName = data.user_infos.last_name;
-                if(data.role.administrator) {
-                    userRole.push('Administrateur');
-                } else if(data.role['chef-de-projet']) {
-                    userRole.push('Chef de projet');
-                } else if(data.role.comptable) {
-                    userRole.push('Comptable');
-                } else if(data.role.consultant) {
-                    userRole.push('Consultant');
-                } else if(data.role.partenaire) {
-                    userRole.push('Partenaire');
-                } else if(data.role.subscriber) {
-                    userRole.push('Abonné');
+                numberOfMembers = data.length;
+                data.forEach(user => {
+                    if (user.user_status && numberOfMembers ) {
+                        numberOfMembersOnline++;
+                    }
+                });
+                // Récupérer le nombre d'utilisateurs actuellement connectés sur le site
+                if (numberOfMembersOnline === 1) {
+                    document.getElementById('numberOfMembersOnline').innerHTML = '0 en ligne';
+                    document.getElementById('iconOnlineUsers').style.display = 'none';
                 } else {
-                    userRole.push('Utilisateur');
+                    document.getElementById('numberOfMembersOnline').innerHTML = (numberOfMembersOnline - 1) + ' ';
+                    document.getElementById('iconOnlineUsers').style.display = 'block';
                 }
+                document.getElementById('numberOfMembers').innerHTML = numberOfMembers;
             })
     }
+
+    // Rafraîchir le nombre d'utilisateurs connectés toutes les 5 secondes
+    setInterval(getNumberOfMembers, 5000);
 
     // Projet: Récurérer les données depuis la base de données et les afficher dans des cellules individuels cliquables pour les modifier
     var filter = null;
@@ -227,8 +226,8 @@
             }
         }
 
-        // Récupérer les informations de l'utilisateur connecté
-        getUserInfos();
+        // Récupérer le nombre d'utilisateurs inscrits sur le site et le nombre d'utilisateurs actuellement connectés
+        getNumberOfMembers();
 
         // Récupérer la liste des projets depuis la base de données (à partir de l'API (https://lab.padem.org/wp-json/mo/v1/getProjects))
         // les projets sont affichés dans des lignes individuelles avec un bouton cliquables pour les modifier
@@ -284,7 +283,7 @@
                         }
                     }
 
-                    filter = setFilter(getStatus());
+                    filter = null;
 
                     var status = getStatus();
 
