@@ -1,30 +1,28 @@
 <body>
     <!-- Afficher le menu de navigation -->
     <div style="display: flex; justify-content: space-between;">
-        <form id="searchForm" style="margin: 10px; padding: 10px; border-radius: 25px; background-color: gray; color: white;">
-            <input type="text" id="searchInput" placeholder="Rechercher...">
-            <button type="submit" style="background-color: gray;">Rechercher</button>
-        </form>
+        <div style="margin-top: 10px; margin-bottom: 10px"></div>
 
         <!-- Boutons de trie -->
         <div style="display: flex; justify-content: flex-end, space-evenly;">
-            <button class="button" id="all" onclick="filter = null;"
-                style="margin: 10px; padding: 10px; border-radius: 25px; border-color: gray; background-color: white; color: gray; font-weight: bold; font-size: 12px;">
+            <button class="button" id="all" onclick="getButtonId('all'); setFilter(null);"
+                style="margin: 10px; padding: 10px; border-radius: 25px; border-color: gray; background-color: white; color: gray; font-size: 12px; width: fit-content;">
                 Tout</button>
-            <button class="button" id="en_cours" onclick="filter = 'En cours';"
-                style="margin: 10px; padding: 10px; border-radius: 25px; border-color: gray; background-color: white; color: gray; font-size: 12px;">
+            <button class="button" id="en_cours" onclick="getButtonId('en_cours'); setFilter('En cours');"
+                style="margin: 10px; padding: 10px; border-radius: 25px; border-color: gray; background-color: white; color: gray; font-size: 12px; width: fit-content;">
                 En cours</button>
-            <button class="button" id="en_attente" onclick="filter = 'Pas encore commencé';"
-                style="margin: 10px; padding: 10px; border-radius: 25px; border-color: gray; background-color: white; color: gray; font-size: 12px;">
+            <button class="button" id="en_attente"
+                onclick="getButtonId('en_attente'); setFilter('Pas encore commencé');"
+                style="margin: 10px; padding: 10px; border-radius: 25px; border-color: gray; background-color: white; color: gray; font-size: 12px; width: fit-content;">
                 En attente</button>
-            <button class="button" id="annule" onclick="filter = 'Annulé';"
-                style="margin: 10px; padding: 10px; border-radius: 25px; border-color: gray; background-color: white; color: gray; font-size: 12px;">
+            <button class="button" id="annule" onclick="getButtonId('annule'); setFilter('Annulé');"
+                style="margin: 10px; padding: 10px; border-radius: 25px; border-color: gray; background-color: white; color: gray; font-size: 12px; width: fit-content;">
                 Annulés</button>
-            <button class="button" id="presque_termine" onclick="filter = 'Presque terminé';"
-                style="margin: 10px; padding: 10px; border-radius: 25px; border-color: gray; background-color: white; color: gray; font-size: 12px;">
+            <button class="button" id="presque_termine" onclick="getButtonId('presque_termine'); setFilter('Presque terminé');"
+                style="margin: 10px; padding: 10px; border-radius: 25px; border-color: gray; background-color: white; color: gray; font-size: 12px; width: fit-content;">
                 Bientôt terminé</button>
-            <button class="button" id="termine" onclick="filter = 'Terminé';"
-                style="margin: 10px; padding: 10px; border-radius: 25px; border-color: gray; background-color: white; color: gray; font-size: 12px;">
+            <button class="button" id="termine" onclick="getButtonId('termine'); setFilter('Terminé');"
+                style="margin: 10px; padding: 10px; border-radius: 25px; border-color: gray; background-color: white; color: gray; font-size: 12px; width: fit-content;">
                 Terminés</button>
         </div>
     </div>
@@ -37,7 +35,44 @@
 <script>
     // Récupérer les informations de l'utilisateur connecté
     var userId;
-    
+    var userEmail = '';
+    var userFirstName = '';
+    var userLastName = '';
+    var userRole = [];
+    var buttonText = '';
+
+    function getUserInfos() {
+        // Récupérer les informations de l'utilisateur connecté
+        fetch('https://lab.padem.org/wp-json/mo/v1/getUserInfo', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                userId = data.user_infos._id;
+                userEmail = data.user_infos.email;
+                userFirstName = data.user_infos.first_name;
+                userLastName = data.user_infos.last_name;
+                if(data.role.administrator) {
+                    userRole.push('Administrateur');
+                } else if(data.role['chef-de-projet']) {
+                    userRole.push('Chef de projet');
+                } else if(data.role.comptable) {
+                    userRole.push('Comptable');
+                } else if(data.role.consultant) {
+                    userRole.push('Consultant');
+                } else if(data.role.partenaire) {
+                    userRole.push('Partenaire');
+                } else if(data.role.subscriber) {
+                    userRole.push('Abonné');
+                } else {
+                    userRole.push('Utilisateur');
+                }
+            })
+    }
 
     // Projet: Récurérer les données depuis la base de données et les afficher dans des cellules individuels cliquables pour les modifier
     var filter = null;
@@ -46,23 +81,99 @@
         switch (id) {
             case 'all':
                 filter = null;
+                document.getElementById('all').style.backgroundColor = 'gray';
+                document.getElementById('all').style.color = 'white';
+                document.getElementById('en_cours').style.backgroundColor = 'white';
+                document.getElementById('en_cours').style.color = 'gray';
+                document.getElementById('en_attente').style.backgroundColor = 'white';
+                document.getElementById('en_attente').style.color = 'gray';
+                document.getElementById('annule').style.backgroundColor = 'white';
+                document.getElementById('annule').style.color = 'gray';
+                document.getElementById('presque_termine').style.backgroundColor = 'white';
+                document.getElementById('presque_termine').style.color = 'gray';
+                document.getElementById('termine').style.backgroundColor = 'white';
+                document.getElementById('termine').style.color = 'gray';
                 break;
             case 'en_cours':
                 filter = 'En cours';
+                document.getElementById('all').style.backgroundColor = 'white';
+                document.getElementById('all').style.color = 'gray';
+                document.getElementById('en_cours').style.backgroundColor = 'gray';
+                document.getElementById('en_cours').style.color = 'white';
+                document.getElementById('en_attente').style.backgroundColor = 'white';
+                document.getElementById('en_attente').style.color = 'gray';
+                document.getElementById('annule').style.backgroundColor = 'white';
+                document.getElementById('annule').style.color = 'gray';
+                document.getElementById('presque_termine').style.backgroundColor = 'white';
+                document.getElementById('presque_termine').style.color = 'gray';
+                document.getElementById('termine').style.backgroundColor = 'white';
+                document.getElementById('termine').style.color = 'gray';
                 break;
             case 'termine':
                 filter = 'Terminé';
+                document.getElementById('all').style.backgroundColor = 'white';
+                document.getElementById('all').style.color = 'gray';
+                document.getElementById('en_cours').style.backgroundColor = 'white';
+                document.getElementById('en_cours').style.color = 'gray';
+                document.getElementById('en_attente').style.backgroundColor = 'white';
+                document.getElementById('en_attente').style.color = 'gray';
+                document.getElementById('annule').style.backgroundColor = 'white';
+                document.getElementById('annule').style.color = 'gray';
+                document.getElementById('presque_termine').style.backgroundColor = 'white';
+                document.getElementById('presque_termine').style.color = 'gray';
+                document.getElementById('termine').style.backgroundColor = 'gray';
+                document.getElementById('termine').style.color = 'white';
                 break;
             case 'annule':
                 filter = 'Annulé';
+                document.getElementById('all').style.backgroundColor = 'white';
+                document.getElementById('all').style.color = 'gray';
+                document.getElementById('en_cours').style.backgroundColor = 'white';
+                document.getElementById('en_cours').style.color = 'gray';
+                document.getElementById('en_attente').style.backgroundColor = 'white';
+                document.getElementById('en_attente').style.color = 'gray';
+                document.getElementById('annule').style.backgroundColor = 'gray';
+                document.getElementById('annule').style.color = 'white';
+                document.getElementById('presque_termine').style.backgroundColor = 'white';
+                document.getElementById('presque_termine').style.color = 'gray';
+                document.getElementById('termine').style.backgroundColor = 'white';
+                document.getElementById('termine').style.color = 'gray';
                 break;
             case 'en_attente':
                 filter = 'Pas encore commencé';
+                document.getElementById('all').style.backgroundColor = 'white';
+                document.getElementById('all').style.color = 'gray';
+                document.getElementById('en_cours').style.backgroundColor = 'white';
+                document.getElementById('en_cours').style.color = 'gray';
+                document.getElementById('en_attente').style.backgroundColor = 'gray';
+                document.getElementById('en_attente').style.color = 'white';
+                document.getElementById('annule').style.backgroundColor = 'white';
+                document.getElementById('annule').style.color = 'gray';
+                document.getElementById('presque_termine').style.backgroundColor = 'white';
+                document.getElementById('presque_termine').style.color = 'gray';
+                document.getElementById('termine').style.backgroundColor = 'white';
+                document.getElementById('termine').style.color = 'gray';
                 break;
             case 'presque_termine':
                 filter = 'Presque terminé';
+                document.getElementById('all').style.backgroundColor = 'white';
+                document.getElementById('all').style.color = 'gray';
+                document.getElementById('en_cours').style.backgroundColor = 'white';
+                document.getElementById('en_cours').style.color = 'gray';
+                document.getElementById('en_attente').style.backgroundColor = 'white';
+                document.getElementById('en_attente').style.color = 'gray';
+                document.getElementById('annule').style.backgroundColor = 'white';
+                document.getElementById('annule').style.color = 'gray';
+                document.getElementById('presque_termine').style.backgroundColor = 'gray';
+                document.getElementById('presque_termine').style.color = 'white';
+                document.getElementById('termine').style.backgroundColor = 'white';
+                document.getElementById('termine').style.color = 'gray';
                 break;
         }
+    }
+
+    function setFilter(status) {
+        filter = status;
     }
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -117,6 +228,7 @@
         }
 
         // Récupérer les informations de l'utilisateur connecté
+        getUserInfos();
 
         // Récupérer la liste des projets depuis la base de données (à partir de l'API (https://lab.padem.org/wp-json/mo/v1/getProjects))
         // les projets sont affichés dans des lignes individuelles avec un bouton cliquables pour les modifier
@@ -171,6 +283,8 @@
                             return 'Terminé';
                         }
                     }
+
+                    filter = setFilter(getStatus());
 
                     var status = getStatus();
 
@@ -234,7 +348,7 @@
                     } else {
                         // Afficher un message disant qu'il n'y a pas de projet
                         card.innerHTML = `
-                        <p style="color: gray;">
+                        <p style="color: gray; background: none">
                             Aucun projet trouvé pour le filtre sélectionné !
                         </p>
                     `;
@@ -265,6 +379,7 @@
                         stepper = 0;
                     }
                 });
+
             })
     });
 </script>
