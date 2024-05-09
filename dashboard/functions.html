@@ -1,10 +1,9 @@
 <!-- Formulaire de recherche -->
 <form id="searchForm"
     style="margin: 2px; padding: 2px; border-radius: 25px; background-color: transparent; color: gray;">
-    <input type="text" id="searchInput" placeholder="Rechercher...">
-    <button type="submit" style="background-color: transparent; color: gray;" title="Rechercher">
-        <img src="https://lab.padem.org/wp-content/uploads/search.png" alt="Icone utilisateurs"
-            >
+    <input type="text" id="searchInput" placeholder="......">
+    <button type="submit" style="background-color: transparent; color: gray; font-size: smaller;">
+        Rechercher
     </button>
 </form>
 
@@ -16,7 +15,7 @@
         <!-- Afficher une petite icone à côté du nombre d'utilisateur -->
         <div style="margin-top: 5px; padding: 5px;"></div>
         <img src="https://lab.padem.org/wp-content/uploads/online.png" alt="Icone utilisateurs"
-            style="width: 20px; height: 20px;" id="iconOnlineUsers">
+            style="width: 20px; height: 20px;" id="iconOnlineUsers"/>
     </div>
 </div>
 
@@ -39,7 +38,7 @@
         var buttonText = '';
 
         // Récupérer les informations de l'utilisateur connecté
-        fetch('https://lab.padem.org/wp-json/mo/v1/getUserInfo', {
+        fetch('https://lab.padem.org/unserialize_usermeta.php', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -48,10 +47,10 @@
             .then(response => response.json())
             .then(data => {
                 console.log(data);
-                userId = data.user_infos._id;
-                userEmail = data.user_infos.email;
-                userFirstName = data.user_infos.first_name;
-                userLastName = data.user_infos.last_name;
+                userId = data['user_infos']._id;
+                userEmail = data['user_infos'].email;
+                userFirstName = data['user_infos'].first_name;
+                userLastName = data['user_infos'].last_name;
                 if (data.role.administrator) {
                     userRole.push('Administrateur');
                 } else if (data.role['chef-de-projet']) {
@@ -68,11 +67,14 @@
                     userRole.push('Utilisateur');
                 }
             })
-        document.getElementById('userFirstName').innerHTML = userFirstName;
-        document.getElementById('userLastName').innerHTML = userLastName;
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        document.getElementById('userFirstName').textContent = userFirstName;
+        document.getElementById('userLastName').textContent = userLastName;
         userRole.forEach(role => {
             var p = document.createElement('p');
-            p.innerHTML = role;
+            p.textContent = role;
             document.getElementById('userRole').appendChild(p);
             p.style.fontSize = '10px';
             p.style.color = 'gray';

@@ -40,6 +40,7 @@
     var nomberOfNewReports = 0;
     var numberOfNewMessages = 0;
     var numberOfNewNotifications = 0;
+    var connectedUsers = {};
 
     function getNumberOfMembers() {
         // Récupérer le nombre d'utilisateurs inscrits sur le site
@@ -51,20 +52,21 @@
         })
             .then(response => response.json())
             .then(data => {
-                console.log(data);
                 numberOfMembers = data.length;
                 data.forEach(user => {
-                    if (user.user_status && numberOfMembers ) {
-                        numberOfMembersOnline++;
+                    // Faire en sorte que le nombre d'utilisateurs connectés n'ogmente pas si l'utilisateur est déjà connecté
+                    if (!connectedUsers[user.user_email]) {
+                        connectedUsers[user.user_email] = 1;
+                        if (user.user_status === 1) {
+                            numberOfMembersOnline++;
+                        }
                     }
                 });
                 // Récupérer le nombre d'utilisateurs actuellement connectés sur le site
-                if (numberOfMembersOnline === 1) {
-                    document.getElementById('numberOfMembersOnline').innerHTML = '0 en ligne';
-                    document.getElementById('iconOnlineUsers').style.display = 'none';
+                if (numberOfMembersOnline === 1 || numberOfMembersOnline === 0) {
+                    document.getElementById('numberOfMembersOnline').innerHTML = '0 ';
                 } else {
                     document.getElementById('numberOfMembersOnline').innerHTML = (numberOfMembersOnline - 1) + ' ';
-                    document.getElementById('iconOnlineUsers').style.display = 'block';
                 }
                 document.getElementById('numberOfMembers').innerHTML = numberOfMembers;
             })
@@ -239,7 +241,6 @@
         })
             .then(response => response.json())
             .then(data => {
-                console.log(data);
                 var stepper = 0;
                 var projectContainer = document.getElementById('projectContainer');
                 // Parcourir la liste des projets
