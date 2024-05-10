@@ -428,17 +428,19 @@
 
                     // Vérifier si l'adresse e-mail de l'utilisateur connecté est dans la liste des participants
                     var participants = {};
-                    participants = project.users_list;
                     var isUserInProject = false;
-                    participants.forEach(participant => {
-                        if (participant.email === userEmail) {
-                            isUserInProject = true;
-                            isUserInOneProject = true;
-                        }
-                    });
-
-                    // Obtenir le nombre de participants dans le projet
-                    var numberOfParticipants = participants.length;
+                    var numberOfParticipants = 0;
+                    if (project.users_list.length >= 1) {
+                        participants = project.users_list;
+                        participants.forEach(participant => {
+                            if (participant.email === userEmail) {
+                                isUserInProject = true;
+                                isUserInOneProject = true;
+                            }
+                        });
+                        // Obtenir le nombre de participants dans le projet
+                        numberOfParticipants = participants.length;
+                    }
 
                     // Afficher les projets en fonction du filtre
                     if (isUserInProject) {
@@ -450,8 +452,8 @@
                                                 <p style="font-weight: lighter; font-size: 10px">${formattedStartDate} - ${formattedEndDate}</p>
                                             </div>
                                             <div>
-                                                <p style="font-weight: bold;"><imgsrc="https://lab.padem.org/wp-content/uploads/user_2.png" alt="Icone utilisateurs"
-                                                    style="width: 20px; height: 20px;" id="iconOnlineUsers" /> ${numberOfParticipants}</p>
+                                                <p style="font-weight: lighter; font-size: 10px; color: gray;""><imgsrc="https://lab.padem.org/wp-content/uploads/user_2.png" alt="Icone utilisateurs"
+                                                    style="width: 20px; height: 20px; id="iconUsers" /> ${numberOfParticipants}</p>
                                             </div>
                                         <div style="width: 40%; align-items: center;">
                                             <p style="font-weight: lighter; font-size: 10px">${formattedStartDate} - ${formattedEndDate}</p>
@@ -482,6 +484,10 @@
                             card.querySelector('.buttonModifier').addEventListener('click', () => {
                                 window.location.href = `https://lab.padem.org/projet/view_project.html?project_id=${project.project_id}`;
                             });
+                        } else if (userRole.includes('Comptable')) {
+                            card.querySelector('.buttonModifier').addEventListener('click', () => {
+                                window.location.href = `https://lab.padem.org/projet/view_project.html?project_id=${project.project_id}`;
+                            });
                         } else if (userRole.includes('Partenaire')) {
                             card.querySelector('.buttonModifier').addEventListener('click', () => {
                                 window.location.href = `https://lab.padem.org/projet/view_project.html?project_id=${project.project_id}`;
@@ -507,14 +513,31 @@
                             card = document.createElement('div');
                             stepper = 0;
                         }
+
+                        // Vérifier si le projet à afficher est existe déjà
+                        if (projectContainer.querySelector('div')) {
+                            // Supprimer le message disant qu'il n'y a pas de projet
+                            projectContainer.querySelector('div').remove();
+                        }
                     }
                 });
                 if (!isUserInOneProject) {
+                    // Vérifier si le message existe déjà
+                    if (projectContainer.querySelector('div')) {
+                        // Supprimer le message disant qu'il n'y a pas de projet
+                        projectContainer.querySelector('div').remove();
+                    }
                     // Afficher un message disant qu'il n'y a pas de projet
+                    var card = document.createElement('div');
                     card.innerHTML = `
-                        <p style="color: gray; background: none">
-                            Vous n'avez pas de projet pour le moment !
-                        </p>`;
+                        <div  style="display: flex;">
+                            <img src="https://lab.padem.org/wp-content/uploads/infos-1.png" alt="Icone utilisateurs"
+                                style="width: 20px; height: 20px; margin-top: 5px;" id="iconInfos" />
+                            <div style="margin-left: 5px; margin-right: 5px;"></div>
+                            <p style="color: gray; background: none">
+                                Vous n'avez pas de projet pour le moment !
+                            </p>
+                        </div>`;
                     projectContainer.appendChild(card);
                 }
             })
