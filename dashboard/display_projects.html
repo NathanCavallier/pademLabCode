@@ -115,9 +115,6 @@
                 } else {
                     userRole.push('Utilisateur');
                 }
-                document.getElementById('userFirstName').textContent = userFirstName;
-                document.getElementById('userLastName').textContent = userLastName;
-                document.getElementById('userRole').textContent = userRole.join(', ');
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -273,9 +270,6 @@
 
         // Récupérer le nombre d'utilisateurs inscrits sur le site et le nombre d'utilisateurs actuellement connectés
         getNumberOfMembers();
-
-        // Récupérer les informations de l'utilisateur connecté
-        getConnectedUserInfos();
 
         // Récupérer la liste des projets depuis la base de données (à partir de l'API (https://lab.padem.org/wp-json/mo/v1/getProjects))
         // les projets sont affichés dans des cartes individuelles

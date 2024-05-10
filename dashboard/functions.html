@@ -23,19 +23,20 @@
 <div>
     <div style=" margin: 5px; padding: 5px;"></div>
     <div style="display: flex;">
+        <div style=" margin-right: 2px; padding-right: 2px;"></div>
         <p style="font-size: 12px; color: gray; font-weight: bold;" id="userFirstName"></p>
-        <div style=" margin-right: 5px; padding-right: 5px;"></div>
+        <div style=" margin-right: 2px; padding-right: 2px;"></div>
         <p style="font-size: 12px; color: gray; font-weight: bold;" id="userLastName"></p>
-        <div style=" margin-right: 5px; padding-right: 5px;"></div>
+        <div style=" margin-right: 3px; padding-right: 3px;"></div>
         <p style="font-size: 12px; color: gray; font-weight: lighter;"> - </p>
-        <div style=" margin-right: 5px; padding-right: 5px;"></div>
-        <p style="font-size: 12px; color: gray; font-weight: lighter;" id="userRole"></p>
+        <div style=" margin-right: 3px; padding-right: 3px;"></div>
+        <p style="font-size: 12px; color: #29A6A7; font-weight: lighter;" id="userRole"></p>
+        <div style=" margin-right: 3px; padding-right: 3px;"></div>
     </div>
 </div>
 
 <script>
-    document.getElementById('searchForm').addEventListener('submit', function (e) {
-        e.preventDefault();
+    document.addEventListener('DOMContentLoaded', () => {
         // Récupérer les informations de l'utilisateur connecté
         var userId;
         var userEmail = '';
