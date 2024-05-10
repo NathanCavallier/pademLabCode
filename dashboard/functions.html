@@ -15,17 +15,24 @@
         <!-- Afficher une petite icone à côté du nombre d'utilisateur -->
         <div style="margin-top: 5px; padding: 5px;"></div>
         <img src="https://lab.padem.org/wp-content/uploads/online.png" alt="Icone utilisateurs"
-            style="width: 20px; height: 20px;" id="iconOnlineUsers"/>
+            style="width: 20px; height: 20px;" id="iconOnlineUsers" />
     </div>
 </div>
 
 <!-- Afficher le nom et le rôle de l'utilisateur connecté -->
-<div style="display: flex;">
-    <p style="font-size: 12px; color: gray; font-weight: bold;" id="userFirstName"></p>
-    <p style="font-size: 12px; color: gray; font-weight: bold;" id="userLastName"></p>
-    -
-    <p style="font-size: 12px; color: gray; font-weight: lighter;" id="userRole"></p>
+<div>
+    <div style=" margin: 5px; padding: 5px;"></div>
+    <div style="display: flex;">
+        <p style="font-size: 12px; color: gray; font-weight: bold;" id="userFirstName"></p>
+        <div style=" margin-right: 5px; padding-right: 5px;"></div>
+        <p style="font-size: 12px; color: gray; font-weight: bold;" id="userLastName"></p>
+        <div style=" margin-right: 5px; padding-right: 5px;"></div>
+        <p style="font-size: 12px; color: gray; font-weight: lighter;"> - </p>
+        <div style=" margin-right: 5px; padding-right: 5px;"></div>
+        <p style="font-size: 12px; color: gray; font-weight: lighter;" id="userRole"></p>
+    </div>
 </div>
+
 <script>
     document.getElementById('searchForm').addEventListener('submit', function (e) {
         e.preventDefault();
@@ -47,10 +54,10 @@
             .then(response => response.json())
             .then(data => {
                 console.log(data);
-                userId = data['user_infos']._id;
-                userEmail = data['user_infos'].email;
-                userFirstName = data['user_infos'].first_name;
-                userLastName = data['user_infos'].last_name;
+                userId = data.user_infos._id;
+                userEmail = data.user_infos.email;
+                userFirstName = data.user_infos.first_name;
+                userLastName = data.user_infos.last_name;
                 if (data.role.administrator) {
                     userRole.push('Administrateur');
                 } else if (data.role['chef-de-projet']) {
@@ -66,20 +73,12 @@
                 } else {
                     userRole.push('Utilisateur');
                 }
+                document.getElementById('userFirstName').textContent = userFirstName;
+                document.getElementById('userLastName').textContent = userLastName;
+                document.getElementById('userRole').textContent = userRole.join(', ');
             })
             .catch(error => {
                 console.error('Error:', error);
             });
-        document.getElementById('userFirstName').textContent = userFirstName;
-        document.getElementById('userLastName').textContent = userLastName;
-        userRole.forEach(role => {
-            var p = document.createElement('p');
-            p.textContent = role;
-            document.getElementById('userRole').appendChild(p);
-            p.style.fontSize = '10px';
-            p.style.color = 'gray';
-            p.style.fontWeight = 'lighter';
-            p = document.createElement('p');
-        });
     });
 </script>

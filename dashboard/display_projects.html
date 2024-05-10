@@ -42,6 +42,15 @@
     var numberOfNewNotifications = 0;
     var connectedUsers = {};
 
+    // Récupérer les informations de l'utilisateur connecté
+    var userId;
+    var userEmail = '';
+    var userFirstName = '';
+    var userLastName = '';
+    var userRole = [];
+    var buttonText = '';
+
+    // Récupérer le nombre d'utilisateurs inscrits sur le site
     function getNumberOfMembers() {
         // Récupérer le nombre d'utilisateurs inscrits sur le site
         fetch('https://lab.padem.org/wp-json/mo/v1/getUserEmailAndState', {
@@ -75,6 +84,45 @@
     // Rafraîchir le nombre d'utilisateurs connectés toutes les 5 secondes
     setInterval(getNumberOfMembers, 5000);
 
+    // Récupérer les informations de l'utilisateur connecté
+    function getConnectedUserInfos() {
+        // Récupérer les informations de l'utilisateur connecté
+        fetch('https://lab.padem.org/unserialize_usermeta.php', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                userId = data.user_infos._id;
+                userEmail = data.user_infos.email;
+                userFirstName = data.user_infos.first_name;
+                userLastName = data.user_infos.last_name;
+                if (data.role.administrator) {
+                    userRole.push('Administrateur');
+                } else if (data.role['chef-de-projet']) {
+                    userRole.push('Chef de projet');
+                } else if (data.role.comptable) {
+                    userRole.push('Comptable');
+                } else if (data.role.consultant) {
+                    userRole.push('Consultant');
+                } else if (data.role.partenaire) {
+                    userRole.push('Partenaire');
+                } else if (data.role.subscriber) {
+                    userRole.push('Abonné');
+                } else {
+                    userRole.push('Utilisateur');
+                }
+                document.getElementById('userFirstName').textContent = userFirstName;
+                document.getElementById('userLastName').textContent = userLastName;
+                document.getElementById('userRole').textContent = userRole.join(', ');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
     // Projet: Récurérer les données depuis la base de données et les afficher dans des cellules individuels cliquables pour les modifier
     var filter = null;
 
@@ -179,11 +227,6 @@
 
     document.addEventListener('DOMContentLoaded', () => {
         // Déclarer les variables
-        var userId;
-        var userEmail = '';
-        var userRole = '';
-        var buttonText = '';
-
         var numberOfMembers = 0;
         var nomberOfNewReports = 0;
         var numberOfNewMessages = 0;
@@ -201,29 +244,29 @@
 
         function getMonth(month) {
             switch (month) {
-                case 0:
-                    return 'Janvier';
                 case 1:
-                    return 'Février';
+                    return 'Janvier';
                 case 2:
-                    return 'Mars';
+                    return 'Février';
                 case 3:
-                    return 'Avril';
+                    return 'Mars';
                 case 4:
-                    return 'Mai';
+                    return 'Avril';
                 case 5:
-                    return 'Juin';
+                    return 'Mai';
                 case 6:
-                    return 'Juillet';
+                    return 'Juin';
                 case 7:
-                    return 'Août';
+                    return 'Juillet';
                 case 8:
-                    return 'Septembre';
+                    return 'Août';
                 case 9:
-                    return 'Octobre';
+                    return 'Septembre';
                 case 10:
-                    return 'Novembre';
+                    return 'Octobre';
                 case 11:
+                    return 'Novembre';
+                case 12:
                     return 'Décembre';
             }
         }
@@ -231,8 +274,11 @@
         // Récupérer le nombre d'utilisateurs inscrits sur le site et le nombre d'utilisateurs actuellement connectés
         getNumberOfMembers();
 
+        // Récupérer les informations de l'utilisateur connecté
+        getConnectedUserInfos();
+
         // Récupérer la liste des projets depuis la base de données (à partir de l'API (https://lab.padem.org/wp-json/mo/v1/getProjects))
-        // les projets sont affichés dans des lignes individuelles avec un bouton cliquables pour les modifier
+        // les projets sont affichés dans des cartes individuelles
         fetch('https://lab.padem.org/wp-json/mo/v1/getProjects', {
             method: 'GET',
             headers: {
@@ -253,17 +299,35 @@
                     card.style.height = 'auto';
                     card.style.width = 'auto';
                     card.style.margin = '10px';
-                    card.style.border = '1px ${colorStatusText[project.project_status]}';
+                    card.style.border = '1px' + `${colorStatusText[status]}` + 'solid';
 
-                    var dateDebut = new Date(project.start_date);
-                    var dateFin = new Date(project.end_date);
+                    var startDate = new Date(project.start_date);
+                    var endDate = new Date(project.end_date);
                     var dateDuJour = new Date();
 
-                    var start_date = `${getMonth(dateDebut.getMonth())} ${dateDebut.getFullYear()}`;
-                    var end_date = `${dateFin.getDate()} ${getMonth(dateFin.getMonth())} ${dateFin.getFullYear()}`;
+                    var startDay = startDate.getDate();
+                    var startMonth = startDate.getMonth() + 1; // Les mois sont indexés à partir de 0 en JavaScript
+                    var startYear = startDate.getFullYear();
 
-                    var dureeTotale = dateFin.getTime() - dateDebut.getTime();
-                    var dureeEcoulee = dateDuJour.getTime() - dateDebut.getTime();
+                    var endDay = endDate.getDate();
+                    var endMonth = endDate.getMonth() + 1;
+                    var endYear = endDate.getFullYear();
+
+                    // Si le jour ou le mois est inférieur à 10, ajoutez un zéro devant
+                    startDay = startDay < 10 ? '0' + startDay : startDay;
+                    endDay = endDay < 10 ? '0' + endDay : endDay;
+
+                    var formattedStartDate = startDay + ' ' + getMonth(startMonth) + ' ' + startYear;
+                    var formattedEndDate = endDay + ' ' + getMonth(endMonth) + ' ' + endYear;
+
+                    if (startMonth < 10) {
+                        startMonth = '0' + startMonth;
+                    } else {
+                        startMonth = startMonth;
+                    }
+
+                    var dureeTotale = endDate.getTime() - startDate.getTime();
+                    var dureeEcoulee = dateDuJour.getTime() - startDate.getTime();
 
                     var progression = (dureeEcoulee / dureeTotale) * 100;
 
@@ -310,7 +374,7 @@
                         <div class="card">
                             <div id="card-body" class="card-body" style="backgroundColor: none; ">
                                 <div style="width: 40%; align-items: center;">
-                                    <p style="font-weight: lighter; font-size: 10px">${start_date} - ${end_date}</p>
+                                    <p style="font-weight: lighter; font-size: 10px">${formattedStartDate} - ${formattedEndDate}</p>
                                 </div>
                                 <div style="margin-top: 150px; margin-bottom: 10px"></div>
                                 <a href='https://lab.padem.org/projet/edit_project.html?project_id=${project.project_id}' style="font-size: 20px; font-weight: bold; color: #29A6A7;">${project.project_title}</a>
