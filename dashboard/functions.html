@@ -1,8 +1,8 @@
 <!-- Formulaire de recherche -->
 <form id="searchForm"
-    style="margin: 2px; padding: 2px; border-radius: 25px; background-color: transparent; color: gray;">
-    <input type="text" id="searchInput" placeholder="......">
-    <button type="submit" style="background-color: transparent; color: gray; font-size: smaller;">
+    style="margin: 2px; padding: 2px; background-color: transparent; color: gray;">
+    <input type="text" id="searchInput" style="border-radius: 25px; height: 25px;" placeholder="......">
+    <button type="submit" style="background-color: transparent; color: gray; font-size: 12px;">
         Rechercher
     </button>
 </form>
@@ -19,7 +19,7 @@
     </div>
 </div>
 
-<!-- Afficher le nom et le rôle de l'utilisateur connecté -->
+<!-- Afficher le nom de l'utilisateur connecté -->
 <div>
     <div style=" margin: 5px; padding: 5px;"></div>
     <div style="display: flex;">
@@ -28,11 +28,13 @@
         <div style=" margin-right: 2px; padding-right: 2px;"></div>
         <p style="font-size: 12px; color: gray; font-weight: bold;" id="userLastName"></p>
         <div style=" margin-right: 3px; padding-right: 3px;"></div>
-        <p style="font-size: 12px; color: gray; font-weight: lighter;"> - </p>
-        <div style=" margin-right: 3px; padding-right: 3px;"></div>
-        <p style="font-size: 12px; color: #29A6A7; font-weight: lighter;" id="userRole"></p>
-        <div style=" margin-right: 3px; padding-right: 3px;"></div>
     </div>
+</div>
+
+<!-- Afficher le rôle de l'utilisateur connecté -->
+<div style=" display: flex; width: fit-content;">
+    <p style="width: fit-content; font-size: 12px; color: lightgray; font-weight: lighter; margin: 5px; padding: 5px; border-radius: 20px;">Rôle:</p>
+    <p style="width: fit-content;; font-size: 12px; color: white; font-weight: lighter; background-color: #29A6A7; margin: 5px; padding: 5px; border-radius: 20px;" id="userRole"></p>
 </div>
 
 <script>

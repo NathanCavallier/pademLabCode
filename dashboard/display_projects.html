@@ -6,24 +6,24 @@
         <!-- Boutons de trie -->
         <div style="display: flex; justify-content: flex-end, space-evenly;">
             <button class="button" id="all" onclick="getButtonId('all'); setFilter(null);"
-                style="margin: 10px; padding: 10px; border-radius: 25px; border-color: gray; background-color: white; color: gray; font-size: 12px; width: fit-content;">
+                style="margin: 10px; padding: 10px; border-radius: 15px; border-color: gray; background-color: white; color: gray; font-size: 12px; width: fit-content;">
                 Tout</button>
             <button class="button" id="en_cours" onclick="getButtonId('en_cours'); setFilter('En cours');"
-                style="margin: 10px; padding: 10px; border-radius: 25px; border-color: gray; background-color: white; color: gray; font-size: 12px; width: fit-content;">
+                style="margin: 10px; padding: 10px; border-radius: 15px; border-color: gray; background-color: white; color: gray; font-size: 12px; width: fit-content;">
                 En cours</button>
             <button class="button" id="en_attente"
                 onclick="getButtonId('en_attente'); setFilter('Pas encore commencé');"
-                style="margin: 10px; padding: 10px; border-radius: 25px; border-color: gray; background-color: white; color: gray; font-size: 12px; width: fit-content;">
+                style="margin: 10px; padding: 10px; border-radius: 15px; border-color: gray; background-color: white; color: gray; font-size: 12px; width: fit-content;">
                 En attente</button>
             <button class="button" id="annule" onclick="getButtonId('annule'); setFilter('Annulé');"
-                style="margin: 10px; padding: 10px; border-radius: 25px; border-color: gray; background-color: white; color: gray; font-size: 12px; width: fit-content;">
+                style="margin: 10px; padding: 10px; border-radius: 15px; border-color: gray; background-color: white; color: gray; font-size: 12px; width: fit-content;">
                 Annulés</button>
             <button class="button" id="presque_termine"
                 onclick="getButtonId('presque_termine'); setFilter('Presque terminé');"
-                style="margin: 10px; padding: 10px; border-radius: 25px; border-color: gray; background-color: white; color: gray; font-size: 12px; width: fit-content;">
+                style="margin: 10px; padding: 10px; border-radius: 15px; border-color: gray; background-color: white; color: gray; font-size: 12px; width: fit-content;">
                 Bientôt terminé</button>
             <button class="button" id="termine" onclick="getButtonId('termine'); setFilter('Terminé');"
-                style="margin: 10px; padding: 10px; border-radius: 25px; border-color: gray; background-color: white; color: gray; font-size: 12px; width: fit-content;">
+                style="margin: 10px; padding: 10px; border-radius: 15px; border-color: gray; background-color: white; color: gray; font-size: 12px; width: fit-content;">
                 Terminés</button>
         </div>
     </div>
@@ -282,6 +282,7 @@
             .then(response => response.json())
             .then(data => {
                 var stepper = 0;
+                var isUserInOneProject = false;
                 var projectContainer = document.getElementById('projectContainer');
                 // Parcourir la liste des projets
                 data.forEach(project => {
@@ -363,81 +364,84 @@
                     card.style.fontFamily = 'Arial'; // Change la police
                     card.style.color = 'gray'; // Change la couleur de la police
 
-                    if (filter === null) {
-                        card.innerHTML = `
-                        <div class="card">
-                            <div id="card-body" class="card-body" style="backgroundColor: none; ">
-                                <div style="width: 40%; align-items: center;">
-                                    <p style="font-weight: lighter; font-size: 10px">${formattedStartDate} - ${formattedEndDate}</p>
-                                </div>
-                                <div style="margin-top: 150px; margin-bottom: 10px"></div>
-                                <a href='https://lab.padem.org/projet/edit_project.html?project_id=${project.project_id}' style="font-size: 20px; font-weight: bold; color: #29A6A7;">${project.project_title}</a>
-                                <div style="margin-top: 0px">
-                                    <p style="font-weight: bold;">${project.project_location}</p>
-                                </div>
-                                ${barreProgression.outerHTML}
-                            </div>
-                            <div class="card-footer">
-                                <p style="font-weight: lighter; color: ${colorStatusText[status]}; margin: 5px; border-radius: 5px; fontSize: 9px;" id="status_${project.project_id}">${parseInt(progression)}% - ${status}</p>
-                                <button class="buttonModifier">Voir le projet</button>
-                            </div>
-                        </div>
-                    `;
-                    } else if (filter === status) {
-                        card.innerHTML = `
-                        <div class="card">
-                            <div id="card-body" class="card-body" style="backgroundColor: none; ">
-                                <div style="width: 40%; align-items: center;">
-                                    <p style="font-weight: lighter; font-size: 10px">${start_date} - ${end_date}</p>
-                                </div>
-                                <div style="margin-top: 150px; margin-bottom: 10px"></div>
-                                <a href='https://lab.padem.org/projet/edit_project.html?project_id=${project.project_id}' style="font-size: 20px; font-weight: bold; color: #29A6A7;">${project.project_title}</a>
-                                <div style="margin-top: 0px">
-                                    <p style="font-weight: bold;">${project.project_location}</p>
-                                </div>
-                                ${barreProgression.outerHTML}
-                            </div>
-                            <div class="card-footer">
-                                <p style="font-weight: lighter; color: ${colorStatusText[status]}; margin: 5px; border-radius: 5px; fontSize: 9px;" id="status_${project.project_id}">${parseInt(progression)}% - ${status}</p>
-                                <button class="buttonModifier">Voir le projet</button>
-                            </div>
-                        </div>
-                    `;
-                    } else {
-                        // Afficher un message disant qu'il n'y a pas de projet
-                        card.innerHTML = `
-                        <p style="color: gray; background: none">
-                            Aucun projet trouvé pour le filtre sélectionné !
-                        </p>
-                    `;
-                    }
-
-                    // Ajouter la cellule dans la ligne
-                    projectContainer.appendChild(card);
-
-                    // Ajouter un événement de clic sur le bouton "Modifier"    
-                    card.querySelector('button').addEventListener('click', () => {
-                        // Rediriger l'utilisateur vers la page de modification du projet
-                        window.location.href = 'https://lab.padem.org/projet/edit_project.html?project_id=' + project.project_id;
+                    // Vérifier si l'adresse e-mail de l'utilisateur connecté est dans la liste des participants
+                    var participants = project.users_list;
+                    var isUserInProject = false;
+                    participants.forEach(participant => {
+                        if (participant.email === userEmail) {
+                            isUserInProject = true;
+                            isUserInOneProject = true;
+                        }
                     });
 
-                    // Ajouter l'image en arrière-plan du card-body
-                    /*
-                    card.querySelector('#card-body').style.backgroundImage = `url(${project.background_image_link})`;
-                    card.querySelector('#card-body').style.backgroundSize = 'cover';
-                    card.querySelector('#card-body').style.backgroundPosition = 'center';
-                    card.querySelector('#card-body').style.backgroundRepeat = 'no-repeat';
-                    card.querySelector('#card-body').style.borderRadius = '25px'; 
-                    */
+                    if (isUserInProject) {
+                        card.innerHTML = `
+                            <div class="card">
+                                <div id="card-body" class="card-body" style="backgroundColor: none; ">
+                                    <div style="width: 40%; align-items: center;">
+                                        <p style="font-weight: lighter; font-size: 10px">${formattedStartDate} - ${formattedEndDate}</p>
+                                    </div>
+                                    <div style="margin-top: 150px; margin-bottom: 10px"></div>
+                                    <a href='https://lab.padem.org/projet/edit_project.html?project_id=${project.project_id}' style="font-size: 20px; font-weight: bold; color: #29A6A7;">${project.project_title}</a>
+                                    <div style="margin-top: 0px">
+                                        <p style="font-weight: bold;">${project.project_location}</p>
+                                    </div>
+                                    ${barreProgression.outerHTML}
+                                </div>
+                                <div class="card-footer">
+                                    <p style="font-weight: lighter; color: ${colorStatusText[status]}; margin: 5px; border-radius: 5px; fontSize: 9px;" id="status_${project.project_id}">${parseInt(progression)}% - ${status}</p>
+                                    <button class="buttonModifier">Voir le projet</button>
+                                </div>
+                            </div>
+                        `;
 
-                    // incrémenter le stepper
-                    stepper++;
-                    if (stepper === 3) {
-                        card = document.createElement('div');
-                        stepper = 0;
+                        // Ajouter la cellule dans la ligne
+                        projectContainer.appendChild(card);
+
+                        // Ajouter un événement de clic sur le bouton "Modifier" en fonction de l'ID du projet, du rôle de l'utilisateur et en fonction de si l'utilisateur est dans le projet
+                        if (userRole.includes('Administrateur') || userRole.includes('Chef de projet')) {
+                            card.querySelector('.buttonModifier').addEventListener('click', () => {
+                                window.location.href = `https://lab.padem.org/projet/edit_project.html?project_id=${project.project_id}`;
+                            });
+                        } else if (userRole.includes('Consultant')) {
+                            card.querySelector('.buttonModifier').addEventListener('click', () => {
+                                window.location.href = `https://lab.padem.org/projet/view_project.html?project_id=${project.project_id}`;
+                            });
+                        } else if (userRole.includes('Partenaire')) {
+                            card.querySelector('.buttonModifier').addEventListener('click', () => {
+                                window.location.href = `https://lab.padem.org/projet/view_project.html?project_id=${project.project_id}`;
+                            });
+                        } else {
+                            card.querySelector('.buttonModifier').addEventListener('click', () => {
+                                window.location.href = `https://lab.padem.org/projet/view_project.html?project_id=${project.project_id}`;
+                            });
+                        }
+
+                        // Ajouter l'image en arrière-plan du card-body
+                        /*
+                        card.querySelector('#card-body').style.backgroundImage = `url(${project.background_image_link})`;
+                        card.querySelector('#card-body').style.backgroundSize = 'cover';
+                        card.querySelector('#card-body').style.backgroundPosition = 'center';
+                        card.querySelector('#card-body').style.backgroundRepeat = 'no-repeat';
+                        card.querySelector('#card-body').style.borderRadius = '25px'; 
+                        */
+
+                        // incrémenter le stepper
+                        stepper++;
+                        if (stepper === 3) {
+                            card = document.createElement('div');
+                            stepper = 0;
+                        }
                     }
                 });
-
+                if (!isUserInOneProject) {
+                    // Afficher un message disant qu'il n'y a pas de projet
+                    card.innerHTML = `
+                    <p style="color: gray; background: none">
+                        Vous n'avez pas de projet pour le moment !
+                    </p>`;
+                    projectContainer.appendChild(card);
+                }
             })
     });
 </script>
