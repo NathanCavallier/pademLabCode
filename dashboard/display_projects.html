@@ -50,6 +50,56 @@
     var userRole = [];
     var buttonText = '';
 
+    // Fonction pour afficher un menu contextuel en fonction de l'ID de l'element survolé
+    function showContextMenu(id) {
+        var element = document.getElementById(id);
+        var contextMenu = document.createElement('div');
+        document.body.appendChild(contextMenu);
+        contextMenu.style.display = 'none';
+        contextMenu.style.backgroundColor = 'white';
+        contextMenu.style.color = 'gray';
+        contextMenu.style.borderRadius = '5px';
+        contextMenu.style.padding = '5px';
+        contextMenu.style.width = 'fit-content';
+        contextMenu.style.height = 'fit-content';
+        contextMenu.style.zIndex = '1';
+        contextMenu.style.boxShadow = '0px 0px 5px 0px gray';
+        contextMenu.style.fontSize = '12px';
+
+        if (id === 'onlineUsers') {
+            contextMenu.textContent = 'Utilisateurs en ligne';
+        } else if (id === 'userFirstName') {
+            contextMenu.textContent = 'Prénom';
+        } else if (id === 'userLastName') {
+            contextMenu.textContent = 'Nom';
+        } else if (id === 'userRole') {
+            contextMenu.textContent = 'Rôle';
+        } else if (id === 'numberOfMembersOnline') {
+            contextMenu.textContent = 'Nombre d\'utilisateurs en ligne';
+        } else if (id === 'numberOfMembers') {
+            contextMenu.textContent = 'Nombre d\'utilisateurs inscrits';
+        } else if (id === 'searchForm') {
+            contextMenu.textContent = 'Effectuer une recherche';
+        } else {
+            contextMenu.textContent = '';
+        }
+
+        // Afficher le menu contextuel
+        element.addEventListener('mouseover', (event) => {
+            event.preventDefault();
+            contextMenu.style.display = 'block';
+            contextMenu.style.position = 'absolute';
+            contextMenu.style.left = event.pageX + 'px';
+            contextMenu.style.top = event.pageY + 'px';
+        });
+
+        // Cacher le menu contextuel
+        element.addEventListener('mouseout', (event) => {
+            event.preventDefault();
+            contextMenu.style.display = 'none';
+        });
+    }
+
     // Récupérer le nombre d'utilisateurs inscrits sur le site
     function getNumberOfMembers() {
         // Récupérer le nombre d'utilisateurs inscrits sur le site
@@ -222,7 +272,19 @@
         filter = status;
     }
 
+    // Actualiser les projets toutes les 15 secondes
+    setInterval(displayProjects, 15000);
+
+    // Afficher les projets
     document.addEventListener('DOMContentLoaded', () => {
+        // Récupérer les informations de l'utilisateur connecté
+        getConnectedUserInfos();
+        // Afficher les projets
+        displayProjects();
+    });
+
+    // Afficher les projets
+    function displayProjects() {
         // Déclarer les variables
         var numberOfMembers = 0;
         var nomberOfNewReports = 0;
@@ -365,7 +427,8 @@
                     card.style.color = 'gray'; // Change la couleur de la police
 
                     // Vérifier si l'adresse e-mail de l'utilisateur connecté est dans la liste des participants
-                    var participants = project.users_list;
+                    var participants = {};
+                    participants = project.users_list;
                     var isUserInProject = false;
                     participants.forEach(participant => {
                         if (participant.email === userEmail) {
@@ -374,26 +437,38 @@
                         }
                     });
 
+                    // Obtenir le nombre de participants dans le projet
+                    var numberOfParticipants = participants.length;
+
+                    // Afficher les projets en fonction du filtre
                     if (isUserInProject) {
                         card.innerHTML = `
-                            <div class="card">
-                                <div id="card-body" class="card-body" style="backgroundColor: none; ">
-                                    <div style="width: 40%; align-items: center;">
-                                        <p style="font-weight: lighter; font-size: 10px">${formattedStartDate} - ${formattedEndDate}</p>
+                                <div class="card">
+                                    <div id="card-body" class="card-body" style="backgroundColor: none; ">
+                                        <div style="display: flex; justify-content: space-between;">
+                                            <div style="width: 40%; align-items: center;">
+                                                <p style="font-weight: lighter; font-size: 10px">${formattedStartDate} - ${formattedEndDate}</p>
+                                            </div>
+                                            <div>
+                                                <p style="font-weight: bold;"><imgsrc="https://lab.padem.org/wp-content/uploads/user_2.png" alt="Icone utilisateurs"
+                                                    style="width: 20px; height: 20px;" id="iconOnlineUsers" /> ${numberOfParticipants}</p>
+                                            </div>
+                                        <div style="width: 40%; align-items: center;">
+                                            <p style="font-weight: lighter; font-size: 10px">${formattedStartDate} - ${formattedEndDate}</p>
+                                        </div>
+                                        <div style="margin-top: 150px; margin-bottom: 10px"></div>
+                                        <a href='https://lab.padem.org/projet/edit_project.html?project_id=${project.project_id}' style="font-size: 20px; font-weight: bold; color: #29A6A7;">${project.project_title}</a>
+                                        <div style="margin-top: 0px">
+                                            <p style="font-weight: bold;">${project.project_location}</p>
+                                        </div>
+                                        ${barreProgression.outerHTML}
                                     </div>
-                                    <div style="margin-top: 150px; margin-bottom: 10px"></div>
-                                    <a href='https://lab.padem.org/projet/edit_project.html?project_id=${project.project_id}' style="font-size: 20px; font-weight: bold; color: #29A6A7;">${project.project_title}</a>
-                                    <div style="margin-top: 0px">
-                                        <p style="font-weight: bold;">${project.project_location}</p>
+                                    <div class="card-footer">
+                                        <p style="font-weight: lighter; color: ${colorStatusText[status]}; margin: 5px; border-radius: 5px; fontSize: 9px;" id="status_${project.project_id}">${parseInt(progression)}% - ${status}</p>
+                                        <button class="buttonModifier">Voir le projet</button>
                                     </div>
-                                    ${barreProgression.outerHTML}
                                 </div>
-                                <div class="card-footer">
-                                    <p style="font-weight: lighter; color: ${colorStatusText[status]}; margin: 5px; border-radius: 5px; fontSize: 9px;" id="status_${project.project_id}">${parseInt(progression)}% - ${status}</p>
-                                    <button class="buttonModifier">Voir le projet</button>
-                                </div>
-                            </div>
-                        `;
+                            `;
 
                         // Ajouter la cellule dans la ligne
                         projectContainer.appendChild(card);
@@ -437,11 +512,11 @@
                 if (!isUserInOneProject) {
                     // Afficher un message disant qu'il n'y a pas de projet
                     card.innerHTML = `
-                    <p style="color: gray; background: none">
-                        Vous n'avez pas de projet pour le moment !
-                    </p>`;
+                        <p style="color: gray; background: none">
+                            Vous n'avez pas de projet pour le moment !
+                        </p>`;
                     projectContainer.appendChild(card);
                 }
             })
-    });
+    }
 </script>

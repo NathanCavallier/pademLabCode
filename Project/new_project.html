@@ -99,8 +99,60 @@
         <div style="margin-top: 10px; margin-bottom: 10px"></div>
     </form>
 
-    
-
+    <!-- Ajouter de membres au projet en fonction de leur -->
+    <form>
+        <ul class="file-list">
+            <li id="id-consultants" class="rectangle">
+                <div class="file-details">
+                    <div style="display: flex; justify-content: space-between;" class="header-color">
+                        <a href="javascript:void(0)" class="file-name"
+                            onclick="showAndHide('step2'); switchCellBackground('id-consultants'); switchFormsIcons('consultants-1')">
+                            <h6 style="margin-top: 20px;">Consultants</h6>
+                        </a>
+                        <button type="button"
+                            onclick="showAndHide('step2'); switchCellBackground('id-consultants'); switchFormsIcons('consultants-1')"
+                            style="font-size: large;">
+                            <img src="https://lab.padem.org/wp-content/uploads/plus.png" alt="consultants-1"
+                                id="consultants-1" style="background-color: none; margin-top: -10px;" />
+                        </button>
+                    </div>
+                    <div style="margin-top: 10px; margin-bottom: 10px"></div>
+                    <div id="step2" style="display: none">
+                        <p>Remplissez les champs suivants:</p>
+                        <hr class="gray-border">
+                        <div style="margin-top: 10px; margin-bottom: 10px"></div>
+                        <label for="consultantName">Nom du consultant:</label>
+                        <input type="text" id="consultantName" name="consultantName" required><br><br>
+                        <label for="consultantEmail">Email du consultant:</label>
+                        <input type="email" id="consultantEmail" name="consultantEmail" required><br><br>
+                        <label for="consultantRole">Rôle du consultant:</label>
+                        <input type="text" id="consultantRole" name="consultantRole" required><br><br>
+                        <label for="consultantStatus">Statut du consultant:</label>
+                        <select id="consultantStatus" name="consultantStatus" required>
+                            <option value="">Choisissez un statut</option>
+                            <option value="Actif">Actif</option>
+                            <option value="Inactif">Inactif</option>
+                        </select><br><br>
+                        <div style="margin-top: 10px; margin-bottom: 10px"></div>
+                        <div class="action-buttons" style="display: flex; justify-content: flex-end;">
+                            <!-- Bouton pour annuler le projet -->
+                            <button type="button" onclick="cancelProject()" style="width: auto;">
+                                <p style="width: auto; margin-top: 20px; margin-right: 5px;">Annuler</p>
+                                <img src="https://lab.padem.org/wp-content/uploads/Annuler.png" alt="cancel"
+                                    style="width: 35px; height: 35px;" />
+                            </button>
+                            <!-- Bouton pour sauvegarder le projet -->
+                            <button type="submit" onclick="saveFormData()" style="width: auto;" id="saveProjectButton">
+                                <p style="width: auto; margin-top: 20px; margin-right: 5px;">Sauvegarder</p>
+                                <img src="https://lab.padem.org/wp-content/uploads/save.png" alt="save"
+                                    style="width: 35px; height: 35px;" />
+                            </button>
+    </form>
+    <!-- Sélectionner le type d'utilisateur à ajouter au projet -->
+    <!-- Ajouter une demande de rapport(s) au projet -->
+    <!-- Ajouter une demande de document à uploader dans le projet -->
+    <!-- Ajouter une demande de lien à ajouter au projet -->
+    <!-- Uploader des documents models au dont les membres du projet vont s'en servir -->
     <script>
         function saveFormData() {
             var dataInfosPreliminaires = {
