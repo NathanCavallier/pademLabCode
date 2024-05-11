@@ -1,22 +1,10 @@
 <!-- Formulaire de recherche -->
-<form id="searchForm"
-    style="margin: 2px; padding: 2px; background-color: transparent; color: gray;">
-    <input type="text" id="searchInput" style="border-radius: 25px; height: 25px;" placeholder="......">
+<div id="searchForm"
+    style="display: flex; width: 100%;; margin: 2px; padding: 2px; background-color: transparent; color: gray;">
+    <input type="text" id="searchInput" style="border-radius: 25px; height: 25px; width: 100%;" placeholder="......">
     <button type="submit" style="background-color: transparent; color: gray; font-size: 12px;">
         Rechercher
     </button>
-</form>
-
-<!-- Afficher le nombre d'utilisateurs connectés -->
-<div id="onlineUsers">
-    <div style=" margin: 5px; padding: 5px;"></div>
-    <div style="display: flex;">
-        <p style="font-size: 12px; color: #00BF63; font-weight: lighter;" id="numberOfMembersOnline"></p>
-        <!-- Afficher une petite icone à côté du nombre d'utilisateur -->
-        <div style="margin-top: 5px; padding: 5px;"></div>
-        <img src="https://lab.padem.org/wp-content/uploads/online.png" alt="Icone utilisateurs"
-            style="width: 20px; height: 20px;" id="iconOnlineUsers" />
-    </div>
 </div>
 
 <!-- Afficher le nom de l'utilisateur connecté -->
@@ -33,8 +21,11 @@
 
 <!-- Afficher le rôle de l'utilisateur connecté -->
 <div style=" display: flex; width: fit-content;">
-    <p style="width: fit-content; font-size: 12px; color: lightgray; font-weight: lighter; margin: 5px; padding: 5px; border-radius: 20px;">Rôle:</p>
-    <p style="width: fit-content;; font-size: 12px; color: white; font-weight: lighter; background-color: #29A6A7; margin: 5px; padding: 5px; border-radius: 20px;" id="userRole"></p>
+    <p
+        style="width: fit-content; font-size: 12px; color: lightgray; font-weight: lighter; margin: 5px; padding: 5px; border-radius: 20px;">
+        Rôle:</p>
+    <p style="width: fit-content;; font-size: 12px; color: white; font-weight: lighter; background-color: #29A6A7; margin: 5px; padding: 5px; border-radius: 20px;"
+        id="userRole"></p>
 </div>
 
 <script>
@@ -84,4 +75,63 @@
                 console.error('Error:', error);
             });
     });
+</script>
+
+
+<!-- Afficher le nombre d'utilisateurs connectés -->
+<div id="onlineUsers">
+    <div style=" margin: 5px; padding: 5px;"></div>
+    <div style="display: flex;">
+        <p style="font-size: 12px; color: #00BF63; font-weight: lighter;" id="numberOfMembersOnline"></p>
+        <!-- Afficher une petite icone à côté du nombre d'utilisateur -->
+        <div style="margin-top: 5px; padding: 5px;"></div>
+        <img src="https://lab.padem.org/wp-content/uploads/online.png" alt="Icone utilisateurs"
+            style="width: 20px; height: 20px;" id="iconOnlineUsers" />
+    </div>
+</div>
+<script>
+    // Récupérer le nombre d'utilisateurs inscrits sur le site
+    document.addEventListener('DOMContentLoaded', () => {
+        getNumberOfMembers();
+    });
+
+    function getNumberOfMembers() {
+        var numberOfMembers = 0;
+        var numberOfMembersOnline = 0;
+        var nomberOfNewReports = 0;
+        var numberOfNewMessages = 0;
+        var numberOfNewNotifications = 0;
+        var connectedUsers = {};
+        // Récupérer le nombre d'utilisateurs inscrits sur le site
+        fetch('https://lab.padem.org/wp-json/mo/v1/getUserEmailAndState', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                numberOfMembers = data.length;
+                data.forEach(user => {
+                    // Faire en sorte que le nombre d'utilisateurs connectés n'ogmente pas si l'utilisateur est déjà connecté
+                    if (!connectedUsers[user.user_email]) {
+                        connectedUsers[user.user_email] = 1;
+                        if (user.user_status === 1) {
+                            numberOfMembersOnline++;
+                        }
+                    }
+                });
+                // Récupérer le nombre d'utilisateurs actuellement connectés sur le site
+                if (numberOfMembersOnline === 1 || numberOfMembersOnline === 0) {
+                    document.getElementById('numberOfMembersOnline').innerHTML = '0 ';
+                } else {
+                    document.getElementById('numberOfMembersOnline').innerHTML = (numberOfMembersOnline - 1) + ' ';
+                }
+                document.getElementById('numberOfMembers').innerHTML = numberOfMembers;
+            })
+    }
+
+
+    // Rafraîchir le nombre d'utilisateurs connectés toutes les 5 secondes
+    setInterval(getNumberOfMembers, 5000);
 </script>
