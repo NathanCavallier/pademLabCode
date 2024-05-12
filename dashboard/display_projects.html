@@ -150,21 +150,20 @@
                 userEmail = data.user_infos.email;
                 userFirstName = data.user_infos.first_name;
                 userLastName = data.user_infos.last_name;
-                if (data.role.administrator) {
-                    userRole.push('Administrateur');
-                } else if (data.role['chef-de-projet']) {
-                    userRole.push('Chef de projet');
-                } else if (data.role.comptable) {
-                    userRole.push('Comptable');
-                } else if (data.role.consultant) {
-                    userRole.push('Consultant');
-                } else if (data.role.partenaire) {
-                    userRole.push('Partenaire');
-                } else if (data.role.subscriber) {
-                    userRole.push('Abonné');
-                } else {
-                    userRole.push('Utilisateur');
-                }
+                data.role.forEach(role => {
+                    if (data.role.administrator) {
+                        userRole.push('Administrateur');
+                    } else if (data.role['chef-de-projet']) {
+                        userRole.push('Chef de projet');
+                    } else if (data.role.comptable) {
+                        userRole.push('Comptable');
+                    } else if (data.role.consultant) {
+                        userRole.push('Consultant');
+                    } else if (data.role.partenaire) {
+                        userRole.push('Partenaire');
+                    } else {
+                    }
+                });
             })
             .catch(error => {
                 console.error('Error:', error);

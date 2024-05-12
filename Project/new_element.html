@@ -1,0 +1,465 @@
+<!-- Sélectionner le type d'utilisateur à ajouter au projet -->
+<!-- Ajouter une demande de rapport(s) au projet -->
+<!-- Ajouter une demande de document à uploader dans le projet -->
+<!-- Ajouter une demande de lien à ajouter au projet -->
+<!-- Uploader des documents models au dont les membres du projet vont s'en servir -->
+
+
+<hr style="border: 1px solid #29A6A7;">
+<div style="margin-top: 5px; padding: 5px;"></div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <button type="button" class="btn btn-primary"
+                style="width: fit-content; color: #29A6A7; border-radius: 20px;" onclick="showModifyProject()">
+                Compléter le projet
+            </button>
+        </div>
+    </div>
+    <!-- Afficher une liste de boutons à l'horizontale permettant de faire apparaître le type d'éléments à ajouter au projet -->
+    <div class="col-md-12" id="modifyProject" style="display: none; width: 100%; background: white;">
+        <div class="row">
+            <div class="btn-group" role="group" aria-label="Basic example">
+                <button type="button" id="buttonNewMember" class="btn btn-secondary" onclick="showNewMember()"
+                    style="width: fit-content; margin: 5px; padding: 5px; background: #29A6A7; color: white; font-size: 10px; border-radius: 20px;">
+                    Nouveau membre</button>
+                <button type="button" id="buttonExistingMember" class="btn btn-secondary"
+                    style="width: fit-content; margin: 5px; padding: 5px; background: #29A6A7; color: white; font-size: 10px; border-radius: 20px;">
+                    Membre existant</button>
+                <button type="button" id="buttonReportRequest" class="btn btn-secondary"
+                    style="width: fit-content; margin: 5px; padding: 5px; background: #29A6A7; color: white; font-size: 10px; border-radius: 20px;">
+                    Demande de Rapport</button>
+                <button type="button" id="buttonDocumentModel" class="btn btn-secondary"
+                    style="width: fit-content; margin: 5px; padding: 5px; background: #29A6A7; color: white; font-size: 10px; border-radius: 20px;">
+                    Document model</button>
+                <button type="button" id="buttonAddLink" class="btn btn-secondary"
+                    style="width: fit-content; margin: 5px; padding: 5px; background: #29A6A7; color: white; font-size: 10px; border-radius: 20px;">
+                    Ajouter un Lien</button>
+                <button type="button" id="buttonAddDivers" class="btn btn-secondary"
+                    style="width: fit-content; margin: 5px; padding: 5px; background: #29A6A7; color: white; font-size: 10px; border-radius: 20px;">
+                    Divers</button>
+            </div>
+        </div>
+        <div id="newMember" style="display: none;">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="newMemberEmail">Adresse email du nouveau membre</label>
+                        <input type="email" class="form-control" id="newMemberEmail" aria-describedby="emailHelp">
+                        <label for="last_name">Nom</label>
+                        <input type="text" class="form-control" id="last_name" aria-describedby="emailHelp">
+                        <label for="first_name">Prénom</label>
+                        <input type="text" class="form-control" id="first_name" aria-describedby="emailHelp">
+                        <small id="emailHelp-2" class="form-text text-muted">Nous ne partagerons jamais votre adresse
+                            email avec qui que ce soit.</small>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="newMemberRole">Rôle du nouveau membre</label>
+                        <select class="form-control" id="newMemberRole">
+                            <option value="Coordinateur">Coordinateur</option>
+                            <option value="chef-de-projet">Chef de projet</option>
+                            <option value="comptable">Comptable</option>
+                            <option value="consultant">Consultant</option>
+                            <option value="partenaire">Partenaire</option>
+                            <option value="bailleur">Bailleur</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <button type="submit" class="btn btn-primary">Ajouter le nouveau membre</button>
+                </div>
+            </div>
+        </div>
+        <div id="existingMember" style="display: none;">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="existingMemberEmail">Adresse email du membre existant</label>
+                        <select class="form-control" id="existingMemberEmail">
+                        </select>
+                        <small id="emailHelp" class="form-text text-muted">Nous ne partagerons jamais votre adresse
+                            email avec qui que ce soit.</small>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="existingMemberRole">Rôle du membre existant</label>
+                        <select class="form-control" id="existingMemberRole">
+                            <option>Administrateur</option>
+                            <option>Chef de projet</option>
+                            <option>Comptable</option>
+                            <option>Consultant</option>
+                            <option>Partenaire</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <button type="submit" class="btn btn-primary">Ajouter le membre existant</button>
+                </div>
+            </div>
+        </div>
+        <div id="newReport" style="display: none;">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="reportTitle">Titre du rapport</label>
+                        <input type="text" class="form-control" id="reportTitle" aria-describedby="emailHelp">
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="reportDescription">Description du rapport</label>
+                        <textarea class="form-control" id="reportDescription" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <button type="submit" class="btn btn-primary">Ajouter le rapport</button>
+                </div>
+            </div>
+        </div>
+        <div id="newDocument" style="display: none;">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="documentTitle">Titre du document</label>
+                        <input type="text" class="form-control" id="documentTitle" aria-describedby="emailHelp">
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="documentDescription">Description du document</label>
+                        <textarea class="form-control" id="documentDescription" rows="5"></textarea>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="documentFile">Charger le document </label>
+                        <input type="file" class="form-control-file" id="documentFile">
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <button type="submit" class="btn btn-primary">Ajouter le document</button>
+                </div>
+            </div>
+        </div>
+        <div id="newLink" style="display: none;">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="linkTitle">Titre du lien</label>
+                        <input type="text" class="form-control" id="linkTitle" aria-describedby="emailHelp">
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="linkDescription">Description du lien</label>
+                        <textarea class="form-control" id="linkDescription" rows="5"></textarea>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="linkUrl">URL du lien</label>
+                        <input type="text" class="form-control" id="linkUrl" aria-describedby="emailHelp">
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <button type="submit" class="btn btn-primary">Ajouter le lien</button>
+                </div>
+            </div>
+        </div>
+        <div id="newMisc" style="display: none;">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="miscTitle">Titre de l'élément</label>
+                        <input type="text" class="form-control" id="miscTitle" aria-describedby="emailHelp">
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="miscDescription">Description de l'élément</label>
+                        <textarea class="form-control" id="miscDescription" rows="5"></textarea>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="miscFile">Charger un document </label>
+                        <input type="file" class="form-control-file" id="miscFile">
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <button type="submit" class="btn btn-primary">Ajouter l'élément</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Script -->
+<script>
+    // Charger les adresses email des membres du site
+    document.addEventListener('DOMContentLoaded', () => {
+        getAllMembers();
+    });
+
+    // Récupérer les adresses email des tout membres du site
+    function getAllMembers() {
+        fetch('https://lab.padem.org/wp-json/mo/v1/getUserEmailAndState', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(user => {
+                    var option = document.createElement('option');
+                    option.text = user.user_email + ' - ' + user.display_name;
+                    option.value = user.user_email;
+                    document.getElementById('existingMemberEmail').add(option);
+                });
+            });
+    }
+
+    // Enregistrer les informations du nouveau membre
+    function saveNewMember() {
+
+        var newMemberRole = document.getElementById('newMemberRole').value;
+        if (newMemberRole === 'coordinator') {
+            newMemberRole = 'coordinator';
+        } else if (newMemberRole === 'chef-de-projet') {
+            newMemberRole = 'project_manager';
+        } else if (newMemberRole === 'Comptable') {
+            newMemberRole = 'accountant';
+        } else if (newMemberRole === 'Consultant') {
+            newMemberRole = 'consultant';
+        } else if (newMemberRole === 'Partenaire') {
+            newMemberRole = 'partner';
+        } else if (newMemberRole === 'Bailleur') {
+            newMemberRole = 'donor';
+        }
+        var data = {
+            newMemberEmail: '',
+            last_name: '',
+            first_name: '',
+            newMemberRole: ''
+        };
+        var newMemberEmail = document.getElementById('newMemberEmail').value;
+        var last_name = document.getElementById('last_name').value;
+        var first_name = document.getElementById('first_name').value;
+
+        data = {
+            newMemberEmail: newMemberEmail,
+            last_name: last_name,
+            first_name: first_name,
+            newMemberRole: newMemberRole
+        };
+
+        fetch('https://lab.padem.org/wp-json/mo/v1/saveNewMember', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        })
+            .then(response => {
+                if (!response.ok) {
+                    console.log(response);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Success:', data);
+                window.location.href = 'https://lab.padem.org/project/';
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    }
+
+    // Fonction permettant d'afficher/masquer la section d'ajout d'un nouveau membre
+    document.addEventListener('DOMContentLoaded', () => {
+        var newMember = document.getElementById('newMember');
+        var existingMember = document.getElementById('existingMember');
+        var newReport = document.getElementById('newReport');
+        var newDocument = document.getElementById('newDocument');
+        var newLink = document.getElementById('newLink');
+        var newMisc = document.getElementById('newMisc');
+        newMember.style.display = 'none';
+        document.getElementById('buttonNewMember').style.backgroundColor = 'white';
+        document.getElementById('buttonNewMember').style.color = '#29A6A7';
+        existingMember.style.display = 'none';
+        document.getElementById('buttonExistingMember').style.backgroundColor = 'white';
+        document.getElementById('buttonExistingMember').style.color = '#29A6A7';
+        newReport.style.display = 'none';
+        document.getElementById('buttonReportRequest').style.backgroundColor = 'white';
+        document.getElementById('buttonReportRequest').style.color = '#29A6A7';
+        newDocument.style.display = 'none';
+        document.getElementById('buttonDocumentModel').style.backgroundColor = 'white';
+        document.getElementById('buttonDocumentModel').style.color = '#29A6A7';
+        newLink.style.display = 'none';
+        document.getElementById('buttonAddLink').style.backgroundColor = 'white';
+        newMisc.style.display = 'none';
+        document.getElementById('buttonAddDivers').style.backgroundColor = 'white';
+        document.getElementById('buttonAddDivers').style.color = '#29A6A7';
+    });
+
+    // Fonction permettant de faire apparaître la section de modification du projet
+    function showModifyProject() {
+        var modifyProject = document.getElementById('modifyProject');
+        if (modifyProject.style.display === 'none') {
+            modifyProject.style.display = 'block';
+        } else {
+            modifyProject.style.display = 'none';
+        }
+    }
+
+    // Fonction qui va être appelée par les fonctions qui permettent de faire apparaître les sections d'ajout d'éléments
+    function switcher(buttonId) {
+        switch (buttonId) {
+            case 'newMember':
+                document.getElementById('newMember').style.display = 'block';
+                document.getElementById('existingMember').style.display = 'none';
+                document.getElementById('newReport').style.display = 'none';
+                document.getElementById('newDocument').style.display = 'none';
+                document.getElementById('newLink').style.display = 'none';
+                document.getElementById('newMisc').style.display = 'none';
+                break;
+            case 'existingMember':
+                document.getElementById('newMember').style.display = 'none';
+                document.getElementById('existingMember').style.display = 'block';
+                document.getElementById('newReport').style.display = 'none';
+                document.getElementById('newDocument').style.display = 'none';
+                document.getElementById('newLink').style.display = 'none';
+                document.getElementById('newMisc').style.display = 'none';
+                break;
+            case 'reportRequest':
+                document.getElementById('newMember').style.display = 'none';
+                document.getElementById('existingMember').style.display = 'none';
+                document.getElementById('newReport').style.display = 'block';
+                document.getElementById('newDocument').style.display = 'none';
+                document.getElementById('newLink').style.display = 'none';
+                document.getElementById('newMisc').style.display = 'none';
+                break;
+            case 'newDocument':
+                document.getElementById('newMember').style.display = 'none';
+                document.getElementById('existingMember').style.display = 'none';
+                document.getElementById('newReport').style.display = 'none';
+                document.getElementById('newDocument').style.display = 'block';
+                document.getElementById('newLink').style.display = 'none';
+                document.getElementById('newMisc').style.display = 'none';
+                break;
+            case 'newLink':
+                document.getElementById('newMember').style.display = 'none';
+                document.getElementById('existingMember').style.display = 'none';
+                document.getElementById('newReport').style.display = 'none';
+                document.getElementById('newDocument').style.display = 'none';
+                document.getElementById('newLink').style.display = 'block';
+                document.getElementById('newMisc').style.display = 'none';
+                break;
+            case 'newMisc':
+                document.getElementById('newMember').style.display = 'none';
+                document.getElementById('existingMember').style.display = 'none';
+                document.getElementById('newReport').style.display = 'none';
+                document.getElementById('newDocument').style.display = 'none';
+                document.getElementById('newLink').style.display = 'none';
+                document.getElementById('newMisc').style.display = 'block';
+                break;
+            default:
+                break;
+        }
+    }
+
+    // Fonction permettant de faire apparaître la section d'ajout d'un nouveau membre
+    function showNewMember() {
+        var newMember = document.getElementById('newMember');
+        if (newMember.style.display === 'none') {
+            newMember.style.display = 'block';
+            document.getElementById('buttonNewMember').style.backgroundColor = '#29A6A7';
+            document.getElementById('buttonNewMember').style.color = 'white';
+            switcher('newMember');
+        } else {
+            newMember.style.display = 'none';
+            document.getElementById('buttonNewMember').style.backgroundColor = 'white';
+            document.getElementById('buttonNewMember').style.color = '#29A6A7';
+        }
+    }
+
+    // Fonction permettant de faire apparaître la section d'ajout d'un membre existant
+    function showExistingMember() {
+        var existingMember = document.getElementById('existingMember');
+        if (existingMember.style.display === 'none') {
+            existingMember.style.display = 'block';
+            document.getElementById('buttonExistingMember').style.backgroundColor = '#29A6A7';
+            document.getElementById('buttonExistingMember').style.color = 'white';
+            switcher('existingMember');
+        } else {
+            existingMember.style.display = 'none';
+            document.getElementById('buttonExistingMember').style.backgroundColor = 'white';
+            document.getElementById('buttonExistingMember').style.color = '#29A6A7';
+        }
+    }
+
+    // Fonction permettant de faire apparaître la section d'ajout d'une demande de rapport
+    function showReportRequest() {
+        var newReport = document.getElementById('newReport');
+        if (newReport.style.display === 'none') {
+            newReport.style.display = 'block';
+            document.getElementById('buttonReportRequest').style.backgroundColor = '#29A6A7';
+            document.getElementById('buttonReportRequest').style.color = 'white';
+            switcher('reportRequest');
+        } else {
+            newReport.style.display = 'none';
+            document.getElementById('buttonReportRequest').style.backgroundColor = 'white';
+            document.getElementById('buttonReportRequest').style.color = '#29A6A7';
+        }
+    }
+
+    // Fonction permettant de faire apparaître la section d'ajout d'un document model
+    function showDocumentModel() {
+        var newDocument = document.getElementById('newDocument');
+        if (newDocument.style.display === 'none') {
+            newDocument.style.display = 'block';
+            document.getElementById('buttonDocumentModel').style.backgroundColor = '#29A6A7';
+            document.getElementById('buttonDocumentModel').style.color = 'white';
+            switcher('newDocument');
+        } else {
+            newDocument.style.display = 'none';
+            document.getElementById('buttonDocumentModel').style.backgroundColor = 'white';
+            document.getElementById('buttonDocumentModel').style.color = '#29A6A7';
+        }
+    }
+
+    // Fonction permettant de faire apparaître la section d'ajout d'un lien
+    function showAddLink() {
+        var newLink = document.getElementById('newLink');
+        if (newLink.style.display === 'none') {
+            newLink.style.display = 'block';
+            document.getElementById('buttonAddLink').style.backgroundColor = '#29A6A7';
+            document.getElementById('buttonAddLink').style.color = 'white';
+            switcher('newLink');
+        } else {
+            newLink.style.display = 'none';
+            document.getElementById('buttonAddLink').style.backgroundColor = 'white';
+            document.getElementById('buttonAddLink').style.color = '#29A6A7';
+        }
+    }
+
+    // Fonction permettant de faire apparaître la section d'ajout d'un élément divers
+    function showAddDivers() {
+        var newMisc = document.getElementById('newMisc');
+        if (newMisc.style.display === 'none') {
+            newMisc.style.display = 'block';
+            document.getElementById('buttonAddDivers').style.backgroundColor = '#29A6A7';
+            document.getElementById('buttonAddDivers').style.color = 'white';
+            switcher('newMisc');
+        } else {
+            newMisc.style.display = 'none';
+            document.getElementById('buttonAddDivers').style.backgroundColor = 'white';
+            document.getElementById('buttonAddDivers').style.color = '#29A6A7';
+        }
+    }
+</script>
+</body>
