@@ -291,127 +291,305 @@
                     // Ajouter un gestionnaire d'événement pour chaque élément de liste
                     document.getElementById(`buttonExistingMember_${project_id}`).addEventListener('click', () => {
                         document.getElementById(`existingMember_${project_id}`).style.display = 'block';
-                        document.getElementById('newMember_'+ project_id).style.display = 'none';
-                        document.getElementById('newReport_'+ project_id).style.display = 'none';
-                        document.getElementById('newDocument_'+ project_id).style.display = 'none';
-                        document.getElementById('newLink_'+ project_id).style.display = 'none';
-                        document.getElementById('newMisc_'+ project_id).style.display = 'none';
+                        document.getElementById('newMember_' + project_id).style.display = 'none';
+                        document.getElementById('newReport_' + project_id).style.display = 'none';
+                        document.getElementById('newDocument_' + project_id).style.display = 'none';
+                        document.getElementById('newLink_' + project_id).style.display = 'none';
+                        document.getElementById('newMisc_' + project_id).style.display = 'none';
                     });
 
-                    document.getElementById('buttonReportRequest_'+ project_id).addEventListener('click', () => {
-                        document.getElementById('newReport_'+ project_id).style.display = 'block';
-                        document.getElementById('newMember_'+ project_id).style.display = 'none';
-                        document.getElementById('existingMember_'+ project_id).style.display = 'none';
-                    document.getElementById('newDocument_'+ project_id).style.display = 'none';
-                        document.getElementById('newLink_'+ project_id).style.display = 'none';
-                        document.getElementById('newMisc_'+ project_id).style.display = 'none';
+                    document.getElementById('buttonReportRequest_' + project_id).addEventListener('click', () => {
+                        document.getElementById('newReport_' + project_id).style.display = 'block';
+                        document.getElementById('newMember_' + project_id).style.display = 'none';
+                        document.getElementById('existingMember_' + project_id).style.display = 'none';
+                        document.getElementById('newDocument_' + project_id).style.display = 'none';
+                        document.getElementById('newLink_' + project_id).style.display = 'none';
+                        document.getElementById('newMisc_' + project_id).style.display = 'none';
                     });
 
-                    document.getElementById('buttonDocumentModel_'+ project_id).addEventListener('click', () => {
-                        document.getElementById('newDocument_'+ project_id).style.display = 'block';
-                        document.getElementById('newMember_'+ project_id).style.display = 'none';
-                        document.getElementById('existingMember_'+ project_id).style.display = 'none';
-                        document.getElementById('newReport_'+ project_id).style.display = 'none';
-                        document.getElementById('newLink_'+ project_id).style.display = 'none';
-                        document.getElementById('newMisc_'+ project_id).style.display = 'none';
+                    document.getElementById('buttonDocumentModel_' + project_id).addEventListener('click', () => {
+                        document.getElementById('newDocument_' + project_id).style.display = 'block';
+                        document.getElementById('newMember_' + project_id).style.display = 'none';
+                        document.getElementById('existingMember_' + project_id).style.display = 'none';
+                        document.getElementById('newReport_' + project_id).style.display = 'none';
+                        document.getElementById('newLink_' + project_id).style.display = 'none';
+                        document.getElementById('newMisc_' + project_id).style.display = 'none';
                     });
 
-                    document.getElementById('buttonNewMember_'+ project_id).addEventListener('click', () => {
-                        document.getElementById('newMember_'+ project_id).style.display = 'block';
-                        document.getElementById('existingMember_'+ project_id).style.display = 'none';
-                        document.getElementById('newReport_'+ project_id).style.display = 'none';
-                        document.getElementById('newDocument_'+ project_id).style.display = 'none';
-                        document.getElementById('newLink_'+ project_id).style.display = 'none';
-                        document.getElementById('newMisc_'+ project_id).style.display = 'none';
+                    document.getElementById('buttonNewMember_' + project_id).addEventListener('click', () => {
+                        document.getElementById('newMember_' + project_id).style.display = 'block';
+                        document.getElementById('existingMember_' + project_id).style.display = 'none';
+                        document.getElementById('newReport_' + project_id).style.display = 'none';
+                        document.getElementById('newDocument_' + project_id).style.display = 'none';
+                        document.getElementById('newLink_' + project_id).style.display = 'none';
+                        document.getElementById('newMisc_' + project_id).style.display = 'none';
                     });
 
-                    document.getElementById('buttonAddLink_'+ project_id).addEventListener('click', () => {
-                        document.getElementById('newLink'+ project_id).style.display = 'block';
-                        document.getElementById('newMember'+ project_id).style.display = 'none';
-                        document.getElementById('existingMember'+ project_id).style.display = 'none';
-                        document.getElementById('newReport'+ project_id).style.display = 'none';
-                        document.getElementById('newDocument'+ project_id).style.display = 'none';
-                        document.getElementById('newMisc'+ project_id).style.display = 'none';
+                    document.getElementById('buttonAddLink_' + project_id).addEventListener('click', () => {
+                        document.getElementById('newLink' + project_id).style.display = 'block';
+                        document.getElementById('newMember' + project_id).style.display = 'none';
+                        document.getElementById('existingMember' + project_id).style.display = 'none';
+                        document.getElementById('newReport' + project_id).style.display = 'none';
+                        document.getElementById('newDocument' + project_id).style.display = 'none';
+                        document.getElementById('newMisc' + project_id).style.display = 'none';
                     });
 
-                    document.getElementById('buttonAddDivers_'+ project_id).addEventListener('click', () => {
-                        document.getElementById('newMisc_'+ project_id).style.display = 'block';
-                        document.getElementById('newLink_'+ project_id).style.display = 'none';
-                        document.getElementById('newMember_'+ project_id).style.display = 'none';
-                        document.getElementById('existingMember_'+ project_id).style.display = 'none';
-                        document.getElementById('newReport_'+ project_id).style.display = 'none';
-                        document.getElementById('newDocument_'+ project_id).style.display = 'none';
+                    document.getElementById('buttonAddDivers_' + project_id).addEventListener('click', () => {
+                        document.getElementById('newMisc_' + project_id).style.display = 'block';
+                        document.getElementById('newLink_' + project_id).style.display = 'none';
+                        document.getElementById('newMember_' + project_id).style.display = 'none';
+                        document.getElementById('existingMember_' + project_id).style.display = 'none';
+                        document.getElementById('newReport_' + project_id).style.display = 'none';
+                        document.getElementById('newDocument_' + project_id).style.display = 'none';
                     });
 
                     // Ajouter un gestionnaire d'événement pour chaque bouton "Ajouter le nouveau membre", "Ajouter le nouveau rapport", "Ajouter le nouveau document", "Ajouter le nouveau lien", "Ajouter divers"
-                    document.getElementById('buttonAddMember_'+ project_id).addEventListener('click', () => {
-                        var newMemberEmail = document.getElementById('newMemberEmail_'+ project_id).value;
-                        var newMemberRole = document.getElementById('newMemberRole_'+ project_id).value;
-                        var lastName = document.getElementById('last_name_'+ project_id).value;
-                        var firstName = document.getElementById('first_name_'+ project_id).value;
-                        var urls_list = {
-                            'Coordinateur': 'https://lab.padem.org/wp-json/mo/v1/createCoordinator',
-                            'chef-de-projet': 'https://lab.padem.org/wp-json/mo/v1/createProjectChief',
-                            'comptable': 'https://lab.padem.org/wp-json/mo/v1/createAccountant',
-                            'consultant': 'https://lab.padem.org/wp-json/mo/v1/createConsultant',
-                            'partenaire': 'https://lab.padem.org/wp-json/mo/v1/createPartner',
-                            'bailleur': 'https://lab.padem.org/wp-json/mo/v1/createFunder'
-                        };
-                        var data = {
-                            'Coordinator': {
-                                'email': newMemberEmail,
-                                'last_name': lastName,
-                                'first_name': firstName,
-                                'project_id': project_id,
+                    document.getElementById('buttonAddMember_' + project_id).addEventListener('click', () => {
+                        var newMemberEmail = document.getElementById('newMemberEmail_' + project_id).value;
+                        var newMemberRole = document.getElementById('newMemberRole_' + project_id).value;
+                        var lastName = document.getElementById('last_name_' + project_id).value;
+                        var firstName = document.getElementById('first_name_' + project_id).value;
+
+                        var urls_and_data = {
+                            'Coordinateur': {
+                                'url': 'https://lab.padem.org/wp-json/mo/v1/createCoordinator',
+                                'data': {
+                                    'project_id': project_id,
+                                    'coordinator_email': newMemberEmail,
+                                    'coordinator_first_name': firstName,
+                                    'coordinator_last_name': lastName,
+                                    'coordinator_activity_history': JSON.stringify([
+                                        {
+                                            'hour': new Date().getHours(),
+                                            'minute': new Date().getMinutes(),
+                                            'day': new Date().getDate(),
+                                            'month': new Date().getMonth() + 1,
+                                            'year': new Date().getFullYear(),
+                                        },
+                                        {
+                                            'Activité': `Création du projet ${project.project_title} et ajout des membres`,
+                                        },
+                                        {
+                                            'Commentaire': 'Le projet est en cours de création',
+                                        },
+                                        {
+                                            'Divers': '',
+                                        }
+                                    ]),
+                                }
                             },
                             'chef-de-projet': {
-                                'email': newMemberEmail,
-                                'last_name': lastName,
-                                'first_name': firstName,
-                                'project_id': project_id,
+                                'url': 'https://lab.padem.org/wp-json/mo/v1/createProjectChief',
+                                'data': {
+                                    'project_id': project_id,
+                                    'chief_email': newMemberEmail,
+                                    'chief_first_name': firstName,
+                                    'chief_last_name': lastName,
+                                    'chief_activity_history': JSON.stringify([
+                                        {
+                                            'hour': new Date().getHours(),
+                                            'minute': new Date().getMinutes(),
+                                            'day': new Date().getDate(),
+                                            'month': new Date().getMonth() + 1,
+                                            'year': new Date().getFullYear(),
+                                        },
+                                        {
+                                            'Activité': `Création du projet ${project.project_title} et ajout des membres`,
+                                        },
+                                        {
+                                            'Commentaire': 'Le projet est en cours de création',
+                                        },
+                                        {
+                                            'Divers': '',
+                                        }
+                                    ]),
+                                }
                             },
                             'comptable': {
-                                'email': newMemberEmail,
-                                'last_name': lastName,
-                                'first_name': firstName,
-                                'project_id': project_id,
+                                'url': 'https://lab.padem.org/wp-json/mo/v1/createAccountant',
+                                'data': {
+                                    'project_id': project_id,
+                                    'accountant_email': newMemberEmail,
+                                    'accountant_first_name': firstName,
+                                    'accountant_last_name': lastName,
+                                    'accountant_activity_history': JSON.stringify([
+                                        {
+                                            'hour': new Date().getHours(),
+                                            'minute': new Date().getMinutes(),
+                                            'day': new Date().getDate(),
+                                            'month': new Date().getMonth() + 1,
+                                            'year': new Date().getFullYear(),
+                                        },
+                                        {
+                                            'Activité': `Création du projet ${project.project_title} et ajout des membres`,
+                                        },
+                                        {
+                                            'Commentaire': 'Le projet est en cours de création',
+                                        },
+                                        {
+                                            'Divers': '',
+                                        }
+                                    ]),
+                                }
                             },
                             'consultant': {
-                                'email': newMemberEmail,
-                                'last_name': lastName,
-                                'first_name': firstName,
-                                'project_id': project_id,
+                                'url': 'https://lab.padem.org/wp-json/mo/v1/createConsultant',
+                                'data': {
+                                    'project_id': project_id,
+                                    'consultant_email': newMemberEmail,
+                                    'consultant_first_name': firstName,
+                                    'consultant_last_name': lastName,
+                                    'consultant_activity_history': JSON.stringify([
+                                        {
+                                            'hour': new Date().getHours(),
+                                            'minute': new Date().getMinutes(),
+                                            'day': new Date().getDate(),
+                                            'month': new Date().getMonth() + 1,
+                                            'year': new Date().getFullYear(),
+                                        },
+                                        {
+                                            'Activité': `Création du projet ${project.project_title} et ajout des membres`,
+                                        },
+                                        {
+                                            'Commentaire': 'Le projet est en cours de création',
+                                        },
+                                        {
+                                            'Divers': '',
+                                        }
+                                    ]),
+                                },
                             },
                             'partenaire': {
-                                'email': newMemberEmail,
-                                'last_name': lastName,
-                                'first_name': firstName,
-                                'project_id': project_id,
+                                'url': 'https://lab.padem.org/wp-json/mo/v1/createPartner',
+                                'data': {
+                                    'project_id': project_id,
+                                    'partner_email': newMemberEmail,
+                                    'partner_first_name': firstName,
+                                    'partner_last_name': lastName,
+                                    'partner_activity_history': JSON.stringify([
+                                        {
+                                            'hour': new Date().getHours(),
+                                            'minute': new Date().getMinutes(),
+                                            'day': new Date().getDate(),
+                                            'month': new Date().getMonth() + 1,
+                                            'year': new Date().getFullYear(),
+                                        },
+                                        {
+                                            'Activité': `Création du projet ${project.project_title} et ajout des membres`,
+                                        },
+                                        {
+                                            'Commentaire': 'Le projet est en cours de création',
+                                        },
+                                        {
+                                            'Divers': '',
+                                        }
+                                    ]),
+                                },
                             },
                             'bailleur': {
-                                'email': newMemberEmail,
-                                'last_name': lastName,
-                                'first_name': firstName,
-                                'project_id': project_id,
-                            },
+                                'url': 'https://lab.padem.org/wp-json/mo/v1/createBailleur',
+                                'data': {
+                                    'project_id': project_id,
+                                    'bailleur_email': newMemberEmail,
+                                    'bailleur_first_name': firstName,
+                                    'bailleur_last_name': lastName,
+                                    'bailleur_activity_history': JSON.stringify([
+                                        {
+                                            'hour': new Date().getHours(),
+                                            'minute': new Date().getMinutes(),
+                                            'day': new Date().getDate(),
+                                            'month': new Date().getMonth() + 1,
+                                            'year': new Date().getFullYear(),
+                                        },
+                                        {
+                                            'Activité': `Création du projet ${project.project_title} et ajout des membres`,
+                                        },
+                                        {
+                                            'Commentaire': 'Le projet est en cours de création',
+                                        },
+                                        {
+                                            'Divers': '',
+                                        }
+                                    ]),
+                                },
+                            }
                         };
-                        fetch(urls_list[newMemberRole], {
+
+                        fetch(urls_and_data[newMemberRole].url, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
                             },
-                            body: JSON.stringify(data[newMemberRole]),
+                            body: JSON.stringify(urls_and_data[newMemberRole].data),
                         })
                             .then(response => response.json())
                             .then(data => {
                                 console.log(data);
+                                // Récupérer l'ID du nouveau membre
+                                var newMemberId;
+                                if (data.accountant_id) 
+                                {
+                                    newMemberId = data.accountant_id;
+                                } 
+                                else if (data.funder_id) 
+                                {
+                                    newMemberId = data.funder_id;
+                                } 
+                                else if (data.partner_id) 
+                                {
+                                    newMemberId = data.partner_id;
+                                } 
+                                else if (data.coordinator_id) 
+                                {
+                                    newMemberId = data.coordinator_id;
+                                } 
+                                else if (data.chief_id) 
+                                {
+                                    newMemberId = data.chief_id;
+                                } 
+                                else if (data.consultant_id) 
+                                {
+                                    newMemberId = data.consultant_id;
+                                } 
+                                else if (data.coordinator_id) 
+                                {
+                                    newMemberId = data.coordinator_id;
+                                } 
+                                else {
+                                    console.log('Erreur lors de la création du nouveau membre');
+                                    return;
+                                }
+
+                                // Ajouter l'ID du nouveau membre à la liste des membres)
+                                // Ajouter l'ID du nouveau membre à la liste des membres du projet sur la base de données
+                                fetch('https://lab.padem.org/wp-json/mo/v1/updateOneProject',
+                                    {
+                                        method: 'PUT',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                        },
+                                        body: JSON.stringify({
+                                            'project_id': project_id,
+                                            'user_list': JSON.stringify({
+                                                'id': project_id + '-' + newMemberId + '-' + new Date().getTime(),
+                                                'user_id': newMemberId,
+                                            }),
+                                        }),
+                                    })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        console.log(data);
+                                    })
+                                    .catch(error => {
+                                        console.error(error);
+                                    });
                             })
                             .catch(error => {
                                 console.error(error);
                             });
                     });
 
-                    
+
                     stepper++;
                     if (stepper === 2) {
                         li.style.backgroundColor = '#F2F1F1';
