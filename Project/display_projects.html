@@ -1,70 +1,8 @@
-<style>
-    table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-    table,
-    th,
-    td {
-        border: 1px solid black;
-    }
-
-    th,
-    td {
-        padding: 5px;
-        text-align: left;
-    }
-
-    th {
-        background-color: #f2f2f2;
-    }
-
-    tr:nth-child(even) {
-        background-color: #f2f2f2;
-    }
-
-    tr:nth-child(odd) {
-        background-color: #ffffff;
-    }
-
-    tr:hover {
-        background-color: #e6e6e6;
-    }
-
-    button {
-        background-color: #4CAF50;
-        color: white;
-        padding: 10px 20px;
-        border: none;
-        cursor: pointer;
-    }
-
-    button:hover {
-        background-color: #45a049;
-    }
-
-    button:active {
-        background-color: #3e8e41;
-    }
-
-    button:focus {
-        outline: none;
-    }
-
-    button:disabled {
-        background-color: #ccc;
-        cursor: not-allowed;
-    }
-</style>
+<!-- Description: Afficher la liste des projets en cours -->
 
 <body>
     <!-- Afficher la liste des projets en cours -->
-    <table>
-        <tbody id="projectsList"></tbody>
-    </table>
-
-
+    <ul id="projectsList" style="text-decoration: none;"></ul>
 </body>
 
 
@@ -75,8 +13,10 @@
         var userId;
         var userEmail = '';
         var userRole = '';
-        var buttonText = '';
-
+        var buttonText = 'Compléter le projet';
+        var numberOfMembers = 0;
+        var localStatus = '';
+        var projectStatus = '';
 
         // Récupérer la liste des projets depuis la base de données (à partir de l'API (https://lab.padem.org/wp-json/mo/v1/getProjects))
         // les projets sont affichés dans des lignes individuelles avec un bouton cliquables pour les modifier
@@ -94,46 +34,80 @@
                     'Terminé': 'lightred',
                     'En pause': 'lightblue',
                     'Annulé': 'gray',
-                    'Non commencé': 'orange',
-                }
+                    'Non commencé': 'lightgray',
+                };
+                var colorStatusBackground = {
+                    'Complet': 'green',
+                    'Incomplet': 'red',
+                };
+                var stepper = 0;
                 // Parcourir la liste des projets
                 data.forEach(project => {
-                    // Créer une ligne pour chaque projet
-                    var tr = document.createElement('tr');
-                    var trSpacer = document.createElement('tr');
-                    // Ajouter le titre du projet, la date de début, la date de fin, le pays, le référent et le statut dans des lignes individuelles
-                    tr.style.color = 'black';
-                    tr.style.textAlign = 'left';
-                    tr.style.border = 'none';
-                    tr.style.borderRadius = '15px';
-                    tr.style.backgroundColor = 'white';
-                    tr.style.height = 'auto';
-                    tr.style.width = '50%';
+                    // Créer un élément de liste pour chaque projet
+                    var li = document.createElement('li');
+                    var liSpacer = document.createElement('li');
+                    // Ajouter le titre du projet, la date de début, la date de fin, le pays, le référent et le statut dans des éléments individuels
+                    li.style.color = 'black';
+                    li.style.textAlign = 'left';
+                    li.style.border = 'none';
+                    li.style.borderRadius = '15px';
+                    li.style.backgroundColor = 'white';
+                    li.style.height = 'auto';
+                    li.style.width = '100%';
+                    li.style.display = 'flex';
+                    li.style.justifyContent = 'space-between';
+                    li.style.padding = '10px';
+                    li.style.margin = '10px';
+                    li.style.border = '1px #5AC4C4D0';
+                    li.style.textDecoration = 'none';
 
-                    trSpacer.innerHTML = `
-                        <div style="margin-top: 10px; margin-bottom: 10px"></div>
+                    liSpacer.style.height = 'auto';
+                    liSpacer.style.width = '100%';
+                    liSpacer.style.backgroundColor = 'none';
+                    liSpacer.innerHTML = `
+                        <div style="margin-top: 3px; margin-bottom: 3px; background: none;"></div>
                     `;
+                    projectStatus = project.project_status;
+                    numberOfMembers = project.users_list.length;
+                    if (numberOfMembers === 0 || project.users_list === null || project.users_list === undefined) {
+                        localStatus = 'Incomplet';
+                        buttonText = 'Compléter le projet';
+                        projectStatus = 'Non commencé';
+                    } else if (numberOfMembers > 0) {
+                        localStatus = 'Complet';
+                        buttonText = 'Modifier le projet';
+                    }
 
-                    // Ajouter les données dans la ligne
-                    tr.innerHTML = `
-                        <td>${project.project_title}</td>
-                        <td>${project.start_date}</td>
-                        <td>${project.end_date}</td>
-                        <td>${project.project_location}</td>
-                        <td>${project.project_referent_email}</td>
-                        <td style="text-transform: capitalize; font-weight: bold; color: ${colorStatusText[project.project_status]}; background: white" id="status_${project.project_id}">${project.project_status}</td>
-                        <td>
-                            <button class="buttonModifier">Modifier</button>
-                        </td>
+                    // Ajouter les données dans l'élément de liste
+                    li.innerHTML = `
+                        <span style="font-weight: bold; color: '#29A6A7';">${project.project_title}</span>
+                        <span>${project.project_location}</span>
+                        <span>Membres: ${numberOfMembers}</span>
+                        <span style="text-transform: capitalize; font-weight: bold; color: ${colorStatusText[projectStatus]}; background: white; margin: 5px; padding: 5px; boder-radius: 20px;" id="status_${project.project_id}">${projectStatus}</span>
+                        <span style="font-weight: bold; font-size: 11px; color: ${colorStatusBackground[localStatus]};">${localStatus}</span>
+                        <span style="display: 'flex'; justify-content: 'flex-end';">
+                            <div style="margin-right: 10px;"></div>
+                            <button class="buttonModifier">${buttonText}</button>
+                        </span>
                     `;
                     // Ajouter un événement de clic sur le bouton "Modifier"    
-                    tr.querySelector('button').addEventListener('click', () => {
+                    li.querySelector('button').addEventListener('click', () => {
                         // Rediriger l'utilisateur vers la page de modification du projet
                         window.location.href = 'https://lab.padem.org/projet/edit_project.html?project_id=' + project.project_id;
                     });
-                    // Ajouter la ligne dans la liste des projets
-                    document.getElementById('projectsList').appendChild(tr);
-                    document.getElementById('projectsList').appendChild(trSpacer);
+                    // Ajouter l'élément de liste dans la liste des projets
+                    document.getElementById('projectsList').appendChild(li);
+
+                    stepper++;
+                    if (stepper === 2) {
+                        li.style.backgroundColor = '#F2F1F1';
+                        if (liSpacer !== null) {
+                            document.getElementById('projectsList').appendChild(liSpacer);
+                        }
+                        stepper = 0;
+                    } else {
+                        li.style.backgroundColor = 'white';
+                    }
                 });
             })
     });
