@@ -71,6 +71,7 @@
                     } else if (numberOfMembers > 0) {
                         localStatus = 'Complet';
                         buttonText = 'Modifier le projet';
+                        projectStatus = 'En cours';
                     }
 
                     // Ajouter les données dans l'élément de liste
@@ -345,10 +346,20 @@
 
                     // Ajouter un gestionnaire d'événement pour chaque bouton "Ajouter le nouveau membre", "Ajouter le nouveau rapport", "Ajouter le nouveau document", "Ajouter le nouveau lien", "Ajouter divers"
                     document.getElementById('buttonAddMember_' + project_id).addEventListener('click', () => {
+
+                    document.getElementById('buttonAddMember_' + project_id).style.backgroundColor = '#29A6A7';
+                    document.getElementById('buttonAddMember_' + project_id).style.color = 'white';
+                    
+
                         var newMemberEmail = document.getElementById('newMemberEmail_' + project_id).value;
                         var newMemberRole = document.getElementById('newMemberRole_' + project_id).value;
                         var lastName = document.getElementById('last_name_' + project_id).value;
                         var firstName = document.getElementById('first_name_' + project_id).value;
+
+                        if (newMemberEmail === '' || newMemberRole === '' || lastName === '' || firstName === '') {
+                            alert('Veuillez remplir tous les champs.');
+                            return;
+                        }
 
                         var urls_and_data = {
                             'Coordinateur': {
@@ -524,43 +535,34 @@
                         })
                             .then(response => response.json())
                             .then(data => {
-                                console.log(data);
                                 // Récupérer l'ID du nouveau membre
                                 var newMemberId;
-                                if (data.accountant_id) 
-                                {
+                                if (data.accountant_id) {
                                     newMemberId = data.accountant_id;
-                                } 
-                                else if (data.funder_id) 
-                                {
+                                }
+                                else if (data.funder_id) {
                                     newMemberId = data.funder_id;
-                                } 
-                                else if (data.partner_id) 
-                                {
+                                }
+                                else if (data.partner_id) {
                                     newMemberId = data.partner_id;
-                                } 
-                                else if (data.coordinator_id) 
-                                {
+                                }
+                                else if (data.coordinator_id) {
                                     newMemberId = data.coordinator_id;
-                                } 
-                                else if (data.chief_id) 
-                                {
+                                }
+                                else if (data.chief_id) {
                                     newMemberId = data.chief_id;
-                                } 
-                                else if (data.consultant_id) 
-                                {
+                                }
+                                else if (data.consultant_id) {
                                     newMemberId = data.consultant_id;
-                                } 
-                                else if (data.coordinator_id) 
-                                {
-                                    newMemberId = data.coordinator_id;
-                                } 
+                                }
+                                else if (data.referent_id) {
+                                    newMemberId = data.referent_id;
+                                }
                                 else {
                                     console.log('Erreur lors de la création du nouveau membre');
                                     return;
                                 }
 
-                                // Ajouter l'ID du nouveau membre à la liste des membres)
                                 // Ajouter l'ID du nouveau membre à la liste des membres du projet sur la base de données
                                 fetch('https://lab.padem.org/wp-json/mo/v1/updateOneProject',
                                     {
@@ -579,6 +581,8 @@
                                     .then(response => response.json())
                                     .then(data => {
                                         console.log(data);
+                                        // Recharger la page
+                                        window.location.href = 'https://lab.padem.org/project/';
                                     })
                                     .catch(error => {
                                         console.error(error);
@@ -589,14 +593,24 @@
                             });
                     });
 
+                    // Ajouter un membre existant au projet sur la base de données
+                    document.getElementById('addExistingMember_' + project_id).addEventListener('click', () => {
+                        var existingMemberEmail = document.getElementById('existingMemberEmail_' + project_id).value;
+                        var existingMemberRole = document.getElementById('existingMemberRole_' + project_id).value;
+                        var existingMemberName = document.getElementById('existingMemberName_' + project_id).value;
+
+                        if (!existingMemberEmail || !existingMemberRole || !existingMemberName) {
+                            alert('Veuillez remplir tous les champs.');
+                            return;
+                        }
+
+
+                    });
 
                     stepper++;
                     if (stepper === 2) {
-                        li.style.backgroundColor = '#F2F1F1';
-                        li.style.borderColor = 'lightgray';
+                        li.style.borderColor = '#29A6A7';
                         stepper = 0;
-                    } else {
-                        li.style.backgroundColor = 'white';
                     }
                 });
             })
