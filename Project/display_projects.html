@@ -78,7 +78,7 @@
                     li.innerHTML = `
                         <div style="list-style-type: none; padding: 5px; margin: 5px; border-radius: 10px;">
                             <ul class="project-row" style="width: fit-content;">
-                                <li class="project-element" font-weight: bold; color: #29A6A7;">${project.project_title}</li>
+                                <li class="project-element" style="font-weight: bold; color: #29A6A7;">${project.project_title}</li>
                                 <li class="project-element">${project.project_location}</li>
                                 <li class="project-element">Membres: ${numberOfMembers}</li>
                                 <li class="project-element" style="text-transform: capitalize; font-weight: bold; color: ${colorStatusText[projectStatus]}; background: white; margin: 5px; padding: 5px; boder-radius: 20px;" id="status_${project.project_id}">${projectStatus}</li>
@@ -222,7 +222,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div id="newLink" style="display: none;">
+                                            <div id="newLink_${project_id}" style="display: none;">
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <div class="form-group">
@@ -247,7 +247,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div id="newMisc" style="display: none;">
+                                            <div id="newMisc_${project_id}" style="display: none;">
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <div class="form-group">
@@ -282,21 +282,80 @@
 
                     // Ajouter un gestionnaire d'événement pour chaque bouton "Compléter le projet ou Modifier le projet"
                     document.getElementById(`buttonModifier_${project_id}`).addEventListener('click', () => {
+
                         if (document.getElementById(`modifyProject_${project_id}`).style.display === 'none') {
                             document.getElementById(`modifyProject_${project_id}`).style.display = 'block';
+                            document.getElementById(`modifyProject_${project_id}`).style.backgroundColor = 'lightred';
+
+                            buttonText = 'Annuler les modifications';
+                            // Supprimer toutes les informations des formulaires
+                            document.getElementById(`newMemberEmail_${project_id}`).value = '';
+                            document.getElementById(`newMemberRole_${project_id}`).value = '';
+                            document.getElementById(`last_name_${project_id}`).value = '';
+                            document.getElementById(`first_name_${project_id}`).value = '';
+                            document.getElementById(`existingMemberEmail_${project_id}`).value = '';
+                            document.getElementById(`existingMemberRole_${project_id}`).value = '';
+                            document.getElementById(`reportTitle_${project_id}`).value = '';
+                            document.getElementById(`reportDescription_${project_id}`).value = '';
+                            document.getElementById(`documentTitle_${project_id}`).value = '';
+                            document.getElementById(`documentDescription_${project_id}`).value = '';
+                            document.getElementById(`documentFile_${project_id}`).value = '';
+                            document.getElementById(`linkTitle_${project_id}`).value = '';
+                            document.getElementById(`linkDescription_${project_id}`).value = '';
+                            document.getElementById(`linkUrl_${project_id}`).value = '';
+                            document.getElementById(`miscTitle_${project_id}`).value = '';
+                            document.getElementById(`miscDescription_${project_id}`).value = '';
+                            document.getElementById(`miscFile_${project_id}`).value = '';
                         } else {
                             document.getElementById(`modifyProject_${project_id}`).style.display = 'none';
+                            document.getElementById(`modifyProject_${project_id}`).style.backgroundColor = '#29A6A7';
+                            if (numberOfMembers === 0) {
+                                buttonText = 'Compléter le projet';
+                                projectStatus = 'Non commencé';
+                            } else {
+                                buttonText = 'Modifier le projet';
+                                projectStatus = 'En cours';
+                            }
                         }
+
+                        // Réinitialiser les couleurs des boutons
+                        document.getElementById(`buttonExistingMember_${project_id}`).style.backgroundColor = 'white';
+                        document.getElementById(`buttonExistingMember_${project_id}`).style.color = '#29A6A7';
+                        document.getElementById(`buttonNewMember_${project_id}`).style.backgroundColor = 'white';
+                        document.getElementById(`buttonNewMember_${project_id}`).style.color = '#29A6A7';
+                        document.getElementById(`buttonReportRequest_${project_id}`).style.backgroundColor = 'white';
+                        document.getElementById(`buttonReportRequest_${project_id}`).style.color = '#29A6A7';
+                        document.getElementById(`buttonDocumentModel_${project_id}`).style.backgroundColor = 'white';
+                        document.getElementById(`buttonDocumentModel_${project_id}`).style.color = '#29A6A7';
+                        document.getElementById(`buttonAddLink_${project_id}`).style.backgroundColor = 'white';
+                        document.getElementById(`buttonAddLink_${project_id}`).style.color = '#29A6A7';
+                        document.getElementById(`buttonAddDivers_${project_id}`).style.backgroundColor = 'white';
+                        document.getElementById(`buttonAddDivers_${project_id}`).style.color = '#29A6A7';
                     });
 
                     // Ajouter un gestionnaire d'événement pour chaque élément de liste
                     document.getElementById(`buttonExistingMember_${project_id}`).addEventListener('click', () => {
+                        // Afficher le formulaire pour ajouter un membre existant
                         document.getElementById(`existingMember_${project_id}`).style.display = 'block';
                         document.getElementById('newMember_' + project_id).style.display = 'none';
                         document.getElementById('newReport_' + project_id).style.display = 'none';
                         document.getElementById('newDocument_' + project_id).style.display = 'none';
                         document.getElementById('newLink_' + project_id).style.display = 'none';
                         document.getElementById('newMisc_' + project_id).style.display = 'none';
+
+                        // Changer le background du bouton cliqué
+                        document.getElementById(`buttonExistingMember_${project_id}`).style.backgroundColor = '#29A6A7';
+                        document.getElementById(`buttonExistingMember_${project_id}`).style.color = 'white';
+                        document.getElementById(`buttonNewMember_${project_id}`).style.backgroundColor = 'white';
+                        document.getElementById(`buttonNewMember_${project_id}`).style.color = '#29A6A7';
+                        document.getElementById(`buttonReportRequest_${project_id}`).style.backgroundColor = 'white';
+                        document.getElementById(`buttonReportRequest_${project_id}`).style.color = '#29A6A7';
+                        document.getElementById(`buttonDocumentModel_${project_id}`).style.backgroundColor = 'white';
+                        document.getElementById(`buttonDocumentModel_${project_id}`).style.color = '#29A6A7';
+                        document.getElementById(`buttonAddLink_${project_id}`).style.backgroundColor = 'white';
+                        document.getElementById(`buttonAddLink_${project_id}`).style.color = '#29A6A7';
+                        document.getElementById(`buttonAddDivers_${project_id}`).style.backgroundColor = 'white';
+                        document.getElementById(`buttonAddDivers_${project_id}`).style.color = '#29A6A7';
                     });
 
                     document.getElementById('buttonReportRequest_' + project_id).addEventListener('click', () => {
@@ -306,6 +365,20 @@
                         document.getElementById('newDocument_' + project_id).style.display = 'none';
                         document.getElementById('newLink_' + project_id).style.display = 'none';
                         document.getElementById('newMisc_' + project_id).style.display = 'none';
+
+                        // Changer le background du bouton cliqué
+                        document.getElementById(`buttonExistingMember_${project_id}`).style.backgroundColor = 'white';
+                        document.getElementById(`buttonExistingMember_${project_id}`).style.color = '#29A6A7';
+                        document.getElementById(`buttonNewMember_${project_id}`).style.backgroundColor = 'white';
+                        document.getElementById(`buttonNewMember_${project_id}`).style.color = '#29A6A7';
+                        document.getElementById(`buttonReportRequest_${project_id}`).style.backgroundColor = '#29A6A7';
+                        document.getElementById(`buttonReportRequest_${project_id}`).style.color = 'white';
+                        document.getElementById(`buttonDocumentModel_${project_id}`).style.backgroundColor = 'white';
+                        document.getElementById(`buttonDocumentModel_${project_id}`).style.color = '#29A6A7';
+                        document.getElementById(`buttonAddLink_${project_id}`).style.backgroundColor = 'white';
+                        document.getElementById(`buttonAddLink_${project_id}`).style.color = '#29A6A7';
+                        document.getElementById(`buttonAddDivers_${project_id}`).style.backgroundColor = 'white';
+                        document.getElementById(`buttonAddDivers_${project_id}`).style.color = '#29A6A7';
                     });
 
                     document.getElementById('buttonDocumentModel_' + project_id).addEventListener('click', () => {
@@ -315,6 +388,20 @@
                         document.getElementById('newReport_' + project_id).style.display = 'none';
                         document.getElementById('newLink_' + project_id).style.display = 'none';
                         document.getElementById('newMisc_' + project_id).style.display = 'none';
+
+                        // Changer le background du bouton cliqué
+                        document.getElementById(`buttonExistingMember_${project_id}`).style.backgroundColor = 'white';
+                        document.getElementById(`buttonExistingMember_${project_id}`).style.color = '#29A6A7';
+                        document.getElementById(`buttonNewMember_${project_id}`).style.backgroundColor = 'white';
+                        document.getElementById(`buttonNewMember_${project_id}`).style.color = '#29A6A7';
+                        document.getElementById(`buttonReportRequest_${project_id}`).style.backgroundColor = 'white';
+                        document.getElementById(`buttonReportRequest_${project_id}`).style.color = '#29A6A7';
+                        document.getElementById(`buttonDocumentModel_${project_id}`).style.backgroundColor = '#29A6A7';
+                        document.getElementById(`buttonDocumentModel_${project_id}`).style.color = 'white';
+                        document.getElementById(`buttonAddLink_${project_id}`).style.backgroundColor = 'white';
+                        document.getElementById(`buttonAddLink_${project_id}`).style.color = '#29A6A7';
+                        document.getElementById(`buttonAddDivers_${project_id}`).style.backgroundColor = 'white';
+                        document.getElementById(`buttonAddDivers_${project_id}`).style.color = '#29A6A7';
                     });
 
                     document.getElementById('buttonNewMember_' + project_id).addEventListener('click', () => {
@@ -324,15 +411,43 @@
                         document.getElementById('newDocument_' + project_id).style.display = 'none';
                         document.getElementById('newLink_' + project_id).style.display = 'none';
                         document.getElementById('newMisc_' + project_id).style.display = 'none';
+
+                        // Changer le background du bouton cliqué
+                        document.getElementById(`buttonExistingMember_${project_id}`).style.backgroundColor = 'white';
+                        document.getElementById(`buttonExistingMember_${project_id}`).style.color = '#29A6A7';
+                        document.getElementById(`buttonNewMember_${project_id}`).style.backgroundColor = '#29A6A7';
+                        document.getElementById(`buttonNewMember_${project_id}`).style.color = 'white';
+                        document.getElementById(`buttonReportRequest_${project_id}`).style.backgroundColor = 'white';
+                        document.getElementById(`buttonReportRequest_${project_id}`).style.color = '#29A6A7';
+                        document.getElementById(`buttonDocumentModel_${project_id}`).style.backgroundColor = 'white';
+                        document.getElementById(`buttonDocumentModel_${project_id}`).style.color = '#29A6A7';
+                        document.getElementById(`buttonAddLink_${project_id}`).style.backgroundColor = 'white';
+                        document.getElementById(`buttonAddLink_${project_id}`).style.color = '#29A6A7';
+                        document.getElementById(`buttonAddDivers_${project_id}`).style.backgroundColor = 'white';
+                        document.getElementById(`buttonAddDivers_${project_id}`).style.color = '#29A6A7';
                     });
 
                     document.getElementById('buttonAddLink_' + project_id).addEventListener('click', () => {
-                        document.getElementById('newLink' + project_id).style.display = 'block';
-                        document.getElementById('newMember' + project_id).style.display = 'none';
-                        document.getElementById('existingMember' + project_id).style.display = 'none';
-                        document.getElementById('newReport' + project_id).style.display = 'none';
-                        document.getElementById('newDocument' + project_id).style.display = 'none';
-                        document.getElementById('newMisc' + project_id).style.display = 'none';
+                        document.getElementById('newLink_' + project_id).style.display = 'block';
+                        document.getElementById('newMember_' + project_id).style.display = 'none';
+                        document.getElementById('existingMember_' + project_id).style.display = 'none';
+                        document.getElementById('newReport_' + project_id).style.display = 'none';
+                        document.getElementById('newDocument_' + project_id).style.display = 'none';
+                        document.getElementById('newMisc_' + project_id).style.display = 'none';
+
+                        // Changer le background du bouton cliqué
+                        document.getElementById(`buttonExistingMember_${project_id}`).style.backgroundColor = '#29A6A7';
+                        document.getElementById(`buttonExistingMember_${project_id}`).style.color = 'white';
+                        document.getElementById(`buttonNewMember_${project_id}`).style.backgroundColor = 'white';
+                        document.getElementById(`buttonNewMember_${project_id}`).style.color = '#29A6A7';
+                        document.getElementById(`buttonReportRequest_${project_id}`).style.backgroundColor = 'white';
+                        document.getElementById(`buttonReportRequest_${project_id}`).style.color = '#29A6A7';
+                        document.getElementById(`buttonDocumentModel_${project_id}`).style.backgroundColor = 'white';
+                        document.getElementById(`buttonDocumentModel_${project_id}`).style.color = '#29A6A7';
+                        document.getElementById(`buttonAddLink_${project_id}`).style.backgroundColor = 'white';
+                        document.getElementById(`buttonAddLink_${project_id}`).style.color = '#29A6A7';
+                        document.getElementById(`buttonAddDivers_${project_id}`).style.backgroundColor = 'white';
+                        document.getElementById(`buttonAddDivers_${project_id}`).style.color = '#29A6A7';
                     });
 
                     document.getElementById('buttonAddDivers_' + project_id).addEventListener('click', () => {
@@ -346,10 +461,6 @@
 
                     // Ajouter un gestionnaire d'événement pour chaque bouton "Ajouter le nouveau membre", "Ajouter le nouveau rapport", "Ajouter le nouveau document", "Ajouter le nouveau lien", "Ajouter divers"
                     document.getElementById('buttonAddMember_' + project_id).addEventListener('click', () => {
-
-                    document.getElementById('buttonAddMember_' + project_id).style.backgroundColor = '#29A6A7';
-                    document.getElementById('buttonAddMember_' + project_id).style.color = 'white';
-                    
 
                         var newMemberEmail = document.getElementById('newMemberEmail_' + project_id).value;
                         var newMemberRole = document.getElementById('newMemberRole_' + project_id).value;
@@ -537,25 +648,25 @@
                             .then(data => {
                                 // Récupérer l'ID du nouveau membre
                                 var newMemberId;
-                                if (data.accountant_id) {
+                                if (data.accountant_id !== undefined) {
                                     newMemberId = data.accountant_id;
                                 }
-                                else if (data.funder_id) {
+                                else if (data.funder_id !== undefined) {
                                     newMemberId = data.funder_id;
                                 }
-                                else if (data.partner_id) {
+                                else if (data.partner_id !== undefined) {
                                     newMemberId = data.partner_id;
                                 }
-                                else if (data.coordinator_id) {
+                                else if (data.coordinator_id !== undefined) {
                                     newMemberId = data.coordinator_id;
                                 }
-                                else if (data.chief_id) {
+                                else if (data.chief_id !== undefined) {
                                     newMemberId = data.chief_id;
                                 }
-                                else if (data.consultant_id) {
+                                else if (data.consultant_id !== undefined) {
                                     newMemberId = data.consultant_id;
                                 }
-                                else if (data.referent_id) {
+                                else if (data.referent_id !== undefined) {
                                     newMemberId = data.referent_id;
                                 }
                                 else {
