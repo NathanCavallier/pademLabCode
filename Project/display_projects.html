@@ -2,7 +2,7 @@
 
 <body>
     <!-- Afficher la liste des projets en cours -->
-    <ul id="projectsList"></ul>
+    <ul id="projectsList" style="color: aliceblue;"></ul>
 </body>
 
 
@@ -52,14 +52,14 @@
                     li.style.textAlign = 'left';
                     li.style.border = 'none';
                     li.style.borderRadius = '15px';
-                    li.style.backgroundColor = 'white';
+                    li.style.backgroundColor = '#98CFCF';
                     li.style.height = 'auto';
                     li.style.width = '95%';
                     li.style.display = 'flex';
                     li.style.justifyContent = 'space-between';
                     li.style.padding = '10px';
                     li.style.margin = '10px';
-                    li.style.border = '1px #5AC4C4D0';
+                    li.style.border = '1px';
                     li.style.textDecoration = 'none';
 
                     projectStatus = project.project_status;
@@ -125,7 +125,7 @@
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <div class="form-group">
-                                                            <label for="newMemberEmail_${project_id}">Adresse email du nouveau membre</label>
+                                                            <label for="newMemberEmail_${project_id}" required>Adresse email du nouveau membre</label>
                                                             <input type="email" class="form-control" id="newMemberEmail_${project_id}" aria-describedby="emailHelp">
                                                             <label for="last_name_${project_id}">Nom</label>
                                                             <input type="text" class="form-control" id="last_name_${project_id}" aria-describedby="emailHelp">
@@ -136,7 +136,7 @@
                                                     <div class="col-md-12">
                                                         <div class="form-group">
                                                             <label for="newMemberRole_${project_id}">Rôle du nouveau membre</label>
-                                                            <select class="form-control" id="newMemberRole_${project_id}">
+                                                            <select class="form-control" id="newMemberRole_${project_id}" required>
                                                                 <option value="Coordinateur">Coordinateur</option>
                                                                 <option value="chef-de-projet">Chef de projet</option>
                                                                 <option value="comptable">Comptable</option>
@@ -146,8 +146,9 @@
                                                             </select>
                                                         </div>
                                                     </div>
+                                                    <div style="margin-top: 10px; padding: 10px;"></div>
                                                     <div class="col-md-12">
-                                                    <button type="submit" class="btn btn-primary" id="buttonAddMember_${project_id}">Ajouter le nouveau membre</button>
+                                                        <button type="submit" class="btn btn-primary" id="buttonAddMember_${project_id}">Ajouter le nouveau membre</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -156,14 +157,20 @@
                                                     <div class="col-md-12">
                                                         <div class="form-group">
                                                             <label for="existingMemberEmail_${project_id}">Adresse email du membre existant</label>
-                                                            <select class="form-control" id="existingMemberEmail_${project_id}">
+                                                            <select class="form-control" id="existingMemberEmail_${project_id}" required>
                                                             </select>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="existingMember_last_name_${project_id}">Nom du membre existant</label>
+                                                            <input type="text" class="form-control" id="existingMember_last_name_${project_id}" aria-describedby="emailHelp">
+                                                            <label for="existingMember_first_name_${project_id}">Prénom du membre existant</label>
+                                                            <input type="text" class="form-control" id="existingMember_first_name_${project_id}" aria-describedby="emailHelp">
                                                         </div>
                                                     </div>
                                                     <div class="col-md-12">
                                                         <div class="form-group">
                                                             <label for="existingMemberRole_${project_id}">Rôle du membre existant</label>
-                                                            <select class="form-control" id="existingMemberRole_${project_id}">
+                                                            <select class="form-control" id="existingMemberRole_${project_id}" required>
                                                                 <option value="Coordinateur">Coordinateur</option>
                                                                 <option value="chef-de-projet">Chef de projet</option>
                                                                 <option value="comptable">Comptable</option>
@@ -173,6 +180,7 @@
                                                             </select>
                                                         </div>
                                                     </div>
+                                                    <div style="margin-top: 10px; padding: 10px;"></div>
                                                     <div class="col-md-12">
                                                         <button type="submit" class="btn btn-primary" id="addExistingMember_${project_id}">Ajouter le membre existant</button>
                                                     </div>
@@ -192,6 +200,7 @@
                                                             <textarea class="form-control" id="reportDescription_${project_id}" rows="5"></textarea>
                                                         </div>
                                                     </div>
+                                                    <div style="margin-top: 10px; padding: 10px;"></div>
                                                     <div class="col-md-12">
                                                         <button type="submit" class="btn btn-primary" id="submitReport_${project_id}">Ajouter le rapport</button>
                                                     </div>
@@ -217,6 +226,7 @@
                                                             <input type="file" class="form-control-file" id="documentFile_${project_id}">
                                                         </div>
                                                     </div>
+                                                    <div style="margin-top: 10px; padding: 10px;"></div>
                                                     <div class="col-md-12">
                                                         <button type="submit" class="btn btn-primary" id="newDocument_${project_id}">Ajouter le document</button>
                                                     </div>
@@ -242,6 +252,7 @@
                                                             <input type="text" class="form-control" id="linkUrl_${project_id}" aria-describedby="emailHelp">
                                                         </div>
                                                     </div>
+                                                    <div style="margin-top: 10px; padding: 10px;"></div>
                                                     <div class="col-md-12">
                                                         <button type="submit" class="btn btn-primary" id="linkSubmit_${project_id}">Ajouter le lien</button>
                                                     </div>
@@ -267,6 +278,7 @@
                                                             <input type="file" class="form-control-file" id="miscFile_${project_id}">
                                                         </div>
                                                     </div>
+                                                    <div style="margin-top: 10px; padding: 10px;"></div>
                                                     <div class="col-md-12">
                                                         <button type="submit" class="btn btn-primary" id="buttonAddMisc_${project_id}">Ajouter l'élément</button>
                                                     </div>
@@ -333,7 +345,7 @@
                         document.getElementById(`buttonAddDivers_${project_id}`).style.color = '#29A6A7';
                     });
 
-                    // Ajouter un gestionnaire d'événement pour chaque élément de liste
+                    // Ajouter un gestionnaire d'événement pour chaque bouton "Nouveau membre", "Membre existant", "Demande de rapport", "Document model", "Ajouter un lien", "Ajouter divers"
                     document.getElementById(`buttonExistingMember_${project_id}`).addEventListener('click', () => {
                         // Afficher le formulaire pour ajouter un membre existant
                         document.getElementById(`existingMember_${project_id}`).style.display = 'block';
@@ -457,6 +469,20 @@
                         document.getElementById('existingMember_' + project_id).style.display = 'none';
                         document.getElementById('newReport_' + project_id).style.display = 'none';
                         document.getElementById('newDocument_' + project_id).style.display = 'none';
+
+                        // Changer le background du bouton cliqué
+                        document.getElementById(`buttonExistingMember_${project_id}`).style.backgroundColor = 'white';
+                        document.getElementById(`buttonExistingMember_${project_id}`).style.color = '#29A6A7';
+                        document.getElementById(`buttonNewMember_${project_id}`).style.backgroundColor = 'white';
+                        document.getElementById(`buttonNewMember_${project_id}`).style.color = '#29A6A7';
+                        document.getElementById(`buttonReportRequest_${project_id}`).style.backgroundColor = 'white';
+                        document.getElementById(`buttonReportRequest_${project_id}`).style.color = '#29A6A7';
+                        document.getElementById(`buttonDocumentModel_${project_id}`).style.backgroundColor = 'white';
+                        document.getElementById(`buttonDocumentModel_${project_id}`).style.color = '#29A6A7';
+                        document.getElementById(`buttonAddLink_${project_id}`).style.backgroundColor = 'white';
+                        document.getElementById(`buttonAddLink_${project_id}`).style.color = '#29A6A7';
+                        document.getElementById(`buttonAddDivers_${project_id}`).style.backgroundColor = '#29A6A7';
+                        document.getElementById(`buttonAddDivers_${project_id}`).style.color = 'white';
                     });
 
                     // Ajouter un gestionnaire d'événement pour chaque bouton "Ajouter le nouveau membre", "Ajouter le nouveau rapport", "Ajouter le nouveau document", "Ajouter le nouveau lien", "Ajouter divers"
@@ -708,15 +734,324 @@
                     document.getElementById('addExistingMember_' + project_id).addEventListener('click', () => {
                         var existingMemberEmail = document.getElementById('existingMemberEmail_' + project_id).value;
                         var existingMemberRole = document.getElementById('existingMemberRole_' + project_id).value;
-                        var existingMemberName = document.getElementById('existingMemberName_' + project_id).value;
+                        var existingMember_first_name = document.getElementById('existingMember_first_name_' + project_id).value; 
+                        var existingMember_last_name = document.getElementById('existingMember_last_name_' + project_id).value;
 
-                        if (!existingMemberEmail || !existingMemberRole || !existingMemberName) {
+                        if (!existingMemberEmail || !existingMemberRole || !existingMember_first_name || !existingMember_last_name) {
                             alert('Veuillez remplir tous les champs.');
                             return;
                         }
 
+                        var urls_and_data = {
+                            'Coordinateur': {
+                                'url': 'https://lab.padem.org/wp-json/mo/v1/createCoordinator',
+                                'data': {
+                                    'project_id': project_id,
+                                    'coordinator_email': existingMemberEmail,
+                                    'coordinator_first_name': existingMember_first_name,
+                                    'coordinator_last_name': existingMember_last_name,
+                                    'coordinator_activity_history': JSON.stringify([
+                                        {
+                                            'Date': {
+                                                'hour': new Date().getHours(),
+                                                'minute': new Date().getMinutes(),
+                                                'day': new Date().getDate(),
+                                                'month': new Date().getMonth() + 1,
+                                                'year': new Date().getFullYear(),
+                                            }
+                                        },
+                                        {
+                                            'Activité': `Création du projet ${project.project_title} et ajout des membres`,
+                                        },
+                                        {
+                                            'Commentaire': 'Le projet est en cours de création',
+                                        },
+                                        {
+                                            'Divers': '',
+                                        }
+                                    ]),
+                                }
+                            },
+                            'chef-de-projet': {
+                                'url': 'https://lab.padem.org/wp-json/mo/v1/createProjectChief',
+                                'data': {
+                                    'project_id': project_id,
+                                    'chief_email': existingMemberEmail,
+                                    'chief_first_name': existingMember_first_name,
+                                    'chief_last_name': existingMember_last_name,
+                                    'chief_activity_history': JSON.stringify([
+                                        {
+                                            'Date': {
+                                                'hour': new Date().getHours(),
+                                                'minute': new Date().getMinutes(),
+                                                'day': new Date().getDate(),
+                                                'month': new Date().getMonth() + 1,
+                                                'year': new Date().getFullYear(),
+                                            }
+                                        },
+                                        {
+                                            'Activité': `Création du projet ${project.project_title} et ajout des membres`,
+                                        },
+                                        {
+                                            'Commentaire': 'Le projet est en cours de création',
+                                        },
+                                        {
+                                            'Divers': '',
+                                        }
+                                    ]),
+                                }
+                            },
+                            'comptable': {
+                                'url': 'https://lab.padem.org/wp-json/mo/v1/createAccountant',
+                                'data': {
+                                    'project_id': project_id,
+                                    'accountant_email': existingMemberEmail,
+                                    'accountant_first_name': existingMember_first_name,
+                                    'accountant_last_name': existingMember_last_name,
+                                    'accountant_activity_history': JSON.stringify([
+                                        {
+                                            'Date': {
+                                                'hour': new Date().getHours(),
+                                                'minute': new Date().getMinutes(),
+                                                'day': new Date().getDate(),
+                                                'month': new Date().getMonth() + 1,
+                                                'year': new Date().getFullYear(),
+                                            }
+                                        },
+                                        {
+                                            'Activité': `Création du projet ${project.project_title} et ajout des membres`,
+                                        },
+                                        {
+                                            'Commentaire': 'Le projet est en cours de création',
+                                        },
+                                        {
+                                            'Divers': '',
+                                        },
+                                        {
+                                            'Activité': `Création du projet ${project.project_title} et ajout des membres`,
+                                        },
+                                        {
+                                            'Commentaire': 'Le projet est en cours de création',
+                                        },
+                                        {
+                                            'Divers': '',
+                                        }
+                                    ]),
+                                },
+                            },
+                            'consultant': {
+                                'url': 'https://lab.padem.org/wp-json/mo/v1/createConsultant',
+                                'data': {
+                                    'project_id': project_id,
+                                    'consultant_email': existingMemberEmail,
+                                    'consultant_first_name': existingMember_first_name,
+                                    'consultant_last_name': existingMember_last_name,
+                                    'consultant_activity_history': JSON.stringify([
+                                        {
+                                            'Date': {
+                                                'hour': new Date().getHours(),
+                                                'minute': new Date().getMinutes(),
+                                                'day': new Date().getDate(),
+                                                'month': new Date().getMonth() + 1,
+                                                'year': new Date().getFullYear(),
+                                            },
+                                        },
+                                        {
+                                            'activite': `Création du projet ${project.project_title} et ajout des membres`,
+                                        },
+                                        {
+                                            'commentaire': 'Le projet est en cours de création',
+                                        },
+                                        {
+                                            'Divers': '',
+                                        }
+                                    ]),
+                                },
+                            },
+                            'partenaire': {
+                                'url': 'https://lab.padem.org/wp-json/mo/v1/createPartner',
+                                'data': {
+                                    'project_id': project_id,
+                                    'partner_email': existingMemberEmail,
+                                    'partner_first_name': existingMember_first_name,
+                                    'partner_last_name': existingMember_last_name,
+                                    'partner_activity_history': JSON.stringify([
+                                        {
+                                            'Date': {
+                                                'hour': new Date().getHours(),
+                                                'minute': new Date().getMinutes(),
+                                                'day': new Date().getDate(),
+                                                'month': new Date().getMonth() + 1,
+                                                'year': new Date().getFullYear(),
+                                            },
+                                        },
+                                        {
+                                            'activite': `Création du projet ${project.project_title} et ajout des membres`,
+                                        },
+                                        {
+                                            'commentaire': 'Le projet est en cours de création',
+                                        },
+                                        {
+                                            'Divers': '',
+                                        }
+                                    ]),
+                                },
+                            },
+                            'bailleur': {
+                                'url': 'https://lab.padem.org/wp-json/mo/v1/createFunder',
+                                'data': {
+                                    'project_id': project_id,
+                                    'bailleur_email': existingMemberEmail,
+                                    'bailleur_first_name': existingMember_first_name,
+                                    'bailleur_last_name': existingMember_last_name,
+                                    'bailleur_activity_history': JSON.stringify([
+                                        {
+                                            'Date': {
+                                                'hour': new Date().getHours(),
+                                                'minute': new Date().getMinutes(),
+                                                'day': new Date().getDate(),
+                                                'month': new Date().getMonth() + 1,
+                                                'year': new Date().getFullYear(),
+                                            },
+                                        },
+                                        {
+                                            'activite': `Création du projet ${project.project_title} et ajout des membres`,
+                                        },
+                                        {
+                                            'commentaire': 'Le projet est en cours de création',
+                                        },
+                                        {
+                                            'Divers': '',
+                                        }
+                                    ]),
+                                },
+                            },
+                        };
 
+                        fetch(urls_and_data[existingMemberRole].url, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(urls_and_data[existingMemberRole].data),
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                // Récupérer l'ID du nouveau membre
+                                var existingMemberId;
+                                if (data.accountant_id !== undefined) {
+                                    existingMemberId = data.accountant_id;
+                                }
+                                else if (data.funder_id !== undefined) {
+                                    existingMemberId = data.funder_id;
+                                }
+                                else if (data.partner_id !== undefined) {
+                                    existingMemberId = data.partner_id;
+                                }
+                                else if (data.coordinator_id !== undefined) {
+                                    existingMemberId = data.coordinator_id;
+                                }
+                                else if (data.chief_id !== undefined) {
+                                    existingMemberId = data.chief_id;
+                                }
+                                else if (data.consultant_id !== undefined) {
+                                    existingMemberId = data.consultant_id;
+                                }
+                                else if (data.referent_id !== undefined) {
+                                    existingMemberId = data.referent_id;
+                                }
+                                else {
+                                    console.log('Erreur lors de la création du nouveau membre');
+                                    return;
+                                }
+
+                                // Ajouter l'ID du nouveau membre à la liste des membres du projet sur la base de données
+                                fetch('https://lab.padem.org/wp-json/mo/v1/updateOneProject',
+                                    {
+                                        method: 'PUT',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                        },
+                                        body: JSON.stringify({
+                                            'project_id': project_id,
+                                            'user_list': JSON.stringify({
+                                                'id': project_id + '-' + existingMemberId + '-' + new Date().getTime(),
+                                                'user_id': existingMemberId,
+                                            }),
+                                        }),
+                                    })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        console.log(data);
+                                        // Recharger la page
+                                        window.location.href = 'https://lab.padem.org/project/';
+                                    })
+                                    .catch(error => {
+                                        console.error(error);
+                                    });
+                            })
+                            .catch(error => {
+                                console.error(error);
+                            });
                     });
+
+                    // Ajouter un rapport au projet sur la base de données
+                    document.getElementById('reportSubmit_' + project_id).addEventListener('click', () => {
+                        var reportTitle = document.getElementById('reportTitle_' + project_id).value;
+                        var reportDescription = document.getElementById('reportDescription_' + project_id).value;
+
+                        if (!reportTitle || !reportDescription) {
+                            alert('Veuillez remplir tous les champs.');
+                            return;
+                        }
+
+                        fetch('https://lab.padem.org/wp-json/mo/v1/createReport',
+                            {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({
+                                    'project_id': project_id,
+                                    'report_title': reportTitle,
+                                    'report_description': reportDescription,
+                                }),
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                // Récupérer l'ID du nouveau rapport
+                                var reportId = data.report_id;
+
+                                // Ajouter l'ID du nouveau rapport à la liste des rapports du projet sur la base de données
+                                fetch('https://lab.padem.org/wp-json/mo/v1/updateOneProject',
+                                    {
+                                        method: 'PUT',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                        },
+                                        body: JSON.stringify({
+                                            'project_id': project_id,
+                                            'report_list': JSON.stringify({
+                                                'id': project_id + '-' + reportId + '-' + new Date().getTime(),
+                                                'report_id': reportId,
+                                            }),
+                                        }),
+                                    })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        console.log(data);
+                                        // Recharger la page
+                                        window.location.href = 'https://lab.padem.org/project/';
+                                    })
+                                    .catch(error => {
+                                        console.error(error);
+                                    });
+                            })
+                            .catch(error => {
+                                console.error(error);
+                            });
+                    });
+
 
                     stepper++;
                     if (stepper === 2) {
