@@ -18,6 +18,38 @@
         var localStatus = '';
         var projectStatus = '';
 
+        var listOfAllMembersEmailOnPademLab = [];
+        var listOfCoordinators = [];
+        var listOfProjectChiefs = [];
+        var listOfAccountants = [];
+        var listOfConsultants = [];
+        var listOfPartners = [];
+        var listOfDonors = [];
+
+
+        // Récupérer les emails et les rôles des utilisateurs depuis la base de données (à partir de l'API (https://lab.padem.org/wp-json/mo/v1/getUserEmailAndState))
+        function getAllUsersEmails(projectId) {
+            fetch('https://lab.padem.org/wp-json/mo/v1/getUserEmailAndState', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(user => {
+                        var option = document.createElement('option');
+                        option.value = user.user_email;
+                        option.text = user.user_email - user.display_name;
+                        document.getElementById('existingMemberEmail_' + projectId).appendChild(option);
+                        listOfAllMembersEmailOnPademLab.push(user.user_email);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+
         // Récupérer la liste des projets depuis la base de données (à partir de l'API (https://lab.padem.org/wp-json/mo/v1/getProjects))
         // les projets sont affichés dans des lignes individuelles avec un bouton cliquables pour les modifier
         fetch('https://lab.padem.org/wp-json/mo/v1/getProjects', {
@@ -30,11 +62,8 @@
             .then(data => {
                 console.log(data);
                 var colorStatusText = {
-                    'En cours': 'green',
-                    'Terminé': 'lightred',
-                    'En pause': 'lightblue',
-                    'Annulé': 'gray',
-                    'Non commencé': 'lightgray',
+                    'Publié': 'green',
+                    'Non publié': 'gray',
                 };
                 var colorStatusBackground = {
                     'Complet': 'green',
@@ -50,16 +79,20 @@
                     // Ajouter le titre du projet, la date de début, la date de fin, le pays, le référent et le statut dans des éléments individuels
                     li.style.color = 'black';
                     li.style.textAlign = 'left';
-                    li.style.border = 'none';
+                    li.style.border = '1px #29A6A7';
                     li.style.borderRadius = '15px';
-                    li.style.backgroundColor = '#98CFCF';
+                    li.style.backgroundColor = 'white';
+                    stepper++;
+                    if (stepper === 2) {
+                        li.style.border = 'none';
+                        stepper = 0;
+                    }
                     li.style.height = 'auto';
                     li.style.width = '95%';
                     li.style.display = 'flex';
                     li.style.justifyContent = 'space-between';
                     li.style.padding = '10px';
                     li.style.margin = '10px';
-                    li.style.border = '1px';
                     li.style.textDecoration = 'none';
 
                     projectStatus = project.project_status;
@@ -67,12 +100,15 @@
                     if (numberOfMembers === 0 || project.users_list === null || project.users_list === undefined) {
                         localStatus = 'Incomplet';
                         buttonText = 'Compléter le projet';
-                        projectStatus = 'Non commencé';
+                        projectStatus = 'Non publié';
                     } else if (numberOfMembers > 0) {
                         localStatus = 'Complet';
                         buttonText = 'Modifier le projet';
-                        projectStatus = 'En cours';
+                        projectStatus = 'Publié';
                     }
+
+                    // Récuperer les emails des utilisateurs inscrits sur Padem Lab
+                    getAllUsersEmails(project_id);
 
                     // Ajouter les données dans l'élément de liste
                     li.innerHTML = `
@@ -81,7 +117,7 @@
                                 <li class="project-element" style="font-weight: bold; color: #29A6A7;">${project.project_title}</li>
                                 <li class="project-element">${project.project_location}</li>
                                 <li class="project-element">Membres: ${numberOfMembers}</li>
-                                <li class="project-element" style="text-transform: capitalize; font-weight: bold; color: ${colorStatusText[projectStatus]}; background: white; margin: 5px; padding: 5px; boder-radius: 20px;" id="status_${project.project_id}">${projectStatus}</li>
+                                <li class="project-element" style="text-transform: capitalize; font-weight: bold; color: ${colorStatusText[projectStatus]}; background: none; margin: 5px; padding: 5px; boder-radius: 20px;" id="status_${project.project_id}">${projectStatus}</li>
                                 <li class="project-element" style="font-weight: bold; font-size: 11px; color: ${colorStatusBackground[localStatus]};">${localStatus}</li>
                                 <li class="project-element" style="display: 'flex'; justify-content: 'flex-end';">
                                     <div style="margin-right: 10px;"></div>
@@ -97,7 +133,7 @@
                                     <div style="margin-top: 5px; padding: 5px;"></div>
                                     <div class="container">
                                         <!-- Afficher une liste de boutons à l'horizontale permettant de faire apparaître le type d'éléments à ajouter au projet -->
-                                        <div class="col-md-12" width: 100%; background: white;">
+                                        <div class="col-md-12" style="width: 100%; background: white;">
                                             <div class="row">
                                                 <div class="btn-group" role="group" aria-label="menu">
                                                     <button type="button" id="buttonNewMember_${project_id}" class="btn btn-secondary"
@@ -121,21 +157,21 @@
                                                 </div>
                                             </div>
                                             <div style="margin: 5px; padding: 5px;"></div>
-                                            <div id="newMember_${project_id}" style="display: none;">
+                                            <div id="newMember_${project_id}" style="display: none; width: 100%">
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <div class="form-group">
-                                                            <label for="newMemberEmail_${project_id}" required>Adresse email du nouveau membre</label>
+                                                            <label for="newMemberEmail_${project_id}" required>Adresse email du nouveau membre: </label>
                                                             <input type="email" class="form-control" id="newMemberEmail_${project_id}" aria-describedby="emailHelp">
-                                                            <label for="last_name_${project_id}">Nom</label>
+                                                            <label for="last_name_${project_id}">Nom: </label>
                                                             <input type="text" class="form-control" id="last_name_${project_id}" aria-describedby="emailHelp">
-                                                            <label for="first_name_${project_id}">Prénom</label>
+                                                            <label for="first_name_${project_id}">Prénom: </label>
                                                             <input type="text" class="form-control" id="first_name_${project_id}" aria-describedby="emailHelp">
                                                         </div>
                                                     </div>
                                                     <div class="col-md-12">
                                                         <div class="form-group">
-                                                            <label for="newMemberRole_${project_id}">Rôle du nouveau membre</label>
+                                                            <label for="newMemberRole_${project_id}">Rôle du nouveau membre: </label>
                                                             <select class="form-control" id="newMemberRole_${project_id}" required>
                                                                 <option value="Coordinateur">Coordinateur</option>
                                                                 <option value="chef-de-projet">Chef de projet</option>
@@ -146,30 +182,36 @@
                                                             </select>
                                                         </div>
                                                     </div>
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <label for="newMemberCityAndCountry_${project_id}">Ville et pays du nouveau membre: </label>
+                                                            <input type="text" class="form-control" id="newMemberCityAndCountry_${project_id}" aria-describedby="emailHelp">
+                                                        </div>
+                                                    </div>
                                                     <div style="margin-top: 10px; padding: 10px;"></div>
                                                     <div class="col-md-12">
-                                                        <button type="submit" class="btn btn-primary" id="buttonAddMember_${project_id}">Ajouter le nouveau membre</button>
+                                                        <button type="submit" class="btn btn-primary" id="buttonAddMember_${project_id}" style="width: fit-content;">Ajouter le nouveau membre au projet</button>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div id="existingMember_${project_id}" style="display: none;">
+                                            <div id="existingMember_${project_id}" style="display: none; width: 100%;">
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <div class="form-group">
-                                                            <label for="existingMemberEmail_${project_id}">Adresse email du membre existant</label>
+                                                            <label for="existingMemberEmail_${project_id}">Adresse email du membre existant: </label>
                                                             <select class="form-control" id="existingMemberEmail_${project_id}" required>
                                                             </select>
                                                         </div>
                                                         <div class="form-group">
-                                                            <label for="existingMember_last_name_${project_id}">Nom du membre existant</label>
+                                                            <label for="existingMember_last_name_${project_id}">Nom du membre existant: </label>
                                                             <input type="text" class="form-control" id="existingMember_last_name_${project_id}" aria-describedby="emailHelp">
-                                                            <label for="existingMember_first_name_${project_id}">Prénom du membre existant</label>
+                                                            <label for="existingMember_first_name_${project_id}">Prénom du membre existant: </label>
                                                             <input type="text" class="form-control" id="existingMember_first_name_${project_id}" aria-describedby="emailHelp">
                                                         </div>
                                                     </div>
                                                     <div class="col-md-12">
                                                         <div class="form-group">
-                                                            <label for="existingMemberRole_${project_id}">Rôle du membre existant</label>
+                                                            <label for="existingMemberRole_${project_id}">Rôle du membre existant: </label>
                                                             <select class="form-control" id="existingMemberRole_${project_id}" required>
                                                                 <option value="Coordinateur">Coordinateur</option>
                                                                 <option value="chef-de-projet">Chef de projet</option>
@@ -180,59 +222,65 @@
                                                             </select>
                                                         </div>
                                                     </div>
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <label for="existingMemberCityAndCountry_${project_id}">Ville et pays du membre existant: </label>
+                                                            <input type="text" class="form-control" id="existingMemberCityAndCountry_${project_id}" aria-describedby="emailHelp">
+                                                        </div>
+                                                    </div>
                                                     <div style="margin-top: 10px; padding: 10px;"></div>
                                                     <div class="col-md-12">
-                                                        <button type="submit" class="btn btn-primary" id="addExistingMember_${project_id}">Ajouter le membre existant</button>
+                                                        <button type="submit" class="btn btn-primary" id="addExistingMember_${project_id}" style="width: fit-content;">Ajouter le membre existant au projet</button>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div id="newReport_${project_id}" style="display: none;">
+                                            <div id="newReport_${project_id}" style="display: none; width: 100%;">
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <div class="form-group">
-                                                            <label for="reportTitle_${project_id}">Titre du rapport</label>
+                                                            <label for="reportTitle_${project_id}">Titre du rapport: </label>
                                                             <input type="text" class="form-control" id="reportTitle_${project_id}" aria-describedby="emailHelp">
                                                         </div>
                                                     </div>
                                                     <div class="col-md-12">
                                                         <div class="form-group">
-                                                            <label for="reportDescription_${project_id}">Description du rapport</label>
+                                                            <label for="reportDescription_${project_id}">Description du rapport: </label>
                                                             <textarea class="form-control" id="reportDescription_${project_id}" rows="5"></textarea>
                                                         </div>
                                                     </div>
                                                     <div style="margin-top: 10px; padding: 10px;"></div>
                                                     <div class="col-md-12">
-                                                        <button type="submit" class="btn btn-primary" id="submitReport_${project_id}">Ajouter le rapport</button>
+                                                        <button type="submit" class="btn btn-primary" id="submitReport_${project_id}" style="width: fit-content;">Ajouter le rapport au projet</button>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div id="newDocument_${project_id}" style="display: none;">
+                                            <div id="newDocument_${project_id}" style="display: none; width: 100%;">
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <div class="form-group">
-                                                            <label for="documentTitle_${project_id}">Titre du document</label>
+                                                            <label for="documentTitle_${project_id}">Titre du document: </label>
                                                             <input type="text" class="form-control" id="documentTitle_${project_id}" aria-describedby="emailHelp">
                                                         </div>
                                                     </div>
                                                     <div class="col-md-12">
                                                         <div class="form-group">
-                                                            <label for="documentDescription_${project_id}">Description du document</label>
+                                                            <label for="documentDescription_${project_id}">Description du document: </label>
                                                             <textarea class="form-control" id="documentDescription_${project_id}" rows="5"></textarea>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-12">
                                                         <div class="form-group">
-                                                            <label for="documentFile_${project_id}">Charger le document </label>
+                                                            <label for="documentFile_${project_id}">Charger le document; </label>
                                                             <input type="file" class="form-control-file" id="documentFile_${project_id}">
                                                         </div>
                                                     </div>
                                                     <div style="margin-top: 10px; padding: 10px;"></div>
                                                     <div class="col-md-12">
-                                                        <button type="submit" class="btn btn-primary" id="newDocument_${project_id}">Ajouter le document</button>
+                                                        <button type="submit" class="btn btn-primary" id="newDocument_${project_id}" style="width: fit-content;">Ajouter le document au projet</button>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div id="newLink_${project_id}" style="display: none;">
+                                            <div id="newLink_${project_id}" style="display: none; width: 100%;">
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <div class="form-group">
@@ -242,45 +290,45 @@
                                                     </div>
                                                     <div class="col-md-12">
                                                         <div class="form-group">
-                                                            <label for="linkDescription_${project_id}">Description du lien</label>
+                                                            <label for="linkDescription_${project_id}">Description du lien: </label>
                                                             <textarea class="form-control" id="linkDescription_${project_id}" rows="5"></textarea>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-12">
                                                         <div class="form-group">
-                                                            <label for="linkUrl_${project_id}">URL du lien</label>
+                                                            <label for="linkUrl_${project_id}">Saisir le lien: </label>
                                                             <input type="text" class="form-control" id="linkUrl_${project_id}" aria-describedby="emailHelp">
                                                         </div>
                                                     </div>
                                                     <div style="margin-top: 10px; padding: 10px;"></div>
                                                     <div class="col-md-12">
-                                                        <button type="submit" class="btn btn-primary" id="linkSubmit_${project_id}">Ajouter le lien</button>
+                                                        <button type="submit" class="btn btn-primary" id="linkSubmit_${project_id}" style="width: fit-content;">Ajouter le lien au projet</button>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div id="newMisc_${project_id}" style="display: none;">
+                                            <div id="newMisc_${project_id}" style="display: none; width: 100%;">
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <div class="form-group">
-                                                            <label for="miscTitle_${project_id}">Titre de l'élément</label>
+                                                            <label for="miscTitle_${project_id}">Titre de l'élément: </label>
                                                             <input type="text" class="form-control" id="miscTitle_${project_id}" aria-describedby="emailHelp">
                                                         </div>
                                                     </div>
                                                     <div class="col-md-12">
                                                         <div class="form-group">
-                                                            <label for="miscDescription_${project_id}">Description de l'élément</label>
+                                                            <label for="miscDescription_${project_id}">Description de l'élément: </label>
                                                             <textarea class="form-control" id="miscDescription_${project_id}" rows="5"></textarea>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-12">
                                                         <div class="form-group">
-                                                            <label for="miscFile_${project_id}">Charger un document </label>
+                                                            <label for="miscFile_${project_id}">Charger un document: </label>
                                                             <input type="file" class="form-control-file" id="miscFile_${project_id}">
                                                         </div>
                                                     </div>
                                                     <div style="margin-top: 10px; padding: 10px;"></div>
                                                     <div class="col-md-12">
-                                                        <button type="submit" class="btn btn-primary" id="buttonAddMisc_${project_id}">Ajouter l'élément</button>
+                                                        <button type="submit" class="btn btn-primary" id="buttonAddMisc_${project_id}" style="width: fit-content;">Ajouter l'élément au projet</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -296,11 +344,26 @@
                     document.getElementById(`buttonModifier_${project_id}`).addEventListener('click', () => {
 
                         if (document.getElementById(`modifyProject_${project_id}`).style.display === 'none') {
+                            li.style.backgroundColor = '#f2f2f2';
                             document.getElementById(`modifyProject_${project_id}`).style.display = 'block';
-                            document.getElementById(`modifyProject_${project_id}`).style.backgroundColor = 'lightred';
-
+                            document.getElementById(`buttonModifier_${project_id}`).style.backgroundColor = 'red';
                             buttonText = 'Annuler les modifications';
-                            // Supprimer toutes les informations des formulaires
+                            document.getElementById(`buttonModifier_${project_id}`).innerText = buttonText;
+                        } else {
+                            li.style.backgroundColor = '#ffffff';
+                            document.getElementById(`modifyProject_${project_id}`).style.display = 'none';
+                            document.getElementById(`buttonModifier_${project_id}`).style.backgroundColor = 'green';
+
+                            //#region masquer les formulaires
+                            document.getElementById('newMember_' + project_id).style.display = 'none';
+                            document.getElementById('existingMember_' + project_id).style.display = 'none';
+                            document.getElementById('newReport_' + project_id).style.display = 'none';
+                            document.getElementById('newDocument_' + project_id).style.display = 'none';
+                            document.getElementById('newLink_' + project_id).style.display = 'none';
+                            document.getElementById('newMisc_' + project_id).style.display = 'none';
+                            //#endregion
+
+                            //#region  Supprimer toutes les informations des formulaires
                             document.getElementById(`newMemberEmail_${project_id}`).value = '';
                             document.getElementById(`newMemberRole_${project_id}`).value = '';
                             document.getElementById(`last_name_${project_id}`).value = '';
@@ -318,19 +381,23 @@
                             document.getElementById(`miscTitle_${project_id}`).value = '';
                             document.getElementById(`miscDescription_${project_id}`).value = '';
                             document.getElementById(`miscFile_${project_id}`).value = '';
-                        } else {
-                            document.getElementById(`modifyProject_${project_id}`).style.display = 'none';
-                            document.getElementById(`modifyProject_${project_id}`).style.backgroundColor = '#29A6A7';
+                            //#endregion
+
                             if (numberOfMembers === 0) {
+                                document.getElementById(`buttonModifier_${project_id}`).innerText = 'Compléter le projet';
                                 buttonText = 'Compléter le projet';
-                                projectStatus = 'Non commencé';
-                            } else {
+                                projectStatus = 'Non publié';
+                                document.getElementById(`status_${project_id}`).innerText = projectStatus;
+                            }
+                            else {
                                 buttonText = 'Modifier le projet';
-                                projectStatus = 'En cours';
+                                document.getElementById(`buttonModifier_${project_id}`).innerText = 'Modifier le projet';
+                                projectStatus = 'Publié';
+                                document.getElementById(`status_${project_id}`).innerText = 'Publié';
                             }
                         }
 
-                        // Réinitialiser les couleurs des boutons
+                        //#region Réinitialiser les couleurs des boutons
                         document.getElementById(`buttonExistingMember_${project_id}`).style.backgroundColor = 'white';
                         document.getElementById(`buttonExistingMember_${project_id}`).style.color = '#29A6A7';
                         document.getElementById(`buttonNewMember_${project_id}`).style.backgroundColor = 'white';
@@ -343,6 +410,7 @@
                         document.getElementById(`buttonAddLink_${project_id}`).style.color = '#29A6A7';
                         document.getElementById(`buttonAddDivers_${project_id}`).style.backgroundColor = 'white';
                         document.getElementById(`buttonAddDivers_${project_id}`).style.color = '#29A6A7';
+                        //#endregion
                     });
 
                     // Ajouter un gestionnaire d'événement pour chaque bouton "Nouveau membre", "Membre existant", "Demande de rapport", "Document model", "Ajouter un lien", "Ajouter divers"
@@ -448,16 +516,16 @@
                         document.getElementById('newMisc_' + project_id).style.display = 'none';
 
                         // Changer le background du bouton cliqué
-                        document.getElementById(`buttonExistingMember_${project_id}`).style.backgroundColor = '#29A6A7';
-                        document.getElementById(`buttonExistingMember_${project_id}`).style.color = 'white';
+                        document.getElementById(`buttonExistingMember_${project_id}`).style.backgroundColor = 'white';
+                        document.getElementById(`buttonExistingMember_${project_id}`).style.color = '#29A6A7';
                         document.getElementById(`buttonNewMember_${project_id}`).style.backgroundColor = 'white';
                         document.getElementById(`buttonNewMember_${project_id}`).style.color = '#29A6A7';
                         document.getElementById(`buttonReportRequest_${project_id}`).style.backgroundColor = 'white';
                         document.getElementById(`buttonReportRequest_${project_id}`).style.color = '#29A6A7';
                         document.getElementById(`buttonDocumentModel_${project_id}`).style.backgroundColor = 'white';
                         document.getElementById(`buttonDocumentModel_${project_id}`).style.color = '#29A6A7';
-                        document.getElementById(`buttonAddLink_${project_id}`).style.backgroundColor = 'white';
-                        document.getElementById(`buttonAddLink_${project_id}`).style.color = '#29A6A7';
+                        document.getElementById(`buttonAddLink_${project_id}`).style.backgroundColor = '#29A6A7';
+                        document.getElementById(`buttonAddLink_${project_id}`).style.color = 'white';
                         document.getElementById(`buttonAddDivers_${project_id}`).style.backgroundColor = 'white';
                         document.getElementById(`buttonAddDivers_${project_id}`).style.color = '#29A6A7';
                     });
@@ -470,7 +538,7 @@
                         document.getElementById('newReport_' + project_id).style.display = 'none';
                         document.getElementById('newDocument_' + project_id).style.display = 'none';
 
-                        // Changer le background du bouton cliqué
+                        //#region Changer le background du bouton cliqué
                         document.getElementById(`buttonExistingMember_${project_id}`).style.backgroundColor = 'white';
                         document.getElementById(`buttonExistingMember_${project_id}`).style.color = '#29A6A7';
                         document.getElementById(`buttonNewMember_${project_id}`).style.backgroundColor = 'white';
@@ -483,6 +551,7 @@
                         document.getElementById(`buttonAddLink_${project_id}`).style.color = '#29A6A7';
                         document.getElementById(`buttonAddDivers_${project_id}`).style.backgroundColor = '#29A6A7';
                         document.getElementById(`buttonAddDivers_${project_id}`).style.color = 'white';
+                        //#endregion
                     });
 
                     // Ajouter un gestionnaire d'événement pour chaque bouton "Ajouter le nouveau membre", "Ajouter le nouveau rapport", "Ajouter le nouveau document", "Ajouter le nouveau lien", "Ajouter divers"
@@ -535,11 +604,13 @@
                                     'chief_last_name': lastName,
                                     'chief_activity_history': JSON.stringify([
                                         {
-                                            'hour': new Date().getHours(),
-                                            'minute': new Date().getMinutes(),
-                                            'day': new Date().getDate(),
-                                            'month': new Date().getMonth() + 1,
-                                            'year': new Date().getFullYear(),
+                                            'Date': {
+                                                'hour': new Date().getHours(),
+                                                'minute': new Date().getMinutes(),
+                                                'day': new Date().getDate(),
+                                                'month': new Date().getMonth() + 1,
+                                                'year': new Date().getFullYear(),
+                                            }
                                         },
                                         {
                                             'Activité': `Création du projet ${project.project_title} et ajout des membres`,
@@ -643,11 +714,13 @@
                                     'bailleur_last_name': lastName,
                                     'bailleur_activity_history': JSON.stringify([
                                         {
-                                            'hour': new Date().getHours(),
-                                            'minute': new Date().getMinutes(),
-                                            'day': new Date().getDate(),
-                                            'month': new Date().getMonth() + 1,
-                                            'year': new Date().getFullYear(),
+                                            'Date': {
+                                                'hour': new Date().getHours(),
+                                                'minute': new Date().getMinutes(),
+                                                'day': new Date().getDate(),
+                                                'month': new Date().getMonth() + 1,
+                                                'year': new Date().getFullYear(),
+                                            }
                                         },
                                         {
                                             'Activité': `Création du projet ${project.project_title} et ajout des membres`,
@@ -734,12 +807,32 @@
                     document.getElementById('addExistingMember_' + project_id).addEventListener('click', () => {
                         var existingMemberEmail = document.getElementById('existingMemberEmail_' + project_id).value;
                         var existingMemberRole = document.getElementById('existingMemberRole_' + project_id).value;
-                        var existingMember_first_name = document.getElementById('existingMember_first_name_' + project_id).value; 
+                        var existingMember_first_name = document.getElementById('existingMember_first_name_' + project_id).value;
                         var existingMember_last_name = document.getElementById('existingMember_last_name_' + project_id).value;
+                        var existingMember_countryAndCity = document.getElementById('existingMemberCityAndCountry_' + project_id).value;
 
                         if (!existingMemberEmail || !existingMemberRole || !existingMember_first_name || !existingMember_last_name) {
                             alert('Veuillez remplir tous les champs.');
                             return;
+                        }
+
+                        var users_list = {
+                            'emails_names': {
+                                'Coordinateur': 'coordinator_email',
+                                'chef-de-projet': 'chief_email',
+                                'partenaire': 'partner_email',
+                                'comptable': 'accountant_email',
+                                'consultant': 'consultant_email',
+                                'bailleur': 'funder_email'
+                            },
+                            'users': {
+                                'Coordinateur': [],
+                                'chef-de-projet': [],
+                                'partenaire': [],
+                                'comptable': [],
+                                'consultant': [],
+                                'bailleur': []
+                            }
                         }
 
                         var urls_and_data = {
@@ -750,6 +843,7 @@
                                     'coordinator_email': existingMemberEmail,
                                     'coordinator_first_name': existingMember_first_name,
                                     'coordinator_last_name': existingMember_last_name,
+                                    'coordinator_countryAndCity': existingMember_countryAndCity,
                                     'coordinator_activity_history': JSON.stringify([
                                         {
                                             'Date': {
@@ -779,6 +873,7 @@
                                     'chief_email': existingMemberEmail,
                                     'chief_first_name': existingMember_first_name,
                                     'chief_last_name': existingMember_last_name,
+                                    'chief_countryAndCity': existingMember_countryAndCity,
                                     'chief_activity_history': JSON.stringify([
                                         {
                                             'Date': {
@@ -808,6 +903,7 @@
                                     'accountant_email': existingMemberEmail,
                                     'accountant_first_name': existingMember_first_name,
                                     'accountant_last_name': existingMember_last_name,
+                                    'accountant_countryAndCity': existingMember_countryAndCity,
                                     'accountant_activity_history': JSON.stringify([
                                         {
                                             'Date': {
@@ -827,15 +923,6 @@
                                         {
                                             'Divers': '',
                                         },
-                                        {
-                                            'Activité': `Création du projet ${project.project_title} et ajout des membres`,
-                                        },
-                                        {
-                                            'Commentaire': 'Le projet est en cours de création',
-                                        },
-                                        {
-                                            'Divers': '',
-                                        }
                                     ]),
                                 },
                             },
@@ -846,6 +933,7 @@
                                     'consultant_email': existingMemberEmail,
                                     'consultant_first_name': existingMember_first_name,
                                     'consultant_last_name': existingMember_last_name,
+                                    'consultant_countryAndCity': existingMember_countryAndCity,
                                     'consultant_activity_history': JSON.stringify([
                                         {
                                             'Date': {
@@ -875,6 +963,7 @@
                                     'partner_email': existingMemberEmail,
                                     'partner_first_name': existingMember_first_name,
                                     'partner_last_name': existingMember_last_name,
+                                    'partner_countryAndCity': existingMember_countryAndCity,
                                     'partner_activity_history': JSON.stringify([
                                         {
                                             'Date': {
@@ -901,10 +990,11 @@
                                 'url': 'https://lab.padem.org/wp-json/mo/v1/createFunder',
                                 'data': {
                                     'project_id': project_id,
-                                    'bailleur_email': existingMemberEmail,
-                                    'bailleur_first_name': existingMember_first_name,
-                                    'bailleur_last_name': existingMember_last_name,
-                                    'bailleur_activity_history': JSON.stringify([
+                                    'funder_email': existingMemberEmail,
+                                    'funder_first_name': existingMember_first_name,
+                                    'funder_last_name': existingMember_last_name,
+                                    'funder_countryAndCity': existingMember_countryAndCity,
+                                    'funder_activity_history': JSON.stringify([
                                         {
                                             'Date': {
                                                 'hour': new Date().getHours(),
@@ -928,6 +1018,24 @@
                             },
                         };
 
+                        // Véifier si le membre existe déjà (méthode GET)
+                        fetch(urls_and_data[existingMemberRole].url, {
+                            method: 'GET',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                data.forEach(user => {
+                                    users_list[existingMemberRole].push(user.users_list[users_list.emails_names[existingMemberRole]]);
+                                });
+                            })
+                            .catch(error => {
+                                console.error('Erreur lors de la récupération des membres:', error);
+                            });
+
+                        // Envoyer la requête POST à l'URL spécifiée
                         fetch(urls_and_data[existingMemberRole].url, {
                             method: 'POST',
                             headers: {
@@ -938,27 +1046,21 @@
                             .then(response => response.json())
                             .then(data => {
                                 // Récupérer l'ID du nouveau membre
-                                var existingMemberId;
-                                if (data.accountant_id !== undefined) {
-                                    existingMemberId = data.accountant_id;
+                                var existingMemberEmail;
+                                if (data.coordinator_email !== undefined) {
+                                    existingMemberEmail = data.coordinator_email;
                                 }
-                                else if (data.funder_id !== undefined) {
-                                    existingMemberId = data.funder_id;
+                                else if (data.funder_email !== undefined) {
+                                    existingMemberEmail = data.funder_email;
                                 }
-                                else if (data.partner_id !== undefined) {
-                                    existingMemberId = data.partner_id;
+                                else if (data.partner_email !== undefined) {
+                                    existingMemberEmail = data.partner_email;
                                 }
-                                else if (data.coordinator_id !== undefined) {
-                                    existingMemberId = data.coordinator_id;
+                                else if (data.chief_email !== undefined) {
+                                    existingMemberEmail = data.chief_email;
                                 }
-                                else if (data.chief_id !== undefined) {
-                                    existingMemberId = data.chief_id;
-                                }
-                                else if (data.consultant_id !== undefined) {
-                                    existingMemberId = data.consultant_id;
-                                }
-                                else if (data.referent_id !== undefined) {
-                                    existingMemberId = data.referent_id;
+                                else if (data.consultant_email !== undefined) {
+                                    existingMemberEmail = data.consultant_email;
                                 }
                                 else {
                                     console.log('Erreur lors de la création du nouveau membre');
@@ -975,14 +1077,13 @@
                                         body: JSON.stringify({
                                             'project_id': project_id,
                                             'user_list': JSON.stringify({
-                                                'id': project_id + '-' + existingMemberId + '-' + new Date().getTime(),
-                                                'user_id': existingMemberId,
+                                                'email_id': project_id + '-' + new Date().getTime() + '-' + Math.random().toString(36).substr(2, 9),
+                                                'user_id': existingMemberEmail,
                                             }),
                                         }),
                                     })
                                     .then(response => response.json())
                                     .then(data => {
-                                        console.log(data);
                                         // Recharger la page
                                         window.location.href = 'https://lab.padem.org/project/';
                                     })
@@ -1052,12 +1153,6 @@
                             });
                     });
 
-
-                    stepper++;
-                    if (stepper === 2) {
-                        li.style.borderColor = '#29A6A7';
-                        stepper = 0;
-                    }
                 });
             })
             .catch(error => {
