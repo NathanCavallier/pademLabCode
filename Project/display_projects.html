@@ -393,10 +393,6 @@
                                                     </div>
                                                     <div class="col-md-12">
                                                         <div class="form-group">
-                                                            <label for="messageDate_${project_id}">Sélectionnez la date du jour : </label>
-                                                            <input type="date" class="form-control" id="messageDate_${project_id}" aria-describedby="emailHelp" required></input>
-                                                        </div>
-                                                        <div class="form-group">
                                                             <label for="messageDescription_${project_id}">Saisissez votre message : </label>
                                                             <textarea class="form-control" id="messageDescription_${project_id}" rows="8" required></textarea>
                                                         </div>
@@ -1334,9 +1330,104 @@
                         var listOfdestinataires_emails = document.getElementById('reportdestinataires_' + project_id).value;
                         var messageObject = document.getElementById('messageObject_' + project_id).value;
                         var messageContent = document.getElementById('messageDescription_' + project_id).value;
-                        var messageDate = document.getElementById('messageDate_' + project_id).value;
+                        var joinedFiles = document.getElementById('reportFiles_' + project_id).files;
 
+                        var file_id = [];
+                        if (joinedFiles.length > 0) {
+                            for (var i = 0; i < joinedFiles.length; i++) {
+                                file_id.push(joinedFiles[i].name);
+                            }
+
+                            // Enregistrer le ou les fichiers sélectionnés et les envoyer à l'API(https://lab.padem.org/wp-json/mo/v1/createMedia)
+                            var formData = new FormData();
+                            for (var i = 0; i < joinedFiles.length; i++) {
+                                formData.append('files[]', joinedFiles[i]);
+                            }
+                            fetch('https://lab.padem.org/wp-json/mo/v1/createMedia', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'multipart/form-data',
+                                },
+                                body: JSON.stringify({
+                                    'project_id': project_id,
+                                    'file_content': formData,
+                                }),
+                            })
+                                .then(response => response.json())
+                                .then(data => {
+                                    console.log(data);
+                                    // Récupérer l'ID du ou des fichiers enregistrés
+                                    file_id = data.id;
+                                    console.log(file_id);
+                                })
+                                .catch(error => {
+                                    console.error(error);
+                                });
+                        }
+
+                        // Enregistrer le message dans la base de données via l'API(https://lab.padem.org/wp-json/mo/v1/createReport)
+                        fetch('https://lab.padem.org/wp-json/mo/v1/createReport', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                'file_id': JSON.stringify(file_id),
+                                'project_id': project_id,
+                                'message_destinataires': listOfdestinataires_emails,
+                                'message_object': messageObject,
+                                'message_content': messageContent,
+                            }),
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                console.log(data);
+                                // Afficher un message de succès
+                                alert('Message envoyé avec succès !');
+                                // Recharger la page
+                                window.location.href = 'https://lab.padem.org/project/';
+                            })
+                            .catch(error => {
+                                console.error(error);
+                            });
                     });
+
+                    // Ajouter un document modèle au projet sur la base de données
+                    document.getElementById('submitDocument_' + project_id).addEventListener('click', () => {
+                        var documentName = document.getElementById('documentName_' + project_id).value;
+                        var documentDescription = document.getElementById('documentDescription_' + project_id).value;
+                        var documentFile = document.getElementById('documentFile_' + project_id).files[0];
+                        var documentType = document.getElementById('documentType_' + project_id).value;
+
+                        // Enregistrer le document dans la base de données
+                        var formData = new FormData();
+                        formData.append('file', documentFile);
+                        fetch('https://lab.padem.org/wp-json/mo/v1/createDocument', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'multipart/form-data',
+                            },
+                            body: JSON.stringify({
+                                'project_id': project_id,
+                                'document_name': documentName,
+                                'document_description': documentDescription,
+                                'document_type': documentType,
+                                'document_file': formData,
+                            }),
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                console.log(data);
+                                // Afficher un message de succès
+                                alert('Document ajouté avec succès !');
+                                // Recharger la page
+                                window.location.href = 'https://lab.padem.org/project/';
+                            })
+                            .catch(error => {
+                                console.error(error);
+                            });
+                    });
+
 
                 });
             })
