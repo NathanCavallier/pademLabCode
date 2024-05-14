@@ -1028,71 +1028,77 @@
                             .then(response => response.json())
                             .then(data => {
                                 data.forEach(user => {
-                                    users_list[existingMemberRole].push(user.users_list[users_list.emails_names[existingMemberRole]]);
+                                    users_list.users[existingMemberRole].push(user.users_list.emails_names[existingMemberRole]);
                                 });
-                            })
-                            .catch(error => {
-                                console.error('Erreur lors de la récupération des membres:', error);
-                            });
-
-                        // Envoyer la requête POST à l'URL spécifiée
-                        fetch(urls_and_data[existingMemberRole].url, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify(urls_and_data[existingMemberRole].data),
-                        })
-                            .then(response => response.json())
-                            .then(data => {
-                                // Récupérer l'ID du nouveau membre
-                                var existingMemberEmail;
-                                if (data.coordinator_email !== undefined) {
-                                    existingMemberEmail = data.coordinator_email;
-                                }
-                                else if (data.funder_email !== undefined) {
-                                    existingMemberEmail = data.funder_email;
-                                }
-                                else if (data.partner_email !== undefined) {
-                                    existingMemberEmail = data.partner_email;
-                                }
-                                else if (data.chief_email !== undefined) {
-                                    existingMemberEmail = data.chief_email;
-                                }
-                                else if (data.consultant_email !== undefined) {
-                                    existingMemberEmail = data.consultant_email;
-                                }
-                                else {
-                                    console.log('Erreur lors de la création du nouveau membre');
+                                // Vérifier si le membre existe déjà
+                                if (users_list.users[existingMemberRole].includes(existingMemberEmail)) {
+                                    alert('Ce membre existe déjà.');
                                     return;
                                 }
-
-                                // Ajouter l'ID du nouveau membre à la liste des membres du projet sur la base de données
-                                fetch('https://lab.padem.org/wp-json/mo/v1/updateOneProject',
-                                    {
-                                        method: 'PUT',
-                                        headers: {
-                                            'Content-Type': 'application/json',
-                                        },
-                                        body: JSON.stringify({
-                                            'project_id': project_id,
-                                            'user_list': JSON.stringify({
-                                                'email_id': project_id + '-' + new Date().getTime() + '-' + Math.random().toString(36).substr(2, 9),
-                                                'user_id': existingMemberEmail,
-                                            }),
-                                        }),
-                                    })
+                                //#region Ajouter le nouveau membre
+                                // Envoyer la requête POST à l'URL spécifiée
+                                fetch(urls_and_data[existingMemberRole].url, {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                    body: JSON.stringify(urls_and_data[existingMemberRole].data),
+                                })
                                     .then(response => response.json())
                                     .then(data => {
-                                        // Recharger la page
-                                        window.location.href = 'https://lab.padem.org/project/';
+                                        // Récupérer l'ID du nouveau membre
+                                        var existingMemberEmail;
+                                        if (data.coordinator_email !== undefined) {
+                                            existingMemberEmail = data.coordinator_email;
+                                        }
+                                        else if (data.funder_email !== undefined) {
+                                            existingMemberEmail = data.funder_email;
+                                        }
+                                        else if (data.partner_email !== undefined) {
+                                            existingMemberEmail = data.partner_email;
+                                        }
+                                        else if (data.chief_email !== undefined) {
+                                            existingMemberEmail = data.chief_email;
+                                        }
+                                        else if (data.consultant_email !== undefined) {
+                                            existingMemberEmail = data.consultant_email;
+                                        }
+                                        else {
+                                            console.log('Erreur lors de la création du nouveau membre');
+                                            return;
+                                        }
+
+                                        // Ajouter l'ID du nouveau membre à la liste des membres du projet sur la base de données
+                                        fetch('https://lab.padem.org/wp-json/mo/v1/updateOneProject',
+                                            {
+                                                method: 'PUT',
+                                                headers: {
+                                                    'Content-Type': 'application/json',
+                                                },
+                                                body: JSON.stringify({
+                                                    'project_id': project_id,
+                                                    'user_list': JSON.stringify({
+                                                        'email_id': project_id + '-' + new Date().getTime() + '-' + Math.random().toString(36).substr(2, 9),
+                                                        'user_id': existingMemberEmail,
+                                                    }),
+                                                }),
+                                            })
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                // Recharger la page
+                                                window.location.href = 'https://lab.padem.org/project/';
+                                            })
+                                            .catch(error => {
+                                                console.error(error);
+                                            });
                                     })
                                     .catch(error => {
                                         console.error(error);
                                     });
+                                //#endregion
                             })
                             .catch(error => {
-                                console.error(error);
+                                console.error('Erreur lors de la récupération des membres:', error);
                             });
                     });
 
