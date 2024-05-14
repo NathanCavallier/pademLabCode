@@ -8,7 +8,7 @@
 
 <script>
     // Projet: Récurérer les données depuis la base de données et les afficher dans des cellules individuels cliquables pour les modifier
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', (event) => {
         // Déclarer les variables
         var userId;
         var userEmail = '';
@@ -21,13 +21,29 @@
         var listOfAllMembersEmailOnPademLab = [];
 
         // Récupérer l'ID de l'utilisateur connecté
-
+        fetch('https://lab.padem.org/wp-json/mo/v1/getUserId', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(user => {
+                    if (data.meta_key === 'wp_capabilities') {
+                        userId = data.user_id;
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
 
         //#region Récupérer les emails des utilisateurs qui ont l'ID du projet
         function getProjectUsersEmails(projectId) {
 
             //#region Récupérer les emails des chefs de projet
-            fetch('https://lab.padem.org/wp-json/mo/v1/getProjectUsersEmails', {
+            fetch('https://lab.padem.org/wp-json/mo/v1/getProjectChief', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -38,8 +54,8 @@
                     data.forEach(user => {
                         if (user.project_id === projectId) {
                             var option = document.createElement('option');
-                            option.value = user.user_email;
-                            option.text = user.user_email - user.display_name;
+                            option.value = user.chief_email;
+                            option.text = user.chief_first_name - user.chief_last_name + ' - ' + 'Chef de projet';
                             document.getElementById('consigneDescription_' + projectId).appendChild(option);
                         }
                     });
@@ -178,7 +194,7 @@
                     data.forEach(user => {
                         var option = document.createElement('option');
                         option.value = user.user_email;
-                        option.text = user.user_email - user.display_name;
+                        option.text = user.user_email + ' - ' + user.user_login;
                         document.getElementById('existingMemberEmail_' + projectId).appendChild(option);
                         listOfAllMembersEmailOnPademLab.push(user.user_email);
                     });
@@ -199,7 +215,6 @@
         })
             .then(response => response.json())
             .then(data => {
-                console.log(data);
                 var colorStatusText = {
                     'Publié': 'green',
                     'Non publié': 'gray',
@@ -305,16 +320,20 @@
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <div class="form-group">
+                                                            <div style="margin: 5px; padding: 5px;"></div>
                                                             <label for="newMemberEmail_${project_id}" required>Adresse email du nouveau membre: </label>
                                                             <input type="email" class="form-control" id="newMemberEmail_${project_id}" aria-describedby="emailHelp">
+                                                            <div style="margin: 5px; padding: 5px;"></div>
                                                             <label for="last_name_${project_id}">Nom: </label>
                                                             <input type="text" class="form-control" id="last_name_${project_id}" aria-describedby="emailHelp">
+                                                            <div style="margin: 5px; padding: 5px;"></div>
                                                             <label for="first_name_${project_id}">Prénom: </label>
                                                             <input type="text" class="form-control" id="first_name_${project_id}" aria-describedby="emailHelp">
                                                         </div>
                                                     </div>
                                                     <div class="col-md-12">
                                                         <div class="form-group">
+                                                            <div style="margin: 5px; padding: 5px;"></div>
                                                             <label for="newMemberRole_${project_id}">Rôle du nouveau membre: </label>
                                                             <select class="form-control" id="newMemberRole_${project_id}" required>
                                                                 <option value="Coordinateur">Coordinateur</option>
@@ -328,6 +347,7 @@
                                                     </div>
                                                     <div class="col-md-12">
                                                         <div class="form-group">
+                                                            <div style="margin: 5px; padding: 5px;"></div>
                                                             <label for="newMemberCityAndCountry_${project_id}">Ville et pays du nouveau membre: </label>
                                                             <input type="text" class="form-control" id="newMemberCityAndCountry_${project_id}" aria-describedby="emailHelp">
                                                         </div>
@@ -342,19 +362,23 @@
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <div class="form-group">
+                                                            <div style="margin: 5px; padding: 5px;"></div>
                                                             <label for="existingMemberEmail_${project_id}">Adresse email du membre existant: </label>
                                                             <select class="form-control" id="existingMemberEmail_${project_id}" required>
                                                             </select>
                                                         </div>
                                                         <div class="form-group">
+                                                            <div style="margin: 5px; padding: 5px;"></div>
                                                             <label for="existingMember_last_name_${project_id}">Nom du membre existant: </label>
                                                             <input type="text" class="form-control" id="existingMember_last_name_${project_id}" aria-describedby="emailHelp">
+                                                            <div style="margin: 5px; padding: 5px;"></div>
                                                             <label for="existingMember_first_name_${project_id}">Prénom du membre existant: </label>
                                                             <input type="text" class="form-control" id="existingMember_first_name_${project_id}" aria-describedby="emailHelp">
                                                         </div>
                                                     </div>
                                                     <div class="col-md-12">
                                                         <div class="form-group">
+                                                            <div style="margin: 5px; padding: 5px;"></div>
                                                             <label for="existingMemberRole_${project_id}">Rôle du membre existant: </label>
                                                             <select class="form-control" id="existingMemberRole_${project_id}" required>
                                                                 <option value="Coordinateur">Coordinateur</option>
@@ -368,6 +392,7 @@
                                                     </div>
                                                     <div class="col-md-12">
                                                         <div class="form-group">
+                                                            <div style="margin: 5px; padding: 5px;"></div>
                                                             <label for="existingMemberCityAndCountry_${project_id}">Ville et pays du membre existant: </label>
                                                             <input type="text" class="form-control" id="existingMemberCityAndCountry_${project_id}" aria-describedby="emailHelp">
                                                         </div>
@@ -382,17 +407,20 @@
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <div class="form-group">
+                                                            <div style="margin: 5px; padding: 5px;"></div>
                                                             <label for="listOfdestinataires_${project_id}">Sélectionnez un ou plusieurs destinataires : </label>
                                                             <select class="form-control" id="listOfdestinataires_${project_id}" multiple required>
                                                             </select>
                                                         </div>
                                                         <div class="form-group">
+                                                            <div style="margin: 5px; padding: 5px;"></div>
                                                             <label for="messageObject_${project_id}">Objet du message ou de la demande: </label>
                                                             <input type="text" class="form-control" id="messageObject_${project_id}" aria-describedby="emailHelp" required></input>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-12">
                                                         <div class="form-group">
+                                                            <div style="margin: 5px; padding: 5px;"></div>
                                                             <label for="messageDescription_${project_id}">Saisissez votre message : </label>
                                                             <textarea class="form-control" id="messageDescription_${project_id}" rows="8" required></textarea>
                                                         </div>
@@ -404,6 +432,7 @@
                                                             <input type="file" class="form-control" id="joinedFiles_${project_id}" multiple>
                                                         </div>
                                                     </div>
+                                                    <div style="margin: 5px; padding: 5px;"></div>
                                                     <div style="margin-top: 10px; padding: 10px;"></div>
                                                     <div class="col-md-12">
                                                         <button type="submit" class="btn btn-primary" id="submitReport_${project_id}" style="width: fit-content;">Envoyer le message</button>
@@ -414,25 +443,28 @@
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <div class="form-group">
+                                                            <div style="margin: 5px; padding: 5px;"></div>
                                                             <label for="documentTitle_${project_id}">Titre du document: </label>
                                                             <input type="text" class="form-control" id="documentTitle_${project_id}" aria-describedby="emailHelp">
                                                         </div>
                                                     </div>
                                                     <div class="col-md-12">
                                                         <div class="form-group">
+                                                            <div style="margin: 5px; padding: 5px;"></div>
                                                             <label for="documentDescription_${project_id}">Description du document: </label>
                                                             <textarea class="form-control" id="documentDescription_${project_id}" rows="5"></textarea>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-12">
                                                         <div class="form-group">
+                                                            <div style="margin: 5px; padding: 5px;"></div>
                                                             <label for="documentFile_${project_id}">Charger le document; </label>
                                                             <input type="file" class="form-control-file" id="documentFile_${project_id}">
                                                         </div>
                                                     </div>
                                                     <div style="margin-top: 10px; padding: 10px;"></div>
                                                     <div class="col-md-12">
-                                                        <button type="submit" class="btn btn-primary" id="newDocument_${project_id}" style="width: fit-content;">Ajouter le document au projet</button>
+                                                        <button type="submit" class="btn btn-primary" id="submitDocument_${project_id}" style="width: fit-content;">Ajouter le document au projet</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -440,18 +472,21 @@
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <div class="form-group">
+                                                            <div style="margin: 5px; padding: 5px;"></div>
                                                             <label for="linkTitle_${project_id}">Titre du lien</label>
                                                             <input type="text" class="form-control" id="linkTitle_${project_id}" aria-describedby="emailHelp">
                                                         </div>
                                                     </div>
                                                     <div class="col-md-12">
                                                         <div class="form-group">
+                                                            <div style="margin: 5px; padding: 5px;"></div>
                                                             <label for="linkDescription_${project_id}">Description du lien: </label>
                                                             <textarea class="form-control" id="linkDescription_${project_id}" rows="5"></textarea>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-12">
                                                         <div class="form-group">
+                                                            <div style="margin: 5px; padding: 5px;"></div>
                                                             <label for="linkUrl_${project_id}">Saisir le lien: </label>
                                                             <input type="text" class="form-control" id="linkUrl_${project_id}" aria-describedby="emailHelp">
                                                         </div>
@@ -466,18 +501,21 @@
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <div class="form-group">
+                                                            <div style="margin: 5px; padding: 5px;"></div>
                                                             <label for="miscTitle_${project_id}">Titre de l'élément: </label>
                                                             <input type="text" class="form-control" id="miscTitle_${project_id}" aria-describedby="emailHelp">
                                                         </div>
                                                     </div>
                                                     <div class="col-md-12">
                                                         <div class="form-group">
+                                                            <div style="margin: 5px; padding: 5px;"></div>
                                                             <label for="miscDescription_${project_id}">Description de l'élément: </label>
                                                             <textarea class="form-control" id="miscDescription_${project_id}" rows="5"></textarea>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-12">
                                                         <div class="form-group">
+                                                            <div style="margin: 5px; padding: 5px;"></div>
                                                             <label for="miscFile_${project_id}">Charger un document: </label>
                                                             <input type="file" class="form-control-file" id="miscFile_${project_id}">
                                                         </div>
@@ -504,11 +542,11 @@
                             li.style.backgroundColor = '#f2f2f2';
                             document.getElementById(`modifyProject_${project_id}`).style.display = 'block';
                             document.getElementById(`buttonModifier_${project_id}`).style.backgroundColor = 'red';
-                            buttonText = 'Annuler les modifications';
-                            document.getElementById(`buttonModifier_${project_id}`).innerText = buttonText;
+                            document.getElementById(`buttonModifier_${project_id}`).innerText = 'Annuler';
                         } else {
                             li.style.backgroundColor = '#ffffff';
                             document.getElementById(`modifyProject_${project_id}`).style.display = 'none';
+                            document.getElementById(`buttonModifier_${project_id}`).innerText = 'Compléter le projet';
                             document.getElementById(`buttonModifier_${project_id}`).style.backgroundColor = 'green';
 
                             //#region masquer les formulaires
@@ -1327,7 +1365,8 @@
 
                     // Ajouter un rapport au projet sur la base de données
                     document.getElementById('submitReport_' + project_id).addEventListener('click', () => {
-                        var listOfdestinataires_emails = document.getElementById('reportdestinataires_' + project_id).value;
+                        var listOfdestinataires_emails = '';
+                        listOfdestinataires_emails ? document.getElementById('reportdestinataires_'+project_id).value : '';
                         var messageObject = document.getElementById('messageObject_' + project_id).value;
                         var messageContent = document.getElementById('messageDescription_' + project_id).value;
                         var joinedFiles = document.getElementById('reportFiles_' + project_id).files;
