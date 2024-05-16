@@ -1,0 +1,121 @@
+<button type="button" id="buttonReportRequest_${project_id}" class="btn btn-secondary"
+    style="width: fit-content; margin: 5px; padding: 5px; background: #29A6A7; color: white; font-size: 10px; border-radius: 20px;">
+    Envoyer un message</button>
+<div style="margin: 5px; padding: 5px;"></div>
+<div style="margin: 5px; padding: 5px;"></div>
+
+
+<script>
+    // Ajouter un rapport au projet sur la base de données
+    document.getElementById('submitReport_' + project_id).addEventListener('click', () => {
+        var listOfdestinataires_emails = document.getElementById('reportdestinataires_' + project_id).value || '';
+        var messageObject = document.getElementById('messageObject_' + project_id).value || '';
+        var messageContent = document.getElementById('messageDescription_' + project_id).value || '';
+        var joinedFiles = document.getElementById('reportFiles_' + project_id).files || [];
+
+
+        //#region Enregistrer le ou les fichiers sélectionnés et les envoyer à l'API(https://lab.padem.org/wp-json/mo/v1/createMedia)
+        var file_id = [];
+        if (joinedFiles.length > 0) {
+            for (var i = 0; i < joinedFiles.length; i++) {
+                file_id.push(joinedFiles[i].name);
+            }
+            var formData = new FormData();
+            for (var i = 0; i < joinedFiles.length; i++) {
+                formData.append('files[]', joinedFiles[i]);
+            }
+            fetch('https://lab.padem.org/wp-json/mo/v1/createMedia', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    'project_id': project_id,
+                    'file_content': formData,
+                }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    // Récupérer l'ID du ou des fichiers enregistrés
+                    file_id = data.id;
+                    // Ajouter l'id du ou des fichiers à la liste des fichiers du projet sur la base de données
+                    fetch('https://lab.padem.org/wp-json/mo/v1/updateOneProject',
+                        {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                'project_id': project_id,
+                                'files': JSON.stringify({
+                                    'id': project_id + '-' + new Date().getTime() + '-' + Math.random().toString(36).substring(2),
+                                    'file_id': JSON.stringify(file_id),
+                                }),
+                            }),
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log(data);
+                        })
+                        .catch(error => {
+                            console.error(error);
+                        });
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        }
+        //#endregion
+
+        // Enregistrer le message dans la base de données via l'API(https://lab.padem.org/wp-json/mo/v1/createReport)
+        fetch('https://lab.padem.org/wp-json/mo/v1/createMessage', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                'project_id': project_id,
+                'message_destinataires': JSON.stringify(listOfdestinataires_emails),
+                'message_object': messageObject,
+                'message_content': messageContent,
+                'file_id': JSON.stringify(file_id),
+            }),
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                // Récupérer l'ID du rapport enregistré
+                var report_id = data.report_id;
+                // Ajouter l'id du rapport à la liste des rapports du projet sur la base de données
+                fetch('https://lab.padem.org/wp-json/mo/v1/updateOneProject',
+                    {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            'project_id': project_id,
+                            'messages': JSON.stringify({
+                                'id': project_id + '-' + new Date().getTime() + '-' + Math.random().toString(36).substring(2),
+                                'messages_id': report_id,
+                            }),
+                        }),
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+                        // Afficher un message de succès
+                        alert('Message envoyé avec succès !');
+                        // Recharger la page
+                        window.location.href = 'https://lab.padem.org/projets/';
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    });
+</script>

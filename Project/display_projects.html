@@ -52,14 +52,16 @@
             })
                 .then(response => response.json())
                 .then(data => {
-                    data.forEach(user => {
-                        if (user.project_id === projectId) {
-                            var option = document.createElement('option');
-                            option.value = user.chief_email;
-                            option.text = user.chief_first_name - user.chief_last_name + ' - ' + 'Chef de projet';
-                            document.getElementById('consigneDescription_' + projectId).appendChild(option);
-                        }
-                    });
+                    if (data !== null && data !== undefined && data.length > 0 && Array.isArray(data)) {
+                        data.forEach(user => {
+                            if (user.project_id === projectId) {
+                                var option = document.createElement('option');
+                                option.value = user.chief_email;
+                                option.text = user.chief_first_name + ' ' + user.chief_last_name + ' - ' + 'Chef de projet';
+                                document.getElementById('existingMemberEmail_' + projectId).appendChild(option);
+                            }
+                        });
+                    }
                 })
                 .catch(error => {
                     console.error('Error:', error);
@@ -75,14 +77,16 @@
             })
                 .then(response => response.json())
                 .then(data => {
-                    data.forEach(user => {
-                        if (user.project_id === projectId) {
-                            var option = document.createElement('option');
-                            option.value = user.coordinator_email;
-                            option.text = user.coordinator_first_name + ' ' + user.coordinator_last_name + ' - ' + 'Coordinateur';
-                            document.getElementById('listOfdestinataires_' + projectId).appendChild(option);
-                        }
-                    });
+                    if (data !== null && data !== undefined && data.length > 0 && Array.isArray(data)) {
+                        data.forEach(user => {
+                            if (user.project_id === projectId) {
+                                var option = document.createElement('option');
+                                option.value = user.coordinator_email;
+                                option.text = user.coordinator_first_name + ' ' + user.coordinator_last_name + ' - Coordinateur';
+                                document.getElementById('existingMemberEmail_' + projectId).appendChild(option);
+                            }
+                        });
+                    }
                 })
                 .catch(error => {
                     console.error('Error:', error);
@@ -98,14 +102,16 @@
             })
                 .then(response => response.json())
                 .then(data => {
-                    data.forEach(user => {
-                        if (user.project_id === projectId) {
-                            var option = document.createElement('option');
-                            option.value = user.accountant_email;
-                            option.text = user.accountant_first_name + ' ' + user.accountant_last_name + ' - ' + 'Comptable';
-                            document.getElementById('listOfdestinataires_' + projectId).appendChild(option);
-                        }
-                    });
+                    if (data !== null && data !== undefined && data.length > 0 && Array.isArray(data)) {
+                        data.forEach(user => {
+                            if (user.project_id === projectId) {
+                                var option = document.createElement('option');
+                                option.value = user.accountant_email;
+                                option.text = user.accountant_first_name + ' ' + user.accountant_last_name + ' - Comptable';
+                                document.getElementById('existingMemberEmail_' + projectId).appendChild(option);
+                            }
+                        });
+                    }
                 })
                 .catch(error => {
                     console.error('Error:', error);
@@ -121,14 +127,16 @@
             })
                 .then(response => response.json())
                 .then(data => {
-                    data.forEach(user => {
-                        if (user.project_id === projectId) {
-                            var option = document.createElement('option');
-                            option.value = user.consultant_email;
-                            option.text = user.consultant_first_name + ' ' + user.consultant_last_name + ' - ' + 'Consultant';
-                            document.getElementById('listOfdestinataires_' + projectId).appendChild(option);
-                        }
-                    });
+                    if (data !== null && data !== undefined && data.length > 0 && Array.isArray(data)) {
+                        data.forEach(user => {
+                            if (user.project_id === projectId) {
+                                var option = document.createElement('option');
+                                option.value = user.consultant_email;
+                                option.text = user.consultant_first_name + ' ' + user.consultant_last_name + ' - Consultant';
+                                document.getElementById('existingMemberEmail_' + projectId).appendChild(option);
+                            }
+                        });
+                    }
                 })
                 .catch(error => {
                     console.error('Error:', error);
@@ -144,14 +152,16 @@
             })
                 .then(response => response.json())
                 .then(data => {
-                    data.forEach(user => {
-                        if (user.project_id === projectId) {
-                            var option = document.createElement('option');
-                            option.value = user.partner_email;
-                            option.text = user.partner_first_name + ' ' + user.partner_last_name + ' - ' + 'Partenaire';
-                            document.getElementById('listOfdestinataires_' + projectId).appendChild(option);
-                        }
-                    });
+                    if (data !== null && data !== undefined && data.length > 0 && Array.isArray(data)) {
+                        data.forEach(user => {
+                            if (user.project_id === projectId) {
+                                var option = document.createElement('option');
+                                option.value = user.partner_email;
+                                option.text = user.partner_first_name + ' ' + user.partner_last_name + ' - Partenaire';
+                                document.getElementById('existingMemberEmail_' + projectId).appendChild(option);
+                            }
+                        });
+                    }
                 })
                 .catch(error => {
                     console.error('Error:', error);
@@ -167,11 +177,15 @@
             })
                 .then(response => response.json())
                 .then(data => {
-                    if (data.project_id === projectId) {
-                        var option = document.createElement('option');
-                        option.value = data.referent_email;
-                        option.text = data.referent_first_name + ' ' + data.referent_last_name + ' - ' + 'Référent du projet';
-                        document.getElementById('listOfdestinataires_' + projectId).appendChild(option);
+                    if (data !== null && data !== undefined && data.length > 0 && Array.isArray(data)) {
+                        data.forEach(user => {
+                            if (user.project_id === projectId) {
+                                var option = document.createElement('option');
+                                option.value = user.referent_email;
+                                option.text = user.referent_first_name + ' ' + user.referent_last_name + ' - Référent';
+                                document.getElementById('existingMemberEmail_' + projectId).appendChild(option);
+                            }
+                        });
                     }
                 })
                 .catch(error => {
@@ -191,13 +205,16 @@
             })
                 .then(response => response.json())
                 .then(data => {
-                    data.forEach(user => {
-                        var option = document.createElement('option');
-                        option.value = user.user_email;
-                        option.text = user.user_email + ' - ' + user.user_login;
-                        document.getElementById('existingMemberEmail_' + projectId).appendChild(option);
-                        listOfAllMembersEmailOnPademLab.push(user.user_email);
-                    });
+                    if (data !== null && data !== undefined && data.length > 0 && Array.isArray(data)) {
+                        data.forEach(user => {
+                            if (user.project_id === projectId) {
+                                var option = document.createElement('option');
+                                option.value = user.user_email;
+                                option.text = user.user_email + ' - ' + user.user_role;
+                                document.getElementById('existingMemberEmail_' + projectId).appendChild(option);
+                            }
+                        });
+                    }
                 })
                 .catch(error => {
                     console.error('Error:', error);
@@ -215,6 +232,7 @@
         })
             .then(response => response.json())
             .then(data => {
+                // Déclarer les variables
                 var colorStatusText = {
                     'Publié': 'green',
                     'Non publié': 'gray',
@@ -229,6 +247,12 @@
                     // Créer un élément de liste pour chaque projet
                     var li = document.createElement('li');
                     var project_id = project.project_id;
+
+                    // Ajouter le référent du projet et son email à la liste des destinataires
+                    var option = document.createElement('option');
+                    option.value = project.project_referent_email;
+                    option.text = project.project_referent + ' - Référent';
+                    document.getElementById('existingMemberEmail_' + project_id).appendChild(option);
 
                     //#region Style de l'élément de liste
                     li.style.color = 'black';
@@ -263,12 +287,6 @@
                     }
                     //#endregion
 
-                    // Récupérer les emails des utilisateurs qui ont l'ID du projet
-                    getProjectUsersEmails(project_id);
-
-                    // Récuperer les emails des utilisateurs inscrits sur Padem Lab
-                    getAllUsersEmails(project_id);
-
                     //#region Ajouter les données dans l'élément de liste
                     li.innerHTML = `
                         <div style="list-style-type: none; padding: 5px; margin: 5px; border-radius: 10px;">
@@ -283,7 +301,7 @@
                                     <button class="buttonModifier" id="buttonModifier_${project_id}" style="margin: 5px; padding: 5px; boder-radius: 20px; font-size: 11px;">${buttonText}</button>
                                 </li>
                             </ul>
-                            <div id="modifyProject_${project_id}" style="display: none; width: 100%; height: auto; background: white; margin: 10px; padding: 10px; border-radius: 10px; border: 1px #5AC4C4D0;">
+                            <div id="modifyProject_${project_id}" style="display: none; width: 100%; height: auto; background: white; margin: 10px; padding: 10px; border-radius: 10px;">
                                 <hr style="border: 1px solid #29A6A7;">
                                 <div style="margin: 5px; padding: 5px;"></div>
                                 <div class="row">
@@ -295,11 +313,6 @@
                                         <div class="col-md-12" style="width: 100%; background: white;">
                                             <div class="row" style="width: 100%;">
                                                 <div class="btn-group" role="group" aria-label="menu" style="width: 100%;">
-                                                    <button type="button" id="buttonReportRequest_${project_id}" class="btn btn-secondary"
-                                                        style="width: fit-content; margin: 5px; padding: 5px; background: #29A6A7; color: white; font-size: 10px; border-radius: 20px;">
-                                                        Envoyer un message</button>
-                                                    <div style="margin: 5px; padding: 5px;"></div>
-                                                    <div style="margin: 5px; padding: 5px;"></div>
                                                     <button type="button" id="buttonNewMember_${project_id}" class="btn btn-secondary"
                                                         style="width: fit-content; margin: 5px; padding: 5px; background: #29A6A7; color: white; font-size: 10px; border-radius: 20px;">
                                                         Nouveau membre</button>
@@ -405,42 +418,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div id="newReport_${project_id}" style="display: none; width: 100%;">
-                                                <div class="row">
-                                                    <div class="col-md-12">
-                                                        <div class="form-group">
-                                                            <div style="margin: 5px; padding: 5px;"></div>
-                                                            <label for="listOfdestinataires_${project_id}">Sélectionnez un ou plusieurs destinataires : </label>
-                                                            <select class="form-control" id="listOfdestinataires_${project_id}" multiple required>
-                                                            </select>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <div style="margin: 5px; padding: 5px;"></div>
-                                                            <label for="messageObject_${project_id}">Objet du message ou de la demande: </label>
-                                                            <input type="text" class="form-control" id="messageObject_${project_id}" aria-describedby="emailHelp" required></input>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-12">
-                                                        <div class="form-group">
-                                                            <div style="margin: 5px; padding: 5px;"></div>
-                                                            <label for="messageDescription_${project_id}">Saisissez votre message : </label>
-                                                            <textarea class="form-control" id="messageDescription_${project_id}" rows="8" required></textarea>
-                                                        </div>
-                                                    </div>
-                                                    <div style="margin-top: 10px; padding: 10px;"></div>
-                                                    <div class="col-md-12">
-                                                        <div class="form-group">
-                                                            <label for="joinedFiles_${project_id}">Ajouter des fichiers joints: </label>
-                                                            <input type="file" class="form-control" id="joinedFiles_${project_id}" multiple>
-                                                        </div>
-                                                    </div>
-                                                    <div style="margin: 5px; padding: 5px;"></div>
-                                                    <div style="margin-top: 10px; padding: 10px;"></div>
-                                                    <div class="col-md-12">
-                                                        <button type="submit" class="btn btn-primary" id="submitReport_${project_id}" style="width: fit-content;">Envoyer le message</button>
-                                                    </div>
-                                                </div>
-                                            </div>
                                             <div id="newDocument_${project_id}" style="display: none; width: 100%;">
                                                 <div class="row">
                                                     <div class="column">
@@ -540,6 +517,12 @@
                         </div>
                     `;
                     //#endregion
+                    // Récupérer les emails des utilisateurs qui ont l'ID du projet
+                    getProjectUsersEmails(project_id);
+
+                    // Récuperer les emails des utilisateurs inscrits sur Padem Lab
+                    getAllUsersEmails(project_id);
+
                     // Ajouter l'élément de liste dans la liste des projets
                     document.getElementById('projectsList').appendChild(li);
 
@@ -644,29 +627,6 @@
                         document.getElementById(`buttonAddDivers_${project_id}`).style.color = '#29A6A7';
                     });
 
-                    document.getElementById('buttonReportRequest_' + project_id).addEventListener('click', () => {
-                        document.getElementById('newReport_' + project_id).style.display = 'block';
-                        document.getElementById('newMember_' + project_id).style.display = 'none';
-                        document.getElementById('existingMember_' + project_id).style.display = 'none';
-                        document.getElementById('newDocument_' + project_id).style.display = 'none';
-                        document.getElementById('newLink_' + project_id).style.display = 'none';
-                        document.getElementById('newMisc_' + project_id).style.display = 'none';
-
-                        // Changer le background du bouton cliqué
-                        document.getElementById(`buttonExistingMember_${project_id}`).style.backgroundColor = 'white';
-                        document.getElementById(`buttonExistingMember_${project_id}`).style.color = '#29A6A7';
-                        document.getElementById(`buttonNewMember_${project_id}`).style.backgroundColor = 'white';
-                        document.getElementById(`buttonNewMember_${project_id}`).style.color = '#29A6A7';
-                        document.getElementById(`buttonReportRequest_${project_id}`).style.backgroundColor = '#29A6A7';
-                        document.getElementById(`buttonReportRequest_${project_id}`).style.color = 'white';
-                        document.getElementById(`buttonDocumentModel_${project_id}`).style.backgroundColor = 'white';
-                        document.getElementById(`buttonDocumentModel_${project_id}`).style.color = '#29A6A7';
-                        document.getElementById(`buttonAddLink_${project_id}`).style.backgroundColor = 'white';
-                        document.getElementById(`buttonAddLink_${project_id}`).style.color = '#29A6A7';
-                        document.getElementById(`buttonAddDivers_${project_id}`).style.backgroundColor = 'white';
-                        document.getElementById(`buttonAddDivers_${project_id}`).style.color = '#29A6A7';
-                    });
-
                     document.getElementById('buttonDocumentModel_' + project_id).addEventListener('click', () => {
                         document.getElementById('newDocument_' + project_id).style.display = 'block';
                         document.getElementById('newMember_' + project_id).style.display = 'none';
@@ -759,6 +719,7 @@
                         document.getElementById(`buttonAddDivers_${project_id}`).style.color = 'white';
                         //#endregion
                     });
+
 
                     // Ajouter un gestionnaire d'événement pour chaque bouton "Ajouter le nouveau membre", "Ajouter le nouveau rapport", "Ajouter le nouveau document", "Ajouter le nouveau lien", "Ajouter divers"
                     document.getElementById('buttonAddMember_' + project_id).addEventListener('click', () => {
@@ -1061,8 +1022,6 @@
                                 console.error('Erreur lors de la récupération des données de l\'utilisateur :', error);
                             });
                     });
-
-
 
                     // Ajouter un membre existant au projet sur la base de données
                     document.getElementById('addExistingMember_' + project_id).addEventListener('click', () => {
@@ -1376,119 +1335,6 @@
                             });
                     });
 
-                    // Ajouter un rapport au projet sur la base de données
-                    document.getElementById('submitReport_' + project_id).addEventListener('click', () => {
-                        var listOfdestinataires_emails = document.getElementById('reportdestinataires_' + project_id).value || '';
-                        var messageObject = document.getElementById('messageObject_' + project_id).value || '';
-                        var messageContent = document.getElementById('messageDescription_' + project_id).value || '';
-                        var joinedFiles = document.getElementById('reportFiles_' + project_id).files || [];
-
-
-                        //#region Enregistrer le ou les fichiers sélectionnés et les envoyer à l'API(https://lab.padem.org/wp-json/mo/v1/createMedia)
-                        var file_id = [];
-                        if (joinedFiles.length > 0) {
-                            for (var i = 0; i < joinedFiles.length; i++) {
-                                file_id.push(joinedFiles[i].name);
-                            }
-                            var formData = new FormData();
-                            for (var i = 0; i < joinedFiles.length; i++) {
-                                formData.append('files[]', joinedFiles[i]);
-                            }
-                            fetch('https://lab.padem.org/wp-json/mo/v1/createMedia', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                },
-                                body: JSON.stringify({
-                                    'project_id': project_id,
-                                    'file_content': formData,
-                                }),
-                            })
-                                .then(response => response.json())
-                                .then(data => {
-                                    console.log(data);
-                                    // Récupérer l'ID du ou des fichiers enregistrés
-                                    file_id = data.id;
-                                    // Ajouter l'id du ou des fichiers à la liste des fichiers du projet sur la base de données
-                                    fetch('https://lab.padem.org/wp-json/mo/v1/updateOneProject',
-                                        {
-                                            method: 'PUT',
-                                            headers: {
-                                                'Content-Type': 'application/json',
-                                            },
-                                            body: JSON.stringify({
-                                                'project_id': project_id,
-                                                'files': JSON.stringify({
-                                                    'id': project_id + '-' + new Date().getTime() + '-' + Math.random().toString(36).substring(2),
-                                                    'file_id': JSON.stringify(file_id),
-                                                }),
-                                            }),
-                                        })
-                                        .then(response => response.json())
-                                        .then(data => {
-                                            console.log(data);
-                                        })
-                                        .catch(error => {
-                                            console.error(error);
-                                        });
-                                })
-                                .catch(error => {
-                                    console.error(error);
-                                });
-                        }
-                        //#endregion
-
-                        // Enregistrer le message dans la base de données via l'API(https://lab.padem.org/wp-json/mo/v1/createReport)
-                        fetch('https://lab.padem.org/wp-json/mo/v1/createMessage', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({
-                                'project_id': project_id,
-                                'message_destinataires': JSON.stringify(listOfdestinataires_emails),
-                                'message_object': messageObject,
-                                'message_content': messageContent,
-                                'file_id': JSON.stringify(file_id),
-                            }),
-                        })
-                            .then(response => response.json())
-                            .then(data => {
-                                console.log(data);
-                                // Récupérer l'ID du rapport enregistré
-                                var report_id = data.report_id;
-                                // Ajouter l'id du rapport à la liste des rapports du projet sur la base de données
-                                fetch('https://lab.padem.org/wp-json/mo/v1/updateOneProject',
-                                    {
-                                        method: 'PUT',
-                                        headers: {
-                                            'Content-Type': 'application/json',
-                                        },
-                                        body: JSON.stringify({
-                                            'project_id': project_id,
-                                            'messages': JSON.stringify({
-                                                'id': project_id + '-' + new Date().getTime() + '-' + Math.random().toString(36).substring(2),
-                                                'messages_id': report_id,
-                                            }),
-                                        }),
-                                    })
-                                    .then(response => response.json())
-                                    .then(data => {
-                                        console.log(data);
-                                        // Afficher un message de succès
-                                        alert('Message envoyé avec succès !');
-                                        // Recharger la page
-                                        window.location.href = 'https://lab.padem.org/projets/';
-                                    })
-                                    .catch(error => {
-                                        console.error(error);
-                                    });
-                            })
-                            .catch(error => {
-                                console.error(error);
-                            });
-                    });
-
                     // Ajouter un document modèle au projet sur la base de données
                     document.getElementById('submitDocument_' + project_id).addEventListener('click', () => {
                         var documentTitle = document.getElementById('documentTitle_' + project_id).value || '';
@@ -1601,8 +1447,7 @@
                                 console.error(error);
                             });
                     });
-                
-                
+
                     // Ajouter un élément divers au projet sur la base de données
                     document.getElementById('buttonAddMisc_' + project_id).addEventListener('click', () => {
                         var miscTitle = document.getElementById('miscTitle_' + project_id).value || '';
@@ -1661,7 +1506,7 @@
                                 console.error(error);
                             });
                     });
-            });
+                });
             })
             .catch(error => {
                 console.error(error);
