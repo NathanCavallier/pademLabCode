@@ -90,6 +90,8 @@
                 project_referent_email: '',
                 project_description: JSON.stringify(''),
                 background_image_link: 'https://lab.padem.org/wp-content/uploads/default_background-white.png',
+                folder_id: 0,
+                folder_name: '',
             };
 
             // Récupérer l'image de couverture du projet à envoyer au serveur sous forme de fichier Blob
@@ -97,7 +99,7 @@
             var fileField = document.querySelector('input[type="file"]');
             var imageData = {}
 
-            // Vérifier si un fichier a été sélectionné
+            //#region Vérifier si un fichier a été sélectionné
             if (fileField.files.length) {
                 imageData = {
                     type: 'image',
@@ -108,7 +110,7 @@
                     file_content: fileField.files[0].content,
                 };
 
-                // Envoi de l'image de couverture du projet
+                //#region Envoi de l'image de couverture du projet
                 fetch('https://lab.padem.org/wp-json/mo/v1/createMedia', {
                     method: 'POST',
                     body: JSON.stringify(imageData),
@@ -119,14 +121,14 @@
                     return response.json();
                 })
                     .then(data => {
-                        console.log('Success:', data);
                         dataInfosPreliminaires.background_image_link = data.file_path;
                     })
                     .catch((error) => {
                         console.error('Error:', error);
                     });
+                //#endregion
 
-                // Récupérer le lien de l'image de couverture du projet
+                //#region Récupérer le lien de l'image de couverture du projet
                 fetch('https://lab.padem.org/wp-json/mo/v1/getFileLink', {
                     method: 'GET',
                     headers: {
@@ -139,27 +141,74 @@
                     return response.json();
                 })
                     .then(data => {
-                        console.log('Success:', data);
                         dataInfosPreliminaires.background_image_link = data.url;
                     })
                     .catch((error) => {
                         console.error('Error:', error);
                     });
-            }
 
-            if (document.getElementById('projectForm') != null) {
-                dataInfosPreliminaires.project_title = document.getElementById('projectTitle').value;
-                dataInfosPreliminaires.project_type = document.getElementById('projectType').value;
-                dataInfosPreliminaires.start_date = document.getElementById('projectDate').value;
-                dataInfosPreliminaires.end_date = document.getElementById('projectEndDate2').value;
-                dataInfosPreliminaires.project_location = document.getElementById('projectLocation').value;
-                dataInfosPreliminaires.padem_responsible = document.getElementById('pademResponsible').value;
-                dataInfosPreliminaires.padem_responsible_email = document.getElementById('pademResponsibleEmail').value
-                dataInfosPreliminaires.project_referent = document.getElementById('projectReferent').value;
-                dataInfosPreliminaires.project_referent_email = document.getElementById('projectReferentEmail').value;
-                dataInfosPreliminaires.project_description = JSON.stringify(document.getElementById('projectDescription').value);
-                console.log(dataInfosPreliminaires);
             }
+            //#endregion
+
+            dataInfosPreliminaires.project_title = document.getElementById('projectTitle').value || 'Titre du projet';
+            dataInfosPreliminaires.project_type = document.getElementById('projectType').value || 'Type de projet';
+            dataInfosPreliminaires.start_date = document.getElementById('projectDate').value || 'Date de début prévisionnelle';
+            dataInfosPreliminaires.end_date = document.getElementById('projectEndDate2').value || 'Date de fin prévisionnelle';
+            dataInfosPreliminaires.project_location = document.getElementById('projectLocation').value;
+            dataInfosPreliminaires.padem_responsible = document.getElementById('pademResponsible').value;
+            dataInfosPreliminaires.padem_responsible_email = document.getElementById('pademResponsibleEmail').value
+            dataInfosPreliminaires.project_referent = document.getElementById('projectReferent').value;
+            dataInfosPreliminaires.project_referent_email = document.getElementById('projectReferentEmail').value;
+            dataInfosPreliminaires.project_description = JSON.stringify(document.getElementById('projectDescription').value);
+
+            //#region Créer le dossier des fichiers du projet
+            fetch('https://lab.padem.org/get_key.php',
+                {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }).then(response => {
+                    if (!response.ok) {
+                        console.error('Erreur lors de la requête vers l\'API.');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    //#region Créer un dossier où stocker les fichiers du projet sur le serveur via l'API(https://lab.padem.org/wp-json/filebird/public/v1/folders)
+                    fetch('https://lab.padem.org/wp-json/filebird/public/v1/folders', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + data.fileBird_api_key,
+                        },
+                        body: JSON.stringify({
+                            name: dataInfosPreliminaires.project_title,
+                            parent_id: 0,
+                        }),
+                    }).then(response => {
+                        if (!response.ok) {
+                            console.log('Erreur lors de la requête vers l\'API.');
+                        }
+                        return response.json();
+                    })
+                        .then(data => {
+                            console.log('Success:', data);
+                            dataInfosPreliminaires.folder_id = JSON.stringify({
+                                folder_id: data.folder_id,
+                                folder_name: dataInfosPreliminaires.project_title,
+                            });
+                        })
+                        .catch((error) => {
+                            console.error('Error:', error);
+                        });
+                    //#endregion
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                })
+            //#endregion
+
             // 1. Create a new project
             // 2. Add the project to the database
             // 3. Redirect to the project page
@@ -171,65 +220,23 @@
                 body: JSON.stringify(dataInfosPreliminaires),
             }).then(response => {
                 if (!response.ok) {
-                    throw new Error('Erreur lors de la requête vers l\'API.');
+                    console.log('Erreur lors de la requête vers l\'API.');
                 }
                 return response.json();
             })
                 .then(data => {
-                    console.log('Success:', data);
                     Swal.fire({
                         icon: 'success',
                         title: 'Projet créé avec succès',
                         showConfirmButton: false,
                         timer: 1500
                     });
-                    fetch('https://lab.padem.org/get_key.php',
-                        {
-                            method: 'GET',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                        }).then(response => {
-                            if (!response.ok) {
-                                console.error('Erreur lors de la requête vers l\'API.');
-                            }
-                            return response.json();
-                        })
-                        .then(data => {
-                            //#region Créer un dossier où stocker les fichiers du projet sur le serveur via l'API(https://lab.padem.org/wp-json/filebird/public/v1/folders)
-                            fetch('https://lab.padem.org/wp-json/filebird/public/v1/folders', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'Authorization': 'Bearer ' + data.fileBird_api_key,
-                                },
-                                body: JSON.stringify({
-                                    name: dataInfosPreliminaires.project_title,
-                                    parent_id: 0,
-                                }),
-                            }).then(response => {
-                                if (!response.ok) {
-                                    console.log('Erreur lors de la requête vers l\'API.');
-                                }
-                                return response.json();
-                            })
-                                .then(data => {
-                                    console.log('Success:', data);
-                                })
-                                .catch((error) => {
-                                    console.error('Error:', error);
-                                });
-                            //#endregion
-                        })
-                        .catch((error) => {
-                            console.error('Error:', error);
-                        })
 
                     // Masquer le formulaire
                     showAndHide('projectForm');
 
                     // Recharger la page
-                    window.location.href = "https://lab.padem.org/projet";
+                    window.location.href = "https://lab.padem.org/projets";
                 })
                 .catch((error) => {
                     console.error('Error:', error);
@@ -349,7 +356,7 @@
                         document.getElementById("referants").src = "https://lab.padem.org/wp-content/uploads/plus.png";
                     }
                 });
-            } 
+            }
             else {
                 // Masquer le formulaire
                 projectForm.style.display = "none";

@@ -20,7 +20,7 @@
 
         var listOfAllMembersEmailOnPademLab = [];
 
-        // Récupérer l'ID de l'utilisateur connecté
+        //#region Récupérer l'ID de l'utilisateur connecté
         fetch('https://lab.padem.org/wp-json/mo/v1/getUserId', {
             method: 'GET',
             headers: {
@@ -30,7 +30,7 @@
             .then(response => response.json())
             .then(data => {
                 data.forEach(user => {
-                    if (user.meta_key === 'wp_capabilities') {
+                    if (user['meta_key'] === 'wp_capabilities') {
                         userId = user.user_id;
                     }
                 });
@@ -38,6 +38,7 @@
             .catch(error => {
                 console.error('Error:', error);
             });
+        //#endregion
 
         //#region Récupérer les emails des utilisateurs qui ont l'ID du projet
         function getProjectUsersEmails(projectId) {
@@ -180,7 +181,6 @@
         }
         //#endregion
 
-
         //#region Récupérer les emails et les rôles des utilisateurs depuis la base de données (à partir de l'API (https://lab.padem.org/wp-json/mo/v1/getUserEmailAndState))
         function getAllUsersEmails(projectId) {
             fetch('https://lab.padem.org/wp-json/mo/v1/getUserEmailAndState', {
@@ -230,7 +230,7 @@
                     var li = document.createElement('li');
                     var project_id = project.project_id;
 
-                    // Ajouter le titre du projet, la date de début, la date de fin, le pays, le référent et le statut dans des éléments individuels
+                    //#region Style de l'élément de liste
                     li.style.color = 'black';
                     li.style.textAlign = 'left';
                     li.style.border = '1px #29A6A7';
@@ -261,6 +261,8 @@
                         buttonText = 'Modifier le projet';
                         projectStatus = 'Publié';
                     }
+                    //#endregion
+
                     // Récupérer les emails des utilisateurs qui ont l'ID du projet
                     getProjectUsersEmails(project_id);
 
@@ -291,8 +293,8 @@
                                     <div class="container">
                                         <!-- Afficher une liste de boutons à l'horizontale permettant de faire apparaître le type d'éléments à ajouter au projet -->
                                         <div class="col-md-12" style="width: 100%; background: white;">
-                                            <div class="row">
-                                                <div class="btn-group" role="group" aria-label="menu">
+                                            <div class="row" style="width: 100%;">
+                                                <div class="btn-group" role="group" aria-label="menu" style="width: 100%;">
                                                     <button type="button" id="buttonReportRequest_${project_id}" class="btn btn-secondary"
                                                         style="width: fit-content; margin: 5px; padding: 5px; background: #29A6A7; color: white; font-size: 10px; border-radius: 20px;">
                                                         Envoyer un message</button>
@@ -441,27 +443,33 @@
                                             </div>
                                             <div id="newDocument_${project_id}" style="display: none; width: 100%;">
                                                 <div class="row">
-                                                    <div class="col-md-12">
-                                                        <div class="form-group">
-                                                            <div style="margin: 5px; padding: 5px;"></div>
-                                                            <label for="documentTitle_${project_id}">Titre du document: </label>
-                                                            <input type="text" class="form-control" id="documentTitle_${project_id}" aria-describedby="emailHelp">
+                                                    <div class="column">
+                                                        <div>
+                                                            <div class="col-md-12">
+                                                                <div class="form-group">
+                                                                    <div style="margin: 5px; padding: 5px;"></div>
+                                                                    <label for="documentTitle_${project_id}">Titre du document: </label>
+                                                                    <input type="text" class="form-control" id="documentTitle_${project_id}" aria-describedby="emailHelp">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-12">
+                                                                <div class="form-group">
+                                                                    <div style="margin: 5px; padding: 5px;"></div>
+                                                                    <label for="documentDescription_${project_id}">Description du document: </label>
+                                                                    <textarea class="form-control" id="documentDescription_${project_id}" rows="5"></textarea>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-12">
+                                                                <div class="form-group">
+                                                                    <div style="margin: 5px; padding: 5px;"></div>
+                                                                    <label for="documentFile_${project_id}">Charger le document: </label>
+                                                                    <input type="file" class="form-control-file" id="documentFile_${project_id}">
+                                                                </div>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="col-md-12">
-                                                        <div class="form-group">
-                                                            <div style="margin: 5px; padding: 5px;"></div>
-                                                            <label for="documentDescription_${project_id}">Description du document: </label>
-                                                            <textarea class="form-control" id="documentDescription_${project_id}" rows="5"></textarea>
+                                                        <div>
+
                                                         </div>
-                                                    </div>
-                                                    <div class="col-md-12">
-                                                        <div class="form-group">
-                                                            <div style="margin: 5px; padding: 5px;"></div>
-                                                            <label for="documentFile_${project_id}">Charger le document: </label>
-                                                            <input type="file" class="form-control-file" id="documentFile_${project_id}">
-                                                        </div>
-                                                    </div>
                                                     <div style="margin-top: 10px; padding: 10px;"></div>
                                                     <div class="col-md-12">
                                                         <button type="submit" class="btn btn-primary" id="submitDocument_${project_id}" style="width: fit-content;">Ajouter le document au projet</button>
@@ -576,6 +584,9 @@
                             document.getElementById(`miscTitle_${project_id}`).value = '';
                             document.getElementById(`miscDescription_${project_id}`).value = '';
                             document.getElementById(`miscFile_${project_id}`).value = '';
+                            document.getElementById(`messageObject_${project_id}`).value = '';
+                            document.getElementById(`messageDescription_${project_id}`).value = '';
+                            document.getElementById(`joinedFiles_${project_id}`).value = '';
                             //#endregion
 
                             if (numberOfMembers === 0) {
@@ -1349,7 +1360,7 @@
                                                 // Afficher un message de succès
                                                 alert('Membre ajouté avec succès !');
                                                 // Recharger la page
-                                                window.location.href = 'https://lab.padem.org/project/';
+                                                window.location.href = 'https://lab.padem.org/projets/';
                                             })
                                             .catch(error => {
                                                 console.error(error);
@@ -1367,7 +1378,7 @@
 
                     // Ajouter un rapport au projet sur la base de données
                     document.getElementById('submitReport_' + project_id).addEventListener('click', () => {
-                        var listOfdestinataires_emails =  document.getElementById('reportdestinataires_' + project_id).value || '';
+                        var listOfdestinataires_emails = document.getElementById('reportdestinataires_' + project_id).value || '';
                         var messageObject = document.getElementById('messageObject_' + project_id).value || '';
                         var messageContent = document.getElementById('messageDescription_' + project_id).value || '';
                         var joinedFiles = document.getElementById('reportFiles_' + project_id).files || [];
@@ -1398,7 +1409,28 @@
                                     console.log(data);
                                     // Récupérer l'ID du ou des fichiers enregistrés
                                     file_id = data.id;
-                                    console.log(file_id);
+                                    // Ajouter l'id du ou des fichiers à la liste des fichiers du projet sur la base de données
+                                    fetch('https://lab.padem.org/wp-json/mo/v1/updateOneProject',
+                                        {
+                                            method: 'PUT',
+                                            headers: {
+                                                'Content-Type': 'application/json',
+                                            },
+                                            body: JSON.stringify({
+                                                'project_id': project_id,
+                                                'file_id': JSON.stringify({
+                                                    'id': project_id + '-' + new Date().getTime() + '-' + Math.random().toString(36).substring(2),
+                                                    'file_id': file_id,
+                                                }),
+                                            }),
+                                        })
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            console.log(data);
+                                        })
+                                        .catch(error => {
+                                            console.error(error);
+                                        });
                                 })
                                 .catch(error => {
                                     console.error(error);
@@ -1422,6 +1454,30 @@
                             .then(response => response.json())
                             .then(data => {
                                 console.log(data);
+                                // Récupérer l'ID du rapport enregistré
+                                var report_id = data.report_id;
+                                // Ajouter l'id du rapport à la liste des rapports du projet sur la base de données
+                                fetch('https://lab.padem.org/wp-json/mo/v1/updateOneProject',
+                                    {
+                                        method: 'PUT',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                        },
+                                        body: JSON.stringify({
+                                            'project_id': project_id,
+                                            'report_id': JSON.stringify({
+                                                'id': project_id + '-' + new Date().getTime() + '-' + Math.random().toString(36).substring(2),
+                                                'report_id': report_id,
+                                            }),
+                                        }),
+                                    })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        console.log(data);
+                                    })
+                                    .catch(error => {
+                                        console.error(error);
+                                    });
                                 // Afficher un message de succès
                                 alert('Message envoyé avec succès !');
                                 // Recharger la page
@@ -1449,24 +1505,77 @@
                             body: JSON.stringify({
                                 'project_id': project_id,
                                 'file_name': documentTitle,
-                                'document_description': documentDescription,
-                                'document_file': formData,
+                                'file_content': formData,
                             }),
                         })
                             .then(response => response.json())
                             .then(data => {
                                 console.log(data);
+                                // Récupérer l'ID du document enregistré
+                                var document_id = data.id;
+                                // Ajouter l'id du document à la liste des documents du projet sur la base de données
+                                fetch('https://lab.padem.org/wp-json/mo/v1/updateOneProject',
+                                    {
+                                        method: 'PUT',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                        },
+                                        body: JSON.stringify({
+                                            'project_id': project_id,
+                                            'folder_id': JSON.stringify({
+                                                'id': project_id + '-' + new Date().getTime() + '-' + Math.random().toString(36).substring(2),
+                                                'document_id': document_id,
+                                            }),
+                                        }),
+                                    })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        console.log(data);
+                                    })
+                                    .catch(error => {
+                                        console.error(error);
+                                    });
                                 // Afficher un message de succès
                                 alert('Document ajouté avec succès !');
                                 // Recharger la page
-                                window.location.href = 'https://lab.padem.org/projet/';
+                                window.location.href = 'https://lab.padem.org/projets/';
                             })
                             .catch(error => {
                                 console.error(error);
                             });
                     });
 
+                    // Ajouter un lien au projet sur la base de données
+                    document.getElementById('linkSubmit_' + project_id).addEventListener('click', () => {
+                        var linkTitle = document.getElementById('linkTitle_' + project_id).value || '';
+                        var linkDescription = document.getElementById('linkDescription_' + project_id).value || '';
+                        var linkURL = document.getElementById('linkURL_' + project_id).value || '';
 
+                        // Enregistrer le lien dans la base de données
+                        fetch('https://lab.padem.org/wp-json/mo/v1/createLink', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                'project_id': project_id,
+                                'link_title': linkTitle,
+                                'link_description': linkDescription,
+                                'link_url': linkURL,
+                            }),
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                console.log(data);
+                                // Afficher un message de succès
+                                alert('Lien ajouté avec succès !');
+                                // Recharger la page
+                                window.location.href = 'https://lab.padem.org/projets/';
+                            })
+                            .catch(error => {
+                                console.error(error);
+                            });
+                    });
                 });
             })
             .catch(error => {
