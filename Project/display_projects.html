@@ -2,7 +2,7 @@
 
 <body>
     <!-- Afficher la liste des projets en cours -->
-    <ul id="projectsList" style="color: aliceblue;"></ul>
+    <ul id="projectsList"></ul>
 </body>
 
 
@@ -30,8 +30,8 @@
             .then(response => response.json())
             .then(data => {
                 data.forEach(user => {
-                    if (data.meta_key === 'wp_capabilities') {
-                        userId = data.user_id;
+                    if (user.meta_key === 'wp_capabilities') {
+                        userId = user.user_id;
                     }
                 });
             })
@@ -751,14 +751,14 @@
 
                     // Ajouter un gestionnaire d'événement pour chaque bouton "Ajouter le nouveau membre", "Ajouter le nouveau rapport", "Ajouter le nouveau document", "Ajouter le nouveau lien", "Ajouter divers"
                     document.getElementById('buttonAddMember_' + project_id).addEventListener('click', () => {
-                        var newMemberEmail = document.getElementById('newMemberEmail_' + project_id).value;
-                        var newMemberRole = document.getElementById('newMemberRole_' + project_id).value;
-                        var lastName = document.getElementById('last_name_' + project_id).value;
-                        var firstName = document.getElementById('first_name_' + project_id).value;
-                        var cityAndCountry = document.getElementById('newMemberCityAndCountry_' + project_id).value;
+                        var newMemberEmail = document.getElementById('newMemberEmail_' + project_id).value || '';
+                        var newMemberRole = document.getElementById('newMemberRole_' + project_id).value || '';
+                        var lastName = document.getElementById('last_name_' + project_id).value || '';
+                        var firstName = document.getElementById('first_name_' + project_id).value || '';
+                        var cityAndCountry = document.getElementById('newMemberCityAndCountry_' + project_id).value || '';
 
-                        if (newMemberEmail === '' || newMemberRole === '' || lastName === '' || firstName === '') {
-                            alert('Veuillez remplir tous les champs.');
+                        if (newMemberEmail === '' || newMemberRole === '' || firstName === '') {
+                            alert('Veuillez remplir tous les champs. (Email, Rôle et Prénom (le Nom est optionnel))');
                             return;
                         }
 
@@ -972,7 +972,7 @@
                         })
                             .then(response => response.json())
                             .then(data => {
-                                // Vérifier si l'utilisateur existe déjà en fonction de son email
+                                //#region Vérifier si l'utilisateur existe déjà en fonction de son email
                                 data.forEach(user => {
                                     users_list.users[newMemberRole].push(user[users_list.emails_names[newMemberRole]]);
                                 });
@@ -1051,16 +1051,18 @@
                             });
                     });
 
+
+
                     // Ajouter un membre existant au projet sur la base de données
                     document.getElementById('addExistingMember_' + project_id).addEventListener('click', () => {
-                        var existingMemberEmail = document.getElementById('existingMemberEmail_' + project_id).value;
-                        var existingMemberRole = document.getElementById('existingMemberRole_' + project_id).value;
-                        var existingMember_first_name = document.getElementById('existingMember_first_name_' + project_id).value;
-                        var existingMember_last_name = document.getElementById('existingMember_last_name_' + project_id).value;
-                        var existingMember_countryAndCity = document.getElementById('existingMemberCityAndCountry_' + project_id).value;
+                        var existingMemberEmail = document.getElementById('existingMemberEmail_' + project_id).value || '';
+                        var existingMemberRole = document.getElementById('existingMemberRole_' + project_id).value || '';
+                        var existingMember_first_name = document.getElementById('existingMember_first_name_' + project_id).value || '';
+                        var existingMember_last_name = document.getElementById('existingMember_last_name_' + project_id).value || '';
+                        var existingMember_countryAndCity = document.getElementById('existingMemberCityAndCountry_' + project_id).value || '';
 
-                        if (!existingMemberEmail || !existingMemberRole || !existingMember_first_name || !existingMember_last_name) {
-                            alert('Veuillez remplir tous les champs.');
+                        if (!existingMemberEmail || !existingMemberRole || !existingMember_first_name) {
+                            alert('Veuillez remplir tous les champs. (Email, Rôle et Prénom (le Nom est optionnel))');
                             return;
                         }
 
@@ -1365,11 +1367,10 @@
 
                     // Ajouter un rapport au projet sur la base de données
                     document.getElementById('submitReport_' + project_id).addEventListener('click', () => {
-                        var listOfdestinataires_emails = '';
-                        listOfdestinataires_emails ? document.getElementById('reportdestinataires_'+project_id).value : '';
-                        var messageObject = document.getElementById('messageObject_' + project_id).value;
-                        var messageContent = document.getElementById('messageDescription_' + project_id).value;
-                        var joinedFiles = document.getElementById('reportFiles_' + project_id).files;
+                        var listOfdestinataires_emails =  document.getElementById('reportdestinataires_' + project_id).value || '';
+                        var messageObject = document.getElementById('messageObject_' + project_id).value || '';
+                        var messageContent = document.getElementById('messageDescription_' + project_id).value || '';
+                        var joinedFiles = document.getElementById('reportFiles_' + project_id).files || [];
 
                         var file_id = [];
                         if (joinedFiles.length > 0) {
@@ -1385,7 +1386,7 @@
                             fetch('https://lab.padem.org/wp-json/mo/v1/createMedia', {
                                 method: 'POST',
                                 headers: {
-                                    'Content-Type': 'multipart/form-data',
+                                    'Content-Type': 'application/json',
                                 },
                                 body: JSON.stringify({
                                     'project_id': project_id,
@@ -1433,24 +1434,22 @@
 
                     // Ajouter un document modèle au projet sur la base de données
                     document.getElementById('submitDocument_' + project_id).addEventListener('click', () => {
-                        var documentName = document.getElementById('documentName_' + project_id).value;
-                        var documentDescription = document.getElementById('documentDescription_' + project_id).value;
-                        var documentFile = document.getElementById('documentFile_' + project_id).files[0];
-                        var documentType = document.getElementById('documentType_' + project_id).value;
+                        var documentTitle = document.getElementById('documentTitle_' + project_id).value || '';
+                        var documentDescription = document.getElementById('documentDescription_' + project_id).value || '';
+                        var documentFile = document.getElementById('documentFile_' + project_id).files[0] || '';
 
                         // Enregistrer le document dans la base de données
                         var formData = new FormData();
                         formData.append('file', documentFile);
-                        fetch('https://lab.padem.org/wp-json/mo/v1/createDocument', {
+                        fetch('https://lab.padem.org/wp-json/mo/v1/createMedia', {
                             method: 'POST',
                             headers: {
-                                'Content-Type': 'multipart/form-data',
+                                'Content-Type': 'application/json',
                             },
                             body: JSON.stringify({
                                 'project_id': project_id,
-                                'document_name': documentName,
+                                'file_name': documentTitle,
                                 'document_description': documentDescription,
-                                'document_type': documentType,
                                 'document_file': formData,
                             }),
                         })
