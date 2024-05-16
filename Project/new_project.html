@@ -183,7 +183,51 @@
                         showConfirmButton: false,
                         timer: 1500
                     });
+                    fetch('https://lab.padem.org/get_key.php',
+                        {
+                            method: 'GET',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                        }).then(response => {
+                            if (!response.ok) {
+                                console.error('Erreur lors de la requête vers l\'API.');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            //#region Créer un dossier où stocker les fichiers du projet sur le serveur via l'API(https://lab.padem.org/wp-json/filebird/public/v1/folders)
+                            fetch('https://lab.padem.org/wp-json/filebird/public/v1/folders', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'Authorization': 'Bearer ' + data.fileBird_api_key,
+                                },
+                                body: JSON.stringify({
+                                    name: dataInfosPreliminaires.project_title,
+                                    parent_id: 0,
+                                }),
+                            }).then(response => {
+                                if (!response.ok) {
+                                    console.log('Erreur lors de la requête vers l\'API.');
+                                }
+                                return response.json();
+                            })
+                                .then(data => {
+                                    console.log('Success:', data);
+                                })
+                                .catch((error) => {
+                                    console.error('Error:', error);
+                                });
+                            //#endregion
+                        })
+                        .catch((error) => {
+                            console.error('Error:', error);
+                        })
+
+                    // Masquer le formulaire
                     showAndHide('projectForm');
+
                     // Recharger la page
                     window.location.href = "https://lab.padem.org/projet";
                 })
@@ -305,7 +349,8 @@
                         document.getElementById("referants").src = "https://lab.padem.org/wp-content/uploads/plus.png";
                     }
                 });
-            } else {
+            } 
+            else {
                 // Masquer le formulaire
                 projectForm.style.display = "none";
 
