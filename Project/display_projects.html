@@ -1349,8 +1349,8 @@
                                                 },
                                                 body: JSON.stringify({
                                                     'project_id': project_id,
-                                                    'user_list': JSON.stringify({
-                                                        'email_id': project_id + '-' + new Date().getTime() + '-' + Math.random().toString(36).substr(2, 9),
+                                                    'users': JSON.stringify({
+                                                        'id': project_id + '-' + new Date().getTime() + '-' + Math.random().toString(36).substr(2, 9),
                                                         'user_id': existingMemberEmail,
                                                     }),
                                                 }),
@@ -1383,13 +1383,13 @@
                         var messageContent = document.getElementById('messageDescription_' + project_id).value || '';
                         var joinedFiles = document.getElementById('reportFiles_' + project_id).files || [];
 
+
+                        //#region Enregistrer le ou les fichiers sélectionnés et les envoyer à l'API(https://lab.padem.org/wp-json/mo/v1/createMedia)
                         var file_id = [];
                         if (joinedFiles.length > 0) {
                             for (var i = 0; i < joinedFiles.length; i++) {
                                 file_id.push(joinedFiles[i].name);
                             }
-
-                            // Enregistrer le ou les fichiers sélectionnés et les envoyer à l'API(https://lab.padem.org/wp-json/mo/v1/createMedia)
                             var formData = new FormData();
                             for (var i = 0; i < joinedFiles.length; i++) {
                                 formData.append('files[]', joinedFiles[i]);
@@ -1418,9 +1418,9 @@
                                             },
                                             body: JSON.stringify({
                                                 'project_id': project_id,
-                                                'file_id': JSON.stringify({
+                                                'files': JSON.stringify({
                                                     'id': project_id + '-' + new Date().getTime() + '-' + Math.random().toString(36).substring(2),
-                                                    'file_id': file_id,
+                                                    'file_id': JSON.stringify(file_id),
                                                 }),
                                             }),
                                         })
@@ -1436,19 +1436,20 @@
                                     console.error(error);
                                 });
                         }
+                        //#endregion
 
                         // Enregistrer le message dans la base de données via l'API(https://lab.padem.org/wp-json/mo/v1/createReport)
-                        fetch('https://lab.padem.org/wp-json/mo/v1/createReport', {
+                        fetch('https://lab.padem.org/wp-json/mo/v1/createMessage', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
                             },
                             body: JSON.stringify({
-                                'file_id': JSON.stringify(file_id),
                                 'project_id': project_id,
-                                'message_destinataires': listOfdestinataires_emails,
+                                'message_destinataires': JSON.stringify(listOfdestinataires_emails),
                                 'message_object': messageObject,
                                 'message_content': messageContent,
+                                'file_id': JSON.stringify(file_id),
                             }),
                         })
                             .then(response => response.json())
@@ -1465,23 +1466,23 @@
                                         },
                                         body: JSON.stringify({
                                             'project_id': project_id,
-                                            'report_id': JSON.stringify({
+                                            'messages': JSON.stringify({
                                                 'id': project_id + '-' + new Date().getTime() + '-' + Math.random().toString(36).substring(2),
-                                                'report_id': report_id,
+                                                'messages_id': report_id,
                                             }),
                                         }),
                                     })
                                     .then(response => response.json())
                                     .then(data => {
                                         console.log(data);
+                                        // Afficher un message de succès
+                                        alert('Message envoyé avec succès !');
+                                        // Recharger la page
+                                        window.location.href = 'https://lab.padem.org/projets/';
                                     })
                                     .catch(error => {
                                         console.error(error);
                                     });
-                                // Afficher un message de succès
-                                alert('Message envoyé avec succès !');
-                                // Recharger la page
-                                window.location.href = 'https://lab.padem.org/projets/';
                             })
                             .catch(error => {
                                 console.error(error);
@@ -1522,7 +1523,7 @@
                                         },
                                         body: JSON.stringify({
                                             'project_id': project_id,
-                                            'folder_id': JSON.stringify({
+                                            'folders': JSON.stringify({
                                                 'id': project_id + '-' + new Date().getTime() + '-' + Math.random().toString(36).substring(2),
                                                 'document_id': document_id,
                                             }),
@@ -1567,6 +1568,30 @@
                             .then(response => response.json())
                             .then(data => {
                                 console.log(data);
+                                // Récupérer l'ID du lien enregistré
+                                var link_id = data.link_id;
+                                // Ajouter l'id du lien à la liste des liens du projet sur la base de données
+                                fetch('https://lab.padem.org/wp-json/mo/v1/updateOneProject',
+                                    {
+                                        method: 'PUT',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                        },
+                                        body: JSON.stringify({
+                                            'project_id': project_id,
+                                            'links': JSON.stringify({
+                                                'id': project_id + '-' + new Date().getTime() + '-' + Math.random().toString(36).substring(2),
+                                                'link_id': link_id,
+                                            }),
+                                        }),
+                                    })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        console.log(data);
+                                    })
+                                    .catch(error => {
+                                        console.error(error);
+                                    });
                                 // Afficher un message de succès
                                 alert('Lien ajouté avec succès !');
                                 // Recharger la page
@@ -1576,7 +1601,67 @@
                                 console.error(error);
                             });
                     });
-                });
+                
+                
+                    // Ajouter un élément divers au projet sur la base de données
+                    document.getElementById('buttonAddMisc_' + project_id).addEventListener('click', () => {
+                        var miscTitle = document.getElementById('miscTitle_' + project_id).value || '';
+                        var miscDescription = document.getElementById('miscDescription_' + project_id).value || '';
+                        var miscFile = document.getElementById('miscFile_' + project_id).files[0] || '';
+
+                        var formData = new FormData();
+                        formData.append('file', miscFile, miscFile.name, miscFile.type, miscFile.lastModified, miscFile.lastModifiedDate, miscFile.webkitRelativePath);
+
+                        // Enregistrer l'élément divers dans la base de données
+                        fetch('https://lab.padem.org/wp-json/mo/v1/createDivers', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                'project_id': project_id,
+                                'divers_title': miscTitle,
+                                'divers_description': miscDescription,
+                                'divers_content': formData,
+                            }),
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                console.log(data);
+                                // Récupérer l'ID de l'élément divers enregistré
+                                var divers_id = data.divers_id;
+                                // Ajouter l'id de l'élément divers à la liste des éléments divers du projet sur la base de données
+                                fetch('https://lab.padem.org/wp-json/mo/v1/updateOneProject',
+                                    {
+                                        method: 'PUT',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                        },
+                                        body: JSON.stringify({
+                                            'project_id': project_id,
+                                            'divers': JSON.stringify({
+                                                'id': project_id + '-' + new Date().getTime() + '-' + Math.random().toString(36).substring(2),
+                                                'misc_id': divers_id,
+                                            }),
+                                        }),
+                                    })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        console.log(data);
+                                    })
+                                    .catch(error => {
+                                        console.error(error);
+                                    });
+                                // Afficher un message de succès
+                                alert('Élément divers ajouté avec succès !');
+                                // Recharger la page
+                                window.location.href = 'https://lab.padem.org/projets/';
+                            })
+                            .catch(error => {
+                                console.error(error);
+                            });
+                    });
+            });
             })
             .catch(error => {
                 console.error(error);
