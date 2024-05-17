@@ -90,18 +90,20 @@
                     'Incomplet': 'red',
                 };
                 var stepper = 0;
+                var tabStepper = 0;
+                var membersTable = new Array(data.length).fill(0);
                 // Parcourir la liste des projets
                 data.forEach(project => {
                     var project_id = project.project_id;
                     var list_OfUsers = {
                         'project_id': 0,
-                        'coordinateur': [],
-                        'chef-de-projet': [],
-                        'accountant': [],
-                        'consultant': [],
-                        'partner': [],
-                        'funder': [],
-                        'referent': []
+                        'coordinateur': [{ 'email': '', 'role': '' }],
+                        'chef-de-projet': [{ 'email': '', 'role': '' }],
+                        'accountant': [{ 'email': '', 'role': '' }],
+                        'consultant': [{ 'email': '', 'role': '' }],
+                        'partner': [{ 'email': '', 'role': '' }],
+                        'funder': [{ 'email': '', 'role': '' }],
+                        'referent': [{ 'email': '', 'role': ''}]
                     };
 
                     function getProjectChief() {
@@ -129,7 +131,7 @@
                                 }
                             })
                             .catch(error => {
-                                console.error('Error:', error);
+                                console.error('Erreur récupérer les chefs de projet:', error);
                             });
                     }
 
@@ -158,7 +160,7 @@
                                 }
                             })
                             .catch(error => {
-                                console.error('Error:', error);
+                                console.error('Erreur récupérer les comptables', error);
                             });
                     }
 
@@ -173,11 +175,11 @@
                             .then(data => {
                                 if (data !== null && data !== undefined && Array.isArray(data)) {
                                     data.forEach(user => {
-                                        if (user.project_id === projectId) {
+                                        if (user.project_id === project_id) {
                                             var option = document.createElement('option');
                                             option.value = user.consultant_email;
                                             option.text = user.consultant_email + ' - Consultant';
-                                            document.getElementById('existingMemberEmail_' + projectId).appendChild(option);
+                                            document.getElementById('existingMemberEmail_' + project_id).appendChild(option);
                                             list_OfUsers['consultant'].push({
                                                 'email': user.consultant_email,
                                                 'role': 'Consultant'
@@ -187,7 +189,7 @@
                                 }
                             })
                             .catch(error => {
-                                console.error('Error:', error);
+                                console.error('Récupérer les consoltants:', error.message);
                             });
                     }
 
@@ -202,11 +204,11 @@
                             .then(data => {
                                 if (data !== null && data !== undefined && Array.isArray(data)) {
                                     data.forEach(user => {
-                                        if (user.project_id === projectId) {
+                                        if (user.project_id === project_id) {
                                             var option = document.createElement('option');
                                             option.value = user.partner_email;
                                             option.text = user.partner_email + ' - Partenaire';
-                                            document.getElementById('existingMemberEmail_' + projectId).appendChild(option);
+                                            document.getElementById('existingMemberEmail_' + project_id).appendChild(option);
                                             list_OfUsers['partner'].push({
                                                 'email': user.partner_email,
                                                 'role': 'Partenaire'
@@ -216,7 +218,7 @@
                                 }
                             })
                             .catch(error => {
-                                console.error('Error:', error);
+                                console.error('Récupérer les partenaires:', error);
                             });
                     }
 
@@ -231,11 +233,11 @@
                             .then(data => {
                                 if (data !== null && data !== undefined && Array.isArray(data)) {
                                     data.forEach(user => {
-                                        if (user.project_id === projectId) {
+                                        if (user.project_id === project_id) {
                                             var option = document.createElement('option');
                                             option.value = user.referent_email;
                                             option.text = user.referent_email + ' - Référent';
-                                            document.getElementById('existingMemberEmail_' + projectId).appendChild(option);
+                                            document.getElementById('existingMemberEmail_' + project_id).appendChild(option);
                                             list_OfUsers['referent'].push({
                                                 'email': user.referent_email,
                                                 'role': 'Référent'
@@ -245,7 +247,7 @@
                                 }
                             })
                             .catch(error => {
-                                console.error('Error:', error);
+                                console.error('Récupérer les partenaires:', error);
                             });
                     }
 
@@ -260,11 +262,11 @@
                             .then(data => {
                                 if (data !== null && data !== undefined && Array.isArray(data)) {
                                     data.forEach(user => {
-                                        if (user.project_id === projectId) {
+                                        if (user.project_id === project_id) {
                                             var option = document.createElement('option');
                                             option.value = user.coordinator_email;
                                             option.text = user.coordinator_email + ' - Coordinateur';
-                                            document.getElementById('existingMemberEmail_' + projectId).appendChild(option);
+                                            document.getElementById('existingMemberEmail_' + project_id).appendChild(option);
                                             list_OfUsers['coordinateur'].push({
                                                 'email': user.coordinator_email,
                                                 'role': 'Coordinateur'
@@ -274,7 +276,7 @@
                                 }
                             })
                             .catch(error => {
-                                console.error('Error:', error);
+                                console.error('récupérer les coordinateurs:', error);
                             });
                     }
 
@@ -289,11 +291,11 @@
                             .then(data => {
                                 if (data !== null && data !== undefined && Array.isArray(data)) {
                                     data.forEach(user => {
-                                        if (user.project_id === projectId) {
+                                        if (user.project_id === project_id) {
                                             var option = document.createElement('option');
                                             option.value = user.funder_email;
                                             option.text = user.funder_email + ' - Bailleur';
-                                            document.getElementById('existingMemberEmail_' + projectId).appendChild(option);
+                                            document.getElementById('existingMemberEmail_' + project_id).appendChild(option);
                                             list_OfUsers['funder'].push({
                                                 'email': user.funder_email,
                                                 'role': 'Bailleur'
@@ -303,7 +305,7 @@
                                 }
                             })
                             .catch(error => {
-                                console.error('Error:', error);
+                                console.error('Récupérer les bailleurs:', error);
                             });
                     }
                     
@@ -343,10 +345,10 @@
                             <ul class="project-row" style="width: fit-content;">
                                 <li class="project-element" style="font-weight: bold; color: #29A6A7;">${project.project_title}</li>
                                 <li class="project-element">${project.project_location}</li>
-                                <li class="project-element">Membres: <p id="numberOfMembers_${project_id}"></p></li>
+                                <li class="project-element" style="display: flex;">Membres: <p id="numberOfmember_${project_id}"></p></li>
                                 <li class="project-element" style="text-transform: capitalize; font-weight: bold; color: ${colorStatusText[projectStatus]}; background: none; margin: 5px; padding: 5px; boder-radius: 20px;" id="status_${project_id}"></li>
-                                <li class="project-element" style="font-weight: bold; font-size: 11px; color: ${colorStatusBackground[localStatus]}; id="localStatus_${project_id}"></li>
-                                <li class="project-element" style="display: 'flex'; justify-content: 'flex-end';">
+                                <li class="project-element" style="font-weight: bold; font-size: 11px; color: ${colorStatusBackground[localStatus]};" id="localStatus_${project_id}"></li>
+                                <li class="project-element" style="display: flex; justify-content: flex-end;">
                                     <div style="margin-right: 10px;"></div>
                                     <button class="buttonModifier" id="buttonModifier_${project_id}" style="margin: 5px; padding: 5px; boder-radius: 20px; font-size: 11px;">${buttonText}</button>
                                 </li>
@@ -419,7 +421,7 @@
                                                     </div>
                                                     <div style="margin-top: 10px; padding: 10px;"></div>
                                                     <div class="col-md-12">
-                                                        <div class="row" style="display: flex; width: 100%;">
+                                                        <div style="display: 'flex'; width: 100%;">
                                                             <button type="submit" class="btn btn-primary" id="buttonAddMember_${project_id}" style="width: fit-content;">Ajouter le nouveau membre au projet</button>
                                                             <div style="margin: 5px; padding: 5px;"></div>
                                                             <div id="loading" style="display: none;">
@@ -572,8 +574,6 @@
                     // Ajouter l'élément de liste dans la liste des projets
                     document.getElementById('projectsList').appendChild(li);
 
-                    document.getElementById('existingMemberEmail_' + project_id).appendChild(option);
-
                     // Récupérer les emails des utilisateurs qui ont l'ID du projet
                     getProjectChief();
                     getAccountant();
@@ -584,26 +584,42 @@
                     getFunder();
 
                     // Nombre de membres du projet
+                    
                     allUsers.push(list_OfUsers);
                     allUsers.forEach(user => {
                         if (user.project_id === project_id) {
-                            numberOfMembers = user.coordinateur.length + user.chef - de - projet.length + user.accountant.length + user.consultant.length + user.partner.length + user.funder.length + user.referent.length;
+                            numberOfMembers = user.coordinateur.length + user['chef-de-projet'].length + user.accountant.length + user.consultant.length + user.partner.length + user.funder.length + user.referent.length;
                         }
                     });
-                    document.getElementById(`numberOfMembers_${project_id}`).innerText = numberOfMembers;
 
-                    projectStatus = project.project_status;
                     if (numberOfMembers === 0 || project.users_list === null || project.users_list === undefined) {
                         localStatus = 'Incomplet';
-                        document.getElementById('localStatus_' + project_id).innerText = localStatus;
-                        document.getElementById(`buttonModifier_${project_id}`).innerText = 'Compléter le projet';
-                        document.getElementById(`status_${project_id}`).innerText = 'Non publié';
+                        let localStatus_ = document.querySelector('#localStatus_' + project_id);
+                        if(localStatus_ !== null) {
+                            localStatus_.innerText = localStatus;
+                        }
+                        let buttonModifier = document.querySelector('#buttonModifier_' + project_id);
+                        if(buttonModifier !== null) {
+                            buttonModifier.innerText = 'Compléter le projet';
+                        }
+                        let status = document.querySelector('#status_' + project_id);
+                        if(status !== null) {
+                            status.innerText = "Non publié";
+                            projectStatus = 'Non publié';
+                        }
                     } else if (numberOfMembers > 0) {
                         localStatus = 'Complet';
                         document.getElementById('localStatus_' + project_id).innerText = localStatus;
                         document.getElementById(`buttonModifier_${project_id}`).innerText = 'Modifier le projet';
                         document.getElementById(`status_${project_id}`).innerText = "Publié";
+                        projectStatus = 'Publié';
                     }
+                    // Ajouter le nombre de membres du projet dans le tableau
+                    membersTable[tabStepper] = numberOfMembers;
+                    numberOfMembers = 0;
+                    document.getElementById('numberOfmember_' + project_id).innerText = membersTablet[tabStepper];
+                    document.getElementById('existingMemberEmail_' + project_id).appendChild(option);
+                    tabStepper++;
 
                     // Ajouter un gestionnaire d'événement pour chaque bouton "Compléter le projet ou Modifier le projet"
                     document.getElementById(`buttonModifier_${project_id}`).addEventListener('click', () => {
@@ -1639,7 +1655,7 @@
                 // Masquer le spinner
                 document.getElementById('loading').style.display = 'none';
                 // Afficher un message d'erreur
-                alert('Une erreur est survenue : ', error.message);
+                alert('Une erreur est survenue : ', error);
             });
     });
 </script>

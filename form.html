@@ -1,0 +1,270 @@
+
+
+<div style="list-style-type: none; padding: 5px; margin: 5px; border-radius: 10px;">
+    <ul class="project-row" style="width: fit-content;">
+        <li class="project-element" style="font-weight: bold; color: #29A6A7;">${project.project_title}</li>
+        <li class="project-element">${project.project_location}</li>
+        <li class="project-element">Membres: <p id="numberOfMembers_${project_id}"></p>
+        </li>
+        <li class="project-element" style='text-transform: capitalize; font-weight: bold; color: ${colorStatusText[projectStatus]}; background: none; margin: 5px; padding: 5px; boder-radius: 20px;' id="status_${project_id}"></li>
+        <li class="project-element"
+        style="font-weight: bold; font-size: 11px; color: ${colorStatusBackground[localStatus]};" id="localStatus_${project_id}"></li>
+        <li class="project-element" style="display: 'flex'; justify-content: 'flex-end';">
+            <div style="margin-right: 10px;"></div>
+            <button class="buttonModifier" id="buttonModifier_${project_id}"
+                style="margin: 5px; padding: 5px; boder-radius: 20px; font-size: 11px;">${buttonText}</button>
+        </li>
+    </ul>
+    <div id="modifyProject_${project_id}"
+        style="display: none; width: 100%; height: auto; background: white; margin: 10px; padding: 10px; border-radius: 10px;">
+        <hr style="border: 1px solid #29A6A7;">
+        <div style="margin: 5px; padding: 5px;"></div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="row">
+                    <div style="margin-top: 5px; padding: 5px;"></div>
+                    <div class="container">
+                        <!-- Afficher une liste de boutons à l'horizontale permettant de faire apparaître le type d'éléments à ajouter au projet -->
+                        <div class="col-md-12" style="width: 100%; background: white;">
+                            <div class="row" style="width: 100%;">
+                                <div class="btn-group" role="group" aria-label="menu" style="width: 100%;">
+                                    <button type="button" id="buttonNewMember_${project_id}" class="btn btn-secondary"
+                                        style="width: fit-content; margin: 5px; padding: 5px; background: white; color: #29A6A7; font-size: 10px; border-radius: 20px;">
+                                        Nouveau membre</button>
+                                    <button type="button" id="buttonExistingMember_${project_id}"
+                                        class="btn btn-secondary"
+                                        style="width: fit-content; margin: 5px; padding: 5px; background: white; color: #29A6A7; font-size: 10px; border-radius: 20px;">
+                                        Membre existant</button>
+                                    <button type="button" id="buttonDocumentModel_${project_id}"
+                                        class="btn btn-secondary"
+                                        style="width: fit-content; margin: 5px; padding: 5px; background: white; color: #29A6A7; font-size: 10px; border-radius: 20px;">
+                                        Document model</button>
+                                    <button type="button" id="buttonAddLink_${project_id}" class="btn btn-secondary"
+                                        style="width: fit-content; margin: 5px; padding: 5px; background: white; color: #29A6A7; font-size: 10px; border-radius: 20px;">
+                                        Ajouter un Lien</button>
+                                    <button type="button" id="buttonAddDivers_${project_id}" class="btn btn-secondary"
+                                        style="width: fit-content; margin: 5px; padding: 5px; background: white; color: #29A6A7; font-size: 10px; border-radius: 20px;">
+                                        Divers</button>
+                                </div>
+                            </div>
+                            <div style="margin: 5px; padding: 5px;"></div>
+                            <div id="newMember_${project_id}" style="display: none; width: 100%">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <div style="margin: 5px; padding: 5px;"></div>
+                                            <label for="newMemberEmail_${project_id}" required>Adresse email du nouveau
+                                                membre: </label>
+                                            <input type="email" class="form-control" id="newMemberEmail_${project_id}"
+                                                aria-describedby="emailHelp">
+                                            <div style="margin: 5px; padding: 5px;"></div>
+                                            <label for="last_name_${project_id}">Nom: </label>
+                                            <input type="text" class="form-control" id="last_name_${project_id}"
+                                                aria-describedby="emailHelp">
+                                            <div style="margin: 5px; padding: 5px;"></div>
+                                            <label for="first_name_${project_id}">Prénom: </label>
+                                            <input type="text" class="form-control" id="first_name_${project_id}"
+                                                aria-describedby="emailHelp">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <div style="margin: 5px; padding: 5px;"></div>
+                                            <label for="newMemberRole_${project_id}">Rôle du nouveau membre: </label>
+                                            <select class="form-control" id="newMemberRole_${project_id}" required>
+                                                <option value="Coordinateur">Coordinateur</option>
+                                                <option value="chef-de-projet">Chef de projet</option>
+                                                <option value="comptable">Comptable</option>
+                                                <option value="consultant">Consultant</option>
+                                                <option value="partenaire">Partenaire</option>
+                                                <option value="bailleur">Bailleur</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <div style="margin: 5px; padding: 5px;"></div>
+                                            <label for="newMemberCityAndCountry_${project_id}">Ville et pays du nouveau
+                                                membre: </label>
+                                            <input type="text" class="form-control"
+                                                id="newMemberCityAndCountry_${project_id}" aria-describedby="emailHelp">
+                                        </div>
+                                    </div>
+                                    <div style="margin-top: 10px; padding: 10px;"></div>
+                                    <div class="col-md-12">
+                                        <div style="display: flex; width: 100%;">
+                                            <button type="submit" class="btn btn-primary"
+                                                id="buttonAddMember_${project_id}" style="width: fit-content;">Ajouter
+                                                le nouveau membre au projet</button>
+                                            <div style="margin: 5px; padding: 5px;"></div>
+                                            <div id="loading" style="display: none;">
+                                                <img src="https://lab.padem.org/wp-content/uploads/Spin@1x-1.0s-200px-200px.gif"
+                                                    style="width: 30px; height: 30px" alt="Chargement...">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="existingMember_${project_id}" style="display: none; width: 100%;">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <div style="margin: 5px; padding: 5px;"></div>
+                                            <label for="existingMemberEmail_${project_id}">Adresse email du membre
+                                                existant: </label>
+                                            <select class="form-control" id="existingMemberEmail_${project_id}"
+                                                required>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <div style="margin: 5px; padding: 5px;"></div>
+                                            <label for="existingMember_last_name_${project_id}">Nom du membre existant:
+                                            </label>
+                                            <input type="text" class="form-control"
+                                                id="existingMember_last_name_${project_id}"
+                                                aria-describedby="emailHelp">
+                                            <div style="margin: 5px; padding: 5px;"></div>
+                                            <label for="existingMember_first_name_${project_id}">Prénom du membre
+                                                existant: </label>
+                                            <input type="text" class="form-control"
+                                                id="existingMember_first_name_${project_id}"
+                                                aria-describedby="emailHelp">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <div style="margin: 5px; padding: 5px;"></div>
+                                            <label for="existingMemberRole_${project_id}">Rôle du membre existant:
+                                            </label>
+                                            <select class="form-control" id="existingMemberRole_${project_id}" required>
+                                                <option value="Coordinateur">Coordinateur</option>
+                                                <option value="chef-de-projet">Chef de projet</option>
+                                                <option value="comptable">Comptable</option>
+                                                <option value="consultant">Consultant</option>
+                                                <option value="partenaire">Partenaire</option>
+                                                <option value="bailleur">Bailleur</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <div style="margin: 5px; padding: 5px;"></div>
+                                            <label for="existingMemberCityAndCountry_${project_id}">Ville et pays du
+                                                membre existant: </label>
+                                            <input type="text" class="form-control"
+                                                id="existingMemberCityAndCountry_${project_id}"
+                                                aria-describedby="emailHelp">
+                                        </div>
+                                    </div>
+                                    <div style="margin-top: 10px; padding: 10px;"></div>
+                                    <div class="col-md-12">
+                                        <button type="submit" class="btn btn-primary"
+                                            id="addExistingMember_${project_id}" style="width: fit-content;">Ajouter le
+                                            membre existant au projet</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="newDocument_${project_id}" style="display: none; width: 100%;">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <div style="margin: 5px; padding: 5px;"></div>
+                                            <label for="documentTitle_${project_id}">Titre du document: </label>
+                                            <input type="text" class="form-control" id="documentTitle_${project_id}"
+                                                aria-describedby="emailHelp">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <div style="margin: 5px; padding: 5px;"></div>
+                                            <label for="documentDescription_${project_id}">Description du document:
+                                            </label>
+                                            <textarea class="form-control" id="documentDescription_${project_id}"
+                                                rows="5"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <div style="margin: 5px; padding: 5px;"></div>
+                                            <label for="documentFile_${project_id}">Charger le document: </label>
+                                            <input type="file" class="form-control-file"
+                                                id="documentFile_${project_id}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="margin-top: 10px; padding: 10px;"></div>
+                                <div class="col-md-12">
+                                    <button type="submit" class="btn btn-primary" id="submitDocument_${project_id}"
+                                        style="width: fit-content;">Ajouter le document au projet</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="newLink_${project_id}" style="display: none; width: 100%;">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <div style="margin: 5px; padding: 5px;"></div>
+                                        <label for="linkTitle_${project_id}">Titre du lien</label>
+                                        <input type="text" class="form-control" id="linkTitle_${project_id}"
+                                            aria-describedby="emailHelp">
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <div style="margin: 5px; padding: 5px;"></div>
+                                        <label for="linkDescription_${project_id}">Description du lien: </label>
+                                        <textarea class="form-control" id="linkDescription_${project_id}"
+                                            rows="5"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <div style="margin: 5px; padding: 5px;"></div>
+                                        <label for="linkUrl_${project_id}">Saisir le lien: </label>
+                                        <input type="text" class="form-control" id="linkUrl_${project_id}"
+                                            aria-describedby="emailHelp">
+                                    </div>
+                                </div>
+                                <div style="margin-top: 10px; padding: 10px;"></div>
+                                <div class="col-md-12">
+                                    <button type="submit" class="btn btn-primary" id="linkSubmit_${project_id}"
+                                        style="width: fit-content;">Ajouter le lien au projet</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="newMisc_${project_id}" style="display: none; width: 100%;">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <div style="margin: 5px; padding: 5px;"></div>
+                                        <label for="miscTitle_${project_id}">Titre de l'élément: </label>
+                                        <input type="text" class="form-control" id="miscTitle_${project_id}"
+                                            aria-describedby="emailHelp">
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <div style="margin: 5px; padding: 5px;"></div>
+                                        <label for="miscDescription_${project_id}">Description de l'élément: </label>
+                                        <textarea class="form-control" id="miscDescription_${project_id}"
+                                            rows="5"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <div style="margin: 5px; padding: 5px;"></div>
+                                        <label for="miscFile_${project_id}">Charger un document: </label>
+                                        <input type="file" class="form-control-file" id="miscFile_${project_id}">
+                                    </div>
+                                </div>
+                                <div style="margin-top: 10px; padding: 10px;"></div>
+                                <div class="col-md-12">
+                                    <button type="submit" class="btn btn-primary" id="buttonAddMisc_${project_id}"
+                                        style="width: fit-content;">Ajouter l'élément au projet</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
