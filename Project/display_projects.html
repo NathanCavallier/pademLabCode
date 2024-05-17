@@ -17,20 +17,7 @@
         var numberOfMembers = 0;
         var localStatus = '';
         var projectStatus = '';
-
-        var list_OfUsers = 
-        [
-            {
-                'project_id': 0,
-                'coordinateur': [],
-                'chef-de-projet': [],
-                'accountant': [],
-                'consultant': [],
-                'partner': [],
-                'funder': [],
-                'referent': []
-            }
-        ];
+        var allUsers = [];
 
         var listOfAllMembersEmailOnPademLab = [];
 
@@ -83,214 +70,6 @@
         }
         //#endregion
 
-        function getProjectChief(projectId) {
-            fetch('https://lab.padem.org/wp-json/mo/v1/getProjectChief', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data !== null && data !== undefined && Array.isArray(data)) {
-                        data.forEach(user => {
-                            if (user.project_id === projectId) {
-                                var option = document.createElement('option');
-                                option.value = user.chief_email;
-                                option.text = user.chief_email + ' - Chef de projet';
-                                document.getElementById('existingMemberEmail_' + projectId).appendChild(option);
-                                list_OfUsers.forEach(project => {
-                                    if (list_OfUsers['project_id'] === projectId) {
-                                        list_OfUsers['chef-de-projet'].push({
-                                            'email': user.chief_email,
-                                            'role': 'Chef de projet'
-                                        });               
-                                    }
-                                });
-                            }
-                        });
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-        }
-
-        function getAccountant(projectId) {
-            fetch('https://lab.padem.org/wp-json/mo/v1/getAccountant', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data !== null && data !== undefined && Array.isArray(data)) {
-                        data.forEach(user => {
-                            if (user.project_id === projectId) {
-                                var option = document.createElement('option');
-                                option.value = user.accountant_email;
-                                option.text = user.accountant_email + ' - Comptable';
-                                document.getElementById('existingMemberEmail_' + projectId).appendChild(option);
-                                list_OfUsers.forEach(project => {
-                                    if (list_OfUsers['project_id'] === projectId) {
-                                        list_OfUsers['accountant'].push({
-                                            'email': user.accountant_email,
-                                            'role': 'Comptable'
-                                        });
-                                    }
-                                });
-                            }
-                        });
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-        }
-
-        function getConsultant(projectId) {
-            fetch('https://lab.padem.org/wp-json/mo/v1/getConsultant', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data !== null && data !== undefined && Array.isArray(data)) {
-                        data.forEach(user => {
-                            if (user.project_id === projectId) {
-                                var option = document.createElement('option');
-                                option.value = user.consultant_email;
-                                option.text = user.consultant_email + ' - Consultant';
-                                document.getElementById('existingMemberEmail_' + projectId).appendChild(option);
-                                list_OfUsers.forEach(project => {
-                                    if (list_OfUsers['project_id'] === projectId) {
-                                        list_OfUsers['consultant'].push({
-                                            'email': user.consultant_email,
-                                            'role': 'Consultant'
-                                        });
-                                    }                              
-                                });                              
-                            }
-                        });
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-        }
-
-        function getPartner(projectId) {
-            fetch('https://lab.padem.org/wp-json/mo/v1/getPartner', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data !== null && data !== undefined && Array.isArray(data)) {
-                        data.forEach(user => {
-                            if (user.project_id === projectId) {
-                                var option = document.createElement('option');
-                                option.value = user.partner_email;
-                                option.text = user.partner_email + ' - Partenaire';
-                                document.getElementById('existingMemberEmail_' + projectId).appendChild(option);
-                                list_OfUsers.forEach(project => {
-                                    if (list_OfUsers['project_id'] === projectId) {
-                                        list_OfUsers['partner'].push({
-                                            'email': user.partner_email,
-                                            'role': 'Partenaire'
-                                        });
-                                    }                              
-                                });
-                            }
-                        });
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-        }
-
-        function getReferent(projectId) {
-            fetch('https://lab.padem.org/wp-json/mo/v1/getReferent', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data !== null && data !== undefined && Array.isArray(data)) {
-                        data.forEach(user => {
-                            if (user.project_id === projectId) {
-                                var option = document.createElement('option');
-                                option.value = user.referent_email;
-                                option.text = user.referent_email + ' - Référent';
-                                document.getElementById('existingMemberEmail_' + projectId).appendChild(option);
-                                list_OfUsers.forEach(project => {
-                                    if (list_OfUsers['project_id'] === projectId) {
-                                        list_OfUsers['referent'].push({
-                                            'email': user.referent_email,
-                                            'role': 'Référent'
-                                        });
-                                    }                              
-                                });
-                            }
-                        });
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-        }
-
-        function getCoordinator(projectId) {
-            fetch('https://lab.padem.org/wp-json/mo/v1/getCoordinator', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data !== null && data !== undefined && Array.isArray(data)) {
-                        data.forEach(user => {
-                            if (user.project_id === projectId) {
-                                var option = document.createElement('option');
-                                option.value = user.coordinator_email;
-                                option.text = user.coordinator_email + ' - Coordinateur';
-                                document.getElementById('existingMemberEmail_' + projectId).appendChild(option);
-                                list_OfUsers.forEach(project => {
-                                    if (list_OfUsers['project_id'] === projectId) {
-                                        list_OfUsers['coordinateur'].push({
-                                            'email': user.coordinator_email,
-                                            'role': 'Coordinateur'
-                                        });
-                                    }                              
-                                });
-                            }
-                        });
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-        }
-
-        function getProjectUsersEmails(projectId) {
-            getAllUsersEmails(projectId);
-            getProjectChief(projectId);
-            getAccountant(projectId);
-            getConsultant(projectId);
-            getPartner(projectId);
-            getReferent(projectId);
-            getCoordinator(projectId);
-        }
-
         // Récupérer la liste des projets depuis la base de données (à partir de l'API (https://lab.padem.org/wp-json/mo/v1/getProjects))
         // les projets sont affichés dans des lignes individuelles avec un bouton cliquables pour les modifier
         fetch('https://lab.padem.org/wp-json/mo/v1/getProjects', {
@@ -313,19 +92,232 @@
                 var stepper = 0;
                 // Parcourir la liste des projets
                 data.forEach(project => {
-                    // Créer un élément de liste pour chaque projet
-                    var li = document.createElement('li');
                     var project_id = project.project_id;
+                    var list_OfUsers = {
+                        'project_id': 0,
+                        'coordinateur': [],
+                        'chef-de-projet': [],
+                        'accountant': [],
+                        'consultant': [],
+                        'partner': [],
+                        'funder': [],
+                        'referent': []
+                    };
 
-                    // Ajouter l'ID du projet à la liste des utilisateurs
-                    list_OfUsers['project_id'] = project_id;
+                    function getProjectChief() {
+                        fetch('https://lab.padem.org/wp-json/mo/v1/getProjectChief', {
+                            method: 'GET',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data !== null && data !== undefined && Array.isArray(data)) {
+                                    data.forEach(user => {
+                                        if (user.project_id === project_id) {
+                                            var option = document.createElement('option');
+                                            option.value = user.chief_email;
+                                            option.text = user.chief_email + ' - Chef de projet';
+                                            document.getElementById('existingMemberEmail_' + project_id).appendChild(option);
+                                            list_OfUsers['chef-de-projet'].push({
+                                                'email': user.chief_email,
+                                                'role': 'Chef de projet'
+                                            });
+                                        }
+                                    });
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                            });
+                    }
 
+                    function getAccountant() {
+                        fetch('https://lab.padem.org/wp-json/mo/v1/getAccountant', {
+                            method: 'GET',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data !== null && data !== undefined && Array.isArray(data)) {
+                                    data.forEach(user => {
+                                        if (user.project_id === project_id) {
+                                            var option = document.createElement('option');
+                                            option.value = user.accountant_email;
+                                            option.text = user.accountant_email + ' - Comptable';
+                                            document.getElementById('existingMemberEmail_' + project_id).appendChild(option);
+                                            list_OfUsers['accountant'].push({
+                                                'email': user.accountant_email,
+                                                'role': 'Comptable'
+                                            });
+                                        }
+                                    });
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                            });
+                    }
+
+                    function getConsultant() {
+                        fetch('https://lab.padem.org/wp-json/mo/v1/getConsultant', {
+                            method: 'GET',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data !== null && data !== undefined && Array.isArray(data)) {
+                                    data.forEach(user => {
+                                        if (user.project_id === projectId) {
+                                            var option = document.createElement('option');
+                                            option.value = user.consultant_email;
+                                            option.text = user.consultant_email + ' - Consultant';
+                                            document.getElementById('existingMemberEmail_' + projectId).appendChild(option);
+                                            list_OfUsers['consultant'].push({
+                                                'email': user.consultant_email,
+                                                'role': 'Consultant'
+                                            });
+                                        }
+                                    });
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                            });
+                    }
+
+                    function getPartner() {
+                        fetch('https://lab.padem.org/wp-json/mo/v1/getPartner', {
+                            method: 'GET',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data !== null && data !== undefined && Array.isArray(data)) {
+                                    data.forEach(user => {
+                                        if (user.project_id === projectId) {
+                                            var option = document.createElement('option');
+                                            option.value = user.partner_email;
+                                            option.text = user.partner_email + ' - Partenaire';
+                                            document.getElementById('existingMemberEmail_' + projectId).appendChild(option);
+                                            list_OfUsers['partner'].push({
+                                                'email': user.partner_email,
+                                                'role': 'Partenaire'
+                                            });
+                                        }
+                                    });
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                            });
+                    }
+
+                    function getReferent() {
+                        fetch('https://lab.padem.org/wp-json/mo/v1/getReferent', {
+                            method: 'GET',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data !== null && data !== undefined && Array.isArray(data)) {
+                                    data.forEach(user => {
+                                        if (user.project_id === projectId) {
+                                            var option = document.createElement('option');
+                                            option.value = user.referent_email;
+                                            option.text = user.referent_email + ' - Référent';
+                                            document.getElementById('existingMemberEmail_' + projectId).appendChild(option);
+                                            list_OfUsers['referent'].push({
+                                                'email': user.referent_email,
+                                                'role': 'Référent'
+                                            });
+                                        }
+                                    });
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                            });
+                    }
+
+                    function getCoordinator() {
+                        fetch('https://lab.padem.org/wp-json/mo/v1/getCoordinator', {
+                            method: 'GET',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data !== null && data !== undefined && Array.isArray(data)) {
+                                    data.forEach(user => {
+                                        if (user.project_id === projectId) {
+                                            var option = document.createElement('option');
+                                            option.value = user.coordinator_email;
+                                            option.text = user.coordinator_email + ' - Coordinateur';
+                                            document.getElementById('existingMemberEmail_' + projectId).appendChild(option);
+                                            list_OfUsers['coordinateur'].push({
+                                                'email': user.coordinator_email,
+                                                'role': 'Coordinateur'
+                                            });
+                                        }
+                                    });
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                            });
+                    }
+
+                    function getFunder(){
+                        fetch('https://lab.padem.org/wp-json/mo/v1/getFunder', {
+                            method: 'GET',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data !== null && data !== undefined && Array.isArray(data)) {
+                                    data.forEach(user => {
+                                        if (user.project_id === projectId) {
+                                            var option = document.createElement('option');
+                                            option.value = user.funder_email;
+                                            option.text = user.funder_email + ' - Bailleur';
+                                            document.getElementById('existingMemberEmail_' + projectId).appendChild(option);
+                                            list_OfUsers['funder'].push({
+                                                'email': user.funder_email,
+                                                'role': 'Bailleur'
+                                            });
+                                        }
+                                    });
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                            });
+                    }
+                    
                     // Ajouter le référent du projet et son email à la liste des destinataires
                     var option = document.createElement('option');
                     option.value = project.project_referent_email;
                     option.text = project.project_referent_email + ' - Référent';
 
+                    // Ajouter l'ID du projet à la liste des utilisateurs
+                    list_OfUsers['project_id'] = project_id;
+
                     //#region Style de l'élément de liste
+                    // Créer un élément de liste pour chaque projet
+                    var li = document.createElement('li');
                     li.style.color = 'black';
                     li.style.textAlign = 'left';
                     li.style.border = '1px #29A6A7';
@@ -343,18 +335,6 @@
                     li.style.padding = '10px';
                     li.style.margin = '10px';
                     li.style.textDecoration = 'none';
-
-                    projectStatus = project.project_status;
-                    if (numberOfMembers === 0 || project.users_list === null || project.users_list === undefined) {
-                        localStatus = 'Incomplet';
-                        buttonText = 'Compléter le projet';
-                        projectStatus = 'Non publié';
-
-                    } else if (numberOfMembers > 0) {
-                        localStatus = 'Complet';
-                        buttonText = 'Modifier le projet';
-                        projectStatus = 'Publié';
-                    }
                     //#endregion
 
                     //#region Ajouter les données dans l'élément de liste
@@ -363,9 +343,9 @@
                             <ul class="project-row" style="width: fit-content;">
                                 <li class="project-element" style="font-weight: bold; color: #29A6A7;">${project.project_title}</li>
                                 <li class="project-element">${project.project_location}</li>
-                                <li class="project-element">Membres: ${numberOfMembers}</li>
-                                <li class="project-element" style="text-transform: capitalize; font-weight: bold; color: ${colorStatusText[projectStatus]}; background: none; margin: 5px; padding: 5px; boder-radius: 20px;" id="status_${project.project_id}">${projectStatus}</li>
-                                <li class="project-element" style="font-weight: bold; font-size: 11px; color: ${colorStatusBackground[localStatus]};">${localStatus}</li>
+                                <li class="project-element">Membres: <p id="numberOfMembers_${project_id}"></p></li>
+                                <li class="project-element" style="text-transform: capitalize; font-weight: bold; color: ${colorStatusText[projectStatus]}; background: none; margin: 5px; padding: 5px; boder-radius: 20px;" id="status_${project_id}"></li>
+                                <li class="project-element" style="font-weight: bold; font-size: 11px; color: ${colorStatusBackground[localStatus]}; id="localStatus_${project_id}"></li>
                                 <li class="project-element" style="display: 'flex'; justify-content: 'flex-end';">
                                     <div style="margin-right: 10px;"></div>
                                     <button class="buttonModifier" id="buttonModifier_${project_id}" style="margin: 5px; padding: 5px; boder-radius: 20px; font-size: 11px;">${buttonText}</button>
@@ -595,14 +575,35 @@
                     document.getElementById('existingMemberEmail_' + project_id).appendChild(option);
 
                     // Récupérer les emails des utilisateurs qui ont l'ID du projet
-                    getProjectUsersEmails(project_id);
+                    getProjectChief();
+                    getAccountant();
+                    getConsultant();
+                    getPartner();
+                    getReferent();
+                    getCoordinator();
+                    getFunder();
 
                     // Nombre de membres du projet
-                    list_OfUsers.forEachs(_project => {
-                        if (_project['project_id'] === project_id) {
-                            numberOfMembers = _project['coordinateur'].length + _project['chef-de-projet'].length + _project['accountant'].length + _project['consultant'].length + _project['partner'].length + _project['funder'].length + _project['referent'].length;
+                    allUsers.push(list_OfUsers);
+                    allUsers.forEach(user => {
+                        if (user.project_id === project_id) {
+                            numberOfMembers = user.coordinateur.length + user.chef - de - projet.length + user.accountant.length + user.consultant.length + user.partner.length + user.funder.length + user.referent.length;
                         }
                     });
+                    document.getElementById(`numberOfMembers_${project_id}`).innerText = numberOfMembers;
+
+                    projectStatus = project.project_status;
+                    if (numberOfMembers === 0 || project.users_list === null || project.users_list === undefined) {
+                        localStatus = 'Incomplet';
+                        document.getElementById('localStatus_' + project_id).innerText = localStatus;
+                        document.getElementById(`buttonModifier_${project_id}`).innerText = 'Compléter le projet';
+                        document.getElementById(`status_${project_id}`).innerText = 'Non publié';
+                    } else if (numberOfMembers > 0) {
+                        localStatus = 'Complet';
+                        document.getElementById('localStatus_' + project_id).innerText = localStatus;
+                        document.getElementById(`buttonModifier_${project_id}`).innerText = 'Modifier le projet';
+                        document.getElementById(`status_${project_id}`).innerText = "Publié";
+                    }
 
                     // Ajouter un gestionnaire d'événement pour chaque bouton "Compléter le projet ou Modifier le projet"
                     document.getElementById(`buttonModifier_${project_id}`).addEventListener('click', () => {
