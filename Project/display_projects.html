@@ -33,7 +33,7 @@
                 'referent': [{ 'email': '', 'role': '' }]
             }
         };
-        
+
 
         //#region Récupérer l'ID de l'utilisateur connecté
         fetch('https://lab.padem.org/wp-json/mo/v1/getUserId', {
@@ -122,16 +122,16 @@
                     var list_OfUsers = {
                         'project_id': 0,
                         'coordinateur': [{ 'email': '', 'role': '' }],
-                        'chef-de-projet': [{ 'email': '', 'role': '' }],
+                        'chef_de_projet': [{ 'email': '', 'role': '' }],
                         'accountant': [{ 'email': '', 'role': '' }],
                         'consultant': [{ 'email': '', 'role': '' }],
                         'partner': [{ 'email': '', 'role': '' }],
                         'funder': [{ 'email': '', 'role': '' }],
-                        'referent': [{ 'email': '', 'role': ''}]
+                        'referent': [{ 'email': '', 'role': '' }]
                     };
 
                     // Récupération de l'ID du projet
-                    members[tabStepper].project_id = project_id;
+                    list_OfUsers['project_id'] = project_id;
 
                     function getProjectChief() {
                         fetch('https://lab.padem.org/wp-json/mo/v1/getProjectChief', {
@@ -149,7 +149,7 @@
                                             option.value = user.chief_email;
                                             option.text = user.chief_email + ' - Chef de projet';
                                             document.getElementById('existingMemberEmail_' + project_id).appendChild(option);
-                                            members[tabStepper].chef_de_projet.push({
+                                            list_OfUsers['chef_de_projet'].push({
                                                 'email': user.chief_email,
                                                 'role': 'Chef de projet'
                                             });
@@ -178,10 +178,11 @@
                                             option.value = user.accountant_email;
                                             option.text = user.accountant_email + ' - Comptable';
                                             document.getElementById('existingMemberEmail_' + project_id).appendChild(option);
-                                            members[tabStepper].accountant.push({
+                                            list_OfUsers['accountant'].push({
                                                 'email': user.accountant_email,
                                                 'role': 'Comptable'
                                             });
+
                                         }
                                     });
                                 }
@@ -207,7 +208,7 @@
                                             option.value = user.consultant_email;
                                             option.text = user.consultant_email + ' - Consultant';
                                             document.getElementById('existingMemberEmail_' + project_id).appendChild(option);
-                                            members[tabStepper].consultant.push({
+                                            list_OfUsers['consultant'].push({
                                                 'email': user.consultant_email,
                                                 'role': 'Consultant'
                                             });
@@ -236,7 +237,7 @@
                                             option.value = user.partner_email;
                                             option.text = user.partner_email + ' - Partenaire';
                                             document.getElementById('existingMemberEmail_' + project_id).appendChild(option);
-                                            members[tabStepper].partner.push({
+                                            list_OfUsers['partner'].push({
                                                 'email': user.partner_email,
                                                 'role': 'Partenaire'
                                             });
@@ -265,7 +266,7 @@
                                             option.value = user.referent_email;
                                             option.text = user.referent_email + ' - Référent';
                                             document.getElementById('existingMemberEmail_' + project_id).appendChild(option);
-                                            members[tabStepper].referent.push({
+                                            list_OfUsers['referent'].push({
                                                 'email': user.referent_email,
                                                 'role': 'Référent'
                                             });
@@ -294,10 +295,10 @@
                                             option.value = user.coordinator_email;
                                             option.text = user.coordinator_email + ' - Coordinateur';
                                             document.getElementById('existingMemberEmail_' + project_id).appendChild(option);
-                                            members[tabStepper].coordinator.push({
+                                            list_OfUsers['coordinateur'].push({
                                                 'email': user.coordinator_email,
                                                 'role': 'Coordinateur'
-                                            });                                
+                                            });
                                         }
                                     });
                                 }
@@ -323,7 +324,7 @@
                                             option.value = user.funder_email;
                                             option.text = user.funder_email + ' - Bailleur';
                                             document.getElementById('existingMemberEmail_' + project_id).appendChild(option);
-                                            members[tabStepper].funder.push({
+                                            list_OfUsers['funder'].push({
                                                 'email': user.funder_email,
                                                 'role': 'Bailleur'
                                             });
@@ -335,7 +336,7 @@
                                 console.error('Récupérer les bailleurs:', error);
                             });
                     }
-                    
+
                     // Ajouter le référent du projet et son email à la liste des destinataires
                     var option = document.createElement('option');
                     option.value = project.project_referent_email;
@@ -624,12 +625,11 @@
                     getFunder();
 
                     // Nombre de membres du projet
-                    var numberOfMembers = members[tabStepper].coordinator.length + 
-                    members[tabStepper].chef_de_projet.length + members[tabStepper].accountant.length + members[tabStepper].consultant.length + members[tabStepper].partner.length + members[tabStepper].funder.length + members[tabStepper].referent.length;
-
+                    var numberOfMembers = list_OfUsers['coordinateur'].length + list_OfUsers['chef_de_projet'].length + list_OfUsers['accountant'].length + list_OfUsers['consultant'].length + list_OfUsers['partner'].length + list_OfUsers['funder'].length + list_OfUsers['referent'].length;
                     // Ajouter le nombre de membres du projet dans le tableau
+                    members[tabStepper] = list_OfUsers;
                     membersTable[tabStepper] = numberOfMembers;
-                    if(membersTable[tabStepper] > 0) {
+                    if (membersTable[tabStepper] > 0) {
                         document.getElementById(`buttonModifier_${project_id}`).innerText = 'Modifier le projet';
                         projectStatus = 'Publié';
                         document.getElementById(`status_${project_id}`).innerText = 'Publié';
