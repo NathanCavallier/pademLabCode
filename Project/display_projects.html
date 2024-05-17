@@ -59,7 +59,7 @@
                             if (user.project_id === projectId) {
                                 var option = document.createElement('option');
                                 option.value = user.chief_email;
-                                option.text = user.chief_first_name + ' ' + user.chief_last_name + ' - ' + 'Chef de projet';
+                                option.text = user.chief_email + ' - Chef de projet';
                                 document.getElementById('existingMemberEmail_' + projectId).appendChild(option);
                             }
                         });
@@ -84,7 +84,7 @@
                             if (user.project_id === projectId) {
                                 var option = document.createElement('option');
                                 option.value = user.coordinator_email;
-                                option.text = user.coordinator_first_name + ' ' + user.coordinator_last_name + ' - Coordinateur';
+                                option.text = user.coordinator_email + ' - Coordinateur';
                                 document.getElementById('existingMemberEmail_' + projectId).appendChild(option);
                             }
                         });
@@ -109,7 +109,7 @@
                             if (user.project_id === projectId) {
                                 var option = document.createElement('option');
                                 option.value = user.accountant_email;
-                                option.text = user.accountant_first_name + ' ' + user.accountant_last_name + ' - Comptable';
+                                option.text = user.accountant_email + ' - Comptable';
                                 document.getElementById('existingMemberEmail_' + projectId).appendChild(option);
                             }
                         });
@@ -134,7 +134,7 @@
                             if (user.project_id === projectId) {
                                 var option = document.createElement('option');
                                 option.value = user.consultant_email;
-                                option.text = user.consultant_first_name + ' ' + user.consultant_last_name + ' - Consultant';
+                                option.text = user.consultant_email + ' - Consultant';
                                 document.getElementById('existingMemberEmail_' + projectId).appendChild(option);
                             }
                         });
@@ -159,7 +159,7 @@
                             if (user.project_id === projectId) {
                                 var option = document.createElement('option');
                                 option.value = user.partner_email;
-                                option.text = user.partner_first_name + ' ' + user.partner_last_name + ' - Partenaire';
+                                option.text = user.partner_email + ' - Partenaire';
                                 document.getElementById('existingMemberEmail_' + projectId).appendChild(option);
                             }
                         });
@@ -249,6 +249,8 @@
                     // Créer un élément de liste pour chaque projet
                     var li = document.createElement('li');
                     var project_id = project.project_id;
+                    var memberList = JSON.parse(project.users ? project.users : '[]');
+                    numberOfMembers = memberList.length;
 
                     // Ajouter le référent du projet et son email à la liste des destinataires
                     var option = document.createElement('option');
@@ -979,9 +981,9 @@
                                                 },
                                                 body: JSON.stringify({
                                                     'project_id': project_id,
-                                                    'user_list': JSON.stringify({
+                                                    'users': JSON.stringify({
                                                         'id': project_id + '-' + new Date().getTime() + '-' + Math.random().toString(36).substring(2),
-                                                        'user_id': newMemberEmail,
+                                                        'user_email': newMemberEmail,
                                                     }),
                                                 }),
                                             })
@@ -989,7 +991,7 @@
                                             .then(data => {
                                                 console.log(data);
                                                 // Recharger la page
-                                                window.location.href = 'https://lab.padem.org/project/';
+                                                window.location.href = 'https://lab.padem.org/projets/';
                                             })
                                             .catch(error => {
                                                 console.error(error);
@@ -1493,7 +1495,5 @@
             .catch(error => {
                 console.error(error);
             });
-
-
     });
 </script>
