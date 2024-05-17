@@ -21,6 +21,20 @@
 
         var listOfAllMembersEmailOnPademLab = [];
 
+        var listOfUsers = {
+            'project_id': 0,
+            'users': {
+                'coordinateur': [{ 'email': '', 'role': '' }],
+                'chef-de-projet': [{ 'email': '', 'role': '' }],
+                'accountant': [{ 'email': '', 'role': '' }],
+                'consultant': [{ 'email': '', 'role': '' }],
+                'partner': [{ 'email': '', 'role': '' }],
+                'funder': [{ 'email': '', 'role': '' }],
+                'referent': [{ 'email': '', 'role': '' }]
+            }
+        };
+        
+
         //#region Récupérer l'ID de l'utilisateur connecté
         fetch('https://lab.padem.org/wp-json/mo/v1/getUserId', {
             method: 'GET',
@@ -92,6 +106,16 @@
                 var stepper = 0;
                 var tabStepper = 0;
                 var membersTable = new Array(data.length).fill(0);
+                var members = new Array(data.length).fill({
+                    'project_id': 0,
+                    'coordinateur': [],
+                    'chef_de_projet': [],
+                    'accountant': [],
+                    'consultant': [],
+                    'partner': [],
+                    'funder': [],
+                    'referent': []
+                });
                 // Parcourir la liste des projets
                 data.forEach(project => {
                     var project_id = project.project_id;
@@ -105,6 +129,9 @@
                         'funder': [{ 'email': '', 'role': '' }],
                         'referent': [{ 'email': '', 'role': ''}]
                     };
+
+                    // Récupération de l'ID du projet
+                    members[tabStepper].project_id = project_id;
 
                     function getProjectChief() {
                         fetch('https://lab.padem.org/wp-json/mo/v1/getProjectChief', {
@@ -122,7 +149,7 @@
                                             option.value = user.chief_email;
                                             option.text = user.chief_email + ' - Chef de projet';
                                             document.getElementById('existingMemberEmail_' + project_id).appendChild(option);
-                                            list_OfUsers['chef-de-projet'].push({
+                                            members[tabStepper].chef_de_projet.push({
                                                 'email': user.chief_email,
                                                 'role': 'Chef de projet'
                                             });
@@ -151,7 +178,7 @@
                                             option.value = user.accountant_email;
                                             option.text = user.accountant_email + ' - Comptable';
                                             document.getElementById('existingMemberEmail_' + project_id).appendChild(option);
-                                            list_OfUsers['accountant'].push({
+                                            members[tabStepper].accountant.push({
                                                 'email': user.accountant_email,
                                                 'role': 'Comptable'
                                             });
@@ -180,7 +207,7 @@
                                             option.value = user.consultant_email;
                                             option.text = user.consultant_email + ' - Consultant';
                                             document.getElementById('existingMemberEmail_' + project_id).appendChild(option);
-                                            list_OfUsers['consultant'].push({
+                                            members[tabStepper].consultant.push({
                                                 'email': user.consultant_email,
                                                 'role': 'Consultant'
                                             });
@@ -209,7 +236,7 @@
                                             option.value = user.partner_email;
                                             option.text = user.partner_email + ' - Partenaire';
                                             document.getElementById('existingMemberEmail_' + project_id).appendChild(option);
-                                            list_OfUsers['partner'].push({
+                                            members[tabStepper].partner.push({
                                                 'email': user.partner_email,
                                                 'role': 'Partenaire'
                                             });
@@ -238,7 +265,7 @@
                                             option.value = user.referent_email;
                                             option.text = user.referent_email + ' - Référent';
                                             document.getElementById('existingMemberEmail_' + project_id).appendChild(option);
-                                            list_OfUsers['referent'].push({
+                                            members[tabStepper].referent.push({
                                                 'email': user.referent_email,
                                                 'role': 'Référent'
                                             });
@@ -267,10 +294,10 @@
                                             option.value = user.coordinator_email;
                                             option.text = user.coordinator_email + ' - Coordinateur';
                                             document.getElementById('existingMemberEmail_' + project_id).appendChild(option);
-                                            list_OfUsers['coordinateur'].push({
+                                            members[tabStepper].coordinator.push({
                                                 'email': user.coordinator_email,
                                                 'role': 'Coordinateur'
-                                            });
+                                            });                                
                                         }
                                     });
                                 }
@@ -280,7 +307,7 @@
                             });
                     }
 
-                    function getFunder(){
+                    function getFunder() {
                         fetch('https://lab.padem.org/wp-json/mo/v1/getFunder', {
                             method: 'GET',
                             headers: {
@@ -296,7 +323,7 @@
                                             option.value = user.funder_email;
                                             option.text = user.funder_email + ' - Bailleur';
                                             document.getElementById('existingMemberEmail_' + project_id).appendChild(option);
-                                            list_OfUsers['funder'].push({
+                                            members[tabStepper].funder.push({
                                                 'email': user.funder_email,
                                                 'role': 'Bailleur'
                                             });
@@ -313,9 +340,6 @@
                     var option = document.createElement('option');
                     option.value = project.project_referent_email;
                     option.text = project.project_referent_email + ' - Référent';
-
-                    // Ajouter l'ID du projet à la liste des utilisateurs
-                    list_OfUsers['project_id'] = project_id;
 
                     //#region Style de l'élément de liste
                     // Créer un élément de liste pour chaque projet
@@ -347,10 +371,10 @@
                                 <li class="project-element">${project.project_location}</li>
                                 <li class="project-element" style="display: flex;">Membres: <p id="numberOfmember_${project_id}"></p></li>
                                 <li class="project-element" style="text-transform: capitalize; font-weight: bold; color: ${colorStatusText[projectStatus]}; background: none; margin: 5px; padding: 5px; boder-radius: 20px;" id="status_${project_id}"></li>
-                                <li class="project-element" style="font-weight: bold; font-size: 11px; color: ${colorStatusBackground[localStatus]};" id="localStatus_${project_id}"></li>
+                                <li class="project-element" style="font-weight: bold; font-size: 11px;" id="localStatus_${project_id}"><div style="margin-right: 100px;"></div></li>
                                 <li class="project-element" style="display: flex; justify-content: flex-end;">
                                     <div style="margin-right: 10px;"></div>
-                                    <button class="buttonModifier" id="buttonModifier_${project_id}" style="margin: 5px; padding: 5px; boder-radius: 20px; font-size: 11px;">${buttonText}</button>
+                                    <button class="buttonModifier" id="buttonModifier_${project_id}" style="margin: 5px; margin-right: -15px; padding: 5px; boder-radius: 20px; font-size: 11px;">${buttonText}</button>
                                 </li>
                             </ul>
                             <div id="modifyProject_${project_id}" style="display: none; width: 100%; height: auto; background: white; margin: 10px; padding: 10px; border-radius: 10px;">
@@ -363,8 +387,9 @@
                                     <div class="container">
                                         <!-- Afficher une liste de boutons à l'horizontale permettant de faire apparaître le type d'éléments à ajouter au projet -->
                                         <div class="col-md-12" style="width: 100%; background: white;">
-                                            <div class="row" style="width: 100%;">
+                                            <div class="row" style="display: flex-end; width: 100%;">
                                                 <div class="btn-group" role="group" aria-label="menu" style="width: 100%;">
+                                                    <div style="margin-left: 50px;"></div>
                                                     <button type="button" id="buttonNewMember_${project_id}" class="btn btn-secondary"
                                                         style="width: fit-content; margin: 5px; padding: 5px; background: white; color: #29A6A7; font-size: 10px; border-radius: 20px;">
                                                         Nouveau membre</button>
@@ -421,10 +446,10 @@
                                                     </div>
                                                     <div style="margin-top: 10px; padding: 10px;"></div>
                                                     <div class="col-md-12">
-                                                        <div style="display: 'flex'; width: 100%;">
+                                                        <div class="colomn" style="display: flex; width: 100%;">
                                                             <button type="submit" class="btn btn-primary" id="buttonAddMember_${project_id}" style="width: fit-content;">Ajouter le nouveau membre au projet</button>
                                                             <div style="margin: 5px; padding: 5px;"></div>
-                                                            <div id="loading" style="display: none;">
+                                                            <div id="loading_${project_id}" style="display: none;">
                                                                 <img src="https://lab.padem.org/wp-content/uploads/Spin@1x-1.0s-200px-200px.gif" style="width: 30px; height: 30px" alt="Chargement...">
                                                             </div>
                                                         </div>
@@ -471,8 +496,12 @@
                                                         </div>
                                                     </div>
                                                     <div style="margin-top: 10px; padding: 10px;"></div>
-                                                    <div class="col-md-12">
+                                                    <div class="col-md-12" style="display: flex; width: 100%;">
                                                         <button type="submit" class="btn btn-primary" id="addExistingMember_${project_id}" style="width: fit-content;">Ajouter le membre existant au projet</button>
+                                                        <div style="margin: 5px; padding: 5px;"></div>
+                                                        <div id="loading_${project_id}" style="display: none;">
+                                                            <img src="https://lab.padem.org/wp-content/uploads/Spin@1x-1.0s-200px-200px.gif" style="width: 30px; height: 30px" alt="Chargement...">
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -501,8 +530,12 @@
                                                             </div>
                                                     </div>
                                                     <div style="margin-top: 10px; padding: 10px;"></div>
-                                                    <div class="col-md-12">
+                                                    <div class="col-md-12" style="display: flex; width: 100%;">
                                                         <button type="submit" class="btn btn-primary" id="submitDocument_${project_id}" style="width: fit-content;">Ajouter le document au projet</button>
+                                                        <div style="margin: 5px; padding: 5px;"></div>
+                                                        <div id="loading_${project_id}" style="display: none;">
+                                                            <img src="https://lab.padem.org/wp-content/uploads/Spin@1x-1.0s-200px-200px.gif" style="width: 30px; height: 30px" alt="Chargement...">
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -530,8 +563,12 @@
                                                         </div>
                                                     </div>
                                                     <div style="margin-top: 10px; padding: 10px;"></div>
-                                                    <div class="col-md-12">
+                                                    <div class="col-md-12" style="display: flex; width: 100%;">
                                                         <button type="submit" class="btn btn-primary" id="linkSubmit_${project_id}" style="width: fit-content;">Ajouter le lien au projet</button>
+                                                        <div style="margin: 5px; padding: 5px;"></div>
+                                                        <div id="loading_${project_id}" style="display: none;">
+                                                            <img src="https://lab.padem.org/wp-content/uploads/Spin@1x-1.0s-200px-200px.gif" style="width: 30px; height: 30px" alt="Chargement...">
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -559,8 +596,11 @@
                                                         </div>
                                                     </div>
                                                     <div style="margin-top: 10px; padding: 10px;"></div>
-                                                    <div class="col-md-12">
-                                                        <button type="submit" class="btn btn-primary" id="buttonAddMisc_${project_id}" style="width: fit-content;">Ajouter l'élément au projet</button>
+                                                    <div class="col-md-12" style="display: flex; width: 100%;">
+                                                        <button type="submit" class="btn btn-primary" id="buttonAddMisc_${project_id}" style="width: fit-content;">Ajouter l'élément au projet</button><div style="margin: 5px; padding: 5px;"></div>
+                                                        <div id="loading_${project_id}" style="display: none;">
+                                                            <img src="https://lab.padem.org/wp-content/uploads/Spin@1x-1.0s-200px-200px.gif" style="width: 30px; height: 30px" alt="Chargement...">
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -584,40 +624,24 @@
                     getFunder();
 
                     // Nombre de membres du projet
-                    
-                    allUsers.push(list_OfUsers);
-                    allUsers.forEach(user => {
-                        if (user.project_id === project_id) {
-                            numberOfMembers = user.coordinateur.length + user['chef-de-projet'].length + user.accountant.length + user.consultant.length + user.partner.length + user.funder.length + user.referent.length;
-                        }
-                    });
+                    var numberOfMembers = members[tabStepper].coordinator.length + 
+                    members[tabStepper].chef_de_projet.length + members[tabStepper].accountant.length + members[tabStepper].consultant.length + members[tabStepper].partner.length + members[tabStepper].funder.length + members[tabStepper].referent.length;
 
-                    if (numberOfMembers === 0 || project.users_list === null || project.users_list === undefined) {
-                        localStatus = 'Incomplet';
-                        let localStatus_ = document.querySelector('#localStatus_' + project_id);
-                        if(localStatus_ !== null) {
-                            localStatus_.innerText = localStatus;
-                        }
-                        let buttonModifier = document.querySelector('#buttonModifier_' + project_id);
-                        if(buttonModifier !== null) {
-                            buttonModifier.innerText = 'Compléter le projet';
-                        }
-                        let status = document.querySelector('#status_' + project_id);
-                        if(status !== null) {
-                            status.innerText = "Non publié";
-                            projectStatus = 'Non publié';
-                        }
-                    } else if (numberOfMembers > 0) {
-                        localStatus = 'Complet';
-                        document.getElementById('localStatus_' + project_id).innerText = localStatus;
-                        document.getElementById(`buttonModifier_${project_id}`).innerText = 'Modifier le projet';
-                        document.getElementById(`status_${project_id}`).innerText = "Publié";
-                        projectStatus = 'Publié';
-                    }
                     // Ajouter le nombre de membres du projet dans le tableau
                     membersTable[tabStepper] = numberOfMembers;
+                    if(membersTable[tabStepper] > 0) {
+                        document.getElementById(`buttonModifier_${project_id}`).innerText = 'Modifier le projet';
+                        projectStatus = 'Publié';
+                        document.getElementById(`status_${project_id}`).innerText = 'Publié';
+                    } else {
+                        document.getElementById(`buttonModifier_${project_id}`).innerText = 'Compléter le projet';
+                        projectStatus = 'Non publié';
+                        document.getElementById(`status_${project_id}`).innerText = projectStatus;
+                    }
                     numberOfMembers = 0;
-                    document.getElementById('numberOfmember_' + project_id).innerText = membersTablet[tabStepper];
+                    document.getElementById('numberOfmember_' + project_id).innerText = membersTable[tabStepper];
+                    console.log(membersTable);
+                    console.log(members);
                     document.getElementById('existingMemberEmail_' + project_id).appendChild(option);
                     tabStepper++;
 
@@ -797,7 +821,7 @@
 
                     // Ajouter un gestionnaire d'événement pour chaque bouton "Ajouter le nouveau membre", "Ajouter le nouveau rapport", "Ajouter le nouveau document", "Ajouter le nouveau lien", "Ajouter divers"
                     document.getElementById('buttonAddMember_' + project_id).addEventListener('click', () => {
-                        document.getElementById('loading').style.display = 'block';
+                        document.getElementById('loading_' + project_id).style.display = 'block';
                         var newMemberEmail = document.getElementById('newMemberEmail_' + project_id).value || '';
                         var newMemberRole = document.getElementById('newMemberRole_' + project_id).value || '';
                         var lastName = document.getElementById('last_name_' + project_id).value || '';
@@ -806,7 +830,7 @@
 
                         if (newMemberEmail === '' || newMemberRole === '' || firstName === '') {
                             alert('Veuillez remplir tous les champs. (Email, Rôle et Prénom (le Nom est optionnel))');
-                            document.getElementById('loading').style.display = 'none';
+                            document.getElementById('loading_' + project_id).style.display = 'none';
                             return;
                         }
 
@@ -1082,7 +1106,7 @@
                                             .then(response => response.json())
                                             .then(data => {
                                                 // Masquer le spinner
-                                                document.getElementById('loading').style.display = 'none';
+                                                document.getElementById('loading_' + project_id).style.display = 'none';
                                                 // Afficher un message de succès
                                                 alert('Membre ajouté avec succès !');
                                                 // Recharger la page
@@ -1091,7 +1115,7 @@
                                             .catch(error => {
                                                 console.error(error);
                                                 // Masquer le spinner
-                                                document.getElementById('loading').style.display = 'none';
+                                                document.getElementById('loading_' + project_id).style.display = 'none';
                                                 // Afficher un message d'erreur
                                                 alert('Une erreur est survenue : ' + error.message);
                                             });
@@ -1099,7 +1123,7 @@
                                     .catch(error => {
                                         console.error(error);
                                         // Masquer le spinner
-                                        document.getElementById('loading').style.display = 'none';
+                                        document.getElementById('loading_' + project_id).style.display = 'none';
                                         // Afficher un message d'erreur
                                         alert('Une erreur est survenue : ' + error.message);
                                     });
@@ -1107,12 +1131,14 @@
                             })
                             .catch(error => {
                                 console.error('Erreur lors de la récupération des données de l\'utilisateur :', error);
+                                // Masquer le spinner
+                                document.getElementById('loading_' + project_id).style.display = 'none';
                             });
                     });
 
                     // Ajouter un membre existant au projet sur la base de données
                     document.getElementById('addExistingMember_' + project_id).addEventListener('click', () => {
-                        document.getElementById('loading').style.display = 'block';
+                        document.getElementById('loading_' + project_id).style.display = 'block';
                         var existingMemberEmail = document.getElementById('existingMemberEmail_' + project_id).value || '';
                         var existingMemberRole = document.getElementById('existingMemberRole_' + project_id).value || '';
                         var existingMember_first_name = document.getElementById('existingMember_first_name_' + project_id).value || '';
@@ -1121,7 +1147,7 @@
 
                         if (!existingMemberEmail || !existingMemberRole || !existingMember_first_name) {
                             alert('Veuillez remplir tous les champs. (Email, Rôle et Prénom (le Nom est optionnel))');
-                            document.getElementById('loading').style.display = 'none';
+                            document.getElementById('loading_' + project_id).style.display = 'none';
                             return;
                         }
 
@@ -1350,6 +1376,7 @@
                                 // Vérifier si le membre existe déjà
                                 if (users_list.users[existingMemberRole].includes(existingMemberEmail)) {
                                     alert('Ce membre existe déjà dans la base de données. Veuillez entrer une autre adresse email !');
+                                    document.getElementById('loading_' + project_id).style.display = 'none';
                                     return;
                                 }
                                 //#region Ajouter le nouveau membre
@@ -1406,7 +1433,7 @@
                                             .then(response => response.json())
                                             .then(data => {
                                                 // Masquer le spinner
-                                                document.getElementById('loading').style.display = 'none';
+                                                document.getElementById('loading_' + project_id).style.display = 'none';
                                                 // Afficher un message de succès
                                                 alert('Membre ajouté avec succès !');
                                                 // Recharger la page
@@ -1415,7 +1442,7 @@
                                             .catch(error => {
                                                 console.error(error);
                                                 // Masquer le spinner
-                                                document.getElementById('loading').style.display = 'none';
+                                                document.getElementById('loading_' + project_id).style.display = 'none';
                                                 // Afficher un message d'erreur
                                                 alert('Une erreur est survenue : ' + error.message);
                                             });
@@ -1423,7 +1450,7 @@
                                     .catch(error => {
                                         console.error(error);
                                         // Masquer le spinner
-                                        document.getElementById('loading').style.display = 'none';
+                                        document.getElementById('loading_' + project_id).style.display = 'none';
                                         // Afficher un message d'erreur
                                         alert('Une erreur est survenue : ' + error.message);
                                     });
@@ -1432,7 +1459,7 @@
                             .catch(error => {
                                 console.error('Erreur lors de la récupération des membres:', error);
                                 // Masquer le spinner
-                                document.getElementById('loading').style.display = 'none';
+                                document.getElementById('loading_' + project_id).style.display = 'none';
                                 // Afficher un message d'erreur
                                 alert('Une erreur est survenue : ' + error.message);
                             });
@@ -1440,14 +1467,14 @@
 
                     // Ajouter un document modèle au projet sur la base de données
                     document.getElementById('submitDocument_' + project_id).addEventListener('click', () => {
-                        document.getElementById('loading').style.display = 'block';
+                        document.getElementById('loading_' + project_id).style.display = 'block';
                         var documentTitle = document.getElementById('documentTitle_' + project_id).value || '';
                         var documentDescription = document.getElementById('documentDescription_' + project_id).value || '';
                         var documentFile = document.getElementById('documentFile_' + project_id).files[0] || '';
 
                         if (!documentTitle || !documentFile) {
                             alert('Veuillez remplir tous les champs. (Titre et Fichier)');
-                            document.getElementById('loading').style.display = 'none';
+                            document.getElementById('loading_' + project_id).style.display = 'none';
                             return;
                         }
 
@@ -1487,21 +1514,23 @@
                                     .then(response => response.json())
                                     .then(data => {
                                         console.log(data);
+                                        // Masquer le spinner
+                                        document.getElementById('loading_' + project_id).style.display = 'none';
+                                        // Afficher un message de succès
+                                        alert('Document ajouté avec succès !');
+                                        // Recharger la page
+                                        window.location.href = 'https://lab.padem.org/projets/';
                                     })
                                     .catch(error => {
                                         console.error(error);
+                                        // Masquer le spinner
+                                        document.getElementById('loading_' + project_id).style.display = 'none';
                                     });
-                                // Masquer le spinner
-                                document.getElementById('loading').style.display = 'none';
-                                // Afficher un message de succès
-                                alert('Document ajouté avec succès !');
-                                // Recharger la page
-                                window.location.href = 'https://lab.padem.org/projets/';
                             })
                             .catch(error => {
                                 console.error(error);
                                 // Masquer le spinner
-                                document.getElementById('loading').style.display = 'none';
+                                document.getElementById('loading_' + project_id).style.display = 'none';
                                 // Afficher un message d'erreur
                                 alert('Une erreur est survenue : ' + error.message);
                             });
@@ -1509,14 +1538,14 @@
 
                     // Ajouter un lien au projet sur la base de données
                     document.getElementById('linkSubmit_' + project_id).addEventListener('click', () => {
-                        document.getElementById('loading').style.display = 'block';
+                        document.getElementById('loading_' + project_id).style.display = 'block';
                         var linkTitle = document.getElementById('linkTitle_' + project_id).value || '';
                         var linkDescription = document.getElementById('linkDescription_' + project_id).value || '';
                         var linkURL = document.getElementById('linkURL_' + project_id).value || '';
 
                         if (!linkTitle || !linkURL) {
                             alert('Veuillez remplir tous les champs. (Titre et URL)');
-                            document.getElementById('loading').style.display = 'none';
+                            document.getElementById('loading_' + project_id).style.display = 'none';
                             return;
                         }
 
@@ -1556,7 +1585,7 @@
                                     .then(response => response.json())
                                     .then(data => {
                                         console.log(data);
-                                        document.getElementById('loading').style.display = 'none';
+                                        document.getElementById('loading_' + project_id).style.display = 'none';
                                         // Afficher un message de succès
                                         alert('Lien ajouté avec succès !');
                                         // Recharger la page
@@ -1564,27 +1593,27 @@
                                     })
                                     .catch(error => {
                                         console.error(error);
-                                        document.getElementById('loading').style.display = 'none';
+                                        document.getElementById('loading_' + project_id).style.display = 'none';
                                         alert('Une erreur est survenue : ' + error.message);
                                     });
                             })
                             .catch(error => {
                                 console.error(error);
-                                document.getElementById('loading').style.display = 'none';
+                                document.getElementById('loading_' + project_id).style.display = 'none';
                                 alert('Une erreur est survenue : ' + error.message);
                             });
                     });
 
                     // Ajouter un élément divers au projet sur la base de données
                     document.getElementById('buttonAddMisc_' + project_id).addEventListener('click', () => {
-                        document.getElementById('loading').style.display = 'block';
+                        document.getElementById('loading_' + project_id).style.display = 'block';
                         var miscTitle = document.getElementById('miscTitle_' + project_id).value || '';
                         var miscDescription = document.getElementById('miscDescription_' + project_id).value || '';
                         var miscFile = document.getElementById('miscFile_' + project_id).files[0] || '';
 
                         if (!miscTitle || !miscFile) {
                             alert('Veuillez remplir tous les champs. (Titre et Fichier)');
-                            document.getElementById('loading').style.display = 'none';
+                            document.getElementById('loading_' + project_id).style.display = 'none';
                             return;
                         }
 
@@ -1627,7 +1656,7 @@
                                     .then(response => response.json())
                                     .then(data => {
                                         console.log(data);
-                                        document.getElementById('loading').style.display = 'none';
+                                        document.getElementById('loading_' + project_id).style.display = 'none';
                                         // Afficher un message de succès
                                         alert('Élément divers ajouté avec succès !');
                                         window.location.href = 'https://lab.padem.org/projets/';
@@ -1635,7 +1664,7 @@
                                     .catch(error => {
                                         console.error(error);
                                         // Masquer le spinner
-                                        document.getElementById('loading').style.display = 'none';
+                                        document.getElementById('loading_' + project_id).style.display = 'none';
                                         // Afficher un message d'erreur
                                         alert('Une erreur est survenue : ', error.message);
                                     });
@@ -1643,7 +1672,7 @@
                             .catch(error => {
                                 console.error(error);
                                 // Masquer le spinner
-                                document.getElementById('loading').style.display = 'none';
+                                document.getElementById('loading_' + project_id).style.display = 'none';
                                 // Afficher un message d'erreur
                                 alert('Une erreur est survenue : ', error.message);
                             });
@@ -1653,7 +1682,7 @@
             .catch(error => {
                 console.error(error);
                 // Masquer le spinner
-                document.getElementById('loading').style.display = 'none';
+                document.getElementById('loading_' + project_id).style.display = 'none';
                 // Afficher un message d'erreur
                 alert('Une erreur est survenue : ', error);
             });
