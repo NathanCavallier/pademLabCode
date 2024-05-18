@@ -1,0 +1,50 @@
+<div
+    style="display: flex; justify-content: space-between; width: 100%; font-size: 10px; color: white; font-weight: normal; margin: 3px; padding: 3px; border-radius: 20px;">
+    <div class="dropdown">
+        <button onclick="toggleDropdown()" class="dropbtn">
+            <i class="fa fa-bell"></i>
+            <span id="notificationCount" class="badge">3</span>
+        </button>
+        <div id="myDropdown" class="dropdown-content">
+            <a href="#">Notification 1</a>
+            <a href="#">Notification 2</a>
+            <a href="#">Notification 3</a>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    // Mettez à jour le nombre de notifications non lues lorsque la page est chargée
+    window.onload = updateUnreadNotificationCount;
+
+    // Mettez également à jour le nombre de notifications non lues chaque fois que le menu déroulant est ouvert
+    function toggleDropdown() {
+        document.getElementById("myDropdown").classList.toggle("show");
+        updateUnreadNotificationCount();
+    }
+
+    function updateUnreadNotificationCount() {
+        fetch('https://example.com/api/unreadCount')
+            .then(response => response.json())
+            .then(data => {
+                var unreadCount = document.getElementById('notificationCount');
+                unreadCount.textContent = data.unreadCount;
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    // Close the dropdown if the user clicks outside of it
+    window.onclick = function (event) {
+        if (!event.target.matches('.dropbtn')) {
+            var dropdowns = document.getElementsByClassName("dropdown-content");
+            var i;
+            for (i = 0; i < dropdowns.length; i++) {
+                var openDropdown = dropdowns[i];
+                if (openDropdown.classList.contains('show')) {
+                    openDropdown.classList.remove('show');
+                }
+            }
+        }
+    }
+</script>

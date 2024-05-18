@@ -69,6 +69,60 @@
         }
         //#endregion
 
+        // Envoyer des emails de notifications aux membres du projet
+        function sendEmailNotification(projectId, userEmail, userRole, projectTitle) {
+            fetch('https://lab.padem.org/wp-json/mo/v1/sendNotification', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    'project_id': projectId,
+                    'user_email': userEmail,
+                    'user_role': userRole,
+                    'project_title': projectTitle,
+                    'subject': 'Notification de projet ' + projectTitle,
+                    'message': 'Bonjour, \n\nVous avez été ajouté en tant que ' + userRole + ' au projet ' + projectTitle + '.\n\nCordialement,\nPADEM Lab' + '\n' + 'https://lab.padem.org',
+                }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Email envoyé:', data);
+                })
+                .catch(error => {
+                    console.error('Erreur:', error);
+                });
+        }
+        const nodemailer = require('nodemailer');
+        async function sendEmailNotificationToAllMembers(projectId, projectTitle, memberEmail, projectManagerEmail) {
+            document.getElementById('loading_' + projectId).style.display = 'block';
+            let transporter = nodemailer.createTransport({
+                service: 'gmail', // Utilisez le service de messagerie de votre choix
+                auth: {
+                    user: 'imogonathan@gmail.com', // Votre adresse e-mail
+                    pass: 'IUTs2018' // Votre mot de passe
+                }
+            });
+
+            let mailOptions = {
+                from: 'imogonathan@gmail.com',
+                to: `${memberEmail}, ${projectManagerEmail}`,
+                subject: 'Notification de nouveau membre - ' + projectTitle,
+                text: 'Un nouveau membre a été ajouté au projet.' + '\n\n' + `Email: ${memberEmail}` +  + '\n\n' + 'Cordialement,\nPADEM Lab' + '\n' + 'https://lab.padem.org'
+            };
+
+            try {
+                let info = await transporter.sendMail(mailOptions);
+                alert('Email envoyé: %s', info.messageId);
+                console.log('Message sent: %s', info.messageId);
+                document.getElementById('loading_' + projectId).style.display = 'none';
+            } catch (error) {
+                alert('Une erreur s\'est produite: %s', error);
+                console.error('An error occurred: %s', error);
+                document.getElementById('loading_' + projectId).style.display = 'none';
+            }
+        }
+
         // Récupérer la liste des projets depuis la base de données (à partir de l'API (https://lab.padem.org/wp-json/mo/v1/getProjects))
         // les projets sont affichés dans des lignes individuelles avec un bouton cliquables pour les modifier
         fetch('https://lab.padem.org/wp-json/mo/v1/getProjects', {
@@ -151,8 +205,8 @@
                         <div style="list-style-type: none; padding: 5px; margin: 5px; border-radius: 10px;">
                             <ul class="project-row" style="width: fit-content;">
                                 <li class="project-element" style="font-weight: bold; color: #29A6A7;">${project.project_title}</li>
-                                <li class="project-element">${project.project_location}</li>
-                                <li class="project-element" style="display: flex;">Membres: <p id="numberOfmember_${project_id}"></p></li>
+                                <li class="project-element">Pays: ${project.project_location}</li>
+                                <li class="project-element" style="display: flex;"><p id="numberOfmember_${project_id}"></p></li>
                                 <li class="project-element" style="text-transform: capitalize; font-weight: bold; color: ${colorStatusText[projectStatus]}; background: none; margin: 5px; padding: 5px; boder-radius: 20px;" id="status_${project_id}"></li>
                                 <li class="project-element" style="font-weight: bold; font-size: 11px;" id="localStatus_${project_id}"><div style="margin-right: 100px;"></div></li>
                                 <li class="project-element" style="display: flex; justify-content: flex-end;">
@@ -404,14 +458,20 @@
                         .then(response => response.json())
                         .then(data => {
                             if (data !== null && data !== undefined && Array.isArray(data)) {
+                                var stepper = 0;
                                 data.forEach(user => {
                                     if (user.project_id === project_id) {
                                         var option = document.createElement('option');
                                         option.value = user.chief_email;
                                         option.text = user.chief_email + ' - Chef de projet';
                                         document.getElementById('existingMemberEmail_' + project_id).appendChild(option);
-                                        document.getElementById(`numberOfmember_${project_id}`).value++;
-                                        document.getElementById(`numberOfmember_${project_id}`).innerText =  ' ' + (parseInt(document.getElementById(`numberOfmember_${project_id}`).value) + 1)
+                                        var number = document.getElementById(`numberOfmember_${project_id}`).value;
+                                        if (number === null || number === undefined || number === '') {
+                                            document.getElementById(`numberOfmember_${project_id}`).value = 2;
+                                        } else {
+                                            document.getElementById(`numberOfmember_${project_id}`).value = parseInt(document.getElementById(`numberOfmember_${project_id}`).value) + 1;
+                                        }
+                                        document.getElementById(`numberOfmember_${project_id}`).innerText =  ' ' + document.getElementById(`numberOfmember_${project_id}`).value + ' membres';
                                     }
                                 });
                             }
@@ -421,11 +481,11 @@
                         });
 
                     fetch('https://lab.padem.org/wp-json/mo/v1/getAccountant', {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                })
+                            method: 'GET',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                        })
                         .then(response => response.json())
                         .then(data => {
                             if (data !== null && data !== undefined && Array.isArray(data)) {
@@ -435,8 +495,13 @@
                                         option.value = user.accountant_email;
                                         option.text = user.accountant_email + ' - Comptable';
                                         document.getElementById('existingMemberEmail_' + project_id).appendChild(option);
-                                        document.getElementById(`numberOfmember_${project_id}`).value++;
-                                        document.getElementById(`numberOfmember_${project_id}`).innerText = ' ' + (parseInt(document.getElementById(`numberOfmember_${project_id}`).value) + 1);
+                                        var number = document.getElementById(`numberOfmember_${project_id}`).value;
+                                        if (number === null || number === undefined || number === '') {
+                                            document.getElementById(`numberOfmember_${project_id}`).value = 2;
+                                        } else {
+                                            document.getElementById(`numberOfmember_${project_id}`).value = parseInt(document.getElementById(`numberOfmember_${project_id}`).value) + 1;
+                                        }
+                                        document.getElementById(`numberOfmember_${project_id}`).innerText =  ' ' + document.getElementById(`numberOfmember_${project_id}`).value + ' membres';
                                     }
                                 });
                             }
@@ -446,11 +511,11 @@
                         });
 
                     fetch('https://lab.padem.org/wp-json/mo/v1/getConsultant', {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                })
+                            method: 'GET',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                        })
                         .then(response => response.json())
                         .then(data => {
                             if (data !== null && data !== undefined && Array.isArray(data)) {
@@ -460,8 +525,13 @@
                                         option.value = user.consultant_email;
                                         option.text = user.consultant_email + ' - Consultant';
                                         document.getElementById('existingMemberEmail_' + project_id).appendChild(option);
-                                        document.getElementById(`numberOfmember_${project_id}`).value++;
-                                        document.getElementById(`numberOfmember_${project_id}`).innerText =  ' ' + (parseInt(document.getElementById(`numberOfmember_${project_id}`).value) + 1)
+                                        var number = document.getElementById(`numberOfmember_${project_id}`).value;
+                                        if (number === null || number === undefined || number === '') {
+                                            document.getElementById(`numberOfmember_${project_id}`).value = 2;
+                                        } else {
+                                            document.getElementById(`numberOfmember_${project_id}`).value = parseInt(document.getElementById(`numberOfmember_${project_id}`).value) + 1;
+                                        }
+                                        document.getElementById(`numberOfmember_${project_id}`).innerText =  ' ' + document.getElementById(`numberOfmember_${project_id}`).value + ' membres';
                                     }
                                 });
                             }
@@ -485,8 +555,13 @@
                                         option.value = user.partner_email;
                                         option.text = user.partner_email + ' - Partenaire';
                                         document.getElementById('existingMemberEmail_' + project_id).appendChild(option);
-                                        document.getElementById(`numberOfmember_${project_id}`).value++;
-                                        document.getElementById(`numberOfmember_${project_id}`).innerText =  ' ' + (parseInt(document.getElementById(`numberOfmember_${project_id}`).value) + 1)
+                                        var number = document.getElementById(`numberOfmember_${project_id}`).value;
+                                        if (number === null || number === undefined || number === '') {
+                                            document.getElementById(`numberOfmember_${project_id}`).value = 2;
+                                        } else {
+                                            document.getElementById(`numberOfmember_${project_id}`).value = parseInt(document.getElementById(`numberOfmember_${project_id}`).value) + 1;
+                                        }
+                                        document.getElementById(`numberOfmember_${project_id}`).innerText =  ' ' + document.getElementById(`numberOfmember_${project_id}`).value + ' membres';
                                     }
                                 });
                             }
@@ -510,8 +585,13 @@
                                         option.value = user.referent_email;
                                         option.text = user.referent_email + ' - Référent';
                                         document.getElementById('existingMemberEmail_' + project_id).appendChild(option);
-                                        document.getElementById(`numberOfmember_${project_id}`).value++;
-                                        document.getElementById(`numberOfmember_${project_id}`).innerText =  ' ' + (parseInt(document.getElementById(`numberOfmember_${project_id}`).value) + 1)
+                                        var number = document.getElementById(`numberOfmember_${project_id}`).value;
+                                        if (number === null || number === undefined || number === '') {
+                                            document.getElementById(`numberOfmember_${project_id}`).value = 2;
+                                        } else {
+                                            document.getElementById(`numberOfmember_${project_id}`).value = parseInt(document.getElementById(`numberOfmember_${project_id}`).value) + 1;
+                                        }
+                                        document.getElementById(`numberOfmember_${project_id}`).innerText =  ' ' + document.getElementById(`numberOfmember_${project_id}`).value + ' membres';
                                     }
                                 });
                             }
@@ -535,8 +615,13 @@
                                         option.value = user.coordinator_email;
                                         option.text = user.coordinator_email + ' - Coordinateur';
                                         document.getElementById('existingMemberEmail_' + project_id).appendChild(option);
-                                        document.getElementById(`numberOfmember_${project_id}`).value++;
-                                        document.getElementById(`numberOfmember_${project_id}`).innerText =  ' ' + (parseInt(document.getElementById(`numberOfmember_${project_id}`).value) + 1)
+                                        var number = document.getElementById(`numberOfmember_${project_id}`).value;
+                                        if (number === null || number === undefined || number === '') {
+                                            document.getElementById(`numberOfmember_${project_id}`).value = 2;
+                                        } else {
+                                            document.getElementById(`numberOfmember_${project_id}`).value = parseInt(document.getElementById(`numberOfmember_${project_id}`).value) + 1;
+                                        }
+                                        document.getElementById(`numberOfmember_${project_id}`).innerText =  ' ' + document.getElementById(`numberOfmember_${project_id}`).value + ' membres';
                                     }
                                 });
                             }
@@ -560,8 +645,13 @@
                                         option.value = user.funder_email;
                                         option.text = user.funder_email + ' - Bailleur';
                                         document.getElementById('existingMemberEmail_' + project_id).appendChild(option);
-                                        document.getElementById(`numberOfmember_${project_id}`).value++;
-                                        document.getElementById(`numberOfmember_${project_id}`).innerText =  ' ' + (parseInt(document.getElementById(`numberOfmember_${project_id}`).value) + 1)
+                                        var number = document.getElementById(`numberOfmember_${project_id}`).value;
+                                        if (number === null || number === undefined || number === '') {
+                                            document.getElementById(`numberOfmember_${project_id}`).value = 2;
+                                        } else {
+                                            document.getElementById(`numberOfmember_${project_id}`).value = parseInt(document.getElementById(`numberOfmember_${project_id}`).value) + 1;
+                                        }
+                                        document.getElementById(`numberOfmember_${project_id}`).innerText =  ' ' + document.getElementById(`numberOfmember_${project_id}`).value + ' membres';
                                     }
                                 });
                             }
@@ -580,10 +670,10 @@
                     var numberOfMembers = document.querySelector(`#numberOfmember_${project_id}`);
                     if (numberOfMembers !== null && numberOfMembers !== undefined) {
                         if(document.getElementById(`numberOfmember_${project_id}`).value === 0) {
-                            document.getElementById(`status_${project_id}`).innerText = 'Incomplet';
+                            document.getElementById(`status_${project_id}`).innerText = 'En attente';
                             document.getElementById(`status_${project_id}`).style.color = 'red';
                         } else {
-                            document.getElementById(`status_${project_id}`).innerText = 'Complet';
+                            document.getElementById(`status_${project_id}`).innerText = 'Publié';
                             document.getElementById(`status_${project_id}`).style.color = 'green';
                         }
                     }

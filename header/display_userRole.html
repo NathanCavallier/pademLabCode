@@ -1,0 +1,64 @@
+<!-- Afficher le rôle de l'utilisateur connecté -->
+<div style="display: flex; justify-content: space-between; width: 100%; font-size: 10px; color: white; font-weight: normal; background-color: #29A6A7; margin: 3px; padding: 3px; border-radius: 20px;"
+    id="userRole"></div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Récupérer les informations de l'utilisateur connecté
+        var userId;
+        var userEmail = '';
+        var userFirstName = '';
+        var userLastName = '';
+        var userRole = [];
+        var buttonText = '';
+
+        // Récupérer les informations de l'utilisateur connecté
+        fetch('https://lab.padem.org/unserialize_usermeta.php', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                userId = data.user_infos._id;
+                userEmail = data.user_infos.email;
+                userFirstName = data.user_infos.first_name;
+                userLastName = data.user_infos.last_name;
+
+                // Récupérer les rôles de l'utilisateur connecté
+                if (data.role.administrator) {
+                    userRole.push('Administrateur');
+                }
+                if (data.role['chef-de-projet']) {
+                    userRole.push('Chef de projet');
+                }
+                if (data.role.comptable) {
+                    userRole.push('Comptable');
+                }
+                if (data.role.consultant) {
+                    userRole.push('Consultant');
+                }
+                if (data.role.partenaire) {
+                    userRole.push('Partenaire');
+                }
+
+                document.getElementById('userFirstName').textContent = userFirstName;
+                document.getElementById('userLastName').textContent = userLastName;
+                for (let i = 0; i < userRole.length; i++) {
+                    var p = document.createElement('p');
+                    var separator = document.createTextNode(' _ '); // Créer un espace entre les rôles
+                    p.textContent = userRole[i];
+                    p.style.margin = '3px';
+                    p.style.padding = '3px';
+                    document.getElementById('userRole').appendChild(p);
+                    if (userRole.length > 1 && i < userRole.length - 1) {
+                        document.getElementById('userRole').appendChild(separator);
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    });
+</script>
