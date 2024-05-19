@@ -1,6 +1,7 @@
 <!-- Description: Afficher la liste des projets en cours -->
 
 <body>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- Ajoutez ceci pour utiliser Font Awesome -->
     <!-- Afficher la liste des projets en cours -->
     <ul id="projectsList"></ul>
 </body>
@@ -42,31 +43,21 @@
             });
         //#endregion
 
-        //#region Récupérer les emails et les rôles des utilisateurs depuis la base de données (à partir de l'API (https://lab.padem.org/wp-json/mo/v1/getUserEmailAndState))
-        function getAllUsersEmails(projectId) {
-            fetch('https://lab.padem.org/wp-json/mo/v1/getUserEmailAndState', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+        //#region Récupérer les informations de l'utilisateur connecté
+        fetch('https://lab.padem.org/unserialize_usermeta.php', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+                userId = data.user_infos._id;
+                userEmail = data.user_infos.email;
             })
-                .then(response => response.json())
-                .then(data => {
-                    if (data !== null && data !== undefined && Array.isArray(data)) {
-                        data.forEach(user => {
-                            if (user.project_id === projectId) {
-                                var option = document.createElement('option');
-                                option.value = user.user_email;
-                                option.text = user.user_email + ' - ' + user.user_role;
-                                document.getElementById('existingMemberEmail_' + projectId).appendChild(option);
-                            }
-                        });
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-        }
+            .catch(error => {
+                console.error('Error:', error);
+            });
         //#endregion
 
         // Envoyer des emails de notifications aux membres du projet
@@ -294,26 +285,33 @@
                                                 </div>
                                             </div>
                                             <div id="existingMember_${project_id}" style="display: none; width: 100%;">
+                                                <!-- La boîte modale -->
+                                                <div id="myModal_${project_id}" style="display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4);">
+                                                    <div style="background-color: #fefefe; margin: 15% auto; padding: 20px; border: 1px solid #888; width: 80%;">
+                                                        <span id="close" style="color: #aaa; float: right; font-size: 28px; font-weight: bold;">&times;</span>
+                                                        <iframe id="filePreview" style="width: 100%; height: 80%;"></iframe>
+                                                    </div>
+                                                </div>
                                                 <div class="row">
                                                     <div style="display: flex;">
                                                         <div style="flex: 1; margin-right: 10px;">
-                                                            <h2>Membres du projet</h2>
-                                                            <ul id="projectMembers" style="list-style: none;">
+                                                            <h4>Membres du projet</h4>
+                                                            <ul id="projectMembers_${project_id}" style="list-style: none;">
                                                                 <!-- Les membres du projet vont ici -->
                                                             </ul>
                                                             <button onclick="removeSelectedMembers()">Supprimer les membres sélectionnés</button>
                                                             <button onclick="addSelectedMembers()">Ajouter les membres sélectionnés</button>
                                                         </div>
                                                         <div style="flex: 1; margin-left: 10px;">
-                                                            <h2>Fichiers</h2>
-                                                            <ul id="projectFiles" style="list-style: none;">
+                                                            <h4>Sélectionnez des fichiers à intégrer au projet</h4>
+                                                            <ul id="projectFiles_${project_id}" style="list-style: none;">
                                                                 <!-- Les fichiers vont ici -->
                                                             </ul>
                                                             <div style="margin-top: 10px; padding: 10px;"></div>
                                                             <div class="col-md-12" style="display: flex; width: 100%;">
                                                                 <div class="col-md-12" style="display: flex; width: 100%;">
                                                                     <div style="margin: 5px; padding: 5px;"></div>
-                                                                    <button onclick="removeSelectedFiles()" class="btn btn-danger" style="width: fit-content;>Supprimer les fichiers sélectionnés</button>
+                                                                    <button onclick="removeSelectedFiles()" class="btn btn-secondary" style="width: fit-content;>Supprimer la sélection</button>
                                                                     <div style="margin: 5px; padding: 5px;"></div>
                                                                     <div id="loading_${project_id}" style="display: none;">
                                                                         <img src="https://lab.padem.org/wp-content/uploads/Spin@1x-1.0s-200px-200px.gif" style="width: 30px; height: 30px" alt="Chargement...">
@@ -437,6 +435,9 @@
                         </div>
                     `;
                     //#endregion
+
+                    // Ajouter l'élément de liste dans la liste des projets
+                    document.getElementById('projectsList').appendChild(li);
                     
                     //#region Récupérer les membres du projet
                     fetch('https://lab.padem.org/wp-json/mo/v1/getProjectChief', {
@@ -470,8 +471,8 @@
                                         li.style.margin = '10px';
                                         li.style.textDecoration = 'none';
 
-                                        li.innerHTML = `${user.chief_email} - Chef de projet <button onclick="removeSelectedMembers('${user.chief_email}', '${project_id}')">Supprimer</button> <button onclick="sendEmailNotificationToAllMembers('${project_id}', '${project.project_title}', '${user.chief_email}', '${project.project_referent_email}')">Envoyer un email de notification</button>`;
-                                        document.getElementById('projectMembers').appendChild(li);
+                                        li.innerHTML = `${user.chief_email} - Chef de projet <button onclick="removeSelectedMembers('${user.chief_email}', '${project_id}')">Supprimer</button>"`;
+                                        document.getElementById('projectMembers_' + project_id).appendChild(li);
                                     }
                                 });
                             }
@@ -510,8 +511,8 @@
                                         li.style.margin = '10px';
                                         li.style.textDecoration = 'none';
 
-                                        li.innerHTML = `${user.accountant_email} - Con <button onclick="removeSelectedMembers('${user.accountant_email}', '${project_id}')">Supprimer</button> <button onclick="sendEmailNotificationToAllMembers('${project_id}', '${project.project_title}', '${user.accountant_email}', '${project.project_referent_email}')">Envoyer un email de notification</button>`;
-                                        document.getElementById('projectMembers').appendChild(li);
+                                        li.innerHTML = `${user.accountant_email} - Comptable <button onclick="removeSelectedMembers('${user.accountant_email}', '${project_id}')">Supprimer</button>`;
+                                        document.getElementById('projectMembers_' + project_id).appendChild(li);
                                     }
                                 });
                             }
@@ -550,8 +551,8 @@
                                         li.style.margin = '10px';
                                         li.style.textDecoration = 'none';
 
-                                        li.innerHTML = `${user.consultant_email} - Chef de projet <button onclick="removeSelectedMembers('${user.consultant_email}', '${project_id}')">Supprimer</button> <button onclick="sendEmailNotificationToAllMembers('${project_id}', '${project.project_title}', '${user.consultant_email}', '${project.project_referent_email}')">Envoyer un email de notification</button>`;
-                                        document.getElementById('projectMembers').appendChild(li);
+                                        li.innerHTML = `${user.consultant_email} - Consultant <button onclick="removeSelectedMembers('${user.consultant_email}', '${project_id}')">Supprimer</button>`;
+                                        document.getElementById('projectMembers_' + project_id).appendChild(li);
                                     }
                                 });
                             }
@@ -590,8 +591,8 @@
                                         li.style.margin = '10px';
                                         li.style.textDecoration = 'none';
 
-                                        li.innerHTML = `${user.partner_email} - Chef de projet <button onclick="removeSelectedMembers('${user.partner_email}', '${project_id}')">Supprimer</button> <button onclick="sendEmailNotificationToAllMembers('${project_id}', '${project.project_title}', '${user.partner_email}', '${project.project_referent_email}')">Envoyer un email de notification</button>`;
-                                        document.getElementById('projectMembers').appendChild(li);
+                                        li.innerHTML = `${user.partner_email} - Partenaire <button onclick="removeSelectedMembers('${user.partner_email}', '${project_id}')">Supprimer</button>`;
+                                        document.getElementById('projectMembers_' + project_id).appendChild(li);
                                     }
                                 });
                             }
@@ -630,8 +631,8 @@
                                         li.style.margin = '10px';
                                         li.style.textDecoration = 'none';
 
-                                        li.innerHTML = `${user.referent_email} - Chef de projet <button onclick="removeSelectedMembers('${user.referent_email}', '${project_id}')">Supprimer</button> <button onclick="sendEmailNotificationToAllMembers('${project_id}', '${project.project_title}', '${user.referent_email}', '${project.project_referent_email}')">Envoyer un email de notification</button>`;
-                                        document.getElementById('projectMembers').appendChild(li);
+                                        li.innerHTML = `${user.referent_email} - Référent `;
+                                        document.getElementById('projectMembers_' + project_id).appendChild(li);
                                     }
                                 });
                             }
@@ -670,8 +671,8 @@
                                         li.style.margin = '10px';
                                         li.style.textDecoration = 'none';
 
-                                        li.innerHTML = `${user.coordinator_email} - Chef de projet <button onclick="removeSelectedMembers('${user.coordinator_email}', '${project_id}')">Supprimer</button> <button onclick="sendEmailNotificationToAllMembers('${project_id}', '${project.coordinator_email}', '${user.chief_email}', '${project.project_referent_email}')">Envoyer un email de notification</button>`;
-                                        document.getElementById('projectMembers').appendChild(li);
+                                        li.innerHTML = `${user.coordinator_email} - Coordinateur <button onclick="removeSelectedMembers('${user.coordinator_email}', '${project_id}')">Supprimer</button>`;
+                                        document.getElementById('projectMembers_' + project_id).appendChild(li);
                                     }
                                 });
                             }
@@ -710,8 +711,8 @@
                                         li.style.margin = '10px';
                                         li.style.textDecoration = 'none';
 
-                                        li.innerHTML = `${user.funder_email} - Chef de projet <button onclick="removeSelectedMembers('${user.funder_email}', '${project_id}')">Supprimer</button> <button onclick="sendEmailNotificationToAllMembers('${project_id}', '${project.project_title}', '${user.funder_email}', '${project.project_referent_email}')">Envoyer un email de notification</button>`;
-                                        document.getElementById('projectMembers').appendChild(li);
+                                        li.innerHTML = `${user.funder_email} - Bailleur <button onclick="removeSelectedMembers('${user.funder_email}', '${project_id}')">Supprimer</button>`;
+                                        document.getElementById('projectMembers_' + project_id).appendChild(li);
                                     }
                                 });
                             }
@@ -721,8 +722,174 @@
                         });
                     //#endregion
 
-                    // Ajouter l'élément de liste dans la liste des projets
-                    document.getElementById('projectsList').appendChild(li);
+                    //#region Récupérer et afficher la liste de tout les fichiers du site afin de permettre à l'utilisateur de choisir un ou plusieurs fichier à ajouter au projet
+                    fetch('https://lab.padem.org/wp-json/mo/v1/getSharedFiles', {
+                            method: 'GET',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data !== null && data !== undefined && Array.isArray(data)) {
+                                data.forEach(file => {
+                                    var isFileInProject = false;
+                                    var isAlraedyAdded_text = document.createElement('p');
+                                    isAlraedyAdded_text.style.color = 'green';
+                                    isAlraedyAdded_text.innerText = 'Déjà ajouté';
+                                    //#region Vérifier si le fichier est déjà dans le projet
+                                    fetch('https://lab.padem.org/wp-json/mo/v1/getProjectFiles', {
+                                            method: 'GET',
+                                            headers: {
+                                                'Content-Type': 'application/json',
+                                            },
+                                        })
+                                        .then(response => response.json())
+                                        .then(projectFiles => {
+                                            if (projectFiles !== null && projectFiles !== undefined && Array.isArray(projectFiles)) {
+                                                projectFiles.forEach(projectFile => {
+                                                    if (projectFile.file_id === file.file_id && projectFile.project_id === project_id) {
+                                                        isFileInProject = true;
+                                                    }
+                                                });
+                                            }
+                                        })
+                                        .catch(error => {
+                                            console.error('Erreur récupérer les fichiers du projet:', error);
+                                        });
+                                    //#endregion
+                                    
+                                    var file_name = file.file_name.split('/').pop();
+
+                                    //#region Déterminer l'icône à afficher en fonction du type de fichier
+                                    var icon_class;
+                                    if (file_name.includes('.pdf')) {
+                                        icon_class = 'far fa-file-pdf';
+                                    } else if (file_name.includes('.doc') || file_name.includes('.docx')) {
+                                        icon_class = 'far fa-file-word';
+                                    } else if (file_name.includes('.xls') || file_name.includes('.xlsx')) {
+                                        icon_class = 'far fa-file-excel';
+                                    } else if (file_name.includes('.ppt') || file_name.includes('.pptx')) {
+                                        icon_class = 'far fa-file-powerpoint';
+                                    } else if (file_name.includes('.jpg') || file_name.includes('.jpeg') || file_name.includes('.png') || file_name.includes('.gif')) {
+                                        icon_class = 'far fa-file-image';
+                                    } else if (file_name.includes('.zip') || file_name.includes('.rar') || file_name.includes('.7z')) {
+                                        icon_class = 'far fa-file-archive';
+                                    } else if (file_name.includes('.txt') || file_name.includes('.log')) {
+                                        icon_class = 'far fa-file-alt';
+                                    } else if (file_name.includes('.mp3') || file_name.includes('.wav') || file_name.includes('.flac') || file_name.includes('.ogg')) {
+                                        icon_class = 'far fa-file-audio';
+                                    } else if (file_name.includes('.mp4') || file_name.includes('.avi') || file_name.includes('.mkv') || file_name.includes('.mov')) {
+                                        icon_class = 'far fa-file-video';
+                                    } else {
+                                        icon_class = 'far fa-file';
+                                    }
+                                    //#endregion
+
+                                    //#region Créer un élément de liste pour chaque fichier
+                                    var li = document.createElement('li');
+                                    li.style.color = 'black';
+                                    li.style.textAlign = 'left';
+                                    li.style.border = '1px #29A6A7';
+                                    li.style.borderRadius = '25px';
+                                    li.style.backgroundColor = 'white';
+                                    li.style.display = 'flex';
+                                    li.style.justifyContent = 'space-between';
+                                    li.style.padding = '10px';
+                                    li.style.margin = '10px';
+                                    li.style.textDecoration = 'none';
+                                    li.style.width = '100%';
+                                    //#endregion
+
+                                    li.innerHTML = `<i class="${icon_class}"></i> <a href="#" onclick="openModal('https://lab.padem.org/shared-files/${file.file_id}/?${file_name}')">${file_name}</a> Date: ${file.created_at}  Auteur: ${file.user_name}  <button id="addSelectedFiles_${project_id}_${file_name}" ${isFileInProject ? 'disabled' : ''}>${isFileInProject ? isAlraedyAdded_text.innerText : 'Ajouter'}</button>  <button id="removeSelectedFiles_${project_id}_${file_name}" ${isFileInProject ? '' : 'style="display: none;"'}>Supprimer</button> <div id="loading_${project_id}_${file_name}" style="display: none;">
+                                                            <img src="https://lab.padem.org/wp-content/uploads/Spin@1x-1.0s-200px-200px.gif" style="width: 30px; height: 30px" alt="Chargement...">
+                                                        </div> <a href="https://lab.padem.org/shared-files/${file.file_id}/?${file_name}" download>
+                                                            Télécharger</a>`;
+
+                                    document.getElementById('projectFiles_' + project_id).appendChild(li);
+
+                                    //#region Ajouter un gestionnaire d'événement pour chaque bouton "Ajouter"
+                                    document.getElementById(`addSelectedFiles_${project_id}_${file_name}`).addEventListener('click', () => {
+                                        document.getElementById(`addSelectedFiles_${project_id}_${file_name}`).style.display = 'none';
+                                        document.getElementById(`loading_${project_id}_${file_name}`).style.display = 'block';
+                                        fetch('https://lab.padem.org/wp-json/mo/v1/createProjectFiles', {
+                                                method: 'POST',
+                                                headers: {
+                                                    'Content-Type': 'application/json',
+                                                },
+                                                body: JSON.stringify({
+                                                    project_id: project_id,
+                                                    file_id: file.file_id,
+                                                    user_email: userEmail,
+                                                    project_title: project.project_title,
+                                                }),
+                                            })
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                if (data !== null && data !== undefined) {
+                                                    document.getElementById(`addSelectedFiles_${project_id}_${file_name}`).style.display = 'block';
+                                                    document.getElementById(`loading_${project_id}_${file_name}`).style.display = 'none';
+                                                    document.getElementById(`addSelectedFiles_${project_id}_${file_name}`).disabled = true;
+                                                    document.getElementById(`addSelectedFiles_${project_id}_${file_name}`).innerText = 'Déjà ajouté';
+                                                }
+                                            })
+                                            .catch(error => {
+                                                console.error('Erreur ajouter le fichier au projet:', error);
+                                                document.getElementById(`addSelectedFiles_${project_id}_${file_name}`).style.display = 'block';
+                                                document.getElementById(`loading_${project_id}_${file_name}`).style.display = 'none';
+                                            });
+                                    });
+                                    //#endregion
+
+                                    //#region Ajouter un gestionnaire d'événement pour chaque bouton "Supprimer"
+                                    document.getElementById(`removeSelectedFiles_${project_id}_${file_name}`).addEventListener('click', () => {
+                                        document.getElementById(`removeSelectedFiles_${project_id}_${file_name}`).style.display = 'none';
+                                        document.getElementById(`loading_${project_id}_${file_name}`).style.display = 'block';
+                                        fetch('https://lab.padem.org/wp-json/mo/v1/deleteProjectFiles', {
+                                                method: 'DELETE',
+                                                headers: {
+                                                    'Content-Type': 'application/json',
+                                                },
+                                                body: JSON.stringify({
+                                                    file_id: file_id,
+                                                }),
+                                            })
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                if (data !== null && data !== undefined) {
+                                                    document.getElementById(`removeSelectedFiles_${project_id}_${file_name}`).style.display = 'block';
+                                                    document.getElementById(`loading_${project_id}_${file_name}`).style.display = 'none';
+                                                    document.getElementById(`removeSelectedFiles_${project_id}_${file_name}`).style.display = 'none';
+                                                    document.getElementById(`addSelectedFiles_${project_id}_${file_name}`).style.display = 'block';
+                                                    document.getElementById(`addSelectedFiles_${project_id}_${file_name}`).disabled = false;
+                                                    document.getElementById(`addSelectedFiles_${project_id}_${file_name}`).innerText = 'Ajouter';
+                                                }
+                                            })
+                                            .catch(error => {
+                                                console.error('Erreur supprimer le fichier du projet:', error);
+                                                document.getElementById(`removeSelectedFiles_${project_id}_${file_name}`).style.display = 'block';
+                                                document.getElementById(`loading_${project_id}_${file_name}`).style.display = 'none';
+                                            });
+                                    });
+                                    //#endregion
+                                });
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Erreur récupérer les fichiers:', error);
+                            document.getElementById('projectFiles_' + project_id).innerHTML = 'Aucun fichier trouvé';
+                        });
+                    
+                    // Gestion de la fenêtre modale
+                    function openModal(url) {
+                        document.getElementById('myModal_' + project_id).style.display = "block";
+                        document.getElementById('filePreview').src = url;
+                    }
+
+                    document.getElementById('close').onclick = function() {
+                        document.getElementById('myModal_' + project_id).style.display = "none";
+                    }
+                    //#endregion
 
                     // Nombre de membres du projet
                     document.getElementById('existingMemberEmail_' + project_id).appendChild(option);
