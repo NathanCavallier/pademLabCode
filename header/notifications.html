@@ -1,7 +1,7 @@
 <div style="margin: 3px;">
     <div class="dropdown">
         <button onclick="toggleDropdown()" class="dropbtn" style="display: flex; justify-content: space-between;">
-            <img src="https://lab.padem.org/wp-content/uploads/NoNotifs.png" id="no_notifs" alt="Notifications"
+            <img src="https://lab.padem.org/wp-content/uploads/notif_gray.png" id="no_notifs" alt="Notifications"
                 style="height: 20px; width: 20px;">
             <div style="position: relative; display: inline-block;">
                 <span id="notificationCount" style="color: white;">3</span>
@@ -61,7 +61,7 @@
                         document.getElementById('myDropdown').appendChild(a);
                     }
                 } else {
-                    document.getElementById('no_notifs').src = 'https://lab.padem.org/wp-content/uploads/NoNotifs.png';
+                    document.getElementById('no_notifs').src = 'https://lab.padem.org/wp-content/uploads/notif_gray.png';
                     var a = document.createElement('a');
                     a.textContent = 'Aucune notification';
                     document.getElementById('myDropdown').innerHTML = '';
@@ -72,8 +72,8 @@
             .catch(error => {
                 console.error('Error:', error)
                 document.getElementById('notificationCount').textContent = '0';
-                document.getElementById('notificationCount').style.color = '#29A6A7';
-                document.getElementById('no_notifs').src = 'https://lab.padem.org/wp-content/uploads/NoNotifs.png';
+                document.getElementById('notificationCount').style.color = 'white';
+                document.getElementById('no_notifs').src = 'https://lab.padem.org/wp-content/uploads/notif_gray.png';
                 var a = document.createElement('a');
                 a.textContent = 'Impossible de récupérer les notifications';
                 a.style.color = 'red';

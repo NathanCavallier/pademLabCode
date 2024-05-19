@@ -295,49 +295,39 @@
                                             </div>
                                             <div id="existingMember_${project_id}" style="display: none; width: 100%;">
                                                 <div class="row">
-                                                    <div class="col-md-12">
-                                                        <div class="form-group">
-                                                            <div style="margin: 5px; padding: 5px;"></div>
-                                                            <label for="existingMemberEmail_${project_id}">Adresse email du membre existant: </label>
-                                                            <select class="form-control" id="existingMemberEmail_${project_id}" required>
-                                                            </select>
+                                                    <div style="display: flex;">
+                                                        <div style="flex: 1; margin-right: 10px;">
+                                                            <h2>Membres du projet</h2>
+                                                            <ul id="projectMembers" style="list-style: none;">
+                                                                <!-- Les membres du projet vont ici -->
+                                                            </ul>
+                                                            <button onclick="removeSelectedMembers()">Supprimer les membres sélectionnés</button>
+                                                            <button onclick="addSelectedMembers()">Ajouter les membres sélectionnés</button>
                                                         </div>
-                                                        <div class="form-group">
-                                                            <div style="margin: 5px; padding: 5px;"></div>
-                                                            <label for="existingMember_last_name_${project_id}">Nom du membre existant: </label>
-                                                            <input type="text" class="form-control" id="existingMember_last_name_${project_id}" aria-describedby="emailHelp">
-                                                            <div style="margin: 5px; padding: 5px;"></div>
-                                                            <label for="existingMember_first_name_${project_id}">Prénom du membre existant: </label>
-                                                            <input type="text" class="form-control" id="existingMember_first_name_${project_id}" aria-describedby="emailHelp">
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-12">
-                                                        <div class="form-group">
-                                                            <div style="margin: 5px; padding: 5px;"></div>
-                                                            <label for="existingMemberRole_${project_id}">Rôle du membre existant: </label>
-                                                            <select class="form-control" id="existingMemberRole_${project_id}" required>
-                                                                <option value="Coordinateur">Coordinateur</option>
-                                                                <option value="chef-de-projet">Chef de projet</option>
-                                                                <option value="comptable">Comptable</option>
-                                                                <option value="consultant">Consultant</option>
-                                                                <option value="partenaire">Partenaire</option>
-                                                                <option value="bailleur">Bailleur</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-12">
-                                                        <div class="form-group">
-                                                            <div style="margin: 5px; padding: 5px;"></div>
-                                                            <label for="existingMemberCityAndCountry_${project_id}">Ville et pays du membre existant: </label>
-                                                            <input type="text" class="form-control" id="existingMemberCityAndCountry_${project_id}" aria-describedby="emailHelp">
-                                                        </div>
-                                                    </div>
-                                                    <div style="margin-top: 10px; padding: 10px;"></div>
-                                                    <div class="col-md-12" style="display: flex; width: 100%;">
-                                                        <button type="submit" class="btn btn-primary" id="addExistingMember_${project_id}" style="width: fit-content;">Ajouter le membre existant au projet</button>
-                                                        <div style="margin: 5px; padding: 5px;"></div>
-                                                        <div id="loading_${project_id}" style="display: none;">
-                                                            <img src="https://lab.padem.org/wp-content/uploads/Spin@1x-1.0s-200px-200px.gif" style="width: 30px; height: 30px" alt="Chargement...">
+                                                        <div style="flex: 1; margin-left: 10px;">
+                                                            <h2>Fichiers</h2>
+                                                            <ul id="projectFiles" style="list-style: none;">
+                                                                <!-- Les fichiers vont ici -->
+                                                            </ul>
+                                                            <div style="margin-top: 10px; padding: 10px;"></div>
+                                                            <div class="col-md-12" style="display: flex; width: 100%;">
+                                                                <div class="col-md-12" style="display: flex; width: 100%;">
+                                                                    <div style="margin: 5px; padding: 5px;"></div>
+                                                                    <button onclick="removeSelectedFiles()" class="btn btn-danger" style="width: fit-content;>Supprimer les fichiers sélectionnés</button>
+                                                                    <div style="margin: 5px; padding: 5px;"></div>
+                                                                    <div id="loading_${project_id}" style="display: none;">
+                                                                        <img src="https://lab.padem.org/wp-content/uploads/Spin@1x-1.0s-200px-200px.gif" style="width: 30px; height: 30px" alt="Chargement...">
+                                                                    </div>
+                                                                </div>
+                                                                <div style="margin: 5px; padding: 5px;"></div>
+                                                                <div class="col-md-12" style="display: flex; width: 100%;">
+                                                                    <button onclick="addSelectedFiles()" class="btn btn-primary" style="width: fit-content;>Ajouter les fichiers sélectionnés</button>
+                                                                    <div style="margin: 5px; padding: 5px;"></div>
+                                                                    <div id="loading_${project_id}" style="display: none;">
+                                                                        <img src="https://lab.padem.org/wp-content/uploads/Spin@1x-1.0s-200px-200px.gif" style="width: 30px; height: 30px" alt="Chargement...">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -461,10 +451,6 @@
                                 var stepper = 0;
                                 data.forEach(user => {
                                     if (user.project_id === project_id) {
-                                        var option = document.createElement('option');
-                                        option.value = user.chief_email;
-                                        option.text = user.chief_email + ' - Chef de projet';
-                                        document.getElementById('existingMemberEmail_' + project_id).appendChild(option);
                                         var number = document.getElementById(`numberOfmember_${project_id}`).value;
                                         if (number === null || number === undefined || number === '') {
                                             document.getElementById(`numberOfmember_${project_id}`).value = 2;
@@ -472,6 +458,20 @@
                                             document.getElementById(`numberOfmember_${project_id}`).value = parseInt(document.getElementById(`numberOfmember_${project_id}`).value) + 1;
                                         }
                                         document.getElementById(`numberOfmember_${project_id}`).innerText =  ' ' + document.getElementById(`numberOfmember_${project_id}`).value + ' membres';
+                                        var li = document.createElement('li');
+                                        li.style.color = 'black';
+                                        li.style.textAlign = 'left';
+                                        li.style.border = '1px #29A6A7';
+                                        li.style.borderRadius = '15px';
+                                        li.style.backgroundColor = 'white';
+                                        li.style.display = 'flex';
+                                        li.style.justifyContent = 'space-between';
+                                        li.style.padding = '10px';
+                                        li.style.margin = '10px';
+                                        li.style.textDecoration = 'none';
+
+                                        li.innerHTML = `${user.chief_email} - Chef de projet <button onclick="removeSelectedMembers('${user.chief_email}', '${project_id}')">Supprimer</button> <button onclick="sendEmailNotificationToAllMembers('${project_id}', '${project.project_title}', '${user.chief_email}', '${project.project_referent_email}')">Envoyer un email de notification</button>`;
+                                        document.getElementById('projectMembers').appendChild(li);
                                     }
                                 });
                             }
@@ -491,10 +491,6 @@
                             if (data !== null && data !== undefined && Array.isArray(data)) {
                                 data.forEach(user => {
                                     if (user.project_id === project_id) {
-                                        var option = document.createElement('option');
-                                        option.value = user.accountant_email;
-                                        option.text = user.accountant_email + ' - Comptable';
-                                        document.getElementById('existingMemberEmail_' + project_id).appendChild(option);
                                         var number = document.getElementById(`numberOfmember_${project_id}`).value;
                                         if (number === null || number === undefined || number === '') {
                                             document.getElementById(`numberOfmember_${project_id}`).value = 2;
@@ -502,6 +498,20 @@
                                             document.getElementById(`numberOfmember_${project_id}`).value = parseInt(document.getElementById(`numberOfmember_${project_id}`).value) + 1;
                                         }
                                         document.getElementById(`numberOfmember_${project_id}`).innerText =  ' ' + document.getElementById(`numberOfmember_${project_id}`).value + ' membres';
+                                        var li = document.createElement('li');
+                                        li.style.color = 'black';
+                                        li.style.textAlign = 'left';
+                                        li.style.border = '1px #29A6A7';
+                                        li.style.borderRadius = '15px';
+                                        li.style.backgroundColor = 'white';
+                                        li.style.display = 'flex';
+                                        li.style.justifyContent = 'space-between';
+                                        li.style.padding = '10px';
+                                        li.style.margin = '10px';
+                                        li.style.textDecoration = 'none';
+
+                                        li.innerHTML = `${user.accountant_email} - Con <button onclick="removeSelectedMembers('${user.accountant_email}', '${project_id}')">Supprimer</button> <button onclick="sendEmailNotificationToAllMembers('${project_id}', '${project.project_title}', '${user.accountant_email}', '${project.project_referent_email}')">Envoyer un email de notification</button>`;
+                                        document.getElementById('projectMembers').appendChild(li);
                                     }
                                 });
                             }
@@ -521,10 +531,6 @@
                             if (data !== null && data !== undefined && Array.isArray(data)) {
                                 data.forEach(user => {
                                     if (user.project_id === project_id) {
-                                        var option = document.createElement('option');
-                                        option.value = user.consultant_email;
-                                        option.text = user.consultant_email + ' - Consultant';
-                                        document.getElementById('existingMemberEmail_' + project_id).appendChild(option);
                                         var number = document.getElementById(`numberOfmember_${project_id}`).value;
                                         if (number === null || number === undefined || number === '') {
                                             document.getElementById(`numberOfmember_${project_id}`).value = 2;
@@ -532,6 +538,20 @@
                                             document.getElementById(`numberOfmember_${project_id}`).value = parseInt(document.getElementById(`numberOfmember_${project_id}`).value) + 1;
                                         }
                                         document.getElementById(`numberOfmember_${project_id}`).innerText =  ' ' + document.getElementById(`numberOfmember_${project_id}`).value + ' membres';
+                                        var li = document.createElement('li');
+                                        li.style.color = 'black';
+                                        li.style.textAlign = 'left';
+                                        li.style.border = '1px #29A6A7';
+                                        li.style.borderRadius = '15px';
+                                        li.style.backgroundColor = 'white';
+                                        li.style.display = 'flex';
+                                        li.style.justifyContent = 'space-between';
+                                        li.style.padding = '10px';
+                                        li.style.margin = '10px';
+                                        li.style.textDecoration = 'none';
+
+                                        li.innerHTML = `${user.consultant_email} - Chef de projet <button onclick="removeSelectedMembers('${user.consultant_email}', '${project_id}')">Supprimer</button> <button onclick="sendEmailNotificationToAllMembers('${project_id}', '${project.project_title}', '${user.consultant_email}', '${project.project_referent_email}')">Envoyer un email de notification</button>`;
+                                        document.getElementById('projectMembers').appendChild(li);
                                     }
                                 });
                             }
@@ -551,10 +571,6 @@
                             if (data !== null && data !== undefined && Array.isArray(data)) {
                                 data.forEach(user => {
                                     if (user.project_id === project_id) {
-                                        var option = document.createElement('option');
-                                        option.value = user.partner_email;
-                                        option.text = user.partner_email + ' - Partenaire';
-                                        document.getElementById('existingMemberEmail_' + project_id).appendChild(option);
                                         var number = document.getElementById(`numberOfmember_${project_id}`).value;
                                         if (number === null || number === undefined || number === '') {
                                             document.getElementById(`numberOfmember_${project_id}`).value = 2;
@@ -562,6 +578,20 @@
                                             document.getElementById(`numberOfmember_${project_id}`).value = parseInt(document.getElementById(`numberOfmember_${project_id}`).value) + 1;
                                         }
                                         document.getElementById(`numberOfmember_${project_id}`).innerText =  ' ' + document.getElementById(`numberOfmember_${project_id}`).value + ' membres';
+                                        var li = document.createElement('li');
+                                        li.style.color = 'black';
+                                        li.style.textAlign = 'left';
+                                        li.style.border = '1px #29A6A7';
+                                        li.style.borderRadius = '15px';
+                                        li.style.backgroundColor = 'white';
+                                        li.style.display = 'flex';
+                                        li.style.justifyContent = 'space-between';
+                                        li.style.padding = '10px';
+                                        li.style.margin = '10px';
+                                        li.style.textDecoration = 'none';
+
+                                        li.innerHTML = `${user.partner_email} - Chef de projet <button onclick="removeSelectedMembers('${user.partner_email}', '${project_id}')">Supprimer</button> <button onclick="sendEmailNotificationToAllMembers('${project_id}', '${project.project_title}', '${user.partner_email}', '${project.project_referent_email}')">Envoyer un email de notification</button>`;
+                                        document.getElementById('projectMembers').appendChild(li);
                                     }
                                 });
                             }
@@ -581,10 +611,6 @@
                             if (data !== null && data !== undefined && Array.isArray(data)) {
                                 data.forEach(user => {
                                     if (user.project_id === project_id) {
-                                        var option = document.createElement('option');
-                                        option.value = user.referent_email;
-                                        option.text = user.referent_email + ' - Référent';
-                                        document.getElementById('existingMemberEmail_' + project_id).appendChild(option);
                                         var number = document.getElementById(`numberOfmember_${project_id}`).value;
                                         if (number === null || number === undefined || number === '') {
                                             document.getElementById(`numberOfmember_${project_id}`).value = 2;
@@ -592,6 +618,20 @@
                                             document.getElementById(`numberOfmember_${project_id}`).value = parseInt(document.getElementById(`numberOfmember_${project_id}`).value) + 1;
                                         }
                                         document.getElementById(`numberOfmember_${project_id}`).innerText =  ' ' + document.getElementById(`numberOfmember_${project_id}`).value + ' membres';
+                                        var li = document.createElement('li');
+                                        li.style.color = 'black';
+                                        li.style.textAlign = 'left';
+                                        li.style.border = '1px #29A6A7';
+                                        li.style.borderRadius = '15px';
+                                        li.style.backgroundColor = 'white';
+                                        li.style.display = 'flex';
+                                        li.style.justifyContent = 'space-between';
+                                        li.style.padding = '10px';
+                                        li.style.margin = '10px';
+                                        li.style.textDecoration = 'none';
+
+                                        li.innerHTML = `${user.referent_email} - Chef de projet <button onclick="removeSelectedMembers('${user.referent_email}', '${project_id}')">Supprimer</button> <button onclick="sendEmailNotificationToAllMembers('${project_id}', '${project.project_title}', '${user.referent_email}', '${project.project_referent_email}')">Envoyer un email de notification</button>`;
+                                        document.getElementById('projectMembers').appendChild(li);
                                     }
                                 });
                             }
@@ -611,10 +651,6 @@
                             if (data !== null && data !== undefined && Array.isArray(data)) {
                                 data.forEach(user => {
                                     if (user.project_id === project_id) {
-                                        var option = document.createElement('option');
-                                        option.value = user.coordinator_email;
-                                        option.text = user.coordinator_email + ' - Coordinateur';
-                                        document.getElementById('existingMemberEmail_' + project_id).appendChild(option);
                                         var number = document.getElementById(`numberOfmember_${project_id}`).value;
                                         if (number === null || number === undefined || number === '') {
                                             document.getElementById(`numberOfmember_${project_id}`).value = 2;
@@ -622,6 +658,20 @@
                                             document.getElementById(`numberOfmember_${project_id}`).value = parseInt(document.getElementById(`numberOfmember_${project_id}`).value) + 1;
                                         }
                                         document.getElementById(`numberOfmember_${project_id}`).innerText =  ' ' + document.getElementById(`numberOfmember_${project_id}`).value + ' membres';
+                                        var li = document.createElement('li');
+                                        li.style.color = 'black';
+                                        li.style.textAlign = 'left';
+                                        li.style.border = '1px #29A6A7';
+                                        li.style.borderRadius = '15px';
+                                        li.style.backgroundColor = 'white';
+                                        li.style.display = 'flex';
+                                        li.style.justifyContent = 'space-between';
+                                        li.style.padding = '10px';
+                                        li.style.margin = '10px';
+                                        li.style.textDecoration = 'none';
+
+                                        li.innerHTML = `${user.coordinator_email} - Chef de projet <button onclick="removeSelectedMembers('${user.coordinator_email}', '${project_id}')">Supprimer</button> <button onclick="sendEmailNotificationToAllMembers('${project_id}', '${project.coordinator_email}', '${user.chief_email}', '${project.project_referent_email}')">Envoyer un email de notification</button>`;
+                                        document.getElementById('projectMembers').appendChild(li);
                                     }
                                 });
                             }
@@ -641,10 +691,6 @@
                             if (data !== null && data !== undefined && Array.isArray(data)) {
                                 data.forEach(user => {
                                     if (user.project_id === project_id) {
-                                        var option = document.createElement('option');
-                                        option.value = user.funder_email;
-                                        option.text = user.funder_email + ' - Bailleur';
-                                        document.getElementById('existingMemberEmail_' + project_id).appendChild(option);
                                         var number = document.getElementById(`numberOfmember_${project_id}`).value;
                                         if (number === null || number === undefined || number === '') {
                                             document.getElementById(`numberOfmember_${project_id}`).value = 2;
@@ -652,6 +698,20 @@
                                             document.getElementById(`numberOfmember_${project_id}`).value = parseInt(document.getElementById(`numberOfmember_${project_id}`).value) + 1;
                                         }
                                         document.getElementById(`numberOfmember_${project_id}`).innerText =  ' ' + document.getElementById(`numberOfmember_${project_id}`).value + ' membres';
+                                        var li = document.createElement('li');
+                                        li.style.color = 'black';
+                                        li.style.textAlign = 'left';
+                                        li.style.border = '1px #29A6A7';
+                                        li.style.borderRadius = '15px';
+                                        li.style.backgroundColor = 'white';
+                                        li.style.display = 'flex';
+                                        li.style.justifyContent = 'space-between';
+                                        li.style.padding = '10px';
+                                        li.style.margin = '10px';
+                                        li.style.textDecoration = 'none';
+
+                                        li.innerHTML = `${user.funder_email} - Chef de projet <button onclick="removeSelectedMembers('${user.funder_email}', '${project_id}')">Supprimer</button> <button onclick="sendEmailNotificationToAllMembers('${project_id}', '${project.project_title}', '${user.funder_email}', '${project.project_referent_email}')">Envoyer un email de notification</button>`;
+                                        document.getElementById('projectMembers').appendChild(li);
                                     }
                                 });
                             }
