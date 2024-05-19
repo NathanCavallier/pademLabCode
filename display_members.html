@@ -1,0 +1,56 @@
+<body>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- Ajoutez ceci pour utiliser Font Awesome -->
+    <!-- Afficher la liste de tout les membres du site -->
+    <ul id="all_members"></ul>
+</body>
+<script>
+    // Récupérer la liste de tout les membres de la plate-forme
+    fetch('http://localhost:3000/members')
+    .then(response => response.json())
+    .then(data => {
+        data.forEach(member => {
+            // Créer un élément li pour chaque membre
+            const li = document.createElement('li');
+            li.innerHTML = `
+                <i class="fas fa-user"></i> ${member.name}
+            `;
+            document.getElementById('all_members').appendChild(li);
+        });
+    });
+</script>
+
+<body>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- Ajoutez ceci pour utiliser Font Awesome -->
+    <!-- Afficher la liste de tout les coordinateurs du site -->
+    <ul id="coordinateur"></ul>
+</body>
+
+<body>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- Ajoutez ceci pour utiliser Font Awesome -->
+    <!-- Afficher la liste de tout les chefs de projet du site -->
+    <ul id="chef_de_projet"></ul>
+</body>
+
+<body>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- Ajoutez ceci pour utiliser Font Awesome -->
+    <!-- Afficher la liste de tout les comptables du site -->
+    <ul id="accountant"></ul>
+</body>
+
+<body>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- Ajoutez ceci pour utiliser Font Awesome -->
+    <!-- Afficher la liste de tout les consultants du site -->
+    <ul id="consultant"></ul>
+</body>
+
+<body>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- Ajoutez ceci pour utiliser Font Awesome -->
+    <!-- Afficher la liste de tout les partenaires du site -->
+    <ul id="partner"></ul>
+</body>
+
+<body>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- Ajoutez ceci pour utiliser Font Awesome -->
+    <!-- Afficher la liste de tout les bailleurs sociaux du site -->
+    <ul id="funder"></ul>
+</body>
