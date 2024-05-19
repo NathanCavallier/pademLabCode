@@ -116,6 +116,7 @@
                 var tabStepper = 0;
                 var numberOfMembers = 0;
                 var membersTable = new Array(data.length).fill(0);
+                var filesIDs = new Array().fill(0);
                 var members = new Array(data.length).fill({
                     'project_id': 0,
                     'coordinateur': [],
@@ -140,9 +141,6 @@
                         'referent': []
                     };
 
-                    // Récupération de l'ID du projet
-                    list_OfUsers['project_id'] = project_id;
-
                     // Fonction pour supprimer un membre du projet
                     function removeSelectedMembers(email, project_id) {
                         fetch('https://lab.padem.org/wp-json/mo/v1/removeMember', {
@@ -163,11 +161,6 @@
                                 console.error('Erreur:', error);
                             });
                     }
-
-                    // Ajouter le référent du projet et son email à la liste des destinataires
-                    var option = document.createElement('option');
-                    option.value = project.project_referent_email;
-                    option.text = project.project_referent_email + ' - Référent';
 
                     //#region Style de l'élément de liste
                     // Créer un élément de liste pour chaque projet
@@ -219,24 +212,24 @@
                                                 <div class="btn-group" role="group" aria-label="menu" style="width: 100%;">
                                                     <button type="button" id="buttonExistingMember_${project_id}" class="btn btn-secondary"
                                                         style="width: fit-content; margin: 5px; padding: 5px; background: white; color: #29A6A7; font-size: 10px; border-radius: 20px;">
-                                                        Membres & Ressources existantes</button>
+                                                        Membres du projet</button>
                                                     <div style="margin-left: 50px; margin-right: 50px;"></div>
                                                     <button type="button" id="buttonNewMember_${project_id}" class="btn btn-secondary"
                                                         style="width: fit-content; margin: 5px; padding: 5px; background: white; color: #29A6A7; font-size: 10px; border-radius: 20px;">
-                                                        Nouveau membre</button>
+                                                        Ajouter un membre</button>
                                                     <button type="button" id="buttonDocumentModel_${project_id}" class="btn btn-secondary"
                                                         style="width: fit-content; margin: 5px; padding: 5px; background: white; color: #29A6A7; font-size: 10px; border-radius: 20px;">
-                                                        Document model</button>
+                                                        Ajouter des fichiers</button>
                                                     <button type="button" id="buttonAddLink_${project_id}" class="btn btn-secondary"
                                                         style="width: fit-content; margin: 5px; padding: 5px; background: white; color: #29A6A7; font-size: 10px; border-radius: 20px;">
                                                         Ajouter un Lien</button>
                                                     <button type="button" id="buttonAddDivers_${project_id}" class="btn btn-secondary"
                                                         style="width: fit-content; margin: 5px; padding: 5px; background: white; color: #29A6A7; font-size: 10px; border-radius: 20px;">
-                                                        Divers</button>
+                                                        Documents Models</button>
                                                 </div>
                                             </div>
                                             <div style="margin: 5px; padding: 5px;"></div>
-                                            <div id="newMember_${project_id}" style="display: none; width: 100%">
+                                            <div id="newMember_${project_id}" style="display: none; width: 100%" class="settings-scroll">
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <div class="form-group">
@@ -285,81 +278,38 @@
                                                 </div>
                                             </div>
                                             <div id="existingMember_${project_id}" style="display: none; width: 100%;">
-                                                <!-- La boîte modale -->
-                                                <div id="myModal_${project_id}" style="display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4);">
-                                                    <div style="background-color: #fefefe; margin: 15% auto; padding: 20px; border: 1px solid #888; width: 80%;">
-                                                        <span id="close" style="color: #aaa; float: right; font-size: 28px; font-weight: bold;">&times;</span>
-                                                        <iframe id="filePreview" style="width: 100%; height: 80%;"></iframe>
-                                                    </div>
-                                                </div>
                                                 <div class="row">
-                                                    <div style="display: flex;">
+                                                    <div style="display: flex;" class="settings-scroll">
                                                         <div style="flex: 1; margin-right: 10px;">
-                                                            <h4>Membres du projet</h4>
+                                                            <h6 style="color: gray;">Membres du projet</h6>
                                                             <ul id="projectMembers_${project_id}" style="list-style: none;">
                                                                 <!-- Les membres du projet vont ici -->
                                                             </ul>
                                                             <button id="removeSelectedMembers_${project_id}">Supprimer les membres sélectionnés</button>
                                                             <button id="addSelectedMembers_${project_id}">Ajouter les membres sélectionnés</button>
                                                         </div>
-                                                        <div style="flex: 1; margin-left: 10px;">
-                                                            <h4>Sélectionnez des fichiers à intégrer au projet</h4>
-                                                            <ul id="projectFiles_${project_id}" style="list-style: none;">
-                                                                <!-- Les fichiers vont ici -->
-                                                            </ul>
-                                                            <div style="margin-top: 10px; padding: 10px;"></div>
-                                                            <div class="col-md-12" style="display: flex; width: 100%;">
-                                                                <div class="col-md-12" style="display: flex; width: 100%;">
-                                                                    <div style="margin: 5px; padding: 5px;"></div>
-                                                                    <button onclick="removeSelectedFiles()" class="btn btn-secondary" style="width: fit-content;>Supprimer la sélection</button>
-                                                                    <div style="margin: 5px; padding: 5px;"></div>
-                                                                    <div id="loading_${project_id}" style="display: none;">
-                                                                        <img src="https://lab.padem.org/wp-content/uploads/Spin@1x-1.0s-200px-200px.gif" style="width: 30px; height: 30px" alt="Chargement...">
-                                                                    </div>
-                                                                </div>
-                                                                <div style="margin: 5px; padding: 5px;"></div>
-                                                                <div class="col-md-12" style="display: flex; width: 100%;">
-                                                                    <button onclick="addSelectedFiles()" class="btn btn-primary" style="width: fit-content;>Ajouter les fichiers sélectionnés</button>
-                                                                    <div style="margin: 5px; padding: 5px;"></div>
-                                                                    <div id="loading_${project_id}" style="display: none;">
-                                                                        <img src="https://lab.padem.org/wp-content/uploads/Spin@1x-1.0s-200px-200px.gif" style="width: 30px; height: 30px" alt="Chargement...">
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div id="newDocument_${project_id}" style="display: none; width: 100%;">
-                                                <div class="row">
-                                                    <div class="col-md-12">
-                                                                <div class="form-group">
-                                                                    <div style="margin: 5px; padding: 5px;"></div>
-                                                                    <label for="documentTitle_${project_id}">Titre du document: </label>
-                                                                    <input type="text" class="form-control" id="documentTitle_${project_id}" aria-describedby="emailHelp">
-                                                                </div>
+                                                <div class="row">                                        
+                                                    <div style="flex: 1; margin-left: 10px;">
+                                                        <h6 style="color: gray;">Sélectionnez des fichiers à intégrer au projet</h6>
+                                                        <!-- Colonne de gauche pour la liste des images -->
+                                                        <div style="width: 35%; float: left;" class="settings-scroll">
+                                                            <div style="margin-top: 10px; padding: 10px;"></div>
+                                                            <ul id="projectFiles_${project_id}" style="list-style: none;">
+                                                                <!-- Les éléments de la liste seront ajoutés ici dynamiquement -->
+                                                            </ul>
+                                                            <div style="margin-top: 10px; padding: 10px;"></div>
+                                                        </div>
+                                                        <!-- Colonne de droite pour les détails de l'image -->
+                                                        <div style="width: 60%; float: right;" class="settings-scroll">
+                                                            <div style="margin-top: 10px; padding: 10px;"></div>
+                                                            <div id="projectFileDetails_${project_id}" style="display: none;">
+                                                                <!-- Les détails du fichier seront ajoutés ici dynamiquement -->
                                                             </div>
-                                                            <div class="col-md-12">
-                                                                <div class="form-group">
-                                                                    <div style="margin: 5px; padding: 5px;"></div>
-                                                                    <label for="documentDescription_${project_id}">Description du document: </label>
-                                                                    <textarea class="form-control" id="documentDescription_${project_id}" rows="5"></textarea>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-12">
-                                                                <div class="form-group">
-                                                                    <div style="margin: 5px; padding: 5px;"></div>
-                                                                    <label for="documentFile_${project_id}">Charger le document: </label>
-                                                                    <input type="file" class="form-control-file" id="documentFile_${project_id}">
-                                                                </div>
-                                                            </div>
-                                                    </div>
-                                                    <div style="margin-top: 10px; padding: 10px;"></div>
-                                                    <div class="col-md-12" style="display: flex; width: 100%;">
-                                                        <button type="submit" class="btn btn-primary" id="submitDocument_${project_id}" style="width: fit-content;">Ajouter le document au projet</button>
-                                                        <div style="margin: 5px; padding: 5px;"></div>
-                                                        <div id="loading_${project_id}" style="display: none;">
-                                                            <img src="https://lab.padem.org/wp-content/uploads/Spin@1x-1.0s-200px-200px.gif" style="width: 30px; height: 30px" alt="Chargement...">
+                                                            <div style="margin-top: 10px; padding: 10px;"></div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -466,11 +416,6 @@
                             document.getElementById(`newMemberRole_${project_id}`).value = '';
                             document.getElementById(`last_name_${project_id}`).value = '';
                             document.getElementById(`first_name_${project_id}`).value = '';
-                            document.getElementById(`existingMemberEmail_${project_id}`).value = '';
-                            document.getElementById(`existingMemberRole_${project_id}`).value = '';
-                            document.getElementById(`documentTitle_${project_id}`).value = '';
-                            document.getElementById(`documentDescription_${project_id}`).value = '';
-                            document.getElementById(`documentFile_${project_id}`).value = '';
                             document.getElementById(`linkTitle_${project_id}`).value = '';
                             document.getElementById(`linkDescription_${project_id}`).value = '';
                             document.getElementById(`linkUrl_${project_id}`).value = '';
@@ -914,406 +859,6 @@
                                 document.getElementById('loading_' + project_id).style.display = 'none';
                             });
                     });
-
-                    // Ajouter un membre existant au projet sur la base de données
-                    document.getElementById('addExistingMember_' + project_id).addEventListener('click', () => {
-                        document.getElementById('loading_' + project_id).style.display = 'block';
-                        var existingMemberEmail = document.getElementById('existingMemberEmail_' + project_id).value || '';
-                        var existingMemberRole = document.getElementById('existingMemberRole_' + project_id).value || '';
-                        var existingMember_first_name = document.getElementById('existingMember_first_name_' + project_id).value || '';
-                        var existingMember_last_name = document.getElementById('existingMember_last_name_' + project_id).value || '';
-                        var existingMember_countryAndCity = document.getElementById('existingMemberCityAndCountry_' + project_id).value || '';
-
-                        if (!existingMemberEmail || !existingMemberRole || !existingMember_first_name) {
-                            alert('Veuillez remplir tous les champs. (Email, Rôle et Prénom (le Nom est optionnel))');
-                            document.getElementById('loading_' + project_id).style.display = 'none';
-                            return;
-                        }
-
-                        var users_list = {
-                            'emails_names': {
-                                'Coordinateur': 'coordinator_email',
-                                'chef-de-projet': 'chief_email',
-                                'partenaire': 'partner_email',
-                                'comptable': 'accountant_email',
-                                'consultant': 'consultant_email',
-                                'bailleur': 'funder_email'
-                            },
-                            'users': {
-                                'Coordinateur': [],
-                                'chef-de-projet': [],
-                                'partenaire': [],
-                                'comptable': [],
-                                'consultant': [],
-                                'bailleur': []
-                            },
-                            'urls': {
-                                'Coordinateur': 'https://lab.padem.org/wp-json/mo/v1/getCoordinator',
-                                'chef-de-projet': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
-                                'partenaire': 'https://lab.padem.org/wp-json/mo/v1/getPartner',
-                                'comptable': 'https://lab.padem.org/wp-json/mo/v1/getAccountant',
-                                'consultant': 'https://lab.padem.org/wp-json/mo/v1/getConsultant',
-                                'bailleur': 'https://lab.padem.org/wp-json/mo/v1/getFunder'
-                            }
-                        }
-
-                        var urls_and_data = {
-                            'Coordinateur': {
-                                'url': 'https://lab.padem.org/wp-json/mo/v1/createCoordinator',
-                                'data': {
-                                    'project_id': project_id,
-                                    'coordinator_email': existingMemberEmail,
-                                    'coordinator_first_name': existingMember_first_name,
-                                    'coordinator_last_name': existingMember_last_name,
-                                    'coordinator_countryAndCity': existingMember_countryAndCity,
-                                    'coordinator_activity_history': JSON.stringify([
-                                        {
-                                            'Date': {
-                                                'hour': new Date().getHours(),
-                                                'minute': new Date().getMinutes(),
-                                                'day': new Date().getDate(),
-                                                'month': new Date().getMonth() + 1,
-                                                'year': new Date().getFullYear(),
-                                            }
-                                        },
-                                        {
-                                            'Activité': `Création du projet ${project.project_title} et ajout des membres`,
-                                        },
-                                        {
-                                            'Commentaire': 'Le projet est en cours de création',
-                                        },
-                                        {
-                                            'Divers': '',
-                                        }
-                                    ]),
-                                }
-                            },
-                            'chef-de-projet': {
-                                'url': 'https://lab.padem.org/wp-json/mo/v1/createProjectChief',
-                                'data': {
-                                    'project_id': project_id,
-                                    'chief_email': existingMemberEmail,
-                                    'chief_first_name': existingMember_first_name,
-                                    'chief_last_name': existingMember_last_name,
-                                    'chief_countryAndCity': existingMember_countryAndCity,
-                                    'chief_activity_history': JSON.stringify([
-                                        {
-                                            'Date': {
-                                                'hour': new Date().getHours(),
-                                                'minute': new Date().getMinutes(),
-                                                'day': new Date().getDate(),
-                                                'month': new Date().getMonth() + 1,
-                                                'year': new Date().getFullYear(),
-                                            }
-                                        },
-                                        {
-                                            'Activité': `Création du projet ${project.project_title} et ajout des membres`,
-                                        },
-                                        {
-                                            'Commentaire': 'Le projet est en cours de création',
-                                        },
-                                        {
-                                            'Divers': '',
-                                        }
-                                    ]),
-                                }
-                            },
-                            'comptable': {
-                                'url': 'https://lab.padem.org/wp-json/mo/v1/createAccountant',
-                                'data': {
-                                    'project_id': project_id,
-                                    'accountant_email': existingMemberEmail,
-                                    'accountant_first_name': existingMember_first_name,
-                                    'accountant_last_name': existingMember_last_name,
-                                    'accountant_countryAndCity': existingMember_countryAndCity,
-                                    'accountant_activity_history': JSON.stringify([
-                                        {
-                                            'Date': {
-                                                'hour': new Date().getHours(),
-                                                'minute': new Date().getMinutes(),
-                                                'day': new Date().getDate(),
-                                                'month': new Date().getMonth() + 1,
-                                                'year': new Date().getFullYear(),
-                                            }
-                                        },
-                                        {
-                                            'Activité': `Création du projet ${project.project_title} et ajout des membres`,
-                                        },
-                                        {
-                                            'Commentaire': 'Le projet est en cours de création',
-                                        },
-                                        {
-                                            'Divers': '',
-                                        },
-                                    ]),
-                                },
-                            },
-                            'consultant': {
-                                'url': 'https://lab.padem.org/wp-json/mo/v1/createConsultant',
-                                'data': {
-                                    'project_id': project_id,
-                                    'consultant_email': existingMemberEmail,
-                                    'consultant_first_name': existingMember_first_name,
-                                    'consultant_last_name': existingMember_last_name,
-                                    'consultant_countryAndCity': existingMember_countryAndCity,
-                                    'consultant_activity_history': JSON.stringify([
-                                        {
-                                            'Date': {
-                                                'hour': new Date().getHours(),
-                                                'minute': new Date().getMinutes(),
-                                                'day': new Date().getDate(),
-                                                'month': new Date().getMonth() + 1,
-                                                'year': new Date().getFullYear(),
-                                            },
-                                        },
-                                        {
-                                            'activite': `Création du projet ${project.project_title} et ajout des membres`,
-                                        },
-                                        {
-                                            'commentaire': 'Le projet est en cours de création',
-                                        },
-                                        {
-                                            'Divers': '',
-                                        }
-                                    ]),
-                                },
-                            },
-                            'partenaire': {
-                                'url': 'https://lab.padem.org/wp-json/mo/v1/createPartner',
-                                'data': {
-                                    'project_id': project_id,
-                                    'partner_email': existingMemberEmail,
-                                    'partner_first_name': existingMember_first_name,
-                                    'partner_last_name': existingMember_last_name,
-                                    'partner_countryAndCity': existingMember_countryAndCity,
-                                    'partner_activity_history': JSON.stringify([
-                                        {
-                                            'Date': {
-                                                'hour': new Date().getHours(),
-                                                'minute': new Date().getMinutes(),
-                                                'day': new Date().getDate(),
-                                                'month': new Date().getMonth() + 1,
-                                                'year': new Date().getFullYear(),
-                                            },
-                                        },
-                                        {
-                                            'activite': `Création du projet ${project.project_title} et ajout des membres`,
-                                        },
-                                        {
-                                            'commentaire': 'Le projet est en cours de création',
-                                        },
-                                        {
-                                            'Divers': '',
-                                        }
-                                    ]),
-                                },
-                            },
-                            'bailleur': {
-                                'url': 'https://lab.padem.org/wp-json/mo/v1/createFunder',
-                                'data': {
-                                    'project_id': project_id,
-                                    'funder_email': existingMemberEmail,
-                                    'funder_first_name': existingMember_first_name,
-                                    'funder_last_name': existingMember_last_name,
-                                    'funder_countryAndCity': existingMember_countryAndCity,
-                                    'funder_activity_history': JSON.stringify([
-                                        {
-                                            'Date': {
-                                                'hour': new Date().getHours(),
-                                                'minute': new Date().getMinutes(),
-                                                'day': new Date().getDate(),
-                                                'month': new Date().getMonth() + 1,
-                                                'year': new Date().getFullYear(),
-                                            },
-                                        },
-                                        {
-                                            'activite': `Création du projet ${project.project_title} et ajout des membres`,
-                                        },
-                                        {
-                                            'commentaire': 'Le projet est en cours de création',
-                                        },
-                                        {
-                                            'Divers': '',
-                                        }
-                                    ]),
-                                },
-                            },
-                        };
-
-                        // Véifier si le membre existe déjà (méthode GET)
-                        fetch(users_list.urls[existingMemberRole], {
-                            method: 'GET',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                        })
-                            .then(response => response.json())
-                            .then(data => {
-                                data.forEach(user => {
-                                    users_list.users[existingMemberRole].push(user[users_list.emails_names[existingMemberRole]]);
-                                });
-                                // Vérifier si le membre existe déjà
-                                if (users_list.users[existingMemberRole].includes(existingMemberEmail)) {
-                                    alert('Ce membre existe déjà dans la base de données. Veuillez entrer une autre adresse email !');
-                                    document.getElementById('loading_' + project_id).style.display = 'none';
-                                    return;
-                                }
-                                //#region Ajouter le nouveau membre
-                                // Envoyer la requête POST à l'URL spécifiée
-                                fetch(urls_and_data[existingMemberRole].url, {
-                                    method: 'POST',
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                    },
-                                    body: JSON.stringify(urls_and_data[existingMemberRole].data),
-                                })
-                                    .then(response => response.json())
-                                    .then(data => {
-                                        // Récupérer l'ID du nouveau membre
-                                        var existingMemberEmail;
-                                        if (data.coordinator_email !== null) {
-                                            existingMemberEmail = data.coordinator_email;
-                                        }
-                                        else if (data.funder_email !== null) {
-                                            existingMemberEmail = data.funder_email;
-                                        }
-                                        else if (data.partner_email !== null) {
-                                            existingMemberEmail = data.partner_email;
-                                        }
-                                        else if (data.chief_email !== null) {
-                                            existingMemberEmail = data.chief_email;
-                                        }
-                                        else if (data.accountant_email !== null) {
-                                            existingMemberEmail = data.accountant_email;
-                                        }
-                                        else if (data.consultant_email !== null) {
-                                            existingMemberEmail = data.consultant_email;
-                                        }
-                                        else {
-                                            console.log('Erreur lors de la création du nouveau membre');
-                                            return;
-                                        }
-
-                                        // Ajouter l'ID du nouveau membre à la liste des membres du projet sur la base de données
-                                        fetch('https://lab.padem.org/wp-json/mo/v1/updateOneProject',
-                                            {
-                                                method: 'PUT',
-                                                headers: {
-                                                    'Content-Type': 'application/json',
-                                                },
-                                                body: JSON.stringify({
-                                                    'project_id': project_id,
-                                                    'users': JSON.stringify({
-                                                        'id': project_id + '-' + new Date().getTime() + '-' + Math.random().toString(36).substr(2, 9),
-                                                        'user_id': existingMemberEmail,
-                                                    }),
-                                                }),
-                                            })
-                                            .then(response => response.json())
-                                            .then(data => {
-                                                // Masquer le spinner
-                                                document.getElementById('loading_' + project_id).style.display = 'none';
-                                                // Afficher un message de succès
-                                                alert('Membre ajouté avec succès !');
-                                                // Recharger la page
-                                                window.location.href = 'https://lab.padem.org/projets/';
-                                            })
-                                            .catch(error => {
-                                                console.error(error);
-                                                // Masquer le spinner
-                                                document.getElementById('loading_' + project_id).style.display = 'none';
-                                                // Afficher un message d'erreur
-                                                alert('Une erreur est survenue : ' + error.message);
-                                            });
-                                    })
-                                    .catch(error => {
-                                        console.error(error);
-                                        // Masquer le spinner
-                                        document.getElementById('loading_' + project_id).style.display = 'none';
-                                        // Afficher un message d'erreur
-                                        alert('Une erreur est survenue : ' + error.message);
-                                    });
-                                //#endregion
-                            })
-                            .catch(error => {
-                                console.error('Erreur lors de la récupération des membres:', error);
-                                // Masquer le spinner
-                                document.getElementById('loading_' + project_id).style.display = 'none';
-                                // Afficher un message d'erreur
-                                alert('Une erreur est survenue : ' + error.message);
-                            });
-                    });
-                    
-                    // Ajouter un document modèle au projet sur la base de données
-                    document.getElementById('submitDocument_' + project_id).addEventListener('click', () => {
-                        document.getElementById('loading_' + project_id).style.display = 'block';
-                        var documentTitle = document.getElementById('documentTitle_' + project_id).value || '';
-                        var documentDescription = document.getElementById('documentDescription_' + project_id).value || '';
-                        var documentFile = document.getElementById('documentFile_' + project_id).files[0] || '';
-
-                        if (!documentTitle || !documentFile) {
-                            alert('Veuillez remplir tous les champs. (Titre et Fichier)');
-                            document.getElementById('loading_' + project_id).style.display = 'none';
-                            return;
-                        }
-
-                        // Enregistrer le document dans la base de données
-                        var formData = new FormData();
-                        formData.append('file', documentFile);
-                        fetch('https://lab.padem.org/wp-json/mo/v1/createMedia', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({
-                                'project_id': project_id,
-                                'file_name': documentTitle,
-                                'file_content': formData,
-                            }),
-                        })
-                            .then(response => response.json())
-                            .then(data => {
-                                // Récupérer l'ID du document enregistré
-                                var document_id = data.id;
-                                // Ajouter l'id du document à la liste des documents du projet sur la base de données
-                                fetch('https://lab.padem.org/wp-json/mo/v1/updateOneProject',
-                                    {
-                                        method: 'PUT',
-                                        headers: {
-                                            'Content-Type': 'application/json',
-                                        },
-                                        body: JSON.stringify({
-                                            'project_id': project_id,
-                                            'folders': JSON.stringify({
-                                                'id': project_id + '-' + new Date().getTime() + '-' + Math.random().toString(36).substring(2),
-                                                'document_id': document_id,
-                                            }),
-                                        }),
-                                    })
-                                    .then(response => response.json())
-                                    .then(data => {
-                                        console.log(data);
-                                        // Masquer le spinner
-                                        document.getElementById('loading_' + project_id).style.display = 'none';
-                                        // Afficher un message de succès
-                                        alert('Document ajouté avec succès !');
-                                        // Recharger la page
-                                        window.location.href = 'https://lab.padem.org/projets/';
-                                    })
-                                    .catch(error => {
-                                        console.error(error);
-                                        // Masquer le spinner
-                                        document.getElementById('loading_' + project_id).style.display = 'none';
-                                    });
-                            })
-                            .catch(error => {
-                                console.error(error);
-                                // Masquer le spinner
-                                document.getElementById('loading_' + project_id).style.display = 'none';
-                                // Afficher un message d'erreur
-                                alert('Une erreur est survenue : ' + error.message);
-                            });
-                    });
                     
                     // Ajouter un lien au projet sur la base de données
                     document.getElementById('linkSubmit_' + project_id).addEventListener('click', () => {
@@ -1457,7 +1002,6 @@
                             });
                     });
                 
-
                     
                     //#region Récupérer les membres du projet
                     fetch('https://lab.padem.org/wp-json/mo/v1/getProjectChief', {
@@ -1480,6 +1024,7 @@
                                         }
                                         document.getElementById(`numberOfmember_${project_id}`).innerText =  ' ' + document.getElementById(`numberOfmember_${project_id}`).value + ' membres';
                                         var li = document.createElement('li');
+                                        var spacer = document.createElement('br');
                                         li.style.color = 'black';
                                         li.style.textAlign = 'left';
                                         li.style.border = '1px #29A6A7';
@@ -1490,9 +1035,11 @@
                                         li.style.padding = '10px';
                                         li.style.margin = '10px';
                                         li.style.textDecoration = 'none';
+                                        li.style.width = '100%';
 
-                                        li.innerHTML = `${user.chief_email} - Chef de projet <button onclick="removeSelectedMembers('${user.chief_email}', '${project_id}')">Supprimer</button>"`;
+                                        li.innerHTML = `${user.chief_first_name} ${user.chief_last_name}  -  ${user.chief_email}  -  Chef de projet <button onclick="removeSelectedMembers('${user.chief_email}', '${project_id}')">Supprimer</button>"`;
                                         document.getElementById('projectMembers_' + project_id).appendChild(li);
+                                        document.getElementById('projectMembers_' + project_id).appendChild(spacer);
                                     }
                                 });
                             }
@@ -1520,6 +1067,7 @@
                                         }
                                         document.getElementById(`numberOfmember_${project_id}`).innerText =  ' ' + document.getElementById(`numberOfmember_${project_id}`).value + ' membres';
                                         var li = document.createElement('li');
+                                        var spacer = document.createElement('br');
                                         li.style.color = 'black';
                                         li.style.textAlign = 'left';
                                         li.style.border = '1px #29A6A7';
@@ -1531,8 +1079,9 @@
                                         li.style.margin = '10px';
                                         li.style.textDecoration = 'none';
 
-                                        li.innerHTML = `${user.accountant_email} - Comptable <button onclick="removeSelectedMembers('${user.accountant_email}', '${project_id}')">Supprimer</button>`;
+                                        li.innerHTML = `${user.accountant_first_name} ${user.accountant_last_name}  -  ${user.accountant_email}  -  Comptable <button onclick="removeSelectedMembers('${user.accountant_email}', '${project_id}')">Supprimer</button>`;
                                         document.getElementById('projectMembers_' + project_id).appendChild(li);
+                                        document.getElementById('projectMembers_' + project_id).appendChild(spacer);
                                     }
                                 });
                             }
@@ -1560,6 +1109,7 @@
                                         }
                                         document.getElementById(`numberOfmember_${project_id}`).innerText =  ' ' + document.getElementById(`numberOfmember_${project_id}`).value + ' membres';
                                         var li = document.createElement('li');
+                                        var spacer = document.createElement('br');
                                         li.style.color = 'black';
                                         li.style.textAlign = 'left';
                                         li.style.border = '1px #29A6A7';
@@ -1573,6 +1123,7 @@
 
                                         li.innerHTML = `${user.consultant_email} - Consultant <button onclick="removeSelectedMembers('${user.consultant_email}', '${project_id}')">Supprimer</button>`;
                                         document.getElementById('projectMembers_' + project_id).appendChild(li);
+                                        document.getElementById('projectMembers_' + project_id).appendChild(spacer);
                                     }
                                 });
                             }
@@ -1600,6 +1151,7 @@
                                         }
                                         document.getElementById(`numberOfmember_${project_id}`).innerText =  ' ' + document.getElementById(`numberOfmember_${project_id}`).value + ' membres';
                                         var li = document.createElement('li');
+                                        var spacer = document.createElement('br');
                                         li.style.color = 'black';
                                         li.style.textAlign = 'left';
                                         li.style.border = '1px #29A6A7';
@@ -1613,6 +1165,7 @@
 
                                         li.innerHTML = `${user.partner_email} - Partenaire <button onclick="removeSelectedMembers('${user.partner_email}', '${project_id}')">Supprimer</button>`;
                                         document.getElementById('projectMembers_' + project_id).appendChild(li);
+                                        document.getElementById('projectMembers_' + project_id).appendChild(spacer);
                                     }
                                 });
                             }
@@ -1640,6 +1193,7 @@
                                         }
                                         document.getElementById(`numberOfmember_${project_id}`).innerText =  ' ' + document.getElementById(`numberOfmember_${project_id}`).value + ' membres';
                                         var li = document.createElement('li');
+                                        var spacer = document.createElement('br');
                                         li.style.color = 'black';
                                         li.style.textAlign = 'left';
                                         li.style.border = '1px #29A6A7';
@@ -1653,6 +1207,7 @@
 
                                         li.innerHTML = `${user.referent_email} - Référent `;
                                         document.getElementById('projectMembers_' + project_id).appendChild(li);
+                                        document.getElementById('projectMembers_' + project_id).appendChild(spacer);
                                     }
                                 });
                             }
@@ -1680,6 +1235,7 @@
                                         }
                                         document.getElementById(`numberOfmember_${project_id}`).innerText =  ' ' + document.getElementById(`numberOfmember_${project_id}`).value + ' membres';
                                         var li = document.createElement('li');
+                                        var spacer = document.createElement('br');
                                         li.style.color = 'black';
                                         li.style.textAlign = 'left';
                                         li.style.border = '1px #29A6A7';
@@ -1693,6 +1249,7 @@
 
                                         li.innerHTML = `${user.coordinator_email} - Coordinateur <button onclick="removeSelectedMembers('${user.coordinator_email}', '${project_id}')">Supprimer</button>`;
                                         document.getElementById('projectMembers_' + project_id).appendChild(li);
+                                        document.getElementById('projectMembers_' + project_id).appendChild(spacer);
                                     }
                                 });
                             }
@@ -1720,6 +1277,7 @@
                                         }
                                         document.getElementById(`numberOfmember_${project_id}`).innerText =  ' ' + document.getElementById(`numberOfmember_${project_id}`).value + ' membres';
                                         var li = document.createElement('li');
+                                        var spacer = document.createElement('br');
                                         li.style.color = 'black';
                                         li.style.textAlign = 'left';
                                         li.style.border = '1px #29A6A7';
@@ -1733,6 +1291,7 @@
 
                                         li.innerHTML = `${user.funder_email} - Bailleur <button onclick="removeSelectedMembers('${user.funder_email}', '${project_id}')">Supprimer</button>`;
                                         document.getElementById('projectMembers_' + project_id).appendChild(li);
+                                        document.getElementById('projectMembers_' + project_id).appendChild(spacer);
                                     }
                                 });
                             }
@@ -1752,13 +1311,18 @@
                         .then(response => response.json())
                         .then(data => {
                             if (data !== null && data !== undefined && Array.isArray(data)) {
+                                var counter = 0;
+                                var stateTab = new Array(data.length).fill(false);
                                 data.forEach(file => {
                                     var file_name = file.file_name.split('/').pop();
                                     var file_id = file.file_id;
+                                    filesIDs[counter] = file_id;
                                     var isFileInProject = false;
+                                    stateTab[counter] = isFileInProject;
                                     var isAlraedyAdded_text = document.createElement('p');
                                     isAlraedyAdded_text.style.color = 'green';
                                     isAlraedyAdded_text.innerText = 'Déjà ajouté';
+
                                     //#region Vérifier si le fichier est déjà dans le projet
                                     fetch('https://lab.padem.org/wp-json/mo/v1/getProjectFiles', {
                                             method: 'GET',
@@ -1772,6 +1336,7 @@
                                                 projectFiles.forEach(projectFile => {
                                                     if (projectFile.file_id === file_id && projectFile.project_id === project_id) {
                                                         isFileInProject = true;
+                                                        stateTab[counter] = isFileInProject;
                                                     }
                                                 });
                                             }
@@ -1783,35 +1348,42 @@
                                     
 
                                     //#region Déterminer l'icône à afficher en fonction du type de fichier
-                                    var icon_class;
-                                    if (file_id.includes('.pdf')) {
-                                        icon_class = 'far fa-file-pdf';
-                                    } else if (file_id.includes('.doc') || file_id.includes('.docx')) {
-                                        icon_class = 'far fa-file-word';
-                                    } else if (file_id.includes('.xls') || file_id.includes('.xlsx')) {
-                                        icon_class = 'far fa-file-excel';
-                                    } else if (file_id.includes('.ppt') || file_id.includes('.pptx')) {
-                                        icon_class = 'far fa-file-powerpoint';
-                                    } else if (file_id.includes('.jpg') || file_id.includes('.jpeg') || file_id.includes('.png') || file_id.includes('.gif')) {
-                                        icon_class = 'far fa-file-image';
-                                    } else if (file_id.includes('.zip') || file_id.includes('.rar') || file_id.includes('.7z')) {
-                                        icon_class = 'far fa-file-archive';
-                                    } else if (file_id.includes('.txt') || file_id.includes('.log')) {
-                                        icon_class = 'far fa-file-alt';
-                                    } else if (file_id.includes('.mp3') || file_id.includes('.wav') || file_id.includes('.flac') || file_id.includes('.ogg')) {
-                                        icon_class = 'far fa-file-audio';
-                                    } else if (file_id.includes('.mp4') || file_id.includes('.avi') || file_id.includes('.mkv') || file_id.includes('.mov')) {
-                                        icon_class = 'far fa-file-video';
+                                    var icon_link;
+                                    if (file_name.includes('.pdf')) {
+                                        icon_link = 'https://lab.padem.org/wp-content/uploads/pdf.png';
+                                    } else if (file_name.includes('.doc') || file_name.includes('.docx')) {
+                                        icon_link = 'https://lab.padem.org/wp-content/uploads/word.png';
+                                    } else if (file_name.includes('.xls') || file_name.includes('.xlsx')) {
+                                        icon_link = 'https://lab.padem.org/wp-content/uploads/xls.png';
+                                    } else if (file_name.includes('.ppt') || file_name.includes('.pptx')) {
+                                        icon_link = 'https://lab.padem.org/wp-content/uploads/ppt.png';
+                                    } else if (file_name.includes('.jpg') || file_name.includes('.jpeg') || file_name.includes('.png') || file_name.includes('.gif')) {
+                                        icon_link = 'https://lab.padem.org/wp-content/uploads/jpg.png';
+                                    } else if (file_name.includes('.zip') || file_name.includes('.rar') || file_name.includes('.7z')) {
+                                        icon_link = 'https://lab.padem.org/wp-content/uploads/archive.png';
+                                    } else if (file_name.includes('.txt') || file_name.includes('.log')) {
+                                        icon_link = 'https://lab.padem.org/wp-content/uploads/txt.png';
+                                    } else if (file_name.includes('.mp3') || file_name.includes('.wav') || file_name.includes('.flac') || file_name.includes('.ogg')) {
+                                        icon_link = 'https://lab.padem.org/wp-content/uploads/audio.png';
+                                    } else if (file_name.includes('.mp4') || file_name.includes('.avi') || file_name.includes('.mkv') || file_name.includes('.mov')) {
+                                        icon_link = 'https://lab.padem.org/wp-content/uploads/85.png';
                                     } else {
-                                        icon_class = 'far fa-file';
+                                        icon_link = 'https://lab.padem.org/wp-content/uploads/any_file.png';
                                     }
                                     //#endregion
 
                                     //#region Créer un élément de liste pour chaque fichier
                                     var li = document.createElement('li');
                                     li.style.color = 'black';
+                                    li.style.fontSize = '10px';
+                                    // Alternance de la couleur de fond
+                                    if (counter % 2 == 0) {
+                                        li.style.backgroundColor = 'white'; // Couleur pour les indices pairs
+                                    } else {
+                                        li.style.backgroundColor = '#EEEEEE'; // Couleur pour les indices impairs
+                                    }
                                     li.style.textAlign = 'left';
-                                    li.style.border = '1px #29A6A7';
+                                    li.style.borderBottom = '1px #858787';
                                     li.style.borderRadius = '25px';
                                     li.style.backgroundColor = 'white';
                                     li.style.display = 'flex';
@@ -1822,10 +1394,77 @@
                                     li.style.width = '100%';
                                     //#endregion
 
-                                    li.innerHTML = `<i class="${icon_class}"></i> <a href="#" onclick="openModal('https://lab.padem.org/shared-files/${file_id}/?${file_name}')">${file_id}</a> Date: ${file.created_at}  Auteur: ${file.user_name}  <button id="addSelectedFiles_${project_id}_${file_id}" ${isFileInProject ? 'disabled' : ''}>${isFileInProject ? isAlraedyAdded_text.innerText : 'Ajouter'}</button>  <button id="removeSelectedFiles_${project_id}_${file_id}" ${isFileInProject ? '' : 'style="display: none;"'}>Supprimer</button> <div id="loading_${project_id}_${file_id}" style="display: none;">
+                                    // Lorsque l'utilisateur clique sur un élément de la liste, afficher l'aperçu du fichier et ses caractéristiques et permettre à l'utilisateur de "l'ajouter au projet/supprimer du projet" ou de le télécharger
+                                    li.addEventListener('click', () => {
+                                        var projectFileDetails = document.getElementsByClassName('projectFileDetails_' + project_id) || null;
+                                        if (projectFileDetails !== null && projectFileDetails !== undefined && projectFileDetails.length > 0) {
+                                            projectFileDetails[0].style.display = projectFileDetails[0].style.display === 'none' ? 'block' : 'none';
+                                            projectFileDetails.innerHTML = '';
+                                        } else {
+                                            var projectFileDetails = document.createElement('div');
+                                            projectFileDetails.className = 'projectFileDetails_' + project_id + '_' + file_id;
+                                            projectFileDetails.style.display = 'block';
+                                            projectFileDetails.style.color = 'black';
+                                            projectFileDetails.style.textAlign = 'left';
+                                            projectFileDetails.style.border = '1px #29A6A7';
+                                            projectFileDetails.style.borderRadius = '15px';
+                                            projectFileDetails.style.backgroundColor = 'white';
+                                            projectFileDetails.style.display = 'flex';
+                                            projectFileDetails.style.justifyContent = 'space-between';
+                                            projectFileDetails.style.padding = '10px';
+                                            projectFileDetails.style.margin = '10px';
+                                            projectFileDetails.style.textDecoration = 'none';
+                                            projectFileDetails.style.width = '100%';
+
+                                            if (file_name.includes('.jpg') || file_name.includes('.jpeg') || file_name.includes('.png') || file_name.includes('.gif')) {
+                                                projectFileDetails.innerHTML = projectFileDetails.innerHTML = `<img src="https://lab.padem.org/shared-files/${file_id}/?${file_name}" alt="${file_name}" id="img_${project_id}_${file_id}" ></img> <a href="https://lab.padem.org/shared-files/${file_id}/?${file_name}">${file_name}</a> <div style="margin-left: 50px;"></div> Date: ${file.created_at}  <div style="margin-left: 50px;"></div> Auteur: ${file.user_name}  <div style="margin-left: 50px;"></div> <button id="addSelectedFiles_${project_id}_${file_id}" ${stateTab[counter] ? 'disabled' : ''}>${isFileInProject ? isAlraedyAdded_text.innerText : 'Ajouter'}</button>  <div style="margin-left: 50px;"></div>  <button class="btn btn-danger" id="removeSelectedFiles_${project_id}_${file_id}" ${isFileInProject ? '' : 'style="display: none;"'}>Supprimer</button> <a href="https://lab.padem.org/shared-files/${file_id}/?${file_name}" class="btn btn-secondary" download>
+                                                    Télécharger</a>  <div style="margin-left: auto;"></div> <div id="loading_${project_id}_${file_id}" style="display: none;">
+                                                        <img src="https://lab.padem.org/wp-content/uploads/Spin@1x-1.0s-200px-200px.gif" style="width: 30px; height: 30px" alt="Chargement...">
+                                                        </div> `;
+                                            } else if(file_name.includes('.mp4') || file_name.includes('.avi') || file_name.includes('.mkv') || file_name.includes('.mov')) {
+                                                projectFileDetails.innerHTML = projectFileDetails.innerHTML = `<video width="320" height="240" controls>
+                                                    <source src="https://lab.padem.org/shared-files/${file_id}/?${file_name}" type="video/mp4">
+                                                    <source src="https://lab.padem.org/shared-files/${file_id}/?${file_name}" type="video/ogg">
+                                                    Your browser does not support the video tag.
+                                                    </video> <a href="https://lab.padem.org/shared-files/${file_id}/?${file_name}">${file_name}</a> <div style="margin-left: 50px;"></div> Date: ${file.created_at}  <div style="margin-left: 50px;"></div> Auteur: ${file.user_name}  <div style="margin-left: 50px;"></div> <button id="addSelectedFiles_${project_id}_${file_id}" ${stateTab[counter] ? 'disabled' : ''}>${isFileInProject ? isAlraedyAdded_text.innerText : 'Ajouter'}</button>  <div style="margin-left: 50px;"></div> <div style="display: flex; justify-content: space-between;"> <button class="btn btn-danger" id="removeSelectedFiles_${project_id}_${file_id}" ${isFileInProject ? '' : 'style="display: none;"'}>Supprimer</button> <a href="https://lab.padem.org/shared-files/${file_id}/?${file_name}" class="btn btn-secondary" download>
+                                                    Télécharger</a>  <div style="margin-left: auto;"></div> <div id="loading_${project_id}_${file_id}" style="display: none;">
                                                             <img src="https://lab.padem.org/wp-content/uploads/Spin@1x-1.0s-200px-200px.gif" style="width: 30px; height: 30px" alt="Chargement...">
-                                                        </div> <a href="https://lab.padem.org/shared-files/${file_id}/?${file_name}" download>
-                                                            Télécharger</a>`;
+                                                            </div> `;
+                                            }
+                                            else if(file_name.includes('.mp3') || file_name.includes('.wav') || file_name.includes('.flac') || file_name.includes('.ogg')) {
+                                                projectFileDetails.innerHTML = projectFileDetails.innerHTML = `<audio controls>
+                                                    <source src="https://lab.padem.org/shared-files/${file_id}/?${file_name}" type="audio/mpeg">
+                                                    Your browser does not support the audio element.
+                                                    </audio> <a href="https://lab.padem.org/shared-files/${file_id}/?${file_name}">${file_name}</a> <div style="margin-left: 50px;"></div> Date: ${file.created_at}  <div style="margin-left: 50px;"></div> Auteur: ${file.user_name}  <div style="margin-left: 50px;"></div> <button id="addSelectedFiles_${project_id}_${file_id}" ${stateTab[counter] ? 'disabled' : ''}>${isFileInProject ? isAlraedyAdded_text.innerText : 'Ajouter'}</button>  <div style="margin-left: 50px;"></div>  <button class="btn btn-danger" id="removeSelectedFiles_${project_id}_${file_id}" ${isFileInProject ? '' : 'style="display: none;"'}>Supprimer</button> <a href="https://lab.padem.org/shared-files/${file_id}/?${file_name}" class="btn btn-secondary" download>
+                                                        Télécharger</a>  <div style="margin-left: auto;"></div> <div id="loading_${project_id}_${file_id}" style="display: none;">
+                                                        <img src="https://lab.padem.org/wp-content/uploads/Spin@1x-1.0s-200px-200px.gif" style="width: 30px; height: 30px" alt="Chargement...">
+                                                        </div> `;
+                                            } 
+                                            else if(file_name.includes('.pdf')) {
+                                                projectFileDetails.innerHTML = projectFileDetails.innerHTML = `<embed src="https://lab.padem.org/shared-files/${file_id}/?${file_name}" width="800px" height="2100px" /> <a href="https://lab.padem.org/shared-files/${file_id}/?${file_name}">${file_name}</a> <div style="margin-left: 50px;"></div> Date: ${file.created_at}  <div style="margin-left: 50px;"></div> Auteur: ${file.user_name}  <div style="margin-left: 50px;"></div> <button id="addSelectedFiles_${project_id}_${file_id}" ${stateTab[counter] ? 'disabled' : ''}>${isFileInProject ? isAlraedyAdded_text.innerText : 'Ajouter'}</button>  <div style="margin-left: 50px;"></div>  <button class="btn btn-danger" id="removeSelectedFiles_${project_id}_${file_id}" ${isFileInProject ? '' : 'style="display: none;"'}>Supprimer</button> <a href="https://lab.padem.org/shared-files/${file_id}/?${file_name}" class="btn btn-secondary" download>
+                                                    Télécharger</a>  <div style="margin-left: auto;"></div> <div id="loading_${project_id}_${file_id}" style="display: none;">
+                                                        <img src="https://lab.padem.org/wp-content/uploads/Spin@1x-1.0s-200px-200px.gif" style="width: 30px; height: 30px" alt="Chargement...">
+                                                        </div> `;
+                                            }
+                                            else if(file_name.includes('.doc') || file_name.includes('.docx')) {
+                                                projectFileDetails.innerHTML = projectFileDetails.innerHTML = `<iframe src="https://view.officeapps.live.com/op/embed.aspx?src=https://lab.padem.org/shared-files/${file_id}/?${file_name}" width="800px" height="2100px" ></iframe> <a href="https://lab.padem.org/shared-files/${file_id}/?${file_name}">${file_name}</a> <div style="margin-left: 50px;"></div> Date: ${file.created_at}  <div style="margin-left: 50px;"></div> Auteur: ${file.user_name}  <div style="margin-left: 50px;"></div> <button id="addSelectedFiles_${project_id}_${file_id}" ${stateTab[counter] ? 'disabled' : ''}>${isFileInProject ? isAlraedyAdded_text.innerText : 'Ajouter'}</button>  <div style="margin-left: 50px;"></div>  <button class="btn btn-danger" id="removeSelectedFiles_${project_id}_${file_id}" ${isFileInProject ? '' : 'style="display: none;"'}>Supprimer</button> <a href="https://lab.padem.org/shared-files/${file_id}/?${file_name}" class="btn btn-secondary" download>
+                                                    Télécharger</a>  <div style="margin-left: auto;"></div> <div id="loading_${project_id}_${file_id}" style="display: none;">
+                                                        <img src="https://lab.padem.org/wp-content/uploads/Spin@1x-1.0s-200px-200px.gif" style="width: 30px; height: 30px" alt="Chargement...">
+                                                        </div> `;
+                                            }
+                                            else {
+                                                projectFileDetails.innerHTML = projectFileDetails.innerHTML = `<img src="${icon_link}" alt="${file_name}" id="img_${project_id}_${file_id}" ></img> <a href="https://lab.padem.org/shared-files/${file_id}/?${file_name}">${file_name}</a> <div style="margin-left: 50px;"></div> Date: ${file.created_at}  <div style="margin-left: 50px;"></div> Auteur: ${file.user_name}  <div style="margin-left: 50px;"></div> <button id="addSelectedFiles_${project_id}_${file_id}" ${stateTab[counter] ? 'disabled' : ''}>${isFileInProject ? isAlraedyAdded_text.innerText : 'Ajouter'}</button>  <div style="margin-left: 50px;"></div>  <button class="btn btn-danger" id="removeSelectedFiles_${project_id}_${file_id}" ${isFileInProject ? '' : 'style="display: none;"'}>Supprimer</button> <a href="https://lab.padem.org/shared-files/${file_id}/?${file_name}" class="btn btn-secondary" download>
+                                                    Télécharger</a>  <div style="margin-left: auto;"></div> <div id="loading_${project_id}_${file_id}" style="display: none;">
+                                                        <img src="https://lab.padem.org/wp-content/uploads/Spin@1x-1.0s-200px-200px.gif" style="width: 30px; height: 30px" alt="Chargement...">
+                                                        </div> `;
+                                            }
+                                        }
+                                    });
+
+                                    li.innerHTML = `<img src="${icon_link}" alt="${file_name}" id="img_${project_id}_${file_id}" ></img> <div style="margin-left: 50px;"></div> Date: ${file.created_at}  <div style="margin-left: 50px;"></div> Auteur: ${file.user_name}  <div style="margin-left: 50px;"></div> <button id="addSelectedFiles_${project_id}_${file_id}" ${stateTab[counter] ? 'disabled' : ''}>${isFileInProject ? isAlraedyAdded_text.innerText : 'Ajouter'}</button>  <div style="margin-left: 50px;"></div>  <button class="btn btn-danger" id="removeSelectedFiles_${project_id}_${file_id}" ${isFileInProject ? '' : 'style="display: none;"'}>Supprimer</button> <a href="https://lab.padem.org/shared-files/${file_id}/?${file_name}" class="btn btn-secondary" download>
+                                                    Télécharger</a>  <div style="margin-left: auto;"></div> <div id="loading_${project_id}_${file_id}" style="display: none;">
+                                                        <img src="https://lab.padem.org/wp-content/uploads/Spin@1x-1.0s-200px-200px.gif" style="width: 30px; height: 30px" alt="Chargement...">
+                                                        </div> `;
 
                                     document.getElementById('projectFiles_' + project_id).appendChild(li);
                                     
@@ -1835,7 +1474,7 @@
                                         addSelectedFiles_.addEventListener('click', () => {
                                             document.getElementById(`addSelectedFiles_${project_id}_${file_id}`).style.display = 'none';
                                             document.getElementById(`loading_${project_id}_${file_id}`).style.display = 'block';
-                                            fetch('https://lab.padem.org/wp-json/mo/v1/addProjectFiles', {
+                                            fetch('https://lab.padem.org/wp-json/mo/v1/createProjectFiles', {
                                                     method: 'POST',
                                                     headers: {
                                                         'Content-Type': 'application/json',
@@ -1844,6 +1483,7 @@
                                                         project_id: project_id,
                                                         file_id: file.file_id,
                                                         file_name: file_id,
+                                                        user_email: userEmail,
                                                     }),
                                                 })
                                                 .then(response => response.json())
@@ -1872,15 +1512,13 @@
                                         removeSelectedFiles_.addEventListener('click', () => {
                                             document.getElementById(`removeSelectedFiles_${project_id}_${file_id}`).style.display = 'none';
                                             document.getElementById(`loading_${project_id}_${file_id}`).style.display = 'block';
-                                            fetch('https://lab.padem.org/wp-json/mo/v1/removeProjectFiles', {
+                                            fetch('https://lab.padem.org/wp-json/mo/v1/deleteProjectFiles', {
                                                     method: 'DELETE',
                                                     headers: {
                                                         'Content-Type': 'application/json',
                                                     },
                                                     body: JSON.stringify({
-                                                        project_id: project_id,
                                                         file_id: file.file_id,
-                                                        file_name: file_id,
                                                     }),
                                                 })
                                                 .then(response => response.json())
@@ -1902,6 +1540,7 @@
                                         });
                                     }
                                     //#endregion
+                                    counter++;
                                 });
                             }
                         })
@@ -1913,21 +1552,9 @@
                             li.innerText = 'Aucun fichier trouvé';
                             document.getElementById('projectFiles_' + project_id).appendChild(li);
                         });
-                    
-                    // Gestion de la fenêtre modale
-                    function openModal(url) {
-                        document.getElementById('myModal_' + project_id).style.display = "block";
-                        document.getElementById('filePreview').src = url;
-                    }
-
-                    document.getElementById('close').onclick = function() {
-                        document.getElementById('myModal_' + project_id).style.display = "none";
-                    }
                     //#endregion
                     
-                    // Nombre de membres du projet
-                    document.getElementById('existingMemberEmail_' + project_id).appendChild(option);
-                    
+                    // Afficher le statut du projet en fonction du nombre de membres
                     var numberOfMembers = document.querySelector(`#numberOfmember_${project_id}`);
                     if (numberOfMembers !== null && numberOfMembers !== undefined) {
                         if(document.getElementById(`numberOfmember_${project_id}`).value === 0) {
@@ -1943,8 +1570,6 @@
             })
             .catch(error => {
                 console.error(error);
-                // Masquer le spinner
-                document.getElementById('loading_' + project_id).style.display = 'none';
                 // Afficher un message d'erreur
                 alert('Une erreur est survenue : ', error);
             });
