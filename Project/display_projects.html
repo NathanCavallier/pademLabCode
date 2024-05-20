@@ -7,6 +7,7 @@
 </body>
 
 
+
 <script>
     // Projet: Récurérer les données depuis la base de données et les afficher dans des cellules individuels cliquables pour les modifier
     document.addEventListener('DOMContentLoaded', (event) => {
@@ -18,6 +19,10 @@
         var localStatus = '';
         var projectStatus = '';
         var allUsers = [];
+        var tabNumber = new Array().fill({
+            'tab': []
+        });
+        var counter = 0;
 
         var listOfAllMembersEmailOnPademLab = [];
 
@@ -104,6 +109,7 @@
             .then(response => response.json())
             .then(data => {
                 // Déclarer les variables
+                document.getElementById('totalProjects').innerText = data.length;
                 var colorStatusText = {
                     'Publié': 'green',
                     'Non publié': 'gray',
@@ -113,6 +119,7 @@
                     'Incomplet': 'red',
                 };
                 var stepper = 0;
+                var projectStepper = 0;
                 var tabStepper = 0;
                 var numberOfMembers = 0;
                 var membersTable = new Array(data.length).fill(0);
@@ -140,7 +147,7 @@
                         'funder': [],
                         'referent': []
                     };
-
+                    var currentStepper = 0;
                     // Fonction pour supprimer un membre du projet
                     function removeSelectedMembers(email, project_id) {
                         fetch('https://lab.padem.org/wp-json/mo/v1/removeMember', {
@@ -188,11 +195,12 @@
                     li.innerHTML = `
                         <div style="list-style-type: none; padding: 5px; margin: 5px; border-radius: 10px;">
                             <ul class="project-row" style="width: fit-content;">
+                                <li class="project-element" style="font-weight: bold; color: gray;">${projectStepper + 1}</li>
                                 <li class="project-element" style="font-weight: bold; color: #29A6A7;">${project.project_title}</li>
                                 <li class="project-element">Pays: ${project.project_location}</li>
                                 <li class="project-element" style="display: flex;"><p id="numberOfmember_${project_id}"></p></li>
                                 <li class="project-element" style="text-transform: capitalize; font-weight: bold; color: ${colorStatusText[projectStatus]}; background: none; margin: 5px; padding: 5px; boder-radius: 20px;" id="status_${project_id}"></li>
-                                <li class="project-element" style="font-weight: bold; font-size: 11px;" id="localStatus_${project_id}"><div style="margin-right: 100px;"></div></li>
+                                <li class="project-element" style="font-weight: bold; font-size: 11px;" id="localStatus_${project_id}"><div style="margin-right: 60px;"></div></li>
                                 <li class="project-element" style="display: flex; justify-content: flex-end;">
                                     <div style="margin-right: 10px;"></div>
                                     <button class="buttonModifier" id="buttonModifier_${project_id}" style="margin: 5px; margin-right: -15px; padding: 5px; boder-radius: 20px; font-size: 11px;">${buttonText}</button>
@@ -279,14 +287,13 @@
                                             </div>
                                             <div id="existingMember_${project_id}" style="display: none; width: 100%;">
                                                 <div class="row">
+                                                    <h6 style="color: gray;">Membres du projet</h6>
+                                                    <hr style="border: 1px gray;">
                                                     <div style="display: flex;" class="settings-scroll">
                                                         <div style="flex: 1; margin-right: 10px;">
-                                                            <h6 style="color: gray;">Membres du projet</h6>
                                                             <ul id="projectMembers_${project_id}" style="list-style: none;">
                                                                 <!-- Les membres du projet vont ici -->
                                                             </ul>
-                                                            <button id="removeSelectedMembers_${project_id}">Supprimer les membres sélectionnés</button>
-                                                            <button id="addSelectedMembers_${project_id}">Ajouter les membres sélectionnés</button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -294,11 +301,12 @@
                                             <div id="newDocument_${project_id}" style="display: none; width: 100%;">
                                                 <div class="row">                                        
                                                     <div style="flex: 1; margin-left: 10px;">
-                                                        <h6 style="color: gray;">Sélectionnez des fichiers à intégrer au projet</h6>
+                                                        <h6 style="color: gray;">Sélectionnez des fichiers à intégrer au projet  -  Disponible(s): <p id="filesNumber_${project_id}"></p></h6>
+                                                        <hr style="border: 1px gray;">
                                                         <!-- Colonne de gauche pour la liste des images -->
-                                                        <div style="width: 35%; float: left;" class="settings-scroll">
+                                                        <div style="width: 35%; float: left; background: #f2f2f2;" class="settings-scroll">
                                                             <div style="margin-top: 10px; padding: 10px;"></div>
-                                                            <ul id="projectFiles_${project_id}" style="list-style: none;">
+                                                            <ul id="projectFiles_${project_id}" style="list-style: none; background: #f2f2f2;">
                                                                 <!-- Les éléments de la liste seront ajoutés ici dynamiquement -->
                                                             </ul>
                                                             <div style="margin-top: 10px; padding: 10px;"></div>
@@ -1014,11 +1022,13 @@
                         .then(data => {
                             if (data !== null && data !== undefined && Array.isArray(data)) {
                                 var stepper = 0;
+                                document.getElementById(`filesNumber_${project_id}`).innerText = ' ' + data.length + ' fichiers';
                                 data.forEach(user => {
                                     if (user.project_id === project_id) {
+                                        tabNumber[tabStepper].tab[currentStepper] = currentStepper + 1;
                                         var number = document.getElementById(`numberOfmember_${project_id}`).value;
                                         if (number === null || number === undefined || number === '') {
-                                            document.getElementById(`numberOfmember_${project_id}`).value = 2;
+                                            document.getElementById(`numberOfmember_${project_id}`).value = 1;
                                         } else {
                                             document.getElementById(`numberOfmember_${project_id}`).value = parseInt(document.getElementById(`numberOfmember_${project_id}`).value) + 1;
                                         }
@@ -1027,7 +1037,12 @@
                                         var spacer = document.createElement('br');
                                         li.style.color = 'black';
                                         li.style.textAlign = 'left';
-                                        li.style.border = '1px #29A6A7';
+                                        // Alternance de la couleur de fond
+                                        if (stepper % 2 == 0) {
+                                            li.style.backgroundColor = 'white'; // Couleur pour les indices pairs
+                                        } else {
+                                            li.style.backgroundColor = '#EEEEEE'; // Couleur pour les indices impairs
+                                        }
                                         li.style.borderRadius = '15px';
                                         li.style.backgroundColor = 'white';
                                         li.style.display = 'flex';
@@ -1037,9 +1052,11 @@
                                         li.style.textDecoration = 'none';
                                         li.style.width = '100%';
 
-                                        li.innerHTML = `${user.chief_first_name} ${user.chief_last_name}  -  ${user.chief_email}  -  Chef de projet <button onclick="removeSelectedMembers('${user.chief_email}', '${project_id}')">Supprimer</button>"`;
+                                        li.innerHTML = ` ${tabNumber[tabStepper].tab[currentStepper]}  -  ${user.chief_first_name} ${user.chief_last_name}  -  ${user.chief_email}  -  Chef de projet <button class="btn btn-tertiary" onclick="removeSelectedMembers('${user.chief_email}', '${project_id}')">Supprimer</button>"`;
                                         document.getElementById('projectMembers_' + project_id).appendChild(li);
-                                        document.getElementById('projectMembers_' + project_id).appendChild(spacer);
+                                        counter++;
+                                        stepper++;
+                                        currentStepper++;
                                     }
                                 });
                             }
@@ -1057,8 +1074,10 @@
                         .then(response => response.json())
                         .then(data => {
                             if (data !== null && data !== undefined && Array.isArray(data)) {
+                                var stepper = 0;
                                 data.forEach(user => {
                                     if (user.project_id === project_id) {
+                                        tabNumber[tabStepper].tab[currentStepper] = currentStepper + 1;
                                         var number = document.getElementById(`numberOfmember_${project_id}`).value;
                                         if (number === null || number === undefined || number === '') {
                                             document.getElementById(`numberOfmember_${project_id}`).value = 2;
@@ -1070,7 +1089,12 @@
                                         var spacer = document.createElement('br');
                                         li.style.color = 'black';
                                         li.style.textAlign = 'left';
-                                        li.style.border = '1px #29A6A7';
+                                        // Alternance de la couleur de fond
+                                        if (stepper % 2 == 0) {
+                                            li.style.backgroundColor = 'white'; // Couleur pour les indices pairs
+                                        } else {
+                                            li.style.backgroundColor = '#EEEEEE'; // Couleur pour les indices impairs
+                                        }
                                         li.style.borderRadius = '15px';
                                         li.style.backgroundColor = 'white';
                                         li.style.display = 'flex';
@@ -1079,9 +1103,11 @@
                                         li.style.margin = '10px';
                                         li.style.textDecoration = 'none';
 
-                                        li.innerHTML = `${user.accountant_first_name} ${user.accountant_last_name}  -  ${user.accountant_email}  -  Comptable <button onclick="removeSelectedMembers('${user.accountant_email}', '${project_id}')">Supprimer</button>`;
+                                        li.innerHTML = ` ${tabNumber[tabStepper].tab[currentStepper]}  -  ${user.accountant_first_name} ${user.accountant_last_name}  -  ${user.accountant_email}  -  Comptable <button class="btn btn-tertiary" onclick="removeSelectedMembers('${user.accountant_email}', '${project_id}')">Supprimer</button>`;
                                         document.getElementById('projectMembers_' + project_id).appendChild(li);
-                                        document.getElementById('projectMembers_' + project_id).appendChild(spacer);
+                                        counter++;
+                                        stepper++;
+                                        currentStepper++;
                                     }
                                 });
                             }
@@ -1099,11 +1125,13 @@
                         .then(response => response.json())
                         .then(data => {
                             if (data !== null && data !== undefined && Array.isArray(data)) {
+                                var stepper = 0;
                                 data.forEach(user => {
                                     if (user.project_id === project_id) {
+                                        tabNumber[tabStepper].tab[currentStepper] = currentStepper + 1;
                                         var number = document.getElementById(`numberOfmember_${project_id}`).value;
                                         if (number === null || number === undefined || number === '') {
-                                            document.getElementById(`numberOfmember_${project_id}`).value = 2;
+                                            document.getElementById(`numberOfmember_${project_id}`).value = 1;
                                         } else {
                                             document.getElementById(`numberOfmember_${project_id}`).value = parseInt(document.getElementById(`numberOfmember_${project_id}`).value) + 1;
                                         }
@@ -1112,7 +1140,12 @@
                                         var spacer = document.createElement('br');
                                         li.style.color = 'black';
                                         li.style.textAlign = 'left';
-                                        li.style.border = '1px #29A6A7';
+                                        // Alternance de la couleur de fond
+                                        if (stepper % 2 == 0) {
+                                            li.style.backgroundColor = 'white'; // Couleur pour les indices pairs
+                                        } else {
+                                            li.style.backgroundColor = '#EEEEEE'; // Couleur pour les indices impairs
+                                        }
                                         li.style.borderRadius = '15px';
                                         li.style.backgroundColor = 'white';
                                         li.style.display = 'flex';
@@ -1121,9 +1154,11 @@
                                         li.style.margin = '10px';
                                         li.style.textDecoration = 'none';
 
-                                        li.innerHTML = `${user.consultant_email} - Consultant <button onclick="removeSelectedMembers('${user.consultant_email}', '${project_id}')">Supprimer</button>`;
+                                        li.innerHTML = ` ${tabNumber[tabStepper].tab[currentStepper]}  -  ${user.consultant_first_name} ${user.consultant_last_name}  -  ${user.consultant_email} - Consultant <button class="btn btn-tertiary" onclick="removeSelectedMembers('${user.consultant_email}', '${project_id}')">Supprimer</button>`;
                                         document.getElementById('projectMembers_' + project_id).appendChild(li);
-                                        document.getElementById('projectMembers_' + project_id).appendChild(spacer);
+                                        counter++;
+                                        stepper++;
+                                        currentStepper++;
                                     }
                                 });
                             }
@@ -1141,11 +1176,13 @@
                         .then(response => response.json())
                         .then(data => {
                             if (data !== null && data !== undefined && Array.isArray(data)) {
+                                var stepper = 0;
                                 data.forEach(user => {
                                     if (user.project_id === project_id) {
+                                        tabNumber[tabStepper].tab[currentStepper] = currentStepper + 1;
                                         var number = document.getElementById(`numberOfmember_${project_id}`).value;
                                         if (number === null || number === undefined || number === '') {
-                                            document.getElementById(`numberOfmember_${project_id}`).value = 2;
+                                            document.getElementById(`numberOfmember_${project_id}`).value = 1;
                                         } else {
                                             document.getElementById(`numberOfmember_${project_id}`).value = parseInt(document.getElementById(`numberOfmember_${project_id}`).value) + 1;
                                         }
@@ -1154,7 +1191,12 @@
                                         var spacer = document.createElement('br');
                                         li.style.color = 'black';
                                         li.style.textAlign = 'left';
-                                        li.style.border = '1px #29A6A7';
+                                        // Alternance de la couleur de fond
+                                        if (stepper % 2 == 0) {
+                                            li.style.backgroundColor = 'white'; // Couleur pour les indices pairs
+                                        } else {
+                                            li.style.backgroundColor = '#EEEEEE'; // Couleur pour les indices impairs
+                                        }
                                         li.style.borderRadius = '15px';
                                         li.style.backgroundColor = 'white';
                                         li.style.display = 'flex';
@@ -1163,9 +1205,11 @@
                                         li.style.margin = '10px';
                                         li.style.textDecoration = 'none';
 
-                                        li.innerHTML = `${user.partner_email} - Partenaire <button onclick="removeSelectedMembers('${user.partner_email}', '${project_id}')">Supprimer</button>`;
+                                        li.innerHTML = ` ${tabNumber[tabStepper].tab[currentStepper]}  -  ${user.partner_first_name ? user.partner_first_name : ''} ${user.partner_last_name}  -  ${user.partner_email} - Partenaire <button class="btn btn-tertiary" onclick="removeSelectedMembers('${user.partner_email}', '${project_id}')">Supprimer</button>`;
                                         document.getElementById('projectMembers_' + project_id).appendChild(li);
-                                        document.getElementById('projectMembers_' + project_id).appendChild(spacer);
+                                        counter++;
+                                        stepper++;
+                                        currentStepper++;
                                     }
                                 });
                             }
@@ -1183,11 +1227,13 @@
                         .then(response => response.json())
                         .then(data => {
                             if (data !== null && data !== undefined && Array.isArray(data)) {
+                                var stepper = 0;
                                 data.forEach(user => {
                                     if (user.project_id === project_id) {
+                                        tabNumber[tabStepper].tab[currentStepper] = currentStepper + 1;
                                         var number = document.getElementById(`numberOfmember_${project_id}`).value;
                                         if (number === null || number === undefined || number === '') {
-                                            document.getElementById(`numberOfmember_${project_id}`).value = 2;
+                                            document.getElementById(`numberOfmember_${project_id}`).value = 1;
                                         } else {
                                             document.getElementById(`numberOfmember_${project_id}`).value = parseInt(document.getElementById(`numberOfmember_${project_id}`).value) + 1;
                                         }
@@ -1196,7 +1242,12 @@
                                         var spacer = document.createElement('br');
                                         li.style.color = 'black';
                                         li.style.textAlign = 'left';
-                                        li.style.border = '1px #29A6A7';
+                                        // Alternance de la couleur de fond
+                                        if (stepper % 2 == 0) {
+                                            li.style.backgroundColor = 'white'; // Couleur pour les indices pairs
+                                        } else {
+                                            li.style.backgroundColor = '#EEEEEE'; // Couleur pour les indices impairs
+                                        }
                                         li.style.borderRadius = '15px';
                                         li.style.backgroundColor = 'white';
                                         li.style.display = 'flex';
@@ -1205,9 +1256,11 @@
                                         li.style.margin = '10px';
                                         li.style.textDecoration = 'none';
 
-                                        li.innerHTML = `${user.referent_email} - Référent `;
+                                        li.innerHTML = ` ${tabNumber[tabStepper].tab[currentStepper]}  -  ${user.referent_first_name} ${user.referent_last_name}  -  ${user.referent_email} - Référent `;
                                         document.getElementById('projectMembers_' + project_id).appendChild(li);
-                                        document.getElementById('projectMembers_' + project_id).appendChild(spacer);
+                                        counter++;
+                                        stepper++;
+                                        currentStepper++;
                                     }
                                 });
                             }
@@ -1225,11 +1278,13 @@
                         .then(response => response.json())
                         .then(data => {
                             if (data !== null && data !== undefined && Array.isArray(data)) {
+                                var stepper = 0;
                                 data.forEach(user => {
                                     if (user.project_id === project_id) {
+                                        tabNumber[tabStepper].tab[currentStepper] = currentStepper + 1;
                                         var number = document.getElementById(`numberOfmember_${project_id}`).value;
                                         if (number === null || number === undefined || number === '') {
-                                            document.getElementById(`numberOfmember_${project_id}`).value = 2;
+                                            document.getElementById(`numberOfmember_${project_id}`).value = 1;
                                         } else {
                                             document.getElementById(`numberOfmember_${project_id}`).value = parseInt(document.getElementById(`numberOfmember_${project_id}`).value) + 1;
                                         }
@@ -1238,7 +1293,12 @@
                                         var spacer = document.createElement('br');
                                         li.style.color = 'black';
                                         li.style.textAlign = 'left';
-                                        li.style.border = '1px #29A6A7';
+                                        // Alternance de la couleur de fond
+                                        if (stepper % 2 == 0) {
+                                            li.style.backgroundColor = 'white'; // Couleur pour les indices pairs
+                                        } else {
+                                            li.style.backgroundColor = '#EEEEEE'; // Couleur pour les indices impairs
+                                        }
                                         li.style.borderRadius = '15px';
                                         li.style.backgroundColor = 'white';
                                         li.style.display = 'flex';
@@ -1247,9 +1307,11 @@
                                         li.style.margin = '10px';
                                         li.style.textDecoration = 'none';
 
-                                        li.innerHTML = `${user.coordinator_email} - Coordinateur <button onclick="removeSelectedMembers('${user.coordinator_email}', '${project_id}')">Supprimer</button>`;
+                                        li.innerHTML = ` ${tabNumber[tabStepper].tab[currentStepper]}  -  ${user.consultant_first_name} ${user.coordinator_last_name}  -  ${user.coordinator_email} - Coordinateur <button class="btn btn-tertiary" onclick="removeSelectedMembers('${user.coordinator_email}', '${project_id}')">Supprimer</button>`;
                                         document.getElementById('projectMembers_' + project_id).appendChild(li);
-                                        document.getElementById('projectMembers_' + project_id).appendChild(spacer);
+                                        counter++;
+                                        stepper++;
+                                        currentStepper++;
                                     }
                                 });
                             }
@@ -1267,11 +1329,13 @@
                         .then(response => response.json())
                         .then(data => {
                             if (data !== null && data !== undefined && Array.isArray(data)) {
+                                var stepper = 0;
                                 data.forEach(user => {
                                     if (user.project_id === project_id) {
+                                        tabNumber[tabStepper].tab[currentStepper] = currentStepper + 1;
                                         var number = document.getElementById(`numberOfmember_${project_id}`).value;
                                         if (number === null || number === undefined || number === '') {
-                                            document.getElementById(`numberOfmember_${project_id}`).value = 2;
+                                            document.getElementById(`numberOfmember_${project_id}`).value = 1;
                                         } else {
                                             document.getElementById(`numberOfmember_${project_id}`).value = parseInt(document.getElementById(`numberOfmember_${project_id}`).value) + 1;
                                         }
@@ -1280,7 +1344,12 @@
                                         var spacer = document.createElement('br');
                                         li.style.color = 'black';
                                         li.style.textAlign = 'left';
-                                        li.style.border = '1px #29A6A7';
+                                        // Alternance de la couleur de fond
+                                        if (stepper % 2 == 0) {
+                                            li.style.backgroundColor = 'white'; // Couleur pour les indices pairs
+                                        } else {
+                                            li.style.backgroundColor = '#EEEEEE'; // Couleur pour les indices impairs
+                                        }
                                         li.style.borderRadius = '15px';
                                         li.style.backgroundColor = 'white';
                                         li.style.display = 'flex';
@@ -1289,9 +1358,11 @@
                                         li.style.margin = '10px';
                                         li.style.textDecoration = 'none';
 
-                                        li.innerHTML = `${user.funder_email} - Bailleur <button onclick="removeSelectedMembers('${user.funder_email}', '${project_id}')">Supprimer</button>`;
+                                        li.innerHTML = ` ${tabNumber[tabStepper].tab[currentStepper]}  -  ${user.funder_first_name} ${user.funder_last_name}  -  ${user.funder_email} - Bailleur <button class="btn btn-tertiary" onclick="removeSelectedMembers('${user.funder_email}', '${project_id}')">Supprimer</button>`;
                                         document.getElementById('projectMembers_' + project_id).appendChild(li);
-                                        document.getElementById('projectMembers_' + project_id).appendChild(spacer);
+                                        counter++;
+                                        stepper++;
+                                        currentStepper++;
                                     }
                                 });
                             }
@@ -1346,7 +1417,6 @@
                                         });
                                     //#endregion
                                     
-
                                     //#region Déterminer l'icône à afficher en fonction du type de fichier
                                     var icon_link;
                                     if (file_name.includes('.pdf')) {
@@ -1380,7 +1450,7 @@
                                     if (counter % 2 == 0) {
                                         li.style.backgroundColor = 'white'; // Couleur pour les indices pairs
                                     } else {
-                                        li.style.backgroundColor = '#EEEEEE'; // Couleur pour les indices impairs
+                                        li.style.backgroundColor = '#D6D6D6'; // Couleur pour les indices impairs
                                     }
                                     li.style.textAlign = 'left';
                                     li.style.borderBottom = '1px #858787';
@@ -1394,13 +1464,17 @@
                                     li.style.width = '100%';
                                     //#endregion
 
+                                    
+                                    document.getElementById('projectFiles_' + project_id).appendChild(li);
+
                                     // Lorsque l'utilisateur clique sur un élément de la liste, afficher l'aperçu du fichier et ses caractéristiques et permettre à l'utilisateur de "l'ajouter au projet/supprimer du projet" ou de le télécharger
                                     li.addEventListener('click', () => {
-                                        var projectFileDetails = document.getElementsByClassName('projectFileDetails_' + project_id) || null;
+                                        var projectFileDetails = document.getElementById('projectFileDetails_' + project_id) || null;
                                         if (projectFileDetails !== null && projectFileDetails !== undefined && projectFileDetails.length > 0) {
                                             projectFileDetails[0].style.display = projectFileDetails[0].style.display === 'none' ? 'block' : 'none';
                                             projectFileDetails.innerHTML = '';
-                                        } else {
+                                        } 
+                                        else {
                                             var projectFileDetails = document.createElement('div');
                                             projectFileDetails.className = 'projectFileDetails_' + project_id + '_' + file_id;
                                             projectFileDetails.style.display = 'block';
@@ -1416,6 +1490,7 @@
                                             projectFileDetails.style.textDecoration = 'none';
                                             projectFileDetails.style.width = '100%';
 
+                                            // Afficher l'aperçu du fichier et ses caractéristiques
                                             if (file_name.includes('.jpg') || file_name.includes('.jpeg') || file_name.includes('.png') || file_name.includes('.gif')) {
                                                 projectFileDetails.innerHTML = projectFileDetails.innerHTML = `<img src="https://lab.padem.org/shared-files/${file_id}/?${file_name}" alt="${file_name}" id="img_${project_id}_${file_id}" ></img> <a href="https://lab.padem.org/shared-files/${file_id}/?${file_name}">${file_name}</a> <div style="margin-left: 50px;"></div> Date: ${file.created_at}  <div style="margin-left: 50px;"></div> Auteur: ${file.user_name}  <div style="margin-left: 50px;"></div> <button id="addSelectedFiles_${project_id}_${file_id}" ${stateTab[counter] ? 'disabled' : ''}>${isFileInProject ? isAlraedyAdded_text.innerText : 'Ajouter'}</button>  <div style="margin-left: 50px;"></div>  <button class="btn btn-danger" id="removeSelectedFiles_${project_id}_${file_id}" ${isFileInProject ? '' : 'style="display: none;"'}>Supprimer</button> <a href="https://lab.padem.org/shared-files/${file_id}/?${file_name}" class="btn btn-secondary" download>
                                                     Télécharger</a>  <div style="margin-left: auto;"></div> <div id="loading_${project_id}_${file_id}" style="display: none;">
@@ -1461,12 +1536,7 @@
                                         }
                                     });
 
-                                    li.innerHTML = `<img src="${icon_link}" alt="${file_name}" id="img_${project_id}_${file_id}" ></img> <div style="margin-left: 50px;"></div> Date: ${file.created_at}  <div style="margin-left: 50px;"></div> Auteur: ${file.user_name}  <div style="margin-left: 50px;"></div> <button id="addSelectedFiles_${project_id}_${file_id}" ${stateTab[counter] ? 'disabled' : ''}>${isFileInProject ? isAlraedyAdded_text.innerText : 'Ajouter'}</button>  <div style="margin-left: 50px;"></div>  <button class="btn btn-danger" id="removeSelectedFiles_${project_id}_${file_id}" ${isFileInProject ? '' : 'style="display: none;"'}>Supprimer</button> <a href="https://lab.padem.org/shared-files/${file_id}/?${file_name}" class="btn btn-secondary" download>
-                                                    Télécharger</a>  <div style="margin-left: auto;"></div> <div id="loading_${project_id}_${file_id}" style="display: none;">
-                                                        <img src="https://lab.padem.org/wp-content/uploads/Spin@1x-1.0s-200px-200px.gif" style="width: 30px; height: 30px" alt="Chargement...">
-                                                        </div> `;
-
-                                    document.getElementById('projectFiles_' + project_id).appendChild(li);
+                                    li.innerHTML = `${counter + 1}  -  <img src="${icon_link}" alt="${file_name}" id="img_${project_id}_${file_id}" ></img> `;
                                     
                                     //#region Ajouter un gestionnaire d'événement pour chaque bouton "Ajouter"
                                     var addSelectedFiles_ = document.getElementById(`addSelectedFiles_${project_id}_${file_id}`) || null;
@@ -1541,6 +1611,7 @@
                                     }
                                     //#endregion
                                     counter++;
+                                    currentStepper++;
                                 });
                             }
                         })
@@ -1566,6 +1637,7 @@
                         }
                     }
                     tabStepper++;
+                    projectStepper++;
                 });
             })
             .catch(error => {
