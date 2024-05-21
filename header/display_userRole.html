@@ -12,6 +12,8 @@
         var userRole = [];
         var buttonText = '';
 
+        
+
         // Récupérer les informations de l'utilisateur connecté
         fetch('https://lab.padem.org/unserialize_usermeta.php', {
             method: 'GET',
@@ -29,22 +31,21 @@
                 // Récupérer les rôles de l'utilisateur connecté
                 if (data.role.administrator) {
                     userRole.push('Administrateur');
-                }
-                if (data.role['chef-de-projet']) {
+                } else if (data.role['chef-de-projet']) {
                     userRole.push('Chef de projet');
-                }
-                if (data.role.comptable) {
+                } else if (data.role.comptable) {
                     userRole.push('Comptable');
-                }
-                if (data.role.consultant) {
+                } else if (data.role.consultant) {
                     userRole.push('Consultant');
-                }
-                if (data.role.partenaire) {
+                } else if (data.role.partenaire) {
                     userRole.push('Partenaire');
+                } else {
+                    userRole.push('Utilisateur');
                 }
 
                 document.getElementById('userFirstName').textContent = userFirstName;
                 document.getElementById('userLastName').textContent = userLastName;
+
                 for (let i = 0; i < userRole.length; i++) {
                     var p = document.createElement('p');
                     var separator = document.createTextNode(' _ '); // Créer un espace entre les rôles
