@@ -203,7 +203,6 @@
                                 <li class="project-element" style="text-transform: capitalize; font-weight: bold; color: ${colorStatusText[projectStatus]}; background: none; margin: 5px; padding: 5px; boder-radius: 20px;" id="status_${project_id}"></li>
                                 <li class="project-element" style="font-weight: bold; font-size: 11px;" id="localStatus_${project_id}"><div style="margin-right: 60px;"></div></li>
                                 <li class="project-element" style="display: flex; justify-content: flex-end;">
-                                    <div style="margin-right: 10px;"></div>
                                     <button class="buttonModifier" id="buttonModifier_${project_id}" style="margin: 5px; margin-right: -15px; padding: 5px; boder-radius: 20px; font-size: 11px;">${buttonText}</button>
                                 </li>
                             </ul>
@@ -1381,6 +1380,9 @@
                                 document.getElementById(`filesNumber_${project_id}`).innerText = ' ' + data.length + ' fichiers';
                                 document.getElementById(`projectFiles_${project_id}`).innerHTML = '';
                                 document.getElementById(`projectFiles_${project_id}`).value = '';
+
+                                var fileIds_tab = [];
+
                                 data.forEach(file => {
                                     var file_name = file.file_name.split('/').pop();
                                     var file_id = file.file_id;
