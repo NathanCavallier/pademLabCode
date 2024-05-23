@@ -1,39 +1,47 @@
-<body>
-    <!-- Afficher le menu de navigation -->
-    <div style="display: flex; justify-content: space-between;">
-        <div style="margin-top: 10px; margin-bottom: 10px"></div>
+<!-- Afficher le menu de navigation -->
+<div style="display: flex; justify-content: space-between;">
+    <div style="margin-top: 10px; margin-bottom: 10px"></div>
 
-        <!-- Boutons de trie -->
-        <div style="display: flex; justify-content: flex-end, space-evenly;">
-            <button class="button" id="all" onclick="getButtonId('all'); setFilter(null);"
-                style="margin: 10px; padding: 10px; border-radius: 15px; border-color: gray; background-color: white; color: gray; font-size: 12px; width: fit-content;">
-                Tout</button>
-            <button class="button" id="en_cours" onclick="getButtonId('en_cours'); setFilter('En cours');"
-                style="margin: 10px; padding: 10px; border-radius: 15px; border-color: gray; background-color: white; color: gray; font-size: 12px; width: fit-content;">
-                En cours</button>
-            <button class="button" id="en_attente"
-                onclick="getButtonId('en_attente'); setFilter('Pas encore commencé');"
-                style="margin: 10px; padding: 10px; border-radius: 15px; border-color: gray; background-color: white; color: gray; font-size: 12px; width: fit-content;">
-                En attente</button>
-            <button class="button" id="annule" onclick="getButtonId('annule'); setFilter('Annulé');"
-                style="margin: 10px; padding: 10px; border-radius: 15px; border-color: gray; background-color: white; color: gray; font-size: 12px; width: fit-content;">
-                Annulés</button>
-            <button class="button" id="presque_termine"
-                onclick="getButtonId('presque_termine'); setFilter('Presque terminé');"
-                style="margin: 10px; padding: 10px; border-radius: 15px; border-color: gray; background-color: white; color: gray; font-size: 12px; width: fit-content;">
-                Bientôt terminé</button>
-            <button class="button" id="termine" onclick="getButtonId('termine'); setFilter('Terminé');"
-                style="margin: 10px; padding: 10px; border-radius: 15px; border-color: gray; background-color: white; color: gray; font-size: 12px; width: fit-content;">
-                Terminés</button>
-        </div>
+    <!-- Boutons de trie -->
+    <div style="display: flex; justify-content: flex-end, space-between;">
+        <button class="button" id="all" onclick=""
+            style="margin: 15px; padding: 10px; border-radius: 15px; border-color: gray; background-color: white; color: gray; font-size: 12px; width: fit-content;">
+            Projets</button>
+        <button class="button" id="en_cours" onclick=""
+            style="margin: 15px; padding: 10px; border-radius: 15px; border-color: gray; background-color: white; color: gray; font-size: 12px; width: fit-content;">
+            Rapports</button>
+        <button class="button" id="en_attente" onclick=""
+            style="margin: 15px; padding: 10px; border-radius: 15px; border-color: gray; background-color: white; color: gray; font-size: 12px; width: fit-content;">
+            Ressources</button>
     </div>
+</div>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+<body>
+    <div style="margin-top: 10px;"></div>
     <!-- Afficher la liste des projets en cours -->
+    <!-- Boutons pour changer l'affichage -->
+    <div class="d-flex justify-content-end mb-3">
+        <button id="listViewBtn" class="btn btn-primary mr-2" title="Vue en ligne"
+            style="width: fit-content; color: white;">
+            <i class="fas fa-list"></i>
+        </button>
+        <div style="margin-left: 20px;"></div>
+        <button id="cardViewBtn" class="btn btn-primary" title="Vue en capsule"
+            style="width: fit-content; color: white;">
+            <i class="fas fa-th-large"></i>
+        </button>
+    </div>
+    <div style="margin-top: 10px; margin-bottom: 10px"></div>
     <div id="projectContainer">
     </div>
+    <div style="margin-top: 10px; margin-bottom: 10px"></div>
 </body>
 
 
 <script>
+
     // Récupérer le nombre d'utilisateurs inscrits sur le site via l'API (https://lab.padem.org/wp-json/mo/v1/getUserEmailAndState)
     var numberOfMembers = 0;
     var numberOfMembersOnline = 0;
@@ -291,6 +299,7 @@
         var numberOfNewNotifications = 0;
         var allProjectsIds = [];
         var allConnectedUserProjectsIds = [];
+        var numberOfParticipantsInProject = new Array().fill(0);
 
         //#region Récupérer les ids de tous les projets
         fetch('https://lab.padem.org/wp-json/mo/v1/getProjects', {
@@ -303,6 +312,7 @@
             .then(data => {
                 data.forEach(project => {
                     allProjectsIds.push(project.project_id);
+                    numberOfParticipantsInProject[project.project_id] = 0;
                 });
             });
         //#endregion
@@ -392,14 +402,16 @@
         })
             .then(response => response.json())
             .then(data => {
+                var counter = 0;
                 data.forEach(user => {
                     // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
                     if (allProjectsIds.includes(user.project_id)) {
-                        numberOfParticipants++;
                         if (user.chief_email === userEmail) {
-                            isUserInOneProject = true;
                             allConnectedUserProjectsIds.push(user.project_id);
                         }
+                        var number_of_participants = numberOfParticipantsInProject[user.project_id] || 0;
+                        number_of_participants++;
+                        numberOfParticipantsInProject[user.project_id] = number_of_participants;
                     }
                 });
             })
@@ -420,10 +432,12 @@
                 data.forEach(user => {
                     // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
                     if (allProjectsIds.includes(user.project_id)) {
-                        numberOfParticipants++;
                         if (user.coordinator_email === userEmail) {
                             allConnectedUserProjectsIds.push(user.project_id); // Ajouter l'ID du projet à la liste des projets de l'utilisateur connecté
                         }
+                        var number_of_participants = numberOfParticipantsInProject[user.project_id] || 0;
+                        number_of_participants++;
+                        numberOfParticipantsInProject[user.project_id] = number_of_participants;
                     }
                 });
             })
@@ -444,10 +458,12 @@
                 data.forEach(user => {
                     // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
                     if (allProjectsIds.includes(user.project_id)) {
-                        numberOfParticipants++;
                         if (user.chief_email === userEmail) {
                             allConnectedUserProjectsIds.push(user.project_id);
                         }
+                        var number_of_participants = numberOfParticipantsInProject[user.project_id] || 0;
+                        number_of_participants++;
+                        numberOfParticipantsInProject[user.project_id] = number_of_participants;
                     }
                 });
             })
@@ -468,10 +484,12 @@
                 data.forEach(user => {
                     // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
                     if (allProjectsIds.includes(user.project_id)) {
-                        numberOfParticipants++;
                         if (user.partner_email === userEmail) {
                             allConnectedUserProjectsIds.push(user.project_id);
                         }
+                        var number_of_participants = numberOfParticipantsInProject[user.project_id] || 0;
+                        number_of_participants++;
+                        numberOfParticipantsInProject[user.project_id] = number_of_participants;
                     }
                 });
             })
@@ -492,10 +510,12 @@
                 data.forEach(user => {
                     // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
                     if (allProjectsIds.includes(user.project_id)) {
-                        numberOfParticipants++;
                         if (user.accountant_email === userEmail) {
                             allConnectedUserProjectsIds.push(user.project_id);
                         }
+                        var number_of_participants = numberOfParticipantsInProject[user.project_id] || 0;
+                        number_of_participants++;
+                        numberOfParticipantsInProject[user.project_id] = number_of_participants;
                     }
                 });
             })
@@ -516,10 +536,12 @@
                 data.forEach(user => {
                     // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
                     if (allProjectsIds.includes(user.project_id)) {
-                        numberOfParticipants++;
                         if (user.consultant_email === userEmail) {
                             allConnectedUserProjectsIds.push(user.project_id);
                         }
+                        var number_of_participants = numberOfParticipantsInProject[user.project_id] || 0;
+                        number_of_participants++;
+                        numberOfParticipantsInProject[user.project_id] = number_of_participants;
                     }
                 });
             })
@@ -540,10 +562,12 @@
                 data.forEach(user => {
                     // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
                     if (allProjectsIds.includes(user.project_id)) {
-                        numberOfParticipants++;
                         if (user.funder_email === userEmail) {
                             allConnectedUserProjectsIds.push(user.project_id);
                         }
+                        var number_of_participants = numberOfParticipantsInProject[user.project_id] || 0;
+                        number_of_participants++;
+                        numberOfParticipantsInProject[user.project_id] = number_of_participants;
                     }
                 });
             })
@@ -567,6 +591,7 @@
                 var stepper = 0;
                 var isUserInOneProject = false;
                 var projectContainer = document.getElementById('projectContainer');
+                projectContainer.innerHTML = '';
                 // Parcourir la liste des projets
                 data.forEach(project => {
 
@@ -574,7 +599,7 @@
                     if (allConnectedUserProjectsIds.includes(project.project_id)) {
                         isUserInOneProject = true;
                     } else {
-                        isUserInOneProject = false;
+                        isUserInOneProject = true;
                     }
 
                     var card = document.createElement('div');
@@ -660,28 +685,31 @@
                         // Afficher les projets en fonction du filtre
                         card.innerHTML = `
                             <div class="card">
-                                <div id="card-body" class="card-body" style="backgroundColor: none; ">
-                                    <div style="display: flex; justify-content: space-between;">
-                                        <div style="width: 40%; align-items: center;">
-                                            <p style="font-weight: lighter; font-size: 10px">${formattedStartDate} - ${formattedEndDate}</p>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col">
+                                            <p class="text-muted small">${formattedStartDate} - ${formattedEndDate}</p>
                                         </div>
-                                        <div>
-                                            <p style="font-weight: lighter; font-size: 10px; color: gray;""><imgsrc="https://lab.padem.org/wp-content/uploads/user_2.png" alt="Icone utilisateurs"
-                                                style="width: 20px; height: 20px; id="iconUsers" /> ${numberOfParticipants}</p>
+                                        <div class="col">
+                                            <p class="text-muted small">
+                                                <img src="https://lab.padem.org/wp-content/uploads/user_2.png" alt="Icone utilisateurs" class="img-fluid" id="iconUsers" style="width:30px; height:30px;"/> 
+                                                ${numberOfParticipantsInProject[project.project_id]}
+                                            </p>
                                         </div>
-                                    <div style="width: 40%; align-items: center;">
-                                        <p style="font-weight: lighter; font-size: 10px">${formattedStartDate} - ${formattedEndDate}</p>
+                                        <div class="col">
+                                            <a href='https://lab.padem.org/projet/edit_project.html?project_id=${project.project_id}' class="h5 text-decoration-none text-primary">${project.project_title}</a>
+                                        </div>
+                                        <div class="col">
+                                            <p class="font-weight-bold">${project.project_location}</p>
+                                        </div>
+                                        <div class="col">
+                                            ${barreProgression.outerHTML}
+                                        </div>
                                     </div>
-                                    <div style="margin-top: 150px; margin-bottom: 10px"></div>
-                                    <a href='https://lab.padem.org/projet/edit_project.html?project_id=${project.project_id}' style="font-size: 20px; font-weight: bold; color: #29A6A7;">${project.project_title}</a>
-                                    <div style="margin-top: 0px">
-                                        <p style="font-weight: bold;">${project.project_location}</p>
-                                    </div>
-                                    ${barreProgression.outerHTML}
                                 </div>
                                 <div class="card-footer">
-                                    <p style="font-weight: lighter; color: ${colorStatusText[status]}; margin: 5px; border-radius: 5px; fontSize: 9px;" id="status_${project.project_id}">${parseInt(progression)}% - ${status}</p>
-                                    <button class="buttonModifier">Voir le projet</button>
+                                    <p class="small m-1 rounded" style="color: ${colorStatusText[status]}; font-size: 11px;" id="status_${project.project_id}">${parseInt(progression)}% - ${status}</p>
+                                    <button class="btn btn-primary" style="width:fit-content; color: white;">Voir le projet</button>
                                 </div>
                             </div>
                         `;
@@ -689,7 +717,76 @@
                         // Ajouter la cellule dans la ligne
                         projectContainer.appendChild(card);
 
-                        // Ajouter un événement de clic sur le bouton "Modifier" en fonction de l'ID du projet, du rôle de l'utilisateur et en fonction de si l'utilisateur est dans le projet
+                        // Changer la classe de la carte pour le mode "ligne"
+                        document.getElementById('listViewBtn').addEventListener('click', function () {
+                            var cards = document.getElementById('card_id');
+                            cards.innerHTML = '';
+                            cards.innerHTML = `
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col">
+                                                <p class="text-muted small">${formattedStartDate} - ${formattedEndDate}</p>
+                                            </div>
+                                            <div class="col">
+                                                <p class="text-muted small">
+                                                    <img src="https://lab.padem.org/wp-content/uploads/user_2.png" alt="Icone utilisateurs" class="img-fluid" id="iconUsers" style="width:30px; height:30px;"/> 
+                                                    ${numberOfParticipantsInProject[project.project_id]}
+                                                </p>
+                                            </div>
+                                            <div class="col">
+                                                <a href='https://lab.padem.org/projet/edit_project.html?project_id=${project.project_id}' class="h5 text-decoration-none text-primary">${project.project_title}</a>
+                                            </div>
+                                            <div class="col">
+                                                <p class="font-weight-bold">${project.project_location}</p>
+                                            </div>
+                                            <div class="col">
+                                                ${barreProgression.outerHTML}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer">
+                                        <p class="small m-1 rounded" style="color: ${colorStatusText[status]}; font-size: 11px;" id="status_${project.project_id}">${parseInt(progression)}% - ${status}</p>
+                                        <button class="btn btn-primary" style="width:fit-content; color: white;">Voir le projet</button>
+                                    </div>
+                                </div>
+                            `;
+                        });
+
+                        // Changer la classe de la carte pour le mode "card"
+                        document.getElementById('cardViewBtn').addEventListener('click', function () {
+                            var cards = document.getElementById('card_id');
+                            cards.innerHTML = '';
+                            cards.innerHTML = `
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between">
+                                            <div class="d-flex align-items-center" style="width: 40%;">
+                                                <p class="text-muted small">${formattedStartDate} - ${formattedEndDate}</p>
+                                            </div>
+                                            <div>
+                                                <p class="text-muted small">
+                                                    <img src="https://lab.padem.org/wp-content/uploads/user_2.png" alt="Icone utilisateurs" class="img-fluid" id="iconUsers" /> 
+                                                    ${numberOfParticipants}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="mt-5 mb-1"></div>
+                                        <a href='https://lab.padem.org/projet/edit_project.html?project_id=${project.project_id}' class="h5 text-decoration-none text-primary">${project.project_title}</a>
+                                        <div>
+                                            <p class="font-weight-bold">${project.project_location}</p>
+                                        </div>
+                                        ${barreProgression.outerHTML}
+                                    </div>
+                                    <div class="card-footer">
+                                        <p class="small m-1 rounded" style="color: ${colorStatusText[status]}; font-size: 9px;" id="status_${project.project_id}">${parseInt(progression)}% - ${status}</p>
+                                        <button class="btn btn-primary">Voir le projet</button>
+                                    </div>
+                                </div>
+                            `;
+                        });
+
+                        //#region Ajouter un événement de clic sur le bouton "Modifier" en fonction de l'ID du projet, du rôle de l'utilisateur et en fonction de si l'utilisateur est dans le projet
                         if (userRole.includes('Administrateur') || userRole.includes('Chef de projet')) {
                             card.querySelector('.buttonModifier').addEventListener('click', () => {
                                 window.location.href = `https://lab.padem.org/projet/edit_project.html?project_id=${project.project_id}`;
@@ -711,6 +808,7 @@
                                 window.location.href = `https://lab.padem.org/projet/view_project.html?project_id=${project.project_id}`;
                             });
                         }
+                        //#endregion
 
                         // Ajouter l'image en arrière-plan du card-body
                         /*
