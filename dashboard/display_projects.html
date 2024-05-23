@@ -47,7 +47,7 @@
     var userEmail = '';
     var userFirstName = '';
     var userLastName = '';
-    var userRole = [];
+    var userRole = '';
     var buttonText = '';
 
     // Fonction pour afficher un menu contextuel en fonction de l'ID de l'element survolé
@@ -152,15 +152,15 @@
                 userLastName = data.user_infos.last_name;
                 data.role.forEach(role => {
                     if (data.role.administrator) {
-                        userRole.push('Administrateur');
+                        userRole = 'Administrateur';
                     } else if (data.role['chef-de-projet']) {
-                        userRole.push('Chef de projet');
+                        userRole = 'Chef de projet';
                     } else if (data.role.comptable) {
-                        userRole.push('Comptable');
+                        userRole = 'Comptable';
                     } else if (data.role.consultant) {
-                        userRole.push('Consultant');
+                        userRole = 'Consultant';
                     } else if (data.role.partenaire) {
-                        userRole.push('Partenaire');
+                        userRole = 'Partenaire';
                     } else {
                     }
                 });
@@ -272,7 +272,7 @@
     }
 
     // Actualiser les projets toutes les 15 secondes
-    setInterval(displayProjects, 15000);
+    //setInterval(displayProjects, 15000);
 
     // Afficher les projets
     document.addEventListener('DOMContentLoaded', () => {
@@ -289,6 +289,23 @@
         var nomberOfNewReports = 0;
         var numberOfNewMessages = 0;
         var numberOfNewNotifications = 0;
+        var allProjectsIds = [];
+        var allConnectedUserProjectsIds = [];
+
+        //#region Récupérer les ids de tous les projets
+        fetch('https://lab.padem.org/wp-json/mo/v1/getProjects', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(project => {
+                    allProjectsIds.push(project.project_id);
+                });
+            });
+        //#endregion
 
         var colorStatusText = {
             'Pas encore commencé': 'gray',
@@ -332,6 +349,211 @@
         // Récupérer le nombre d'utilisateurs inscrits sur le site et le nombre d'utilisateurs actuellement connectés
         getNumberOfMembers();
 
+        // Récupérer le nombre de participants dans le projet
+        var users_list = {
+            'emails_names': {
+                'Coordinateur': 'coordinator_email',
+                'Chef de projet': 'chief_email',
+                'partenaire': 'partner_email',
+                'comptable': 'accountant_email',
+                'consultant': 'consultant_email',
+                'bailleur': 'funder_email'
+            },
+            'users': {
+                'Coordinateur': [],
+                'Chef de projet': [],
+                'partenaire': [],
+                'comptable': [],
+                'consultant': [],
+                'bailleur': []
+            },
+            'urls': {
+                'Administrateur': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
+                'Coordinateur': 'https://lab.padem.org/wp-json/mo/v1/getCoordinator',
+                'Chef de projet': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
+                'partenaire': 'https://lab.padem.org/wp-json/mo/v1/getPartner',
+                'comptable': 'https://lab.padem.org/wp-json/mo/v1/getAccountant',
+                'consultant': 'https://lab.padem.org/wp-json/mo/v1/getConsultant',
+                'bailleur': 'https://lab.padem.org/wp-json/mo/v1/getFunder'
+            }
+        };
+
+        //#region Récupérer le nombre de participants dans le projet
+        var participants = {};
+        var isUserInProject = false;
+        var numberOfParticipants = 0;
+
+        //#region get Administrateur
+        fetch(users_list.urls['Administrateur'], {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(user => {
+                    // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
+                    if (allProjectsIds.includes(user.project_id)) {
+                        numberOfParticipants++;
+                        if (user.chief_email === userEmail) {
+                            isUserInOneProject = true;
+                            allConnectedUserProjectsIds.push(user.project_id);
+                        }
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        //#endregion
+
+        //#region get Coordinnateur
+        fetch(users_list.urls['Coordinateur'], {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(user => {
+                    // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
+                    if (allProjectsIds.includes(user.project_id)) {
+                        numberOfParticipants++;
+                        if (user.coordinator_email === userEmail) {
+                            allConnectedUserProjectsIds.push(user.project_id); // Ajouter l'ID du projet à la liste des projets de l'utilisateur connecté
+                        }
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        //#endregion
+
+        //#region get Chef de projet
+        fetch(users_list.urls['Chef de projet'], {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(user => {
+                    // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
+                    if (allProjectsIds.includes(user.project_id)) {
+                        numberOfParticipants++;
+                        if (user.chief_email === userEmail) {
+                            allConnectedUserProjectsIds.push(user.project_id);
+                        }
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        //#endregion
+
+        //#region get partenaire
+        fetch(users_list.urls['partenaire'], {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(user => {
+                    // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
+                    if (allProjectsIds.includes(user.project_id)) {
+                        numberOfParticipants++;
+                        if (user.partner_email === userEmail) {
+                            allConnectedUserProjectsIds.push(user.project_id);
+                        }
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        //#endregion
+
+        //#region get comptable
+        fetch(users_list.urls['comptable'], {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(user => {
+                    // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
+                    if (allProjectsIds.includes(user.project_id)) {
+                        numberOfParticipants++;
+                        if (user.accountant_email === userEmail) {
+                            allConnectedUserProjectsIds.push(user.project_id);
+                        }
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        //#endregion
+
+        //#region get consultant
+        fetch(users_list.urls['consultant'], {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(user => {
+                    // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
+                    if (allProjectsIds.includes(user.project_id)) {
+                        numberOfParticipants++;
+                        if (user.consultant_email === userEmail) {
+                            allConnectedUserProjectsIds.push(user.project_id);
+                        }
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        //#endregion
+
+        //#region get bailleur
+        fetch(users_list.urls['bailleur'], {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(user => {
+                    // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
+                    if (allProjectsIds.includes(user.project_id)) {
+                        numberOfParticipants++;
+                        if (user.funder_email === userEmail) {
+                            allConnectedUserProjectsIds.push(user.project_id);
+                        }
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        //#endregion
+
+        //#endregion
+
         // Récupérer la liste des projets depuis la base de données (à partir de l'API (https://lab.padem.org/wp-json/mo/v1/getProjects))
         // les projets sont affichés dans des cartes individuelles
         fetch('https://lab.padem.org/wp-json/mo/v1/getProjects', {
@@ -348,6 +570,13 @@
                 // Parcourir la liste des projets
                 data.forEach(project => {
 
+                    // Vérifier si le projet est dans la liste des projets de l'utilisateur connecté
+                    if (allConnectedUserProjectsIds.includes(project.project_id)) {
+                        isUserInOneProject = true;
+                    } else {
+                        isUserInOneProject = false;
+                    }
+
                     var card = document.createElement('div');
                     card.className = 'card';
                     card.style.borderRadius = '15px';
@@ -357,6 +586,7 @@
                     card.style.margin = '10px';
                     card.style.border = '1px' + `${colorStatusText[status]}` + 'solid';
 
+                    //#region Afficher les informations du projet
                     var startDate = new Date(project.start_date);
                     var endDate = new Date(project.end_date);
                     var dateDuJour = new Date();
@@ -424,52 +654,37 @@
                     card.style.fontSize = '14px'; // Change la taille de la police
                     card.style.fontFamily = 'Arial'; // Change la police
                     card.style.color = 'gray'; // Change la couleur de la police
+                    //#endregion
 
-                    // Vérifier si l'adresse e-mail de l'utilisateur connecté est dans la liste des participants
-                    var participants = {};
-                    var isUserInProject = false;
-                    var numberOfParticipants = 0;
-                    if (project.users_list.length >= 1) {
-                        participants = project.users_list;
-                        participants.forEach(participant => {
-                            if (participant.email === userEmail) {
-                                isUserInProject = true;
-                                isUserInOneProject = true;
-                            }
-                        });
-                        // Obtenir le nombre de participants dans le projet
-                        numberOfParticipants = participants.length;
-                    }
-
-                    // Afficher les projets en fonction du filtre
-                    if (isUserInProject) {
+                    if (isUserInOneProject) {
+                        // Afficher les projets en fonction du filtre
                         card.innerHTML = `
-                                <div class="card">
-                                    <div id="card-body" class="card-body" style="backgroundColor: none; ">
-                                        <div style="display: flex; justify-content: space-between;">
-                                            <div style="width: 40%; align-items: center;">
-                                                <p style="font-weight: lighter; font-size: 10px">${formattedStartDate} - ${formattedEndDate}</p>
-                                            </div>
-                                            <div>
-                                                <p style="font-weight: lighter; font-size: 10px; color: gray;""><imgsrc="https://lab.padem.org/wp-content/uploads/user_2.png" alt="Icone utilisateurs"
-                                                    style="width: 20px; height: 20px; id="iconUsers" /> ${numberOfParticipants}</p>
-                                            </div>
+                            <div class="card">
+                                <div id="card-body" class="card-body" style="backgroundColor: none; ">
+                                    <div style="display: flex; justify-content: space-between;">
                                         <div style="width: 40%; align-items: center;">
                                             <p style="font-weight: lighter; font-size: 10px">${formattedStartDate} - ${formattedEndDate}</p>
                                         </div>
-                                        <div style="margin-top: 150px; margin-bottom: 10px"></div>
-                                        <a href='https://lab.padem.org/projet/edit_project.html?project_id=${project.project_id}' style="font-size: 20px; font-weight: bold; color: #29A6A7;">${project.project_title}</a>
-                                        <div style="margin-top: 0px">
-                                            <p style="font-weight: bold;">${project.project_location}</p>
+                                        <div>
+                                            <p style="font-weight: lighter; font-size: 10px; color: gray;""><imgsrc="https://lab.padem.org/wp-content/uploads/user_2.png" alt="Icone utilisateurs"
+                                                style="width: 20px; height: 20px; id="iconUsers" /> ${numberOfParticipants}</p>
                                         </div>
-                                        ${barreProgression.outerHTML}
+                                    <div style="width: 40%; align-items: center;">
+                                        <p style="font-weight: lighter; font-size: 10px">${formattedStartDate} - ${formattedEndDate}</p>
                                     </div>
-                                    <div class="card-footer">
-                                        <p style="font-weight: lighter; color: ${colorStatusText[status]}; margin: 5px; border-radius: 5px; fontSize: 9px;" id="status_${project.project_id}">${parseInt(progression)}% - ${status}</p>
-                                        <button class="buttonModifier">Voir le projet</button>
+                                    <div style="margin-top: 150px; margin-bottom: 10px"></div>
+                                    <a href='https://lab.padem.org/projet/edit_project.html?project_id=${project.project_id}' style="font-size: 20px; font-weight: bold; color: #29A6A7;">${project.project_title}</a>
+                                    <div style="margin-top: 0px">
+                                        <p style="font-weight: bold;">${project.project_location}</p>
                                     </div>
+                                    ${barreProgression.outerHTML}
                                 </div>
-                            `;
+                                <div class="card-footer">
+                                    <p style="font-weight: lighter; color: ${colorStatusText[status]}; margin: 5px; border-radius: 5px; fontSize: 9px;" id="status_${project.project_id}">${parseInt(progression)}% - ${status}</p>
+                                    <button class="buttonModifier">Voir le projet</button>
+                                </div>
+                            </div>
+                        `;
 
                         // Ajouter la cellule dans la ligne
                         projectContainer.appendChild(card);
@@ -511,12 +726,6 @@
                         if (stepper === 3) {
                             card = document.createElement('div');
                             stepper = 0;
-                        }
-
-                        // Vérifier si le projet à afficher est existe déjà
-                        if (projectContainer.querySelector('div')) {
-                            // Supprimer le message disant qu'il n'y a pas de projet
-                            projectContainer.querySelector('div').remove();
                         }
                     }
                 });
