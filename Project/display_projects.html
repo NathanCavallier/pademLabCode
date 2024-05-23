@@ -201,7 +201,7 @@
                                 <li class="project-element">Pays: ${project.project_location}</li>
                                 <li class="project-element" style="display: flex;"><p id="numberOfmember_${project_id}"></p></li>
                                 <li class="project-element" style="text-transform: capitalize; font-weight: bold; color: ${colorStatusText[projectStatus]}; background: none; margin: 5px; padding: 5px; boder-radius: 20px;" id="status_${project_id}"></li>
-                                <li class="project-element" style="font-weight: bold; font-size: 11px;" id="localStatus_${project_id}"><div style="margin-right: 60px;"></div></li>
+                                <li class="project-element" style="font-weight: bold; font-size: 11px;" id="localStatus_${project_id}"><div style="margin-right: 40px;"></div></li>
                                 <li class="project-element" style="display: flex; justify-content: flex-end;">
                                     <button class="buttonModifier" id="buttonModifier_${project_id}" style="margin: 5px; margin-right: -15px; padding: 5px; boder-radius: 20px; font-size: 11px;">${buttonText}</button>
                                 </li>
@@ -553,7 +553,8 @@
 
 
                     // Ajouter un gestionnaire d'événement pour chaque bouton "Ajouter le nouveau membre", "Ajouter le nouveau rapport", "Ajouter le nouveau document", "Ajouter le nouveau lien", "Ajouter divers"
-                    document.getElementById('buttonAddMember_' + project_id).addEventListener('click', () => {
+                    var buttonAddMember_ = document.getElementById('buttonAddMemmber_' + project_id);
+                    if(buttonAddMember_ !== null) {
                         document.getElementById('loading_' + project_id).style.display = 'block';
                         var newMemberEmail = document.getElementById('newMemberEmail_' + project_id).value || '';
                         var newMemberRole = document.getElementById('newMemberRole_' + project_id).value || '';
@@ -867,7 +868,7 @@
                                 // Masquer le spinner
                                 document.getElementById('loading_' + project_id).style.display = 'none';
                             });
-                    });
+                    }
                     
                     // Ajouter un lien au projet sur la base de données
                     document.getElementById('linkSubmit_' + project_id).addEventListener('click', () => {
@@ -1376,243 +1377,267 @@
                         .then(data => {
                             if (data !== null && data !== undefined && Array.isArray(data)) {
                                 var counter = 0;
+                                var fileIds_tab = [];
+                                var filesIDs = [];
+                                var tab_liElements = {
+                                    'li': [],
+                                    'projectFileDetails': [],
+                                    'file_id': 0,
+                                };
                                 var stateTab = new Array(data.length).fill(false);
-                                document.getElementById(`filesNumber_${project_id}`).innerText = ' ' + data.length + ' fichiers';
                                 document.getElementById(`projectFiles_${project_id}`).innerHTML = '';
                                 document.getElementById(`projectFiles_${project_id}`).value = '';
 
-                                var fileIds_tab = [];
+                                //#region Récupérer le nombre de fichiers partagés
+                                data.forEach(file => {
+                                    if (file.file_id !== null && file.file_id !== undefined && !fileIds_tab.includes(file.file_id)) {
+                                        fileIds_tab.push(file.file_id);
+                                    }
+                                })
+                                document.getElementById(`filesNumber_${project_id}`).innerText = ' ' + fileIds_tab.length + ' fichiers';
+                                //#endregion
 
                                 data.forEach(file => {
                                     var file_name = file.file_name.split('/').pop();
                                     var file_id = file.file_id;
-                                    var file_size = file.file_size;
-                                    filesIDs[globalStepper] = file_id;
-                                    var isFileInProject = false;
-                                    stateTab[counter] = isFileInProject;
-                                    var isAlraedyAdded_text = document.createElement('p');
-                                    isAlraedyAdded_text.style.color = 'green';
-                                    isAlraedyAdded_text.innerText = 'Déjà ajouté';
 
-                                    //#region Vérifier si le fichier est déjà dans le projet
-                                    fetch('https://lab.padem.org/wp-json/mo/v1/getProjectFiles', {
-                                            method: 'GET',
-                                            headers: {
-                                                'Content-Type': 'application/json',
-                                            },
-                                        })
-                                        .then(response => response.json())
-                                        .then(projectFiles => {
-                                            if (projectFiles !== null && projectFiles !== undefined && Array.isArray(projectFiles)) {
-                                                projectFiles.forEach(projectFile => {
-                                                    if (projectFile.file_id === file_id && projectFile.project_id === project_id) {
-                                                        isFileInProject = true;
-                                                        stateTab[counter] = isFileInProject;
-                                                    }
-                                                });
-                                            }
-                                        })
-                                        .catch(error => {
-                                            console.error('Erreur récupérer les fichiers du projet:', error);
-                                        });
-                                    //#endregion
-                                    
-                                    //#region Déterminer l'icône à afficher en fonction du type de fichier
-                                    var icon_link;
-                                    if (file_name.includes('.pdf')) {
-                                        icon_link = 'https://lab.padem.org/wp-content/uploads/pdf.png';
-                                    } else if (file_name.includes('.doc') || file_name.includes('.docx')) {
-                                        icon_link = 'https://lab.padem.org/wp-content/uploads/word.png';
-                                    } else if (file_name.includes('.xls') || file_name.includes('.xlsx')) {
-                                        icon_link = 'https://lab.padem.org/wp-content/uploads/xls.png';
-                                    } else if (file_name.includes('.ppt') || file_name.includes('.pptx')) {
-                                        icon_link = 'https://lab.padem.org/wp-content/uploads/ppt.png';
-                                    } else if (file_name.includes('.jpg') || file_name.includes('.jpeg') || file_name.includes('.png') || file_name.includes('.gif')) {
-                                        icon_link = 'https://lab.padem.org/wp-content/uploads/jpg.png';
-                                    } else if (file_name.includes('.zip') || file_name.includes('.rar') || file_name.includes('.7z')) {
-                                        icon_link = 'https://lab.padem.org/wp-content/uploads/archive.png';
-                                    } else if (file_name.includes('.txt') || file_name.includes('.log')) {
-                                        icon_link = 'https://lab.padem.org/wp-content/uploads/txt.png';
-                                    } else if (file_name.includes('.mp3') || file_name.includes('.wav') || file_name.includes('.flac') || file_name.includes('.ogg')) {
-                                        icon_link = 'https://lab.padem.org/wp-content/uploads/audio.png';
-                                    } else if (file_name.includes('.mp4') || file_name.includes('.avi') || file_name.includes('.mkv') || file_name.includes('.mov')) {
-                                        icon_link = 'https://lab.padem.org/wp-content/uploads/85.png';
-                                    } else {
-                                        icon_link = 'https://lab.padem.org/wp-content/uploads/any_file.png';
-                                    }
-                                    //#endregion
+                                    if(!filesIDs.includes(file_id)){
+                                        filesIDs.push(file_id);
 
-                                    //#region Créer un élément de liste pour chaque fichier
-                                    var li = document.createElement('li');
-                                    li.style.color = 'black';
-                                    li.style.fontSize = '13px';
-                                    // Alternance de la couleur de fond
-                                    li.style.textAlign = 'left';
-                                    li.style.borderBottom = '1px #858787';
-                                    li.style.borderRadius = '25px';
-                                    li.style.backgroundColor = 'white';
-                                    li.style.display = 'flex';
-                                    li.style.justifyContent = 'space-left';
-                                    li.style.justifyItems = 'left';
-                                    li.style.padding = '10px';
-                                    li.style.margin = '10px';
-                                    li.style.textDecoration = 'none';
-                                    li.style.width = '100%';
-                                    li.style.cursor = 'pointer';
-                                    li.style.id = 'file_' + project_id + '_' + file_id;
-                                    var line = document.createElement('hr');
-                                    line.style.border = '1px solid #858787';
-                                    line.style.width = '100%';
-                                    line.style.margin = '10px';
-                                    //#endregion
+                                        var file_size = file.file_size;
+                                        filesIDs[globalStepper] = file_id;
+                                        var isFileInProject = false;
+                                        stateTab[counter] = isFileInProject;
+                                        var isAlraedyAdded_text = document.createElement('p');
+                                        isAlraedyAdded_text.style.color = 'green';
+                                        isAlraedyAdded_text.innerText = 'Déjà ajouté';
 
-                                    
-                                    document.getElementById('projectFiles_' + project_id).appendChild(li);
-                                    document.getElementById('projectFiles_' + project_id).appendChild(line);
+                                        //#region Vérifier si le fichier est déjà dans le projet
+                                        fetch('https://lab.padem.org/wp-json/mo/v1/getProjectFiles', {
+                                                method: 'GET',
+                                                headers: {
+                                                    'Content-Type': 'application/json',
+                                                },
+                                            })
+                                            .then(response => response.json())
+                                            .then(projectFiles => {
+                                                if (projectFiles !== null && projectFiles !== undefined && Array.isArray(projectFiles)) {
+                                                    projectFiles.forEach(projectFile => {
+                                                        if (projectFile.file_id === file_id && projectFile.project_id === project_id) {
+                                                            isFileInProject = true;
+                                                            stateTab[counter] = isFileInProject;
+                                                        }
+                                                    });
+                                                }
+                                            })
+                                            .catch(error => {
+                                                console.error('Erreur récupérer les fichiers du projet:', error);
+                                            });
+                                        //#endregion
+                                        
+                                        //#region Déterminer l'icône à afficher en fonction du type de fichier
+                                        var icon_link;
+                                        if (file_name.includes('.pdf')) {
+                                            icon_link = 'https://lab.padem.org/wp-content/uploads/pdf.png';
+                                        } else if (file_name.includes('.doc') || file_name.includes('.docx')) {
+                                            icon_link = 'https://lab.padem.org/wp-content/uploads/word.png';
+                                        } else if (file_name.includes('.xls') || file_name.includes('.xlsx')) {
+                                            icon_link = 'https://lab.padem.org/wp-content/uploads/xls.png';
+                                        } else if (file_name.includes('.ppt') || file_name.includes('.pptx')) {
+                                            icon_link = 'https://lab.padem.org/wp-content/uploads/ppt.png';
+                                        } else if (file_name.includes('.jpg') || file_name.includes('.jpeg') || file_name.includes('.png') || file_name.includes('.gif')) {
+                                            icon_link = 'https://lab.padem.org/wp-content/uploads/jpg.png';
+                                        } else if (file_name.includes('.zip') || file_name.includes('.rar') || file_name.includes('.7z')) {
+                                            icon_link = 'https://lab.padem.org/wp-content/uploads/archive.png';
+                                        } else if (file_name.includes('.txt') || file_name.includes('.log')) {
+                                            icon_link = 'https://lab.padem.org/wp-content/uploads/txt.png';
+                                        } else if (file_name.includes('.mp3') || file_name.includes('.wav') || file_name.includes('.flac') || file_name.includes('.ogg')) {
+                                            icon_link = 'https://lab.padem.org/wp-content/uploads/audio.png';
+                                        } else if (file_name.includes('.mp4') || file_name.includes('.avi') || file_name.includes('.mkv') || file_name.includes('.mov')) {
+                                            icon_link = 'https://lab.padem.org/wp-content/uploads/85.png';
+                                        } else {
+                                            icon_link = 'https://lab.padem.org/wp-content/uploads/any_file.png';
+                                        }
+                                        //#endregion
 
-                                    // 
-                                    var projectFileDetails = document.createElement('div');
-                                    projectFileDetails.style.display = 'none';
-                                    projectFileDetails.style.color = 'black';
-                                    projectFileDetails.style.textAlign = 'left';
-                                    projectFileDetails.style.fontSize = '10px';
-                                    projectFileDetails.style.border = '1px #29A6A7';
-                                    projectFileDetails.style.borderRadius = '15px';
-                                    projectFileDetails.style.backgroundColor = 'white';
-                                    projectFileDetails.style.display = 'flex';
-                                    projectFileDetails.style.justifyContent = 'space-between';
-                                    projectFileDetails.style.padding = '10px';
-                                    projectFileDetails.style.margin = '10px';
-                                    projectFileDetails.style.textDecoration = 'none';
-                                    projectFileDetails.style.width = '100%';
-                                    projectFileDetails.style.id = 'fileDetails_' + project_id + '_' + file_id;
+                                        //#region Créer un élément de liste pour chaque fichier
+                                        var li = document.createElement('li');
+                                        li.style.color = 'black';
+                                        li.style.fontSize = '13px';
+                                        // Alternance de la couleur de fond
+                                        li.style.textAlign = 'left';
+                                        li.style.borderBottom = '1px #858787';
+                                        li.style.borderRadius = '25px';
+                                        li.style.backgroundColor = 'white';
+                                        li.style.display = 'flex';
+                                        li.style.justifyContent = 'space-left';
+                                        li.style.justifyItems = 'left';
+                                        li.style.padding = '10px';
+                                        li.style.margin = '10px';
+                                        li.style.textDecoration = 'none';
+                                        li.style.width = '100%';
+                                        li.style.cursor = 'pointer';
+                                        li.style.id = 'file_';
+                                        var line = document.createElement('hr');
+                                        line.style.border = '1px solid #858787';
+                                        line.style.width = '100%';
+                                        line.style.margin = '10px';
+                                        //#endregion
 
-                                    //#region Afficher l'aperçu du fichier et ses caractéristiques
-                                    if (file_name.includes('.jpg') || file_name.includes('.jpeg') || file_name.includes('.png') || file_name.includes('.gif')) {
-                                        projectFileDetails.innerHTML = projectFileDetails.innerHTML = `<div class="row"><img src="https://lab.padem.org/shared-files/${file_id}/?${file_name}" alt="${file_name}" id="img_${project_id}_${file_id}" ></img> <div style="display: flex; justify-content: space-between;"> <a href="https://lab.padem.org/shared-files/${file_id}/?${file_name}">${file_name}</a> <div style="margin-left: 50px;"></div> Date: ${file.created_at}  <div style="margin-left: 50px;"></div> Auteur: ${file.user_name}  <div style="margin-left: 50px;"></div> <button id="addSelectedFiles_${project_id}_${file_id}" ${stateTab[counter] ? 'disabled' : ''}>${isFileInProject ? isAlraedyAdded_text.innerText : 'Ajouter'}</button>  <div style="margin-left: 50px;"></div>  <button class="btn btn-danger" id="removeSelectedFiles_${project_id}_${file_id}" ${isFileInProject ? '' : 'style="display: none;"'}>Supprimer</button> <a href="https://lab.padem.org/shared-files/${file_id}/?${file_name}" class="btn btn-secondary" download>
-                                            Télécharger</a>  <div style="margin-left: auto;"></div> <div id="loading_${project_id}_${file_id}" style="display: none;">
-                                                <img src="https://lab.padem.org/wp-content/uploads/Spin@1x-1.0s-200px-200px.gif" style="width: 30px; height: 30px" alt="Chargement...">
-                                                </div> </div></div>`;
-                                    } else if(file_name.includes('.mp4') || file_name.includes('.avi') || file_name.includes('.mkv') || file_name.includes('.mov')) {
-                                        projectFileDetails.innerHTML = projectFileDetails.innerHTML = `<div class="row"><video width="320" height="240" id="img_${project_id}_${file_id}" controls>
-                                            <source src="https://lab.padem.org/shared-files/${file_id}/?${file_name}" type="video/mp4">
-                                            <source src="https://lab.padem.org/shared-files/${file_id}/?${file_name}" type="video/ogg">
-                                            Your browser does not support the video tag.
-                                            </video><div class="row"> <div style="display: flex; justify-content: space-between;"> <a href="https://lab.padem.org/shared-files/${file_id}/?${file_name}">${file_name}</a> <div style="margin-left: 50px;"></div> Date: ${file.created_at}  <div style="margin-left: 50px;"></div> Auteur: ${file.user_name}  <div style="margin-left: 50px;"></div> <button id="addSelectedFiles_${project_id}_${file_id}" ${stateTab[counter] ? 'disabled' : ''}>${isFileInProject ? isAlraedyAdded_text.innerText : 'Ajouter'}</button>  <div style="margin-left: 50px;"></div> <div style="display: flex; justify-content: space-between;"> <button class="btn btn-danger" id="removeSelectedFiles_${project_id}_${file_id}" ${isFileInProject ? '' : 'style="display: none;"'}>Supprimer</button> <a href="https://lab.padem.org/shared-files/${file_id}/?${file_name}" class="btn btn-secondary" download>
-                                            Télécharger</a>  <div style="margin-left: auto;"></div> <div id="loading_${project_id}_${file_id}" style="display: none;">
+                                        //#region Afficher les détails du fichier
+                                        var projectFileDetails = document.createElement('div');
+                                        projectFileDetails.style.display = 'none';
+                                        projectFileDetails.style.color = 'black';
+                                        projectFileDetails.style.textAlign = 'left';
+                                        projectFileDetails.style.fontSize = '10px';
+                                        projectFileDetails.style.border = '1px #29A6A7';
+                                        projectFileDetails.style.borderRadius = '15px';
+                                        projectFileDetails.style.backgroundColor = 'grey';
+                                        projectFileDetails.style.display = 'flex';
+                                        projectFileDetails.style.justifyContent = 'space-between';
+                                        projectFileDetails.style.padding = '10px';
+                                        projectFileDetails.style.margin = '10px';
+                                        projectFileDetails.style.textDecoration = 'none';
+                                        projectFileDetails.style.width = '100%';
+                                        projectFileDetails.style.id = 'fileDetails_' + project_id + '_' + file_id;
+                                        //#endregion
+
+                                        //#region Afficher l'aperçu du fichier et ses caractéristiques
+                                        if (file_name.includes('.jpg') || file_name.includes('.jpeg') || file_name.includes('.png') || file_name.includes('.gif')) {
+                                            projectFileDetails.innerHTML = projectFileDetails.innerHTML = `<div class="row"><img src="https://lab.padem.org/shared-files/${file_id}/?${file_name}" alt="${file_name}" id="img_${project_id}_${file_id}" ></img> <div style="display: flex; justify-content: space-between;"> <a href="https://lab.padem.org/shared-files/${file_id}/?${file_name}">${file_name}</a> <div style="margin-left: 50px;"></div> Date: ${file.created_at}  <div style="margin-left: 50px;"></div> Auteur: ${file.user_name}  <div style="margin-left: 50px;"></div> <button id="addSelectedFiles_${project_id}_${file_id}" ${stateTab[counter] ? 'disabled' : ''}>${isFileInProject ? isAlraedyAdded_text.innerText : 'Ajouter'}</button>  <div style="margin-left: 50px;"></div>  <button class="btn btn-danger" id="removeSelectedFiles_${project_id}_${file_id}" ${isFileInProject ? '' : 'style="display: none;"'}>Supprimer</button> <a href="https://lab.padem.org/shared-files/${file_id}/?${file_name}" class="btn btn-secondary" download>
+                                                Télécharger</a>  <div style="margin-left: auto;"></div> <div id="loading_${project_id}_${file_id}" style="display: none;">
                                                     <img src="https://lab.padem.org/wp-content/uploads/Spin@1x-1.0s-200px-200px.gif" style="width: 30px; height: 30px" alt="Chargement...">
                                                     </div> </div></div>`;
-                                    }
-                                    else if(file_name.includes('.mp3') || file_name.includes('.wav') || file_name.includes('.flac') || file_name.includes('.ogg')) {
-                                        projectFileDetails.innerHTML = projectFileDetails.innerHTML = `<div class="row"><audio id="img_${project_id}_${file_id}" controls>
-                                            <source src="https://lab.padem.org/shared-files/${file_id}/?${file_name}" type="audio/mpeg">
-                                            Your browser does not support the audio element.
-                                            </audio> <div style="display: flex; justify-content: space-between;"> <a href="https://lab.padem.org/shared-files/${file_id}/?${file_name}">${file_name}</a> <div style="margin-left: 50px;"></div> Date: ${file.created_at}  <div style="margin-left: 50px;"></div> Auteur: ${file.user_name}  <div style="margin-left: 50px;"></div> <button id="addSelectedFiles_${project_id}_${file_id}" ${stateTab[counter] ? 'disabled' : ''}>${isFileInProject ? isAlraedyAdded_text.innerText : 'Ajouter'}</button>  <div style="margin-left: 50px;"></div>  <button class="btn btn-danger" id="removeSelectedFiles_${project_id}_${file_id}" ${isFileInProject ? '' : 'style="display: none;"'}>Supprimer</button> <a href="https://lab.padem.org/shared-files/${file_id}/?${file_name}" class="btn btn-secondary" download>
+                                        } else if(file_name.includes('.mp4') || file_name.includes('.avi') || file_name.includes('.mkv') || file_name.includes('.mov')) {
+                                            projectFileDetails.innerHTML = projectFileDetails.innerHTML = `<div class="row"><video width="320" height="240" id="img_${project_id}_${file_id}" controls>
+                                                <source src="https://lab.padem.org/shared-files/${file_id}/?${file_name}" type="video/mp4">
+                                                <source src="https://lab.padem.org/shared-files/${file_id}/?${file_name}" type="video/ogg">
+                                                Your browser does not support the video tag.
+                                                </video><div class="row"> <div style="display: flex; justify-content: space-between;"> <a href="https://lab.padem.org/shared-files/${file_id}/?${file_name}">${file_name}</a> <div style="margin-left: 50px;"></div> Date: ${file.created_at}  <div style="margin-left: 50px;"></div> Auteur: ${file.user_name}  <div style="margin-left: 50px;"></div> <button id="addSelectedFiles_${project_id}_${file_id}" ${stateTab[counter] ? 'disabled' : ''}>${isFileInProject ? isAlraedyAdded_text.innerText : 'Ajouter'}</button>  <div style="margin-left: 50px;"></div> <div style="display: flex; justify-content: space-between;"> <button class="btn btn-danger" id="removeSelectedFiles_${project_id}_${file_id}" ${isFileInProject ? '' : 'style="display: none;"'}>Supprimer</button> <a href="https://lab.padem.org/shared-files/${file_id}/?${file_name}" class="btn btn-secondary" download>
                                                 Télécharger</a>  <div style="margin-left: auto;"></div> <div id="loading_${project_id}_${file_id}" style="display: none;">
-                                                <img src="https://lab.padem.org/wp-content/uploads/Spin@1x-1.0s-200px-200px.gif" style="width: 30px; height: 30px" alt="Chargement...">
-                                                </div> </div></div>`;
-                                    } 
-                                    else if(file_name.includes('.pdf')) {
-                                        projectFileDetails.innerHTML = projectFileDetails.innerHTML = `<div class="row"> <embed img_${project_id}_${file_id}" src="https://lab.padem.org/shared-files/${file_id}/?${file_name}" width="50%" height="fit-content" /> <div style="display: flex; justify-content: space-between;"> <a href="https://lab.padem.org/shared-files/${file_id}/?${file_name}">${file_name}</a> <div style="margin-left: 50px;"></div> Date: ${file.created_at}  <div style="margin-left: 50px;"></div> Auteur: ${file.user_name}  <div style="margin-left: 50px;"></div> <button id="addSelectedFiles_${project_id}_${file_id}" ${stateTab[counter] ? 'disabled' : ''}>${isFileInProject ? isAlraedyAdded_text.innerText : 'Ajouter'}</button>  <div style="margin-left: 50px;"></div>  <button class="btn btn-danger" id="removeSelectedFiles_${project_id}_${file_id}" ${isFileInProject ? '' : 'style="display: none;"'}>Supprimer</button> <a href="https://lab.padem.org/shared-files/${file_id}/?${file_name}" class="btn btn-secondary" download>
-                                            Télécharger</a>  <div style="margin-left: auto;"></div> <div id="loading_${project_id}_${file_id}" style="display: none;">
-                                                <img src="https://lab.padem.org/wp-content/uploads/Spin@1x-1.0s-200px-200px.gif" style="width: 30px; height: 30px" alt="Chargement...">
-                                                </div></div></div>`;
-                                    }
-                                    else if(file_name.includes('.doc') || file_name.includes('.docx')) {
-                                        projectFileDetails.innerHTML = projectFileDetails.innerHTML = `<div class="row"><iframe id="img_${project_id}_${file_id}" src="https://view.officeapps.live.com/op/embed.aspx?src=https://lab.padem.org/shared-files/${file_id}/?${file_name}" width="50%" height="fit-content" ></iframe> <div style="display: flex; justify-content: space-between;"> <a href="https://lab.padem.org/shared-files/${file_id}/?${file_name}">${file_name}</a> <div style="margin-left: 50px;"></div> Date: ${file.created_at}  <div style="margin-left: 50px;"></div> Auteur: ${file.user_name}  <div style="margin-left: 50px;"></div> <button id="addSelectedFiles_${project_id}_${file_id}" ${stateTab[counter] ? 'disabled' : ''}>${isFileInProject ? isAlraedyAdded_text.innerText : 'Ajouter'}</button>  <div style="margin-left: 50px;"></div>  <button class="btn btn-danger" id="removeSelectedFiles_${project_id}_${file_id}" ${isFileInProject ? '' : 'style="display: none;"'}>Supprimer</button> <a href="https://lab.padem.org/shared-files/${file_id}/?${file_name}" class="btn btn-secondary" download>
-                                            Télécharger</a>  <div style="margin-left: auto;"></div> <div id="loading_${project_id}_${file_id}" style="display: none;">
-                                                <img src="https://lab.padem.org/wp-content/uploads/Spin@1x-1.0s-200px-200px.gif" style="width: 30px; height: 30px" alt="Chargement...">
-                                                </div></div></div>`;
-                                    }
-                                    else {
-                                        projectFileDetails.innerHTML = projectFileDetails.innerHTML = `<div class="row"><img src="${icon_link}" alt="${file_name}" id="img_${project_id}_${file_id}" ></img> <div style="display: flex; justify-content: space-between;"> <a href="https://lab.padem.org/shared-files/${file_id}/?${file_name}">${file_name}</a> <div style="margin-left: 50px;"></div> Date: ${file.created_at}  <div style="margin-left: 50px;"></div> Auteur: ${file.user_name}  <div style="margin-left: 50px;"></div> <button id="addSelectedFiles_${project_id}_${file_id}" ${stateTab[counter] ? 'disabled' : ''}>${isFileInProject ? isAlraedyAdded_text.innerText : 'Ajouter'}</button>  <div style="margin-left: 50px;"></div>  <button class="btn btn-danger" id="removeSelectedFiles_${project_id}_${file_id}" ${isFileInProject ? '' : 'style="display: none;"'}>Supprimer</button> <a href="https://lab.padem.org/shared-files/${file_id}/?${file_name}" class="btn btn-secondary" download>
-                                            Télécharger</a>  <div style="margin-left: auto;"></div> <div id="loading_${project_id}_${file_id}" style="display: none;">
-                                                <img src="https://lab.padem.org/wp-content/uploads/Spin@1x-1.0s-200px-200px.gif" style="width: 30px; height: 30px" alt="Chargement...">
-                                                </div> </div></div>`;
-                                    }
+                                                        <img src="https://lab.padem.org/wp-content/uploads/Spin@1x-1.0s-200px-200px.gif" style="width: 30px; height: 30px" alt="Chargement...">
+                                                        </div> </div></div>`;
+                                        }
+                                        else if(file_name.includes('.mp3') || file_name.includes('.wav') || file_name.includes('.flac') || file_name.includes('.ogg')) {
+                                            projectFileDetails.innerHTML = projectFileDetails.innerHTML = `<div class="row"><audio id="img_${project_id}_${file_id}" controls>
+                                                <source src="https://lab.padem.org/shared-files/${file_id}/?${file_name}" type="audio/mpeg">
+                                                Your browser does not support the audio element.
+                                                </audio> <div style="display: flex; justify-content: space-between;"> <a href="https://lab.padem.org/shared-files/${file_id}/?${file_name}">${file_name}</a> <div style="margin-left: 50px;"></div> Date: ${file.created_at}  <div style="margin-left: 50px;"></div> Auteur: ${file.user_name}  <div style="margin-left: 50px;"></div> <button id="addSelectedFiles_${project_id}_${file_id}" ${stateTab[counter] ? 'disabled' : ''}>${isFileInProject ? isAlraedyAdded_text.innerText : 'Ajouter'}</button>  <div style="margin-left: 50px;"></div>  <button class="btn btn-danger" id="removeSelectedFiles_${project_id}_${file_id}" ${isFileInProject ? '' : 'style="display: none;"'}>Supprimer</button> <a href="https://lab.padem.org/shared-files/${file_id}/?${file_name}" class="btn btn-secondary" download>
+                                                    Télécharger</a>  <div style="margin-left: auto;"></div> <div id="loading_${project_id}_${file_id}" style="display: none;">
+                                                    <img src="https://lab.padem.org/wp-content/uploads/Spin@1x-1.0s-200px-200px.gif" style="width: 30px; height: 30px" alt="Chargement...">
+                                                    </div> </div></div>`;
+                                        } 
+                                        else if(file_name.includes('.pdf')) {
+                                            projectFileDetails.innerHTML = projectFileDetails.innerHTML = `<div class="row"> <embed img_${project_id}_${file_id}" src="https://lab.padem.org/shared-files/${file_id}/?${file_name}" width="50%" height="fit-content" /> <div style="display: flex; justify-content: space-between;"> <a href="https://lab.padem.org/shared-files/${file_id}/?${file_name}">${file_name}</a> <div style="margin-left: 50px;"></div> Date: ${file.created_at}  <div style="margin-left: 50px;"></div> Auteur: ${file.user_name}  <div style="margin-left: 50px;"></div> <button id="addSelectedFiles_${project_id}_${file_id}" ${stateTab[counter] ? 'disabled' : ''}>${isFileInProject ? isAlraedyAdded_text.innerText : 'Ajouter'}</button>  <div style="margin-left: 50px;"></div>  <button class="btn btn-danger" id="removeSelectedFiles_${project_id}_${file_id}" ${isFileInProject ? '' : 'style="display: none;"'}>Supprimer</button> <a href="https://lab.padem.org/shared-files/${file_id}/?${file_name}" class="btn btn-secondary" download>
+                                                Télécharger</a>  <div style="margin-left: auto;"></div> <div id="loading_${project_id}_${file_id}" style="display: none;">
+                                                    <img src="https://lab.padem.org/wp-content/uploads/Spin@1x-1.0s-200px-200px.gif" style="width: 30px; height: 30px" alt="Chargement...">
+                                                    </div></div></div>`;
+                                        }
+                                        else if(file_name.includes('.doc') || file_name.includes('.docx')) {
+                                            projectFileDetails.innerHTML = projectFileDetails.innerHTML = `<div class="row"><iframe id="img_${project_id}_${file_id}" src="https://view.officeapps.live.com/op/embed.aspx?src=https://lab.padem.org/shared-files/${file_id}/?${file_name}" width="50%" height="fit-content" ></iframe> <div style="display: flex; justify-content: space-between;"> <a href="https://lab.padem.org/shared-files/${file_id}/?${file_name}">${file_name}</a> <div style="margin-left: 50px;"></div> Date: ${file.created_at}  <div style="margin-left: 50px;"></div> Auteur: ${file.user_name}  <div style="margin-left: 50px;"></div> <button id="addSelectedFiles_${project_id}_${file_id}" ${stateTab[counter] ? 'disabled' : ''}>${isFileInProject ? isAlraedyAdded_text.innerText : 'Ajouter'}</button>  <div style="margin-left: 50px;"></div>  <button class="btn btn-danger" id="removeSelectedFiles_${project_id}_${file_id}" ${isFileInProject ? '' : 'style="display: none;"'}>Supprimer</button> <a href="https://lab.padem.org/shared-files/${file_id}/?${file_name}" class="btn btn-secondary" download>
+                                                Télécharger</a>  <div style="margin-left: auto;"></div> <div id="loading_${project_id}_${file_id}" style="display: none;">
+                                                    <img src="https://lab.padem.org/wp-content/uploads/Spin@1x-1.0s-200px-200px.gif" style="width: 30px; height: 30px" alt="Chargement...">
+                                                    </div></div></div>`;
+                                        }
+                                        else {
+                                            projectFileDetails.innerHTML = projectFileDetails.innerHTML = `<div class="row"><img src="${icon_link}" alt="${file_name}" id="img_${project_id}_${file_id}" ></img> <div style="display: flex; justify-content: space-between;"> <a href="https://lab.padem.org/shared-files/${file_id}/?${file_name}">${file_name}</a> <div style="margin-left: 50px;"></div> Date: ${file.created_at}  <div style="margin-left: 50px;"></div> Auteur: ${file.user_name}  <div style="margin-left: 50px;"></div> <button id="addSelectedFiles_${project_id}_${file_id}" ${stateTab[counter] ? 'disabled' : ''}>${isFileInProject ? isAlraedyAdded_text.innerText : 'Ajouter'}</button>  <div style="margin-left: 50px;"></div>  <button class="btn btn-danger" id="removeSelectedFiles_${project_id}_${file_id}" ${isFileInProject ? '' : 'style="display: none;"'}>Supprimer</button> <a href="https://lab.padem.org/shared-files/${file_id}/?${file_name}" class="btn btn-secondary" download>
+                                                Télécharger</a>  <div style="margin-left: auto;"></div> <div id="loading_${project_id}_${file_id}" style="display: none;">
+                                                    <img src="https://lab.padem.org/wp-content/uploads/Spin@1x-1.0s-200px-200px.gif" style="width: 30px; height: 30px" alt="Chargement...">
+                                                    </div> </div></div>`;
+                                        }
+                                        //#endregion
 
-                                    document.getElementById('file_' + project_id + '_' + file_id).appendChild(projectFileDetails);
+                                        function formatFileSize(file_size) {
+                                            var units = ['bits', 'Kb', 'Mb', 'Gb', 'Tb', 'Pb', 'Eb', 'Zb', 'Yb'];
+                                            var i = 0;
+                                            while (file_size >= 1024) {
+                                                file_size /= 1024;
+                                                ++i;
+                                            }
+                                            return file_size.toFixed(1) + ' ' + units[i];
+                                        }
 
-                                    //#endregion
+                                        li.innerHTML = `<div class="row"><div style="display: flex">${counter + 1}  -  <img src="${icon_link}" alt="${file_name}" id="img_${project_id}_${file_id}" ></img>  ${file_name}  ${formatFileSize(file_size)}</div><div style="margin-top: 10px; padding: 10px;"></div>
+                                        </div>`;
+                                        document.getElementById('projectFiles_' + project_id).appendChild(li);
+                                        document.getElementById('projectFiles_' + project_id).appendChild(line);
+                                        
+                                        tab_liElements['li'].push(li);
+                                        tab_liElements['projectFileDetails'].push(projectFileDetails);
+                                        tab_liElements['file_id'] = file_id;
+                                        
+                                        //#region Ajouter un gestionnaire d'événement pour chaque bouton "Ajouter"
+                                        var addSelectedFiles_ = document.getElementById(`addSelectedFiles_${project_id}_${file_id}`) || '';
+                                        if (addSelectedFiles_ !== '' && addSelectedFiles_ !== undefined) {
+                                            addSelectedFiles_.addEventListener('click', () => {
+                                                fetch('https://lab.padem.org/wp-json/mo/v1/createProjectFiles', {
+                                                        method: 'POST',
+                                                        headers: {
+                                                            'Content-Type': 'application/json',
+                                                        },
+                                                        body: JSON.stringify({
+                                                            project_id: project_id,
+                                                            file_id: file.file_id,
+                                                            file_name: file_id,
+                                                            user_email: userEmail,
+                                                        }),
+                                                    })
+                                                    .then(response => response.json())
+                                                    .then(data => {
+                                                        if (data !== null && data !== undefined) {
+                                                        }
+                                                    })
+                                                    .catch(error => {
+                                                        console.error('Erreur ajouter le fichier au projet:', error);
+                                                    });
+                                            });
+                                        }
+                                        //#endregion
 
+                                        //#region Ajouter un gestionnaire d'événement pour chaque bouton "Supprimer"
+                                        var removeSelectedFiles_ = document.getElementById(`removeSelectedFiles_${project_id}_${file_id}`) || '';
+                                        if (removeSelectedFiles_ !== '' && removeSelectedFiles_ !== undefined) {
+                                            removeSelectedFiles_.addEventListener('click', () => {
+                                                fetch('https://lab.padem.org/wp-json/mo/v1/deleteProjectFiles', {
+                                                        method: 'DELETE',
+                                                        headers: {
+                                                            'Content-Type': 'application/json',
+                                                        },
+                                                        body: JSON.stringify({
+                                                            file_id: file.file_id,
+                                                        }),
+                                                    })
+                                                    .then(response => response.json())
+                                                    .then(data => {
+                                                        if (data !== null && data !== undefined) {
+                                                        }
+                                                    })
+                                                    .catch(error => {
+                                                        console.error('Erreur supprimer le fichier du projet:', error);
+                                                    });
+                                            });
+                                        }
+                                        //#endregion
+                                        
+                                        counter++;
+                                    }
+                                    currentStepper++;
+                                    globalStepper++;
+                                });
+                                tab_liElements['li'].forEach(li => {
+                                    var file_id = tab_liElements['file_id'];
                                     li.addEventListener('click', () => {
-                                        var projectFileDetails = document.getElementById('fileDetails_' + project_id + '_' + file_id).querySelector('div');
+                                        var projectFileDetails = tab_liElements['projectFileDetails'][tab_liElements['li'].indexOf(li)];
+                                        var div = document.createElement('div');
+                                        div.innerHTML = projectFileDetails.innerHTML;
                                         if (projectFileDetails.style.display === 'none') {
+                                            li.parentNode.insertBefore(div, li.nextSibling);
                                             projectFileDetails.style.display = 'block';
                                         } else {
+                                            li.parentNode.removeChild(li.nextSibling);
                                             projectFileDetails.style.display = 'none';
                                         }
                                     });
-
-                                    function formatFileSize(file_size) {
-                                        var units = ['bits', 'Kb', 'Mb', 'Gb', 'Tb', 'Pb', 'Eb', 'Zb', 'Yb'];
-                                        var i = 0;
-                                        while (file_size >= 1024) {
-                                            file_size /= 1024;
-                                            ++i;
-                                        }
-                                        return file_size.toFixed(1) + ' ' + units[i];
-                                    }
-
-                                    li.innerHTML = `<div class="row"><div style="display: flex">${counter + 1}  -  <img src="${icon_link}" alt="${file_name}" id="img_${project_id}_${file_id}" ></img>  ${file_name}  ${formatFileSize(file_size)}</div><div style="margin-top: 10px; padding: 10px;"></div><div>${projectFileDetails.innerHTML}</div></div>`;
-                                    
-                                    //#region Ajouter un gestionnaire d'événement pour chaque bouton "Ajouter"
-                                    var addSelectedFiles_ = document.getElementById(`addSelectedFiles_${project_id}_${file_id}`) || null;
-                                    if (addSelectedFiles_ !== null && addSelectedFiles_ !== undefined) {
-                                        addSelectedFiles_.addEventListener('click', () => {
-                                            fetch('https://lab.padem.org/wp-json/mo/v1/createProjectFiles', {
-                                                    method: 'POST',
-                                                    headers: {
-                                                        'Content-Type': 'application/json',
-                                                    },
-                                                    body: JSON.stringify({
-                                                        project_id: project_id,
-                                                        file_id: file.file_id,
-                                                        file_name: file_id,
-                                                        user_email: userEmail,
-                                                    }),
-                                                })
-                                                .then(response => response.json())
-                                                .then(data => {
-                                                    if (data !== null && data !== undefined) {
-                                                    }
-                                                })
-                                                .catch(error => {
-                                                    console.error('Erreur ajouter le fichier au projet:', error);
-                                                    document.getElementById(`addSelectedFiles_${project_id}_${file_id}`).style.display = 'block';
-                                                    document.getElementById(`loading_${project_id}_${file_id}`).style.display = 'none';
-                                                });
-                                        });
-                                    }
-                                    //#endregion
-
-                                    //#region Ajouter un gestionnaire d'événement pour chaque bouton "Supprimer"
-                                    var removeSelectedFiles_ = document.getElementById(`removeSelectedFiles_${project_id}_${file_id}`) || null;
-                                    if (removeSelectedFiles_ !== null && removeSelectedFiles_ !== undefined) {
-                                        removeSelectedFiles_.addEventListener('click', () => {
-                                            fetch('https://lab.padem.org/wp-json/mo/v1/deleteProjectFiles', {
-                                                    method: 'DELETE',
-                                                    headers: {
-                                                        'Content-Type': 'application/json',
-                                                    },
-                                                    body: JSON.stringify({
-                                                        file_id: file.file_id,
-                                                    }),
-                                                })
-                                                .then(response => response.json())
-                                                .then(data => {
-                                                    if (data !== null && data !== undefined) {
-                                                    }
-                                                })
-                                                .catch(error => {
-                                                    console.error('Erreur supprimer le fichier du projet:', error);
-                                                });
-                                        });
-                                    }
-                                    //#endregion
-                                    counter++;
-                                    currentStepper++;
-                                    globalStepper++;
                                 });
                             }
                         })
@@ -1629,12 +1654,15 @@
                     // Afficher le statut du projet en fonction du nombre de membres
                     var numberOfMembers = document.querySelector(`#numberOfmember_${project_id}`);
                     if (numberOfMembers !== null && numberOfMembers !== undefined) {
-                        if(document.getElementById(`numberOfmember_${project_id}`).value === 0) {
-                            document.getElementById(`status_${project_id}`).innerText = 'En attente';
-                            document.getElementById(`status_${project_id}`).style.color = 'red';
-                        } else {
-                            document.getElementById(`status_${project_id}`).innerText = 'Publié';
-                            document.getElementById(`status_${project_id}`).style.color = 'green';
+                        var statusElement = document.getElementById(`status_${project_id}`);
+                        if (statusElement !== null && statusElement !== undefined) {
+                            if(document.getElementById(`numberOfmember_${project_id}`).value === 0) {
+                                statusElement.innerText = 'En attente';
+                                statusElement.style.color = 'red';
+                            } else {
+                                statusElement.innerText = 'Publié';
+                                statusElement.style.color = 'green';
+                            }
                         }
                     }
                     tabStepper++;
