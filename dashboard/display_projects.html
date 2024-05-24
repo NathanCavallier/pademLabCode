@@ -684,7 +684,7 @@
                     if (isUserInOneProject) {
                         // Afficher les projets en fonction du filtre
                         card.innerHTML = `
-                            <div class="card"> 
+                            <div class="card" id="card_id"> 
                                         <div class="card-body"> 
                                             <div class="d-flex justify-content-between"> 
                                                 <div class="d-flex align-items-center" style="width: 40%;"> 
@@ -693,7 +693,7 @@
                                                 <div> 
                                                     <p class="text-muted small"> 
                                                         <img src="https://lab.padem.org/wp-content/uploads/user_2.png" alt="Icone utilisateurs" class="img-fluid" id="iconUsers" style="width:30px; height:30px;"/> 
-                                                        ${numberOfParticipantsInProject.find(project => project.project_id === project.project_id).number_of_participants}
+                                                        ${numberOfParticipantsInProject[project.project_id]}
                                                     </p> 
                                                 </div> 
                                             </div> 
@@ -724,7 +724,7 @@
                             var cards = document.getElementById('card_id');
                             cards.innerHTML = '';
                             cards.innerHTML = `
-                                <div class="card">
+                                <div class="card" id="card_id">
                                     <div class="card-body">
                                         <div class="row">
                                             <div class="col">
@@ -760,7 +760,7 @@
                             var cards = document.getElementById('card_id');
                             cards.innerHTML = '';
                             cards.innerHTML = `
-                                    <div class="card"> 
+                                    <div class="card" id="card_id"> 
                                         <div class="card-body"> 
                                             <div class="d-flex justify-content-between"> 
                                                 <div class="d-flex align-items-center" style="width: 40%;"> 
@@ -769,7 +769,7 @@
                                                 <div> 
                                                     <p class="text-muted small"> 
                                                         <img src="https://lab.padem.org/wp-content/uploads/user_2.png" alt="Icone utilisateurs" class="img-fluid" id="iconUsers" style="width:30px; height:30px;"/> 
-                                                        ${numberOfParticipantsInProject.find(project => project.project_id === project.project_id).number_of_participants}
+                                                        ${numberOfParticipantsInProject[project.project_id]}
                                                     </p> 
                                                 </div> 
                                             </div> 
