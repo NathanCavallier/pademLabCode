@@ -1,35 +1,991 @@
-<!-- Titre du projet -->
+<!-- Afficher le menu de navigation -->
+<div style="display: flex; justify-content: space-between;">
+    <div style="margin-top: 10px; margin-bottom: 10px"></div>
 
-<!-- Pays de réalisation du projet -->
+    <!-- Boutons de trie -->
+    <div style="display: flex; justify-content: flex-end, space-between;">
+        <button class="button" id="all" onclick=""
+            style="margin: 15px; padding: 10px; border-radius: 15px; border-color: gray; background-color: white; color: gray; font-size: 12px; width: fit-content;">
+            Projets</button>
+        <button class="button" id="en_cours" onclick=""
+            style="margin: 15px; padding: 10px; border-radius: 15px; border-color: gray; background-color: white; color: gray; font-size: 12px; width: fit-content;">
+            Rapports</button>
+        <button class="button" id="en_attente" onclick=""
+            style="margin: 15px; padding: 10px; border-radius: 15px; border-color: gray; background-color: white; color: gray; font-size: 12px; width: fit-content;">
+            Ressources</button>
+    </div>
+</div>
 
-<!-- Date de réalisation du projet -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 
-<!-- Nombre de participants au projet -->
+<body>
+    <div style="margin-top: 10px;"></div>
+    <!-- Afficher la liste des projets en cours -->
+    <!-- Boutons pour changer l'affichage -->
+    <div class="d-flex justify-content-end mb-3">
+        <button id="listViewBtn" class="btn btn-primary mr-2" title="Vue en ligne"
+            style="width: fit-content; color: white;">
+            <i class="fas fa-list"></i>
+        </button>
+        <div style="margin-left: 20px;"></div>
+        <button id="cardViewBtn" class="btn btn-primary" title="Vue en capsule"
+            style="width: fit-content; color: white;">
+            <i class="fas fa-th-large"></i>
+        </button>
+    </div>
+    <div style="margin-top: 10px; margin-bottom: 10px"></div>
+    <hr style="border: 1px solid gray;">
+    <!-- Conteneur des projets -->
+    <div id="projectContainer" class="settings-scroll">
+    </div>
+    <div style="margin-top: 10px; margin-bottom: 10px"></div>
+</body>
 
-<!-- Description du projet -->
+<!-- Dans ce code, vous devrez ajouter du code JavaScript pour gérer les actions suivantes :
 
-<!-- Liste des membres du projet -->
+- Remplir les options de sélection du projet et du rôle.
+- Afficher les membres du projet en fonction du projet et du rôle sélectionnés.
+- Enregistrer les modifications lorsque le bouton "Enregistrer" est cliqué.
+- Annuler les modifications lorsque le bouton "Annuler" est cliqué.
+- Notez que ce code est un exemple de base et peut nécessiter des ajustements en fonction de vos besoins spécifiques.
 
-<!-- Liste des partenaires du projet -->
 
-<!-- Les financements du projet -->
+@workspace code(html/bootstrap) pour un formulaire éditable(input) permettant d'afficher la liste des membres du projet sélectionné en fonction de leur rôle. Avec deux boutons: un bouton pour enregistrer les modifications et un bouton 'annuler' pour annuler les modifications
+ -->
 
-<!-- Les publications du projet -->
+<div class="container">
+    <form id="projectMembersForm">
+        <div class="form-group">
+            <label for="projectSelect">Sélectionnez le projet:</label>
+            <select class="form-control" id="projectSelect">
+                <!-- Les options seront ajoutées dynamiquement en JavaScript -->
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="roleSelect">Sélectionnez le rôle:</label>
+            <select class="form-control" id="roleSelect">
+                <!-- Les options seront ajoutées dynamiquement en JavaScript -->
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="membersList">Membres du projet:</label>
+            <textarea class="form-control" id="membersList" rows="3" readonly></textarea>
+        </div>
+        <div class="form-group">
+            <label for="memberInput">Modifier le membre:</label>
+            <input type="text" class="form-control" id="memberInput" placeholder="Nom du membre">
+        </div>
+        <button type="button" class="btn btn-primary" onclick="saveChanges()">Enregistrer</button>
+        <button type="button" class="btn btn-secondary" onclick="cancelChanges()">Annuler</button>
+    </form>
+</div>
 
-<!-- Les événements du projet -->
+<script>
 
-<!-- Les résultats du projet -->
+    // Récupérer le nombre d'utilisateurs inscrits sur le site via l'API (https://lab.padem.org/wp-json/mo/v1/getUserEmailAndState)
+    var numberOfMembers = 0;
+    var numberOfMembersOnline = 0;
+    var nomberOfNewReports = 0;
+    var numberOfNewMessages = 0;
+    var numberOfNewNotifications = 0;
+    var connectedUsers = {};
 
-<!-- Les ressources du projet -->
+    // Récupérer les informations de l'utilisateur connecté
+    var userId;
+    var userEmail = '';
+    var userFirstName = '';
+    var userLastName = '';
+    var userRole = '';
+    var buttonText = '';
 
-<!-- Les fichiers du projet -->
+    // Fonction pour afficher un menu contextuel en fonction de l'ID de l'element survolé
+    function showContextMenu(id) {
+        var element = document.getElementById(id);
+        var contextMenu = document.createElement('div');
+        document.body.appendChild(contextMenu);
+        contextMenu.style.display = 'none';
+        contextMenu.style.backgroundColor = 'white';
+        contextMenu.style.color = 'gray';
+        contextMenu.style.borderRadius = '5px';
+        contextMenu.style.padding = '5px';
+        contextMenu.style.width = 'fit-content';
+        contextMenu.style.height = 'fit-content';
+        contextMenu.style.zIndex = '1';
+        contextMenu.style.boxShadow = '0px 0px 5px 0px gray';
+        contextMenu.style.fontSize = '12px';
 
-<!-- Les liens du projet -->
+        if (id === 'onlineUsers') {
+            contextMenu.textContent = 'Utilisateurs en ligne';
+        } else if (id === 'userFirstName') {
+            contextMenu.textContent = 'Prénom';
+        } else if (id === 'userLastName') {
+            contextMenu.textContent = 'Nom';
+        } else if (id === 'userRole') {
+            contextMenu.textContent = 'Rôle';
+        } else if (id === 'numberOfMembersOnline') {
+            contextMenu.textContent = 'Nombre d\'utilisateurs en ligne';
+        } else if (id === 'numberOfMembers') {
+            contextMenu.textContent = 'Nombre d\'utilisateurs inscrits';
+        } else if (id === 'searchForm') {
+            contextMenu.textContent = 'Effectuer une recherche';
+        } else {
+            contextMenu.textContent = '';
+        }
 
-<!-- Les images du projet -->
+        // Afficher le menu contextuel
+        element.addEventListener('mouseover', (event) => {
+            event.preventDefault();
+            contextMenu.style.display = 'block';
+            contextMenu.style.position = 'absolute';
+            contextMenu.style.left = event.pageX + 'px';
+            contextMenu.style.top = event.pageY + 'px';
+        });
 
-<!-- Les vidéos du projet -->
+        // Cacher le menu contextuel
+        element.addEventListener('mouseout', (event) => {
+            event.preventDefault();
+            contextMenu.style.display = 'none';
+        });
+    }
 
-<!-- Les documents du projet -->
+    // Récupérer le nombre d'utilisateurs inscrits sur le site
+    function getNumberOfMembers() {
+        // Récupérer le nombre d'utilisateurs inscrits sur le site
+        fetch('https://lab.padem.org/wp-json/mo/v1/getUserEmailAndState', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                numberOfMembers = data.length;
+                data.forEach(user => {
+                    // Faire en sorte que le nombre d'utilisateurs connectés n'ogmente pas si l'utilisateur est déjà connecté
+                    if (!connectedUsers[user.user_email]) {
+                        connectedUsers[user.user_email] = 1;
+                        if (user.user_status === 1) {
+                            numberOfMembersOnline++;
+                        }
+                    }
+                });
+                // Récupérer le nombre d'utilisateurs actuellement connectés sur le site
+                if (numberOfMembersOnline === 1 || numberOfMembersOnline === 0) {
+                    document.getElementById('numberOfMembersOnline').innerHTML = '0 ';
+                } else {
+                    document.getElementById('numberOfMembersOnline').innerHTML = (numberOfMembersOnline - 1) + ' ';
+                }
+                document.getElementById('numberOfMembers').innerHTML = numberOfMembers;
+            })
+    }
 
-<!-- Les commentaires du projet -->
+    // Rafraîchir le nombre d'utilisateurs connectés toutes les 5 secondes
+    setInterval(getNumberOfMembers, 5000);
+
+    // Récupérer les informations de l'utilisateur connecté
+    function getConnectedUserInfos() {
+        // Récupérer les informations de l'utilisateur connecté
+        fetch('https://lab.padem.org/unserialize_usermeta.php', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                userId = data.user_infos._id;
+                userEmail = data.user_infos.email;
+                userFirstName = data.user_infos.first_name;
+                userLastName = data.user_infos.last_name;
+                if (data.role.administrator) {
+                    userRole = 'Administrateur';
+                } else if (data.role['chef-de-projet']) {
+                    userRole = 'Chef de projet';
+                } else if (data.role.comptable) {
+                    userRole = 'Comptable';
+                } else if (data.role.consultant) {
+                    userRole = 'Consultant';
+                } else if (data.role.partenaire) {
+                    userRole = 'Partenaire';
+                } else {
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+    // Projet: Récurérer les données depuis la base de données et les afficher dans des cellules individuels cliquables pour les modifier
+
+    // Actualiser les projets toutes les 15 secondes
+    //setInterval(displayProjects, 15000);
+
+    // Afficher les projets
+    document.addEventListener('DOMContentLoaded', () => {
+        // Récupérer les informations de l'utilisateur connecté
+        getConnectedUserInfos();
+        // Afficher les projets
+        displayProjects();
+    });
+
+    // Afficher les projets
+    function displayProjects() {
+        // Déclarer les variables
+        var numberOfMembers = 0;
+        var nomberOfNewReports = 0;
+        var numberOfNewMessages = 0;
+        var numberOfNewNotifications = 0;
+        var allProjectsIds = [];
+        var allConnectedUserProjectsIds = [];
+        var numberOfParticipantsInProject = new Array().fill(0);
+
+        //#region Récupérer les ids de tous les projets
+        fetch('https://lab.padem.org/wp-json/mo/v1/getProjects', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(project => {
+                    allProjectsIds.push(project.project_id);
+                    numberOfParticipantsInProject[project.project_id] = 0;
+                });
+            });
+        //#endregion
+
+        var colorStatusText = {
+            'Pas encore commencé': 'gray',
+            'Début': '#29A6A7',
+            'En cours': 'green',
+            'Terminé': 'red',
+            'En pause': 'blue',
+            'Annulé': 'gray',
+            'Presque terminé': 'orange',
+        };
+
+        function getMonth(month) {
+            switch (month) {
+                case 1:
+                    return 'Janvier';
+                case 2:
+                    return 'Février';
+                case 3:
+                    return 'Mars';
+                case 4:
+                    return 'Avril';
+                case 5:
+                    return 'Mai';
+                case 6:
+                    return 'Juin';
+                case 7:
+                    return 'Juillet';
+                case 8:
+                    return 'Août';
+                case 9:
+                    return 'Septembre';
+                case 10:
+                    return 'Octobre';
+                case 11:
+                    return 'Novembre';
+                case 12:
+                    return 'Décembre';
+            }
+        }
+
+        // Récupérer le nombre d'utilisateurs inscrits sur le site et le nombre d'utilisateurs actuellement connectés
+        getNumberOfMembers();
+
+        // Récupérer le nombre de participants dans le projet
+        var users_list = {
+            'emails_names': {
+                'Coordinateur': 'coordinator_email',
+                'Chef de projet': 'chief_email',
+                'partenaire': 'partner_email',
+                'comptable': 'accountant_email',
+                'consultant': 'consultant_email',
+                'bailleur': 'funder_email'
+            },
+            'users': {
+                'Coordinateur': [],
+                'Chef de projet': [],
+                'partenaire': [],
+                'comptable': [],
+                'consultant': [],
+                'bailleur': []
+            },
+            'urls': {
+                'Administrateur': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
+                'Coordinateur': 'https://lab.padem.org/wp-json/mo/v1/getCoordinator',
+                'Chef de projet': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
+                'partenaire': 'https://lab.padem.org/wp-json/mo/v1/getPartner',
+                'comptable': 'https://lab.padem.org/wp-json/mo/v1/getAccountant',
+                'consultant': 'https://lab.padem.org/wp-json/mo/v1/getConsultant',
+                'bailleur': 'https://lab.padem.org/wp-json/mo/v1/getFunder'
+            }
+        };
+
+        //#region Récupérer le nombre de participants dans le projet
+        var participants = {};
+        var isUserInProject = false;
+        var numberOfParticipants = 0;
+
+        //#region get Administrateur
+        fetch(users_list.urls['Administrateur'], {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                var counter = 0;
+                data.forEach(user => {
+                    // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
+                    if (allProjectsIds.includes(user.project_id)) {
+                        if (user.chief_email === userEmail) {
+                            allConnectedUserProjectsIds.push(user.project_id);
+                        }
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        //#endregion
+
+        //#region get Coordinnateur
+        fetch(users_list.urls['Coordinateur'], {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(user => {
+                    // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
+                    if (allProjectsIds.includes(user.project_id)) {
+                        if (user.coordinator_email === userEmail) {
+                            allConnectedUserProjectsIds.push(user.project_id); // Ajouter l'ID du projet à la liste des projets de l'utilisateur connecté
+                        }
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        //#endregion
+
+        //#region get Chef de projet
+        fetch(users_list.urls['Chef de projet'], {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(user => {
+                    // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
+                    if (allProjectsIds.includes(user.project_id)) {
+                        if (user.chief_email === userEmail) {
+                            allConnectedUserProjectsIds.push(user.project_id);
+                        }
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        //#endregion
+
+        //#region get partenaire
+        fetch(users_list.urls['partenaire'], {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(user => {
+                    // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
+                    if (allProjectsIds.includes(user.project_id)) {
+                        if (user.partner_email === userEmail) {
+                            allConnectedUserProjectsIds.push(user.project_id);
+                        }
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        //#endregion
+
+        //#region get comptable
+        fetch(users_list.urls['comptable'], {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(user => {
+                    // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
+                    if (allProjectsIds.includes(user.project_id)) {
+                        if (user.accountant_email === userEmail) {
+                            allConnectedUserProjectsIds.push(user.project_id);
+                        }
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        //#endregion
+
+        //#region get consultant
+        fetch(users_list.urls['consultant'], {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(user => {
+                    // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
+                    if (allProjectsIds.includes(user.project_id)) {
+                        if (user.consultant_email === userEmail) {
+                            allConnectedUserProjectsIds.push(user.project_id);
+                        }
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        //#endregion
+
+        //#region get bailleur
+        fetch(users_list.urls['bailleur'], {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(user => {
+                    // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
+                    if (allProjectsIds.includes(user.project_id)) {
+                        if (user.funder_email === userEmail) {
+                            allConnectedUserProjectsIds.push(user.project_id);
+                        }
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        //#endregion
+
+        //#endregion
+
+        // Récupérer la liste des projets depuis la base de données (à partir de l'API (https://lab.padem.org/wp-json/mo/v1/getProjects))
+        // les projets sont affichés dans des cartes individuelles
+        fetch('https://lab.padem.org/wp-json/mo/v1/getProjects', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                var stepper = 0;
+                var isUserInOneProject = false;
+                var projectContainer = document.getElementById('projectContainer');
+                projectContainer.innerHTML = '';
+                var divider = 1;
+                var isClicked = false;
+                // Parcourir la liste des projets
+                data.forEach(project => {
+
+                    // Vérifier si le projet est dans la liste des projets de l'utilisateur connecté
+                    if (allConnectedUserProjectsIds.includes(project.project_id)) {
+                        isUserInOneProject = true;
+                    } else {
+                        isUserInOneProject = true;
+                    }
+
+                    var card = document.createElement('div');
+                    card.className = 'card';
+                    card.style.borderRadius = '15px';
+                    card.style.backgroundColor = 'white';
+                    card.style.height = 'auto';
+                    card.style.width = 'auto';
+                    card.style.margin = '10px';
+                    card.style.border = '1px' + `${colorStatusText[status]}` + 'solid';
+
+                    //#region Afficher les informations du projet
+                    var startDate = new Date(project.start_date);
+                    var endDate = new Date(project.end_date);
+                    var dateDuJour = new Date();
+
+                    var startDay = startDate.getDate();
+                    var startMonth = startDate.getMonth() + 1; // Les mois sont indexés à partir de 0 en JavaScript
+                    var startYear = startDate.getFullYear();
+
+                    var endDay = endDate.getDate();
+                    var endMonth = endDate.getMonth() + 1;
+                    var endYear = endDate.getFullYear();
+
+                    // Si le jour ou le mois est inférieur à 10, ajoutez un zéro devant
+                    startDay = startDay < 10 ? '0' + startDay : startDay;
+                    endDay = endDay < 10 ? '0' + endDay : endDay;
+
+                    var formattedStartDate = startDay + ' ' + getMonth(startMonth) + ' ' + startYear;
+                    var formattedEndDate = endDay + ' ' + getMonth(endMonth) + ' ' + endYear;
+
+                    if (startMonth < 10) {
+                        startMonth = '0' + startMonth;
+                    } else {
+                        startMonth = startMonth;
+                    }
+
+                    var dureeTotale = endDate.getTime() - startDate.getTime();
+                    var dureeEcoulee = dateDuJour.getTime() - startDate.getTime();
+
+                    var progression = (dureeEcoulee / dureeTotale) * 100;
+
+                    function getStatus() {
+                        if (progression < 0) {
+                            progression = 0;
+                            return 'Pas encore commencé';
+                        } else if (progression < 25) {
+                            return 'Début';
+                        } else if (progression > 25 && progression < 50) {
+                            return 'En cours';
+                        } else if (progression > 50 && progression < 75) {
+                            return 'En cours';
+                        } else if (progression > 75 && progression < 100) {
+                            return 'Presque terminé';
+                        } else if (progression > 100) {
+                            progression = 100;
+                            return 'Terminé';
+                        }
+                    }
+
+                    filter = null;
+
+                    var status = getStatus();
+
+                    var barreProgression = document.createElement('progress');
+                    barreProgression.id = 'progress_' + project.project_id;
+                    barreProgression.value = progression;
+                    barreProgression.max = 100;
+                    barreProgression.style.width = '100%';
+                    barreProgression.style.height = '10px';
+                    barreProgression.style.backgroundColor = 'none';
+                    barreProgression.style.borderRadius = '10px';
+                    barreProgression.classList.add('animated');
+                    setTimeout(function () {
+                        barreProgression.classList.remove('animated');
+                    }, 1000);
+
+                    card.style.fontSize = '14px'; // Change la taille de la police
+                    card.style.fontFamily = 'Arial'; // Change la police
+                    card.style.color = 'gray'; // Change la couleur de la police
+                    //#endregion
+
+                    if (isUserInOneProject) {
+                        // Afficher les projets en fonction du filtre
+                        card.innerHTML = `
+                            <div class="card" id="card_id_${project.project_id}" alt="${project.project_title}"> 
+                                <div class="card-body"> 
+                                    <div class="d-flex justify-content-between"> 
+                                        <div class="d-flex align-items-center" style="width: 40%;"> 
+                                            <p class="text-muted small">${formattedStartDate} - ${formattedEndDate}</p> 
+                                        </div> 
+                                        <div> 
+                                            <div class="text-muted small" style="display: flex; justify-content: space-between;"> 
+                                                <img src="https://lab.padem.org/wp-content/uploads/user_2.png" alt="Icone utilisateurs" class="img-fluid" id="iconUsers" style="width:30px; height:30px;"/> 
+                                                <p id="participantNumber_${project.project_id}"></p>
+                                            </div> 
+                                        </div> 
+                                    </div> 
+                                    <div class="mt-5 mb-1"></div>
+                                    <a onclick="window.open('https://lab.padem.org/accueil/partenaires/?projectId=${project.project_id}', '_blank')" class="h5 text-decoration-none text-primary">
+                                        ${project.project_title}
+                                    </a> 
+                                    <div> 
+                                        <p class="font-weight-bold">
+                                            ${project.project_location}
+                                        </p> 
+                                    </div> 
+                                    ${barreProgression.outerHTML} 
+                                </div> 
+                                <div class="card-footer"> 
+                                    <p class="small m-1 rounded" style="color: ${colorStatusText[status]}; font-size: 11px;" id="status_${project.project_id}">
+                                        ${parseInt(progression)}% - ${status}</p> <button id="goToProject_${project.project_id}" class="btn btn-primary" style="width:fit-content; color: white;">
+                                            Voir le projet <i class="fas fa-external-link-alt"></i></button> 
+                                </div> 
+                            </div>
+                        `;
+
+                        // Ajouter la cellule dans la ligne
+                        projectContainer.appendChild(card);
+
+                        // Changer la classe de la carte pour le mode "ligne"
+                        document.getElementById('listViewBtn').addEventListener('click', function () {
+                            var cards = document.getElementById('card_id_' + project.project_id);
+                            cards.innerHTML = '';
+                            cards.innerHTML = `
+                                <div class="card" id="card_id_${project.project_id}" alt="${project.project_title}">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col">
+                                                <a onclick="window.open('https://lab.padem.org/accueil/partenaires/?projectId=${project.project_id}', '_blank')" class="h5 text-decoration-none text-primary">${project.project_title}</a>
+                                            </div>
+                                            <div class="col">
+                                                <p class="text-muted small">${formattedStartDate} - ${formattedEndDate}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer">
+                                        <p class="small m-1 rounded" style="color: ${colorStatusText[status]}; font-size: 11px;" id="status_${project.project_id}">${parseInt(progression)}% - ${status}</p>
+                                        <button class="btn btn-primary" style="width:fit-content; color: white;" id="goToProject_${project.project_id}">Voir le projet <i class="fas fa-external-link-alt"></i></button>
+                                    </div>
+                                </div>
+                            `;
+                            addEventListener();
+                            isClicked = true;
+                        });
+
+                        // Changer la classe de la carte pour le mode "card"
+                        document.getElementById('cardViewBtn').addEventListener('click', function () {
+                            var cards = document.getElementById('card_id_' + project.project_id);
+                            cards.innerHTML = '';
+                            cards.innerHTML = `
+                                     <div class="card" id="card_id_${project.project_id}" alt="${project.project_title}"> 
+                                         <div class="card-body"> 
+                                             <div class="d-flex justify-content-between"> 
+                                                 <div class="d-flex align-items-center" style="width: 40%;"> 
+                                                     <p class="text-muted small">${formattedStartDate} - ${formattedEndDate}</p> 
+                                                 </div> 
+                                                 <div> 
+                                                     <div class="text-muted small" style="display: flex; justify-content: space-between;"> 
+                                                         <img src="https://lab.padem.org/wp-content/uploads/user_2.png" alt="Icone utilisateurs" class="img-fluid" id="iconUsers" style="width:30px; height:30px;"/> 
+                                                         <p id="participantNumber_${project.project_id}"></p>
+                                                     </div> 
+                                                 </div> 
+                                             </div> 
+                                             <div class="mt-5 mb-1"></div>
+                                             <a href="window.open('https://lab.padem.org/accueil/partenaires/?projectId=${project.project_id}', '_blank')" class="h5 text-decoration-none text-primary">
+                                                 ${project.project_title}
+                                             </a> 
+                                             <div> 
+                                                 <p class="font-weight-bold">
+                                                     ${project.project_location}
+                                                 </p> 
+                                             </div> 
+                                             ${barreProgression.outerHTML} 
+                                         </div> 
+                                         <div class="card-footer"> 
+                                             <p class="small m-1 rounded" style="color: ${colorStatusText[status]}; font-size: 11px;" id="status_${project.project_id}">
+                                                 ${parseInt(progression)}% - ${status}</p> <button id="goToProject_${project.project_id}" class="btn btn-primary" style="width:fit-content; color: white;">
+                                                     Voir le projet <i class="fas fa-external-link-alt"></i></button> 
+                                         </div> 
+                                     </div>
+                                 `;
+                            addEventListener();
+                            getParticipants();
+                        });
+
+                        //#region Ajouter un événement de clic sur le bouton "Modifier" en fonction de l'ID du projet, du rôle de l'utilisateur et en fonction de si l'utilisateur est dans le projet ou non
+                        function addEventListener() {
+                            if (userRole === 'Administrateur' || userRole === 'Chef de projet') {
+                                document.getElementById('goToProject_' + project.project_id).addEventListener('click', () => {
+                                    window.open(`https://lab.padem.org/accueil/partenaires/?projectId=${project.project_id}`, '_blank');
+                                });
+                            } else if (userRole === 'Consultant') {
+                                document.getElementById('goToProject_' + project.project_id).addEventListener('click', () => {
+                                    window.open(`https://lab.padem.org/accueil/partenaires/?projectId=${project.project_id}`, '_blank');
+                                });
+                            } else if (userRole === 'Partenaire') {
+                                document.getElementById('goToProject_' + project.project_id).addEventListener('click', () => {
+                                    window.open(`https://lab.padem.org/accueil/partenaires/?projectId=${project.project_id}`, '_blank');
+                                });
+                            } else if (userRole === 'Comptable') {
+                                document.getElementById('goToProject_' + project.project_id).addEventListener('click', () => {
+                                    window.open(`https://lab.padem.org/accueil/partenaires/?projectId=${project.project_id}`, '_blank');
+                                });
+                            } else {
+                                document.getElementById('goToProject_' + project.project_id).addEventListener('click', () => {
+                                    window.open(`https://lab.padem.org/accueil/partenaires/?projectId=${project.project_id}`, '_blank');
+                                });
+                            }
+                        }
+                        addEventListener();
+                        //#endregion
+
+                        //#region Récupérer le nombre de participants dans le projet
+                        function getParticipants() {
+
+                            //#region get Administrateur
+                            fetch(users_list.urls['Administrateur'], {
+                                method: 'GET',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                            })
+                                .then(response => response.json())
+                                .then(data => {
+                                    var counter = 0;
+                                    data.forEach(user => {
+                                        // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
+                                        if (user.project_id === project.project_id) {
+                                            var numberElement = document.getElementById('participantNumber_' + user.project_id);
+                                            if (numberElement) {
+                                                var number = parseInt(numberElement.value);
+                                                if (isNaN(number)) {
+                                                    numberElement.value = 1;
+                                                } else {
+                                                    numberElement.value = number + 1;
+                                                }
+                                                numberElement.innerText = (numberElement.value);
+                                            }
+                                        }
+                                    });
+                                })
+                                .catch(error => {
+                                    console.error('Error:', error);
+                                });
+                            //#endregion
+
+                            //#region get Coordinnateur
+                            fetch(users_list.urls['Coordinateur'], {
+                                method: 'GET',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                            })
+                                .then(response => response.json())
+                                .then(data => {
+                                    data.forEach(user => {
+                                        // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
+                                        if (user.project_id === project.project_id) {
+                                            var numberElement = document.getElementById('participantNumber_' + user.project_id);
+                                            if (numberElement) {
+                                                var number = parseInt(numberElement.value);
+                                                if (isNaN(number)) {
+                                                    numberElement.value = 1;
+                                                } else {
+                                                    numberElement.value = number + 1;
+                                                }
+                                                numberElement.innerText = (numberElement.value);
+                                            }
+                                        }
+                                    });
+                                })
+                                .catch(error => {
+                                    console.error('Error:', error);
+                                });
+                            //#endregion
+
+                            //#region get Chef de projet
+                            fetch(users_list.urls['Chef de projet'], {
+                                method: 'GET',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                            })
+                                .then(response => response.json())
+                                .then(data => {
+                                    data.forEach(user => {
+                                        // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
+                                        if (user.project_id === project.project_id) {
+                                            var numberElement = document.getElementById('participantNumber_' + user.project_id);
+                                            if (numberElement) {
+                                                var number = parseInt(numberElement.value);
+                                                if (isNaN(number)) {
+                                                    numberElement.value = 1;
+                                                } else {
+                                                    numberElement.value = number + 1;
+                                                }
+                                                numberElement.innerText = (numberElement.value);
+                                            }
+                                        }
+                                    });
+                                })
+                                .catch(error => {
+                                    console.error('Error:', error);
+                                });
+                            //#endregion
+
+                            //#region get partenaire
+                            fetch(users_list.urls['partenaire'], {
+                                method: 'GET',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                            })
+                                .then(response => response.json())
+                                .then(data => {
+                                    data.forEach(user => {
+                                        // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
+                                        if (user.project_id === project.project_id) {
+                                            var numberElement = document.getElementById('participantNumber_' + user.project_id);
+                                            if (numberElement) {
+                                                var number = parseInt(numberElement.value);
+                                                if (isNaN(number)) {
+                                                    numberElement.value = 1;
+                                                } else {
+                                                    numberElement.value = number + 1;
+                                                }
+                                                numberElement.innerText = (numberElement.value);
+                                            }
+                                        }
+                                    });
+                                })
+                                .catch(error => {
+                                    console.error('Error:', error);
+                                });
+                            //#endregion
+
+                            //#region get comptable
+                            fetch(users_list.urls['comptable'], {
+                                method: 'GET',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                            })
+                                .then(response => response.json())
+                                .then(data => {
+                                    data.forEach(user => {
+                                        // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
+                                        if (user.project_id === project.project_id) {
+                                            var numberElement = document.getElementById('participantNumber_' + user.project_id);
+                                            if (numberElement) {
+                                                var number = parseInt(numberElement.value);
+                                                if (isNaN(number)) {
+                                                    numberElement.value = 1;
+                                                } else {
+                                                    numberElement.value = number + 1;
+                                                }
+                                                numberElement.innerText = (numberElement.value);
+                                            }
+                                        }
+                                    });
+                                })
+                                .catch(error => {
+                                    console.error('Error:', error);
+                                });
+                            //#endregion
+
+                            //#region get consultant
+                            fetch(users_list.urls['consultant'], {
+                                method: 'GET',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                            })
+                                .then(response => response.json())
+                                .then(data => {
+                                    data.forEach(user => {
+                                        // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
+                                        if (user.project_id === project.project_id) {
+                                            var numberElement = document.getElementById('participantNumber_' + user.project_id);
+                                            if (numberElement) {
+                                                var number = parseInt(numberElement.value);
+                                                if (isNaN(number)) {
+                                                    numberElement.value = 1;
+                                                } else {
+                                                    numberElement.value = number + 1;
+                                                }
+                                                numberElement.innerText = (numberElement.value);
+                                            }
+                                        }
+                                    });
+                                })
+                                .catch(error => {
+                                    console.error('Error:', error);
+                                });
+                            //#endregion
+
+                            //#region get bailleur
+                            fetch(users_list.urls['bailleur'], {
+                                method: 'GET',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                            })
+                                .then(response => response.json())
+                                .then(data => {
+                                    data.forEach(user => {
+                                        // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
+                                        if (user.project_id === project.project_id) {
+                                            var numberElement = document.getElementById('participantNumber_' + user.project_id);
+                                            if (numberElement) {
+                                                var number = parseInt(numberElement.value);
+                                                if (isNaN(number)) {
+                                                    numberElement.value = 1;
+                                                } else {
+                                                    numberElement.value = number + 1;
+                                                }
+                                                numberElement.innerText = (numberElement.value);
+                                            }
+                                        }
+                                    });
+                                })
+                                .catch(error => {
+                                    console.error('Error:', error);
+                                });
+                            //#endregion
+
+                            isClicked = false;
+                        }
+                        getParticipants();
+                        //#endregion
+
+                        // Ajouter l'image en arrière-plan du card-body
+                        /*
+                        card.querySelector('#card-body').style.backgroundImage = `url(${project.background_image_link})`;
+                        card.querySelector('#card-body').style.backgroundSize = 'cover';
+                        card.querySelector('#card-body').style.backgroundPosition = 'center';
+                        card.querySelector('#card-body').style.backgroundRepeat = 'no-repeat';
+                        card.querySelector('#card-body').style.borderRadius = '25px'; 
+                        */
+
+                        // incrémenter le stepper
+                        stepper++;
+                        if (stepper === 3) {
+                            card = document.createElement('div');
+                            stepper = 0;
+                        }
+                    }
+                });
+                if (!isUserInOneProject) {
+                    // Vérifier si le message existe déjà
+                    if (projectContainer.querySelector('div')) {
+                        // Supprimer le message disant qu'il n'y a pas de projet
+                        projectContainer.querySelector('div').remove();
+                    }
+                    // Afficher un message disant qu'il n'y a pas de projet
+                    var card = document.createElement('div');
+                    card.innerHTML = `
+                        <div  style="display: flex;">
+                            <img src="https://lab.padem.org/wp-content/uploads/infos-1.png" alt="Icone utilisateurs"
+                                style="width: 20px; height: 20px; margin-top: 5px;" id="iconInfos" />
+                            <div style="margin-left: 5px; margin-right: 5px;"></div>
+                            <p style="color: gray; background: none">
+                                Vous n'avez pas de projet pour le moment !
+                            </p>
+                        </div>`;
+                    projectContainer.appendChild(card);
+                }
+            })
+    }
+</script>
