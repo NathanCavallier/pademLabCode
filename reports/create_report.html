@@ -1,51 +1,413 @@
-<div class="container">
-    <h2>Soumettre un rapport de projet</h2>
-    <form id="reportForm">
-        <div class="form-group">
-            <label for="projectName">Nom du projet</label>
-            <input type="text" class="form-control" id="projectName" required>
-        </div>
-        <div class="form-group">
-            <label>Destinataires du rapport: </label>
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="reportReceiversAll">
-                <label class="form-check-label" for="reportReceiversAll">
-                    Tous les membres du projet
-                </label>
-                <label class="form-check-label" for="reportReceiversAll">
-                    <select class="form-control" id="reportReceiversAll" required>
-                        <option value="">Sélectionnez les membres du projet</option>
-                        <option value="progress">Rapport d'avancement</option>
-                        <option value="final">Rapport final</option>
-                    </select>
-                </label>
-            </div>
-            <label for="reportReceivers">Destinataires du rapport:</label>
-            <input type="text" class="form-control" id="reportReceivers" required>
-        </div>
-        <div class="form-group">
-            <label for="reportType">Type de rapport: </label>
-            <select class="form-control" id="reportType" required>
-                <option value="">Sélectionnez le type de rapport</option>
-                <option value="progress">Rapport d'avancement</option>
-                <option value="final">Rapport final</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="reportContent">Ajouter des commentaires:</label>
-            <textarea class="form-control" id="reportContent" rows="8" required></textarea>
-        </div>
-        <div class="form-group">
-            <label for="reportFiles">Joindre des fichiers au rapport: </label>
-            <input type="file" class="form-control-file" id="reportFiles" multiple>
-        </div>
-        <button type="submit" class="btn btn-primary">Soumettre le rapport</button>
-    </form>
-</div>
 
-<script>
-document.getElementById('reportForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    submitReport();
-});
-</script>
+<body>
+    <div style="display: flex;" class="action-buttons">
+        <!-- Bouton pour afficher/masquer le formulaire de création de projet -->
+        <button type="button"
+            onclick="showAndHideProjectForm(); showAndHideCancelButton(); switchAddProjectButtonIcon('add-file')"
+            id="addProjectButton" class="action-buttons" style="width: auto; height: auto;">
+            <img src="https://lab.padem.org/wp-content/uploads/plus.png" alt="add-file" id="add-file"
+                title="Ajouter un projet" />
+        </button>
+        <div style="margin-left: auto; margin-right: auto;"></div>
+        <div class="action-buttons">
+            <!-- Bouton pour annuler le projet -->
+            <button type="button" onclick="cancelProject()" id="cancelProjectButton"
+                style=" display: none; width: auto;" title="Annuler">
+                <img src="https://lab.padem.org/wp-content/uploads/Annuler.png" alt="cancel" id="cancel" />
+            </button>
+        </div>
+    </div>
+    
+    <form id="projectForm"
+        style="display: none; width: 100%; height: fit-content; border-radius: 15px; background: white;">
+        <div style="margin-top: 10px; margin-bottom: 10px"></div>
+        <!-- Ajout d'un espace entre les cartes -->
+        <div id="step1"
+            style="display: block; width: 100%; height: fit-content; border-radius: 15px; background: white;">
+            <p>Remplissez les champs suivants:</p>
+            <hr class="gray-border">
+            <div style="margin-top: 10px; margin-bottom: 10px"></div>
+            <label for="projectTitle">Titre du projet:</label>
+            <input type="text" id="projectTitle" name="projectTitle" required><br><br>
+            <label for="projectType">Type de projet:</label>
+            <input type="text" id="projectType" name="projectType" required><br><br>
+            <label for="projectDate">Date de début prévisionnelle:</label>
+            <input type="date" id="projectDate" name="projectDate" required><br><br>
+            <label for="projectEndDate2">Date de fin prévisionnelle:</label>
+            <input type="date" id="projectEndDate2" name="projectEndDate2" required><br><br>
+            <label for="projectLocation">Pays de réalisation du projet:</label>
+            <input type="text" id="projectLocation" name="projectLocation" required><br><br>
+            <label for="pademResponsible">Responsable Padem:</label>
+            <input type="text" id="pademResponsible" name="pademResponsible"><br><br>
+            <label for="pademResponsibleEmail">Email du responsable Padem:</label>
+            <input type="email" id="pademResponsibleEmail" name="pademResponsibleEmail"><br><br>
+            <label for="projectReferent">Référent du projet:</label>
+            <input type="text" id="projectReferent" name="projectReferent" required><br><br>
+            <label for="projectReferentEmail">Email du référent du projet:</label>
+            <input type="email" id="projectReferentEmail" name="projectReferentEmail" required><br><br>
+
+            <!-- Description du projet -->
+            <div>
+                <p>Description du projet:</p>
+                <textarea id="projectDescription" name="projectDescription" rows="4" cols="50"></textarea><br><br>
+            </div>
+            <!-- Uploader une image de couverture -->
+            <div>
+                <p>Ajoutez une image de couverture pour le projet:</p>
+                <input type="file" id="projectCover" name="projectCover" accept="image/*"><br><br>
+            </div>
+            <div style="margin-top: 10px; margin-bottom: 10px"></div>
+            <div class="action-buttons" style="display: flex; justify-content: flex-end;">
+                <!-- Bouton pour annuler le projet -->
+                <button type="button" onclick="cancelProject()" style="width: auto;">
+                    <p style="width: auto; margin-top: 20px; margin-right: 5px;">Annuler</p>
+                    <img src="https://lab.padem.org/wp-content/uploads/Annuler.png" alt="cancel"
+                        style="width: 35px; height: 35px;" />
+                </button>
+                <!-- Bouton pour sauvegarder le projet -->
+                <button type="submit" onclick="saveFormData()" style="width: auto;" id="saveProjectButton">
+                    <p style="width: auto; margin-top: 20px; margin-right: 5px;">Enregistrer</p>
+                    <img src="https://lab.padem.org/wp-content/uploads/save.png" alt="save"
+                        style="width: 35px; height: 35px;" />
+                </button>
+            </div>
+        </div>
+        <div style="margin-top: 10px; margin-bottom: 10px;"></div>
+    </form>
+
+    <script>
+        function saveFormData() {
+
+            // Récupérer les informations du formulaire
+            var dataInfosPreliminaires = {
+                project_title: '',
+                project_type: '',
+                start_date: '',
+                end_date: '',
+                project_location: '',
+                project_status: '',
+                padem_responsible: '',
+                padem_responsible_email: '',
+                project_referent: '',
+                project_referent_email: '',
+                project_description: JSON.stringify(''),
+                background_image_link: 'https://lab.padem.org/wp-content/uploads/default_background-white.png',
+                folder_id: 0,
+                folder_name: '',
+            };
+
+            // Récupérer l'image de couverture du projet à envoyer au serveur sous forme de fichier Blob
+            var formData = new FormData();
+            var fileField = document.querySelector('input[type="file"]');
+            var imageData = {}
+
+            //#region Vérifier si un fichier a été sélectionné
+            if (fileField.files.length) {
+                imageData = {
+                    type: 'image',
+                    title: document.getElementById('projectTitle').value,
+                    file_size: fileField.files[0].size,
+                    file_name: fileField.files[0].name,
+                    file_path: fileField.files[0].path,
+                    file_content: fileField.files[0].content,
+                };
+
+                //#region Envoi de l'image de couverture du projet
+                fetch('https://lab.padem.org/wp-json/mo/v1/createMedia', {
+                    method: 'POST',
+                    body: JSON.stringify(imageData),
+                }).then(response => {
+                    if (!response.ok) {
+                        console.error('Erreur lors de la requête vers l\'API.');
+                    }
+                    return response.json();
+                })
+                    .then(data => {
+                        dataInfosPreliminaires.background_image_link = data.file_path;
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                    });
+                //#endregion
+
+                //#region Récupérer le lien de l'image de couverture du projet
+                fetch('https://lab.padem.org/wp-json/mo/v1/getFileLink', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }).then(response => {
+                    if (!response.ok) {
+                        console.error('Erreur lors de la requête vers l\'API.');
+                    }
+                    return response.json();
+                })
+                    .then(data => {
+                        dataInfosPreliminaires.background_image_link = data.url;
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                    });
+
+            }
+            //#endregion
+
+            dataInfosPreliminaires.project_title = document.getElementById('projectTitle').value || 'Titre du projet';
+            dataInfosPreliminaires.project_type = document.getElementById('projectType').value || 'Type de projet';
+            dataInfosPreliminaires.start_date = document.getElementById('projectDate').value || 'Date de début prévisionnelle';
+            dataInfosPreliminaires.end_date = document.getElementById('projectEndDate2').value || 'Date de fin prévisionnelle';
+            dataInfosPreliminaires.project_location = document.getElementById('projectLocation').value;
+            dataInfosPreliminaires.padem_responsible = document.getElementById('pademResponsible').value;
+            dataInfosPreliminaires.padem_responsible_email = document.getElementById('pademResponsibleEmail').value
+            dataInfosPreliminaires.project_referent = document.getElementById('projectReferent').value;
+            dataInfosPreliminaires.project_referent_email = document.getElementById('projectReferentEmail').value;
+            dataInfosPreliminaires.project_description = JSON.stringify(document.getElementById('projectDescription').value);
+
+            //#region Créer le dossier des fichiers du projet
+            fetch('https://lab.padem.org/get_key.php',
+                {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }).then(response => {
+                    if (!response.ok) {
+                        console.error('Erreur lors de la requête vers l\'API.');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    //#region Créer un dossier où stocker les fichiers du projet sur le serveur via l'API(https://lab.padem.org/wp-json/filebird/public/v1/folders)
+                    fetch('https://lab.padem.org/wp-json/filebird/public/v1/folders', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + data.fileBird_api_key,
+                        },
+                        body: JSON.stringify({
+                            name: dataInfosPreliminaires.project_title,
+                            parent_id: 0,
+                        }),
+                    }).then(response => {
+                        if (!response.ok) {
+                            console.log('Erreur lors de la requête vers l\'API.');
+                        }
+                        return response.json();
+                    })
+                        .then(data => {
+                            console.log('Success:', data);
+                            dataInfosPreliminaires.folder_id = JSON.stringify({
+                                folder_id: data.folder_id,
+                                folder_name: dataInfosPreliminaires.project_title,
+                            });
+                        })
+                        .catch((error) => {
+                            console.error('Error:', error);
+                        });
+                    //#endregion
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                })
+            //#endregion
+
+            // 1. Create a new project
+            // 2. Add the project to the database
+            // 3. Redirect to the project page
+            fetch('https://lab.padem.org/wp-json/mo/v1/createProject', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(dataInfosPreliminaires),
+            }).then(response => {
+                if (!response.ok) {
+                    console.log('Erreur lors de la requête vers l\'API.');
+                }
+                return response.json();
+            })
+                .then(data => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Projet créé avec succès',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+                    // Masquer le formulaire
+                    showAndHide('projectForm');
+
+                    // Recharger la page
+                    window.location.href = "https://lab.padem.org/projets";
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Erreur lors de la création du projet',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                });
+        }
+
+
+        // Fonction pour afficher/masquer le formulaire de création de projet
+        function showAndHideProjectForm() {
+            var element = document.getElementById("projectForm");
+            if (element.style.display === "none") {
+                element.style.display = "block";
+                element.style.background = "white";
+                element.style.title = "Masquer le formuliaire";
+            } else {
+                element.style.display = "none";
+                element.style.title = "Afficher le formulaire";
+            }
+        }
+
+
+        // Fonction pour masquer/afficher le bouton Annuler
+        function showAndHideCancelButton() {
+            var element = document.getElementById("cancelProjectButton");
+            if (element.style.display === "none") {
+                element.style.display = "block";
+            } else {
+                element.style.display = "none";
+            }
+        }
+
+        // Fonction pour afficher/masquer les boutons de création de projet
+        function showAndHide(id) {
+            var element = document.getElementById(id);
+            if (element.style.display === "none") {
+                element.style.display = "block";
+            } else {
+                element.style.display = "none";
+            }
+        }
+
+        // Fonction pour changer la couleur de fond de la cellule
+        function switchCellBackground(id) {
+            var element = document.getElementById(id);
+            if (element.style.display != "block") {
+                element.style.background = "white";
+                element.style.width = "100%";
+                element.style.height = "auto";
+                element.style.borderRadius = "15px";
+            } else {
+                element.style.background = "white";
+                element.style.width = "100%";
+                element.style.height = "75px";
+                element.style.borderRadius = "15px";
+            }
+        }
+
+        // Fonction pour annuler le projet
+        function cancelProject() {
+            var projectForm = document.getElementById("projectForm");
+
+            // Réinitialiser les champs du formulaire
+            if (projectForm.body != null) {
+                Swal.fire({
+                    title: 'Êtes-vous sûr de vouloir annuler?',
+                    text: "Vous ne pourrez pas revenir en arrière!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#29A6A7',
+                    confirmButtonText: 'Oui',
+                    cancelButtonText: 'Non'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire(
+                            'Annulé!',
+                            'Votre projet a été annulé.',
+                            'success'
+                        )
+                        projectForm.reset();
+                        document.getElementById("projectForm").style.display = "none";
+                        document.getElementById("add-file").style.title = "Ajouter un projet";
+
+                        document.getElementById("cancelProjectButton").style.display = "none";
+                        document.getElementById("saveProjectButton").style.display = "none";
+                        document.getElementById("step1").style.display = "none";
+                        document.getElementById("step2").style.display = "none";
+                        document.getElementById("step3").style.display = "none";
+                        document.getElementById("step4").style.display = "none";
+                        document.getElementById("step5").style.display = "none";
+                        document.getElementById("step6").style.display = "none";
+                        document.getElementById("step7").style.display = "none";
+                        document.getElementById("step8").style.display = "none";
+                        document.getElementById("step9").style.display = "none";
+                        document.getElementById("step10").style.display = "none";
+                        document.getElementById("liens").style.display = "none";
+                        document.getElementById("referants").style.display = "none";
+
+                        document.getElementById("add-file").src = "https://lab.padem.org/wp-content/uploads/plus.png";
+                        document.getElementById("preliminaires").src = "https://lab.padem.org/wp-content/uploads/plus.png";
+                        document.getElementById("projet").src = "https://lab.padem.org/wp-content/uploads/plus.png";
+                        document.getElementById("consultants-1").src = "https://lab.padem.org/wp-content/uploads/plus.png";
+                        document.getElementById("comptables").src = "https://lab.padem.org/wp-content/uploads/plus.png";
+                        document.getElementById("partners").src = "https://lab.padem.org/wp-content/uploads/plus.png";
+                        document.getElementById("bailleurs-1").src = "https://lab.padem.org/wp-content/uploads/plus.png";
+                        document.getElementById("objectifs").src = "https://lab.padem.org/wp-content/uploads/plus.png";
+                        document.getElementById("financement").src = "https://lab.padem.org/wp-content/uploads/plus.png";
+                        document.getElementById("rapports-attendus").src = "https://lab.padem.org/wp-content/uploads/plus.png";
+                        document.getElementById("fichiers").src = "https://lab.padem.org/wp-content/uploads/plus.png";
+                        document.getElementById("liens").src = "https://lab.padem.org/wp-content/uploads/plus.png";
+                        document.getElementById("referants").src = "https://lab.padem.org/wp-content/uploads/plus.png";
+                    }
+                });
+            }
+            else {
+                // Masquer le formulaire
+                projectForm.style.display = "none";
+
+                // Masquer les boutons Annuler et Sauvegarder
+                showAndHideCancelButton();
+                showAndHideSaveButton();
+
+                document.getElementById("add-file").src = "https://lab.padem.org/wp-content/uploads/plus.png";
+                document.getElementById("preliminaires").src = "https://lab.padem.org/wp-content/uploads/plus.png";
+                document.getElementById("projet").src = "https://lab.padem.org/wp-content/uploads/plus.png";
+                document.getElementById("consultants-1").src = "https://lab.padem.org/wp-content/uploads/plus.png";
+                document.getElementById("comptables-1").src = "https://lab.padem.org/wp-content/uploads/plus.png";
+                document.getElementById("partners").src = "https://lab.padem.org/wp-content/uploads/plus.png";
+                document.getElementById("bailleurs-1").src = "https://lab.padem.org/wp-content/uploads/plus.png";
+                document.getElementById("objectifs").src = "https://lab.padem.org/wp-content/uploads/plus.png";
+                document.getElementById("financement").src = "https://lab.padem.org/wp-content/uploads/plus.png";
+                document.getElementById("rapports-attendus").src = "https://lab.padem.org/wp-content/uploads/plus.png";
+                document.getElementById("fichiers").src = "https://lab.padem.org/wp-content/uploads/plus.png";
+                document.getElementById("liens-1").src = "https://lab.padem.org/wp-content/uploads/plus.png";
+                document.getElementById("referants-1").src = "https://lab.padem.org/wp-content/uploads/plus.png";
+            }
+        }
+
+        // Fonction pour switcher les images des boutons
+        function switchFormsIcons(id) {
+            var element = document.getElementById(id);
+            if (element.src.match("https://lab.padem.org/wp-content/uploads/plus.png")) {
+                element.src = "https://lab.padem.org/wp-content/uploads/voire.png";
+            } else if (element.src.match("https://lab.padem.org/wp-content/uploads/voire.png")) {
+                element.src = "https://lab.padem.org/wp-content/uploads/masquer.png";
+            } else {
+                element.src = "https://lab.padem.org/wp-content/uploads/voire.png";
+            }
+        }
+
+        // Fonction pour switcher les images du bouton Ajouter un projet
+        function switchAddProjectButtonIcon() {
+            var element = document.getElementById("add-file");
+            if (element.src.match("https://lab.padem.org/wp-content/uploads/plus.png") && document.getElementById('projectForm').style.display === 'none') {
+                element.src = "https://lab.padem.org/wp-content/uploads/voire.png";
+                element.title = "Afficher le formulaire";
+            } else if ((document.getElementById("cancelProjectButton").style.display === "block") && (element.src.match("https://lab.padem.org/wp-content/uploads/masquer.png"))) {
+                element.src = "https://lab.padem.org/wp-content/uploads/voire.png";
+                element.title = "Masquer le formulaire";
+            } else {
+                element.src = "https://lab.padem.org/wp-content/uploads/masquer.png";
+                element.title = "Afficher le formulaire";
+            }
+        }
+    </script>
+</body>

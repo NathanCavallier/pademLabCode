@@ -1,0 +1,51 @@
+<div class="container">
+    <h2>Soumettre un rapport de projet</h2>
+    <form id="reportForm">
+        <div class="form-group">
+            <label for="projectName">Nom du projet</label>
+            <input type="text" class="form-control" id="projectName" required>
+        </div>
+        <div class="form-group">
+            <label>Destinataires du rapport: </label>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="reportReceiversAll_ed8c6549bwf9" placeholder="hbh">
+                <label class="form-check-label" for="reportReceiversAll">
+                    Tous les membres du projet
+                </label>
+                <label class="form-check-label" for="reportReceiversAll">
+                    <select class="form-control" id="reportReceiversAll" required>
+                        <option value="">Sélectionnez les membres du projet</option>
+                        <option value="progress">Rapport d'avancement</option>
+                        <option value="final">Rapport final</option>
+                    </select>
+                </label>
+            </div>
+            <label for="reportReceivers">Destinataires du rapport:</label>
+            <input type="text" class="form-control" id="reportReceivers" required>
+        </div>
+        <div class="form-group">
+            <label for="reportType">Type de rapport: </label>
+            <select class="form-control" id="reportType" required>
+                <option value="">Sélectionnez le type de rapport</option>
+                <option value="progress">Rapport d'avancement</option>
+                <option value="final">Rapport final</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="reportContent">Ajouter des commentaires:</label>
+            <textarea class="form-control" id="reportContent" rows="8" required></textarea>
+        </div>
+        <div class="form-group">
+            <label for="reportFiles">Joindre des fichiers au rapport: </label>
+            <input type="file" class="form-control-file" id="reportFiles" multiple>
+        </div>
+        <button type="submit" class="btn btn-primary">Soumettre le rapport</button>
+    </form>
+</div>
+
+<script>
+document.getElementById('reportForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    submitReport();
+});
+</script>
