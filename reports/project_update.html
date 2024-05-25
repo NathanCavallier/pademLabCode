@@ -1,68 +1,61 @@
 <body>
-    <div style="display: flex;" class="action-buttons">
-        <!-- Bouton pour afficher/masquer le formulaire de création de projet -->
-        <button type="button"
-            onclick="showAndHideProjectForm(); showAndHideCancelButton(); switchAddProjectButtonIcon('add-file')"
-            id="addProjectButton" class="action-buttons" style="width: auto; height: auto;">
-            <img src="https://lab.padem.org/wp-content/uploads/plus.png" alt="add-file" id="add-file"
-                title="Ajouter un projet" />
-        </button>
-        <div style="margin-left: auto; margin-right: auto;"></div>
-        <div class="action-buttons">
-            <!-- Bouton pour annuler le projet -->
-            <button type="button" onclick="cancelProject()" id="cancelProjectButton"
-                style=" display: none; width: auto;" title="Annuler">
-                <img src="https://lab.padem.org/wp-content/uploads/Annuler.png" alt="cancel" id="cancel" />
-            </button>
-        </div>
-    </div>
-
-    <form id="projectForm"
-        style="display: none; width: 100%; height: fit-content; border-radius: 15px; background: white;">
+    <form id="projectForm" class="p-3 bg-white rounded"
+        style="width: 100%; height: fit-content; border-radius: 15px; background: white;">
         <div style="margin-top: 10px; margin-bottom: 10px"></div>
         <!-- Ajout d'un espace entre les cartes -->
-        <div id="step1"
-            style="display: block; width: 100%; height: fit-content; border-radius: 15px; background: white;">
-            <p>Remplissez les champs suivants:</p>
-            <hr class="gray-border">
-            <div style="margin-top: 10px; margin-bottom: 10px"></div>
-            <label for="projectTitle">Titre du projet:</label>
-            <input type="text" id="projectTitle" name="projectTitle" required><br><br>
-            <label for="projectType">Type de projet:</label>
-            <input type="text" id="projectType" name="projectType" required><br><br>
-            <label for="projectDate">Date de début prévisionnelle:</label>
-            <input type="date" id="projectDate" name="projectDate" required><br><br>
-            <label for="projectEndDate2">Date de fin prévisionnelle:</label>
-            <input type="date" id="projectEndDate2" name="projectEndDate2" required><br><br>
-            <label for="projectLocation">Pays de réalisation du projet:</label>
-            <input type="text" id="projectLocation" name="projectLocation" required><br><br>
-            <label for="pademResponsible">Responsable Padem:</label>
-            <input type="text" id="pademResponsible" name="pademResponsible"><br><br>
-            <label for="pademResponsibleEmail">Email du responsable Padem:</label>
-            <input type="email" id="pademResponsibleEmail" name="pademResponsibleEmail"><br><br>
-            <label for="projectReferent">Référent du projet:</label>
-            <input type="text" id="projectReferent" name="projectReferent" required><br><br>
-            <label for="projectReferentEmail">Email du référent du projet:</label>
-            <input type="email" id="projectReferentEmail" name="projectReferentEmail" required><br><br>
-
-            <!-- Description du projet -->
-            <div>
-                <p>Description du projet:</p>
-                <textarea id="projectDescription" name="projectDescription" rows="4" cols="50"></textarea><br><br>
+        <div class="mb-3">
+            <h5>Remplissez les champs suivants:</h5>
+            <hr class="my-4">
+            <div class="form-group">
+                <label for="projectTitle">Titre du projet:</label>
+                <input type="text" class="form-control" id="projectTitle" name="projectTitle" required>
             </div>
-            <div style="margin-top: 10px; margin-bottom: 10px"></div>
-            <div class="action-buttons" style="display: flex; justify-content: flex-end;">
-                <!-- Bouton pour annuler le projet -->
-                <button type="button" onclick="cancelProject()" style="width: auto;">
-                    <p style="width: auto; margin-top: 20px; margin-right: 5px;">Annuler</p>
-                    <img src="https://lab.padem.org/wp-content/uploads/Annuler.png" alt="cancel"
+            <div class="form-group">
+                <label for="projectType">Type de projet:</label>
+                <input type="text" class="form-control" id="projectType" name="projectType" required>
+            </div>
+            <div class="form-group">
+                <label for="projectDate">Date de début prévisionnelle:</label>
+                <input type="date" class="form-control" id="projectDate" name="projectDate" required>
+            </div>
+            <div class="form-group">
+                <label for="projectEndDate2">Date de fin prévisionnelle:</label>
+                <input type="date" class="form-control" id="projectEndDate2" name="projectEndDate2" required>
+            </div>
+            <div class="form-group">
+                <label for="projectLocation">Pays de réalisation du projet:</label>
+                <input type="text" class="form-control" id="projectLocation" name="projectLocation" required>
+            </div>
+            <div class="form-group">
+                <label for="pademResponsible">Responsable Padem:</label>
+                <input type="text" class="form-control" id="pademResponsible" name="pademResponsible">
+            </div>
+            <div class="form-group">
+                <label for="pademResponsibleEmail">Email du responsable Padem:</label>
+                <input type="email" class="form-control" id="pademResponsibleEmail" name="pademResponsibleEmail">
+            </div>
+            <div class="form-group">
+                <label for="projectReferent">Référent du projet:</label>
+                <input type="text" class="form-control" id="projectReferent" name="projectReferent" required>
+            </div>
+            <div class="form-group">
+                <label for="projectReferentEmail">Email du référent du projet:</label>
+                <input type="email" class="form-control" id="projectReferentEmail" name="projectReferentEmail" required>
+            </div>
+            <div class="form-group">
+                <label for="projectDescription">Description du projet:</label>
+                <textarea class="form-control" id="projectDescription" name="projectDescription" rows="8"></textarea>
+            </div>
+            <div class="d-flex justify-content-end">
+                <button type="button" class="btn btn-secondary mr-2" onclick="cancelProject()">
+                    <img src="https://lab.padem.org/wp-content/uploads/Annuler.png" alt="cancel" class="mr-1"
                         style="width: 35px; height: 35px;" />
+                    Annuler
                 </button>
-                <!-- Bouton pour sauvegarder le projet -->
-                <button type="submit" onclick="saveFormData()" style="width: auto;" id="saveProjectButton">
-                    <p style="width: auto; margin-top: 20px; margin-right: 5px;">Enregistrer</p>
-                    <img src="https://lab.padem.org/wp-content/uploads/save.png" alt="save"
+                <button type="submit" class="btn btn-primary" onclick="saveFormData()" id="saveProjectButton">
+                    <img src="https://lab.padem.org/wp-content/uploads/save.png" alt="save" class="mr-1"
                         style="width: 35px; height: 35px;" />
+                    Enregistrer
                 </button>
             </div>
         </div>
@@ -108,106 +101,106 @@
                     console.error('Error:', error);
                 });
 
-        
-        //#endregion
 
-        dataInfosPreliminaires.project_title = document.getElementById('projectTitle').value || 'Titre du projet';
-        dataInfosPreliminaires.project_type = document.getElementById('projectType').value || 'Type de projet';
-        dataInfosPreliminaires.start_date = document.getElementById('projectDate').value || 'Date de début prévisionnelle';
-        dataInfosPreliminaires.end_date = document.getElementById('projectEndDate2').value || 'Date de fin prévisionnelle';
-        dataInfosPreliminaires.project_location = document.getElementById('projectLocation').value;
-        dataInfosPreliminaires.padem_responsible = document.getElementById('pademResponsible').value;
-        dataInfosPreliminaires.padem_responsible_email = document.getElementById('pademResponsibleEmail').value
-        dataInfosPreliminaires.project_referent = document.getElementById('projectReferent').value;
-        dataInfosPreliminaires.project_referent_email = document.getElementById('projectReferentEmail').value;
-        dataInfosPreliminaires.project_description = JSON.stringify(document.getElementById('projectDescription').value);
+            //#endregion
 
-        //#region Créer le dossier des fichiers du projet
-        fetch('https://lab.padem.org/get_key.php',
-            {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            }).then(response => {
-                if (!response.ok) {
-                    console.error('Erreur lors de la requête vers l\'API.');
-                }
-                return response.json();
-            })
-            .then(data => {
-                //#region Créer un dossier où stocker les fichiers du projet sur le serveur via l'API(https://lab.padem.org/wp-json/filebird/public/v1/folders)
-                fetch('https://lab.padem.org/wp-json/filebird/public/v1/folders', {
-                    method: 'POST',
+            dataInfosPreliminaires.project_title = document.getElementById('projectTitle').value || 'Titre du projet';
+            dataInfosPreliminaires.project_type = document.getElementById('projectType').value || 'Type de projet';
+            dataInfosPreliminaires.start_date = document.getElementById('projectDate').value || 'Date de début prévisionnelle';
+            dataInfosPreliminaires.end_date = document.getElementById('projectEndDate2').value || 'Date de fin prévisionnelle';
+            dataInfosPreliminaires.project_location = document.getElementById('projectLocation').value;
+            dataInfosPreliminaires.padem_responsible = document.getElementById('pademResponsible').value;
+            dataInfosPreliminaires.padem_responsible_email = document.getElementById('pademResponsibleEmail').value
+            dataInfosPreliminaires.project_referent = document.getElementById('projectReferent').value;
+            dataInfosPreliminaires.project_referent_email = document.getElementById('projectReferentEmail').value;
+            dataInfosPreliminaires.project_description = JSON.stringify(document.getElementById('projectDescription').value);
+
+            //#region Créer le dossier des fichiers du projet
+            fetch('https://lab.padem.org/get_key.php',
+                {
+                    method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + data.fileBird_api_key,
                     },
-                    body: JSON.stringify({
-                        name: dataInfosPreliminaires.project_title,
-                        parent_id: 0,
-                    }),
                 }).then(response => {
                     if (!response.ok) {
-                        console.log('Erreur lors de la requête vers l\'API.');
+                        console.error('Erreur lors de la requête vers l\'API.');
                     }
                     return response.json();
                 })
-                    .then(data => {
-                        console.log('Success:', data);
-                        dataInfosPreliminaires.folder_id = JSON.stringify({
-                            folder_id: data.folder_id,
-                            folder_name: dataInfosPreliminaires.project_title,
-                        });
+                .then(data => {
+                    //#region Créer un dossier où stocker les fichiers du projet sur le serveur via l'API(https://lab.padem.org/wp-json/filebird/public/v1/folders)
+                    fetch('https://lab.padem.org/wp-json/filebird/public/v1/folders', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + data.fileBird_api_key,
+                        },
+                        body: JSON.stringify({
+                            name: dataInfosPreliminaires.project_title,
+                            parent_id: 0,
+                        }),
+                    }).then(response => {
+                        if (!response.ok) {
+                            console.log('Erreur lors de la requête vers l\'API.');
+                        }
+                        return response.json();
                     })
-                    .catch((error) => {
-                        console.error('Error:', error);
+                        .then(data => {
+                            console.log('Success:', data);
+                            dataInfosPreliminaires.folder_id = JSON.stringify({
+                                folder_id: data.folder_id,
+                                folder_name: dataInfosPreliminaires.project_title,
+                            });
+                        })
+                        .catch((error) => {
+                            console.error('Error:', error);
+                        });
+                    //#endregion
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                })
+            //#endregion
+
+            // 1. Create a new project
+            // 2. Add the project to the database
+            // 3. Redirect to the project page
+            fetch('https://lab.padem.org/wp-json/mo/v1/createProject', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(dataInfosPreliminaires),
+            }).then(response => {
+                if (!response.ok) {
+                    console.log('Erreur lors de la requête vers l\'API.');
+                }
+                return response.json();
+            })
+                .then(data => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Projet créé avec succès',
+                        showConfirmButton: false,
+                        timer: 1500
                     });
-                //#endregion
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-            })
-        //#endregion
 
-        // 1. Create a new project
-        // 2. Add the project to the database
-        // 3. Redirect to the project page
-        fetch('https://lab.padem.org/wp-json/mo/v1/createProject', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(dataInfosPreliminaires),
-        }).then(response => {
-            if (!response.ok) {
-                console.log('Erreur lors de la requête vers l\'API.');
-            }
-            return response.json();
-        })
-            .then(data => {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Projet créé avec succès',
-                    showConfirmButton: false,
-                    timer: 1500
+                    // Masquer le formulaire
+                    showAndHide('projectForm');
+
+                    // Recharger la page
+                    window.location.href = "https://lab.padem.org/projets/";
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Erreur lors de la création du projet',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
                 });
-
-                // Masquer le formulaire
-                showAndHide('projectForm');
-
-                // Recharger la page
-                window.location.href = "https://lab.padem.org/projets/";
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Erreur lors de la création du projet',
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-            });
         }
 
 
