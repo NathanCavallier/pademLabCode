@@ -1,46 +1,50 @@
 <!-- #region Card avec les infos du projet -->
 <div class="card" style="background-color: none; background: none;">
-    <div class="card-body">
-        <div class="settings-scroll">
-            <div style="margin-top: 3px;"></div>
-            <h5 class="card-title" style="color: #29A6A7;" id="projecttitle"></h5>
-            <div style="margin-top: 3px;"></div>
-            <h6 class="card-subtitle mb-2 text-muted" id="projecttype"></h6>
-            <hr class="my-4">
-            <div style="margin-top: 3px;"></div>
-            <p class="card-text" style="font-size: 12px;">
-            <div style="display: flex;">
-                <p style="color: gray;">Date de début : </p><span style="color: #29A6A7;" id="projectdate"></span><br>
-            </div>
-            <div style="margin-top: 3px;"></div>
-            <div style="display: flex;">
-                <p style="color: gray;">Date de fin : </p><span style="color: #29A6A7;" id="projectenddate"></span><br>
-            </div>
-            <div style="margin-top: 3px;"></div>
-            <div style="display: flex;">
-                <p style="color: gray;">Lieu : </p><span style="color: #29A6A7;" id="projectlocation"></span><br>
-            </div>
-            <div style="margin-top: 3px;"></div>
-            </p>
-            <div style="margin-top: 3px;"></div>
-            <hr class="my-4">
-            <p class="card-text" style="color: #29A6A7;"> Référent du projet : </p>
-            <div style="margin-top: 3px;"></div>
-            <span class="card-subtitle mb-2 text-muted" style="color: #29A6A7;" id="projectreferent"></span>
-            <div style="margin-top: 3px;"></div>
-            <p class="card-text" style="font-size: 12px;">
-            <div style="display: flex;">
-                <p style="color: gray;">Email : </p><span style="color: #29A6A7;" id="projectreferentemail"></span><br>
-            </div>
-            <div style="margin-top: 3px;"></div>
-            </p>
-            <div style="margin-top: 3px;"></div>
-            <hr class="my-4">
-            <p class="card-text" style="color: #29A6A7;"> Description du projet : </p>
-            <div style="margin-top: 3px;"></div>
-            <span class="card-subtitle mb-2 text-muted" style="color: gray;" id="projectdescription"></span>
-            <div style="margin-top: 3px;"></div>
+    <div class="card-body" style="word-wrap: break-word;">
+
+        <div style="margin-top: 3px;"></div>
+        <h5 class="card-title" style="color: #29A6A7;" id="projecttitle"></h5>
+        <div style="margin-top: 3px;"></div>
+        <h6 class="card-subtitle mb-2 text-muted" id="projecttype"></h6>
+        <hr class="my-4">
+        <div style="margin-top: 3px;"></div>
+        <p class="card-text" style="font-size: 12px;">
+        <div style="display: flex;">
+            <p style="color: gray;">Date de début : </p><span style="color: #29A6A7;" id="projectdate"></span><br>
         </div>
+        <div style="margin-top: 3px;"></div>
+        <div style="display: flex;">
+            <p style="color: gray;">Date de fin : </p><span style="color: #29A6A7;" id="projectenddate"></span><br>
+        </div>
+        <div style="margin-top: 3px;"></div>
+        <div style="display: flex;">
+            <p style="color: gray;">Lieu : </p><span style="color: #29A6A7; word-wrap: break-word;"
+                id="projectlocation"></span><br>
+        </div>
+        <div style="margin-top: 3px;"></div>
+        </p>
+        <div style="margin-top: 3px;"></div>
+        <hr class="my-4">
+        <p class="card-text" style="color: #29A6A7;"> Référent du projet : </p>
+        <div style="margin-top: 3px;"></div>
+        <span class="card-subtitle mb-2 text-muted" style="color: #29A6A7; word-wrap: break-word;"
+            id="projectreferent"></span>
+        <div style="margin-top: 3px;"></div>
+        <p class="card-text" style="font-size: 12px;">
+        <div style="display: flex;">
+            <p style="color: gray;">Email : </p><span style="color: #29A6A7; word-wrap: break-word;"
+                id="projectreferentemail"></span><br>
+        </div>
+        <div style="margin-top: 3px;"></div>
+        </p>
+        <div style="margin-top: 3px;"></div>
+        <hr class="my-4">
+        <p class="card-text" style="color: #29A6A7;"> Description du projet : </p>
+        <div style="margin-top: 3px;"></div>
+        <textarea class="card-subtitle mb-2 text-muted project-description" rows="8" id="projectdescription"
+            placeholder="Enter project description" style="border-radius: 15px; width: fit-content;" disabled></textarea>
+        <div style="margin-top: 3px;"></div>
+
     </div>
 </div>
 
@@ -79,10 +83,33 @@
 
 
 <!-- Liste des membres du projet -->
-<div class="settings-scroll">
-    <ul id="membersList" class="row"></ul>
+<div>
+    <ul id="membersList" class="row" style="display: block; list-style: none;"></ul>
 </div>
 
+<div>
+    <ul id="membersList-coordonateur" class="row" style="display: block; list-style: none;"></ul>
+</div>
+
+<div class="settings-scroll" style="display: none;">
+    <ul id="membersList-chef-de-projet" class="row" style="display: block; list-style: none;"></ul>
+</div>
+
+<div class="settings-scroll" style="display: none;">
+    <ul id="membersList-partenaires" class="row" style="display: block; list-style: none;"></ul>
+</div>
+
+<div class="settings-scroll" style="display: none;">
+    <ul id="membersList-consultants" class="row" style="display: block; list-style: none;"></ul>
+</div>
+
+<div class="settings-scroll" style="display: none;">
+    <ul id="membersList-comptables" class="row" style="display: block; list-style: none;"></ul>
+</div>
+
+<div class="settings-scroll" style="display: none;">
+    <ul id="membersList-bailleurs" class="row" style="display: block; list-style: none;"></ul>
+</div>
 
 
 <body>
@@ -175,19 +202,1051 @@
             var params = new URLSearchParams(url.search);
             var projectId = params.get('projectId');
             console.log('projectId:', projectId);
+            //
+            var users_list = {
+                'emails_names': {
+                    'Coordinateur': 'coordinator_email',
+                    'Chef de projet': 'chief_email',
+                    'partenaire': 'partner_email',
+                    'comptable': 'accountant_email',
+                    'consultant': 'consultant_email',
+                    'bailleur': 'funder_email'
+                },
+                'users': {
+                    'Coordinateur': [],
+                    'Chef de projet': [],
+                    'partenaire': [],
+                    'comptable': [],
+                    'consultant': [],
+                    'bailleur': []
+                },
+                'urls': {
+                    'Administrateur': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
+                    'Coordinateur': 'https://lab.padem.org/wp-json/mo/v1/getCoordinator',
+                    'Chef de projet': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
+                    'partenaire': 'https://lab.padem.org/wp-json/mo/v1/getPartner',
+                    'comptable': 'https://lab.padem.org/wp-json/mo/v1/getAccountant',
+                    'consultant': 'https://lab.padem.org/wp-json/mo/v1/getConsultant',
+                    'bailleur': 'https://lab.padem.org/wp-json/mo/v1/getFunder'
+                }
+            };
+
+            fetch(users_list.urls['Chef de projet'], {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(user => {
+                        // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
+                        if (user.project_id === parseInt(projectId)) {
+                            var li = document.createElement('li');
+                            li.classList.add('col-md-3');
+                            li.innerHTML = `
+                                    <div class="card mb-4 shadow-sm" style="width: fit-content;">
+                                        <div class="card-body">
+                                            <p class="card-text">${user.chief_first_name}</p>
+                                            <p class="card-text">${user.chief_last_name}</p>
+                                            <a href="mailto:${user.chief_email}" class="card-text">${user.chief_email}</a>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div class="btn-group">
+                                                    <button type="button" id="remove_chief_${user.chief_id}" class="btn btn-sm btn-outline-secondary" style="width: fit-content; color: white;">Retirer du projet</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+                            document.getElementById('membersList').appendChild(li);
+                            document.getElementById('membersList-chef-de-projet').appendChild(li);
+
+                            document.getElementById('remove_chief_' + user.chief_id).addEventListener('click', function () {
+                                fetch('https://lab.padem.org/wp-json/mo/v1/removeChief', {
+                                    method: 'DELETE',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                    body: JSON.stringify({
+                                        chief_id: user.chief_id,
+                                        project_id: projectId
+                                    }),
+                                })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        console.log('Success:', data);
+                                        window.location.href = 'https://lab.padem.org/accueil/partenaires/?projectId=' + projectId;
+                                    })
+                                    .catch((error) => {
+                                        console.error('Error:', error);
+                                    });
+                            });
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
             // Récupérer les informations du projet
             getProjectData(projectId);
             // Ajouter des écouteurs d'événements sur les boutons de filtre et récupérer les membres du projet
+            getCoordinator(projectId);
+            getProjectChief(projectId);
+            getPartners(projectId);
+            getAccountants(projectId);
+            getConsultants(projectId);
+            getFunders(projectId);
             addEventListeners(projectId);
             // Récupérer les informations de l'utilisateur local
             getConnectedUserInfos();
+
+            document.getElementById('tous').addEventListener('click', function () {
+                getCoordinator(projectId);
+                getProjectChief(projectId);
+                getPartners(projectId);
+                getAccountants(projectId);
+                getConsultants(projectId);
+                getFunders(projectId);
+
+                //#region Fonction pour afficher ou masquer les membres du projet
+                document.getElementById('membersList').style.display = 'block';
+                document.getElementById('membersList-coordonateur').style.display = 'none';
+                document.getElementById('membersList-chef-de-projet').style.display = 'none';
+                document.getElementById('membersList-partenaires').style.display = 'none';
+                document.getElementById('membersList-consultants').style.display = 'none';
+                document.getElementById('membersList-comptables').style.display = 'none';
+                document.getElementById('membersList-bailleurs').style.display = 'none';
+
+                document.getElementById('tous').style.backgroundColor = '#29A6A7';
+                document.getElementById('tous').style.color = 'white';
+                document.getElementById('coordonnateurs').style.backgroundColor = 'white';
+                document.getElementById('coordonnateurs').style.color = 'gray';
+                document.getElementById('chefs-de-projets').style.backgroundColor = 'white';
+                document.getElementById('chefs-de-projets').style.color = 'gray';
+                document.getElementById('partenaires').style.backgroundColor = 'white';
+                document.getElementById('partenaires').style.color = 'gray';
+                document.getElementById('consultants').style.backgroundColor = 'white';
+                document.getElementById('consultants').style.color = 'gray';
+                document.getElementById('comptables').style.backgroundColor = 'white';
+                document.getElementById('comptables').style.color = 'gray';
+                document.getElementById('bailleurs').style.backgroundColor = 'white';
+                document.getElementById('bailleurs').style.color = 'gray';
+                //#endregion
+            });
+
+            document.getElementById('coordonnateurs').addEventListener('click', function () {
+
+                var users_list = {
+                    'emails_names': {
+                        'Coordinateur': 'coordinator_email',
+                        'Chef de projet': 'chief_email',
+                        'partenaire': 'partner_email',
+                        'comptable': 'accountant_email',
+                        'consultant': 'consultant_email',
+                        'bailleur': 'funder_email'
+                    },
+                    'users': {
+                        'Coordinateur': [],
+                        'Chef de projet': [],
+                        'partenaire': [],
+                        'comptable': [],
+                        'consultant': [],
+                        'bailleur': []
+                    },
+                    'urls': {
+                        'Administrateur': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
+                        'Coordinateur': 'https://lab.padem.org/wp-json/mo/v1/getCoordinator',
+                        'Chef de projet': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
+                        'partenaire': 'https://lab.padem.org/wp-json/mo/v1/getPartner',
+                        'comptable': 'https://lab.padem.org/wp-json/mo/v1/getAccountant',
+                        'consultant': 'https://lab.padem.org/wp-json/mo/v1/getConsultant',
+                        'bailleur': 'https://lab.padem.org/wp-json/mo/v1/getFunder'
+                    }
+                };
+
+                //#region Récupérer le nombre de participants dans le projet
+                var participants = {};
+                var isUserInProject = false;
+                var numberOfParticipants = 0;
+
+                //#region get Coordinnateur
+                fetch(users_list.urls['Coordinateur'], {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        data.forEach(user => {
+                            // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
+                            if (user.project_id === parseInt(projectId)) {
+                                var li = document.createElement('li');
+                                li.classList.add('col-md-3');
+                                li.innerHTML = `
+                                <div class="card mb-4 shadow-sm" style="width: fit-content;">
+                                    <div class="card-body">
+                                        <p class="card-text">${user.coordinator_first_name}</p>
+                                        <p class="card-text">${user.coordinator_last_name}</p>
+                                        <a href="mailto:${user.coordinator_email}" class="card-text">${user.coordinator_email}</a>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div class="btn-group">
+                                                    <button type="button" id="remove_accountant_${user.coordinator_id}" class="btn btn-sm btn-outline-secondary" style="width: fit-content; color: white;">Retirer du projet</button>
+                                                </div>
+                                            </div>
+                                    </div>
+                                </div>
+                            `;
+                                document.getElementById('membersList').appendChild(li);
+                                document.getElementById('membersList-coordonateur').appendChild(li);
+
+                                document.getElementById('remove_coordinator_' + user.coordinator_id).addEventListener('click', function () {
+                                    fetch('https://lab.padem.org/wp-json/mo/v1/removeCoordinator', {
+                                        method: 'DELETE',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                        },
+                                        body: JSON.stringify({
+                                            coordinator_id: user.coordinator_id,
+                                            project_id: projectId
+                                        }),
+                                    })
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            console.log('Success:', data);
+                                            window.location.href = 'https://lab.padem.org/accueil/partenaires/?projectId=' + projectId;
+                                        })
+                                        .catch((error) => {
+                                            console.error('Error:', error);
+                                        });
+                                });
+                            }
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+
+                //#region Fonction pour afficher ou masquer les membres du projet
+                document.getElementById('membersList').style.display = 'none';
+                document.getElementById('membersList-coordonateur').style.display = 'block';
+                document.getElementById('membersList-chef-de-projet').style.display = 'none';
+                document.getElementById('membersList-partenaires').style.display = 'none';
+                document.getElementById('membersList-consultants').style.display = 'none';
+                document.getElementById('membersList-comptables').style.display = 'none';
+                document.getElementById('membersList-bailleurs').style.display = 'none';
+
+                document.getElementById('tous').style.backgroundColor = 'white';
+                document.getElementById('tous').style.color = 'gray';
+                document.getElementById('coordonnateurs').style.backgroundColor = '#29A6A7';
+                document.getElementById('coordonnateurs').style.color = 'white';
+                document.getElementById('chefs-de-projets').style.backgroundColor = 'white';
+                document.getElementById('chefs-de-projets').style.color = 'gray';
+                document.getElementById('partenaires').style.backgroundColor = 'white';
+                document.getElementById('partenaires').style.color = 'gray';
+                document.getElementById('consultants').style.backgroundColor = 'white';
+                document.getElementById('consultants').style.color = 'gray';
+                document.getElementById('comptables').style.backgroundColor = 'white';
+                document.getElementById('comptables').style.color = 'gray';
+                document.getElementById('bailleurs').style.backgroundColor = 'white';
+                document.getElementById('bailleurs').style.color = 'gray';
+                //#endregion
+            });
+
+            document.getElementById('chefs-de-projets').addEventListener('click', function () {
+
+                var users_list = {
+                    'emails_names': {
+                        'Coordinateur': 'coordinator_email',
+                        'Chef de projet': 'chief_email',
+                        'partenaire': 'partner_email',
+                        'comptable': 'accountant_email',
+                        'consultant': 'consultant_email',
+                        'bailleur': 'funder_email'
+                    },
+                    'users': {
+                        'Coordinateur': [],
+                        'Chef de projet': [],
+                        'partenaire': [],
+                        'comptable': [],
+                        'consultant': [],
+                        'bailleur': []
+                    },
+                    'urls': {
+                        'Administrateur': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
+                        'Coordinateur': 'https://lab.padem.org/wp-json/mo/v1/getCoordinator',
+                        'Chef de projet': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
+                        'partenaire': 'https://lab.padem.org/wp-json/mo/v1/getPartner',
+                        'comptable': 'https://lab.padem.org/wp-json/mo/v1/getAccountant',
+                        'consultant': 'https://lab.padem.org/wp-json/mo/v1/getConsultant',
+                        'bailleur': 'https://lab.padem.org/wp-json/mo/v1/getFunder'
+                    }
+                };
+
+                fetch(users_list.urls['Chef de projet'], {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        data.forEach(user => {
+                            // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
+                            if (user.project_id === parseInt(projectId)) {
+                                var li = document.createElement('li');
+                                li.classList.add('col-md-3');
+                                li.innerHTML = `
+                                    <div class="card mb-4 shadow-sm" style="width: fit-content;">
+                                        <div class="card-body">
+                                            <p class="card-text">${user.chief_first_name}</p>
+                                            <p class="card-text">${user.chief_last_name}</p>
+                                            <a href="mailto:${user.chief_email}" class="card-text">${user.chief_email}</a>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div class="btn-group">
+                                                    <button type="button" id="remove_chief_${user.chief_id}" class="btn btn-sm btn-outline-secondary" style="width: fit-content; color: white;">Retirer du projet</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+                                document.getElementById('membersList').appendChild(li);
+                                document.getElementById('membersList-chef-de-projet').appendChild(li);
+
+                                document.getElementById('remove_chief_' + user.chief_id).addEventListener('click', function () {
+                                    fetch('https://lab.padem.org/wp-json/mo/v1/removeChief', {
+                                        method: 'DELETE',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                        },
+                                        body: JSON.stringify({
+                                            chief_id: user.chief_id,
+                                            project_id: projectId
+                                        }),
+                                    })
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            console.log('Success:', data);
+                                            window.location.href = 'https://lab.padem.org/accueil/partenaires/?projectId=' + projectId;
+                                        })
+                                        .catch((error) => {
+                                            console.error('Error:', error);
+                                        });
+                                });
+                            }
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+
+                //#region Fonction pour afficher ou masquer les membres du projet
+                document.getElementById('membersList').style.display = 'none';
+                document.getElementById('membersList-coordonateur').style.display = 'none';
+                document.getElementById('membersList-chef-de-projet').style.display = 'block';
+                document.getElementById('membersList-partenaires').style.display = 'none';
+                document.getElementById('membersList-consultants').style.display = 'none';
+                document.getElementById('membersList-comptables').style.display = 'none';
+                document.getElementById('membersList-bailleurs').style.display = 'none';
+
+                document.getElementById('tous').style.backgroundColor = 'white';
+                document.getElementById('tous').style.color = 'gray';
+                document.getElementById('coordonnateurs').style.backgroundColor = 'white';
+                document.getElementById('coordonnateurs').style.color = 'gray';
+                document.getElementById('chefs-de-projets').style.backgroundColor = '#29A6A7';
+                document.getElementById('chefs-de-projets').style.color = 'white';
+                document.getElementById('partenaires').style.backgroundColor = 'white';
+                document.getElementById('partenaires').style.color = 'gray';
+                document.getElementById('consultants').style.backgroundColor = 'white';
+                document.getElementById('consultants').style.color = 'gray';
+                document.getElementById('comptables').style.backgroundColor = 'white';
+                document.getElementById('comptables').style.color = 'gray';
+                document.getElementById('bailleurs').style.backgroundColor = 'white';
+                document.getElementById('bailleurs').style.color = 'gray';
+                //#endregion
+
+            });
+
+            document.getElementById('partenaires').addEventListener('click', function () {
+
+                var users_list = {
+                    'emails_names': {
+                        'Coordinateur': 'coordinator_email',
+                        'Chef de projet': 'chief_email',
+                        'partenaire': 'partner_email',
+                        'comptable': 'accountant_email',
+                        'consultant': 'consultant_email',
+                        'bailleur': 'funder_email'
+                    },
+                    'users': {
+                        'Coordinateur': [],
+                        'Chef de projet': [],
+                        'partenaire': [],
+                        'comptable': [],
+                        'consultant': [],
+                        'bailleur': []
+                    },
+                    'urls': {
+                        'Administrateur': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
+                        'Coordinateur': 'https://lab.padem.org/wp-json/mo/v1/getCoordinator',
+                        'Chef de projet': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
+                        'partenaire': 'https://lab.padem.org/wp-json/mo/v1/getPartner',
+                        'comptable': 'https://lab.padem.org/wp-json/mo/v1/getAccountant',
+                        'consultant': 'https://lab.padem.org/wp-json/mo/v1/getConsultant',
+                        'bailleur': 'https://lab.padem.org/wp-json/mo/v1/getFunder'
+                    }
+                };
+
+                fetch(users_list.urls['partenaire'], {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        data.forEach(user => {
+                            // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
+                            if (user.project_id === parseInt(projectId)) {
+                                var li = document.createElement('li');
+                                li.classList.add('col-md-3');
+                                li.innerHTML = `
+                                    <div class="card mb-4 shadow-sm" style="width: fit-content;">
+                                        <div class="card-body">
+                                            <p class="card-text">${user.chief_first_name}</p>
+                                            <p class="card-text">${user.chief_last_name}</p>
+                                            <a href="mailto:${user.chief_email}" class="card-text">${user.chief_email}</a>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div class="btn-group">
+                                                    <button type="button" id="remove_chief_${user.chief_id}" class="btn btn-sm btn-outline-secondary" style="width: fit-content; color: white;">Retirer du projet</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+                                document.getElementById('membersList').appendChild(li);
+                                document.getElementById('membersList-chef-de-projet').appendChild(li);
+
+                                document.getElementById('remove_chief_' + user.chief_id).addEventListener('click', function () {
+                                    fetch('https://lab.padem.org/wp-json/mo/v1/removeChief', {
+                                        method: 'DELETE',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                        },
+                                        body: JSON.stringify({
+                                            chief_id: user.chief_id,
+                                            project_id: projectId
+                                        }),
+                                    })
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            console.log('Success:', data);
+                                            window.location.href = 'https://lab.padem.org/accueil/partenaires/?projectId=' + projectId;
+                                        })
+                                        .catch((error) => {
+                                            console.error('Error:', error);
+                                        });
+                                });
+                            }
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+
+                //#region Fonction pour afficher ou masquer les membres du projet
+                document.getElementById('membersList').style.display = 'none';
+                document.getElementById('membersList-coordonateur').style.display = 'none';
+                document.getElementById('membersList-chef-de-projet').style.display = 'none';
+                document.getElementById('membersList-partenaires').style.display = 'block';
+                document.getElementById('membersList-consultants').style.display = 'none';
+                document.getElementById('membersList-comptables').style.display = 'none';
+                document.getElementById('membersList-bailleurs').style.display = 'none';
+
+                document.getElementById('tous').style.backgroundColor = 'white';
+                document.getElementById('tous').style.color = 'gray';
+                document.getElementById('coordonnateurs').style.backgroundColor = 'white';
+                document.getElementById('coordonnateurs').style.color = 'gray';
+                document.getElementById('chefs-de-projets').style.backgroundColor = 'white';
+                document.getElementById('chefs-de-projets').style.color = 'gray';
+                document.getElementById('partenaires').style.backgroundColor = '#29A6A7';
+                document.getElementById('partenaires').style.color = 'white';
+                document.getElementById('consultants').style.backgroundColor = 'white';
+                document.getElementById('consultants').style.color = 'gray';
+                document.getElementById('comptables').style.backgroundColor = 'white';
+                document.getElementById('comptables').style.color = 'gray';
+                document.getElementById('bailleurs').style.backgroundColor = 'white';
+                document.getElementById('bailleurs').style.color = 'gray';
+                //#endregion
+
+            });
+
+            document.getElementById('consultants').addEventListener('click', function () {
+
+                var users_list = {
+                    'emails_names': {
+                        'Coordinateur': 'coordinator_email',
+                        'Chef de projet': 'chief_email',
+                        'partenaire': 'partner_email',
+                        'comptable': 'accountant_email',
+                        'consultant': 'consultant_email',
+                        'bailleur': 'funder_email'
+                    },
+                    'users': {
+                        'Coordinateur': [],
+                        'Chef de projet': [],
+                        'partenaire': [],
+                        'comptable': [],
+                        'consultant': [],
+                        'bailleur': []
+                    },
+                    'urls': {
+                        'Administrateur': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
+                        'Coordinateur': 'https://lab.padem.org/wp-json/mo/v1/getCoordinator',
+                        'Chef de projet': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
+                        'partenaire': 'https://lab.padem.org/wp-json/mo/v1/getPartner',
+                        'comptable': 'https://lab.padem.org/wp-json/mo/v1/getAccountant',
+                        'consultant': 'https://lab.padem.org/wp-json/mo/v1/getConsultant',
+                        'bailleur': 'https://lab.padem.org/wp-json/mo/v1/getFunder'
+                    }
+                };
+
+                fetch(users_list.urls['consultant'], {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        data.forEach(user => {
+                            // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
+                            console.log(user.project_id, projectId)
+                            if (user.project_id === projectId) {
+                                var li = document.createElement('li');
+                                li.classList.add('col-md-3');
+                                li.innerHTML = `
+                                    <div class="card mb-4 shadow-sm" style="width: fit-content;">
+                                        <div class="card-body">
+                                            <p class="card-text">${user.consultant_first_name}</p>
+                                            <p class="card-text">${user.consultant_last_name}</p>
+                                            <a href="mailto:${user.consultant_email}" class="card-text">${user.consultant_email}</a>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div class="btn-group">
+                                                    <button type="button" id="remove_consultant_${user.consultant_id}" class="btn btn-sm btn-outline-secondary" style="width: fit-content; color: white;">Retirer du projet</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+                                document.getElementById('membersList').appendChild(li);
+                                document.getElementById('membersList-consultants').appendChild(li);
+
+                                document.getElementById('remove_consultant_' + user.consultant_id).addEventListener('click', function () {
+                                    fetch('https://lab.padem.org/wp-json/mo/v1/removeConsultant', {
+                                        method: 'DELETE',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                        },
+                                        body: JSON.stringify({
+                                            consultant_id: user.consultant_id,
+                                            project_id: projectId
+                                        }),
+                                    })
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            console.log('Success:', data);
+                                            window.location.href = 'https://lab.padem.org/accueil/partenaires/?projectId=' + projectId;
+                                        })
+                                        .catch((error) => {
+                                            console.error('Error:', error);
+                                        });
+                                });
+                            }
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+
+                //#region Fonction pour afficher ou masquer les membres du projet
+                document.getElementById('membersList').style.display = 'none';
+                document.getElementById('membersList-coordonateur').style.display = 'none';
+                document.getElementById('membersList-chef-de-projet').style.display = 'none';
+                document.getElementById('membersList-partenaires').style.display = 'none';
+                document.getElementById('membersList-consultants').style.display = 'block';
+                document.getElementById('membersList-comptables').style.display = 'none';
+                document.getElementById('membersList-bailleurs').style.display = 'none';
+
+                document.getElementById('tous').style.backgroundColor = 'white';
+                document.getElementById('tous').style.color = 'gray';
+                document.getElementById('coordonnateurs').style.backgroundColor = 'white';
+                document.getElementById('coordonnateurs').style.color = 'gray';
+                document.getElementById('chefs-de-projets').style.backgroundColor = 'white';
+                document.getElementById('chefs-de-projets').style.color = 'gray';
+                document.getElementById('partenaires').style.backgroundColor = 'white';
+                document.getElementById('partenaires').style.color = 'gray';
+                document.getElementById('consultants').style.backgroundColor = '#29A6A7';
+                document.getElementById('consultants').style.color = 'white';
+                document.getElementById('comptables').style.backgroundColor = 'white';
+                document.getElementById('comptables').style.color = 'gray';
+                document.getElementById('bailleurs').style.backgroundColor = 'white';
+                document.getElementById('bailleurs').style.color = 'gray';
+                //#endregion
+
+            });
+
+            document.getElementById('comptables').addEventListener('click', function () {
+
+                var users_list = {
+                    'emails_names': {
+                        'Coordinateur': 'coordinator_email',
+                        'Chef de projet': 'chief_email',
+                        'partenaire': 'partner_email',
+                        'comptable': 'accountant_email',
+                        'consultant': 'consultant_email',
+                        'bailleur': 'funder_email'
+                    },
+                    'users': {
+                        'Coordinateur': [],
+                        'Chef de projet': [],
+                        'partenaire': [],
+                        'comptable': [],
+                        'consultant': [],
+                        'bailleur': []
+                    },
+                    'urls': {
+                        'Administrateur': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
+                        'Coordinateur': 'https://lab.padem.org/wp-json/mo/v1/getCoordinator',
+                        'Chef de projet': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
+                        'partenaire': 'https://lab.padem.org/wp-json/mo/v1/getPartner',
+                        'comptable': 'https://lab.padem.org/wp-json/mo/v1/getAccountant',
+                        'consultant': 'https://lab.padem.org/wp-json/mo/v1/getConsultant',
+                        'bailleur': 'https://lab.padem.org/wp-json/mo/v1/getFunder'
+                    }
+                };
+
+                fetch(users_list.urls['comptable'], {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        data.forEach(user => {
+                            // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
+                            if (user.project_id === projectId) {
+                                var li = document.createElement('li');
+                                li.classList.add('col-md-3');
+                                li.innerHTML = `
+                                    <div class="card mb-4 shadow-sm" style="width: fit-content;">
+                                        <div class="card-body">
+                                            <p class="card-text">${user.accountant_first_name}</p>
+                                            <p class="card-text">${user.accountant_last_name}</p>
+                                            <a href="mailto:${user.accountant_email}" class="card-text">${user.accountant_email}</a>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div class="btn-group">
+                                                    <button type="button" id="remove_accountant_${user.accountant_id}" class="btn btn-sm btn-outline-secondary" style="width: fit-content; color: white;">Retirer du projet</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+                                document.getElementById('membersList').appendChild(li);
+                                document.getElementById('membersList-comptables').appendChild(li);
+
+                                document.getElementById('remove_accountant_' + user.accountant_id).addEventListener('click', function () {
+                                    fetch('https://lab.padem.org/wp-json/mo/v1/removeAccountant', {
+                                        method: 'DELETE',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                        },
+                                        body: JSON.stringify({
+                                            accountant_id: user.accountant_id,
+                                            project_id: projectId
+                                        }),
+                                    })
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            console.log('Success:', data);
+                                            window.location.href = 'https://lab.padem.org/accueil/partenaires/?projectId=' + projectId;
+                                        })
+                                        .catch((error) => {
+                                            console.error('Error:', error);
+                                        });
+                                });
+                            }
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+
+                //#region Fonction pour afficher ou masquer les membres du projet
+                document.getElementById('membersList').style.display = 'none';
+                document.getElementById('membersList-coordonateur').style.display = 'none';
+                document.getElementById('membersList-chef-de-projet').style.display = 'none';
+                document.getElementById('membersList-partenaires').style.display = 'none';
+                document.getElementById('membersList-consultants').style.display = 'none';
+                document.getElementById('membersList-comptables').style.display = 'block';
+                document.getElementById('membersList-bailleurs').style.display = 'none';
+
+                document.getElementById('tous').style.backgroundColor = 'white';
+                document.getElementById('tous').style.color = 'gray';
+                document.getElementById('coordonnateurs').style.backgroundColor = 'white';
+                document.getElementById('coordonnateurs').style.color = 'gray';
+                document.getElementById('chefs-de-projets').style.backgroundColor = 'white';
+                document.getElementById('chefs-de-projets').style.color = 'gray';
+                document.getElementById('partenaires').style.backgroundColor = 'white';
+                document.getElementById('partenaires').style.color = 'gray';
+                document.getElementById('consultants').style.backgroundColor = 'white';
+                document.getElementById('consultants').style.color = 'gray';
+                document.getElementById('comptables').style.backgroundColor = '#29A6A7';
+                document.getElementById('comptables').style.color = 'white';
+                document.getElementById('bailleurs').style.backgroundColor = 'white';
+                document.getElementById('bailleurs').style.color = 'gray';
+                //#endregion
+            });
+
+            document.getElementById('bailleurs').addEventListener('click', function () {
+
+                var users_list = {
+                    'emails_names': {
+                        'Coordinateur': 'coordinator_email',
+                        'Chef de projet': 'chief_email',
+                        'partenaire': 'partner_email',
+                        'comptable': 'accountant_email',
+                        'consultant': 'consultant_email',
+                        'bailleur': 'funder_email'
+                    },
+                    'users': {
+                        'Coordinateur': [],
+                        'Chef de projet': [],
+                        'partenaire': [],
+                        'comptable': [],
+                        'consultant': [],
+                        'bailleur': []
+                    },
+                    'urls': {
+                        'Administrateur': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
+                        'Coordinateur': 'https://lab.padem.org/wp-json/mo/v1/getCoordinator',
+                        'Chef de projet': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
+                        'partenaire': 'https://lab.padem.org/wp-json/mo/v1/getPartner',
+                        'comptable': 'https://lab.padem.org/wp-json/mo/v1/getAccountant',
+                        'consultant': 'https://lab.padem.org/wp-json/mo/v1/getConsultant',
+                        'bailleur': 'https://lab.padem.org/wp-json/mo/v1/getFunder'
+                    }
+                };
+
+                fetch(users_list.urls['bailleur'], {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        data.forEach(user => {
+                            // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
+                            if (user.project_id === projectId) {
+                                var li = document.createElement('li');
+                                li.classList.add('col-md-3');
+                                li.innerHTML = `
+                                    <div class="card mb-4 shadow-sm" style="width: fit-content;">
+                                        <div class="card-body">
+                                            <p class="card-text">${user.funder_first_name}</p>
+                                            <p class="card-text">${user.funder_last_name}</p>
+                                            <a href="mailto:${user.funder_email}" class="card-text">${user.funder_email}</a>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div class="btn-group">
+                                                    <button type="button" id="remove_funder_${user.funder_id}" class="btn btn-sm btn-outline-secondary" style="width: fit-content; color: white;">Retirer du projet</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+                                document.getElementById('membersList').appendChild(li);
+                                document.getElementById('membersList-bailleurs').appendChild(li);
+
+                                document.getElementById('remove_funder_' + user.funder_id).addEventListener('click', function () {
+                                    fetch('https://lab.padem.org/wp-json/mo/v1/removeFunder', {
+                                        method: 'DELETE',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                        },
+                                        body: JSON.stringify({
+                                            funder_id: user.funder_id,
+                                            project_id: projectId
+                                        }),
+                                    })
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            console.log('Success:', data);
+                                            window.location.href = 'https://lab.padem.org/accueil/partenaires/?projectId=' + projectId;
+                                        })
+                                        .catch((error) => {
+                                            console.error('Error:', error);
+                                        });
+                                });
+                            }
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+
+                //#region Fonction pour afficher ou masquer les membres du projet
+                document.getElementById('membersList').style.display = 'none';
+                document.getElementById('membersList-coordonateur').style.display = 'none';
+                document.getElementById('membersList-chef-de-projet').style.display = 'none';
+                document.getElementById('membersList-partenaires').style.display = 'none';
+                document.getElementById('membersList-consultants').style.display = 'none';
+                document.getElementById('membersList-comptables').style.display = 'none';
+                document.getElementById('membersList-bailleurs').style.display = 'block';
+
+                document.getElementById('tous').style.backgroundColor = 'white';
+                document.getElementById('tous').style.color = 'gray';
+                document.getElementById('coordonnateurs').style.backgroundColor = 'white';
+                document.getElementById('coordonnateurs').style.color = 'gray';
+                document.getElementById('chefs-de-projets').style.backgroundColor = 'white';
+                document.getElementById('chefs-de-projets').style.color = 'gray';
+                document.getElementById('partenaires').style.backgroundColor = 'white';
+                document.getElementById('partenaires').style.color = 'gray';
+                document.getElementById('consultants').style.backgroundColor = 'white';
+                document.getElementById('consultants').style.color = 'gray';
+                document.getElementById('comptables').style.backgroundColor = 'white';
+                document.getElementById('comptables').style.color = 'gray';
+                document.getElementById('bailleurs').style.backgroundColor = '#29A6A7';
+                document.getElementById('bailleurs').style.color = 'white';
+                //#endregion
+
+            });
+
         });
         var userId = 0;
         var userEmail = '';
         var userFirstName = '';
         var userLastName = '';
         var userRole = '';
-
+        /*
+                document.getElementById('tous').addEventListener('click', function () {
+                    var projectId = new URL(window.location.href).searchParams.get('projectId');
+                    getProjectMembers(projectId);
+        
+                    //#region Fonction pour afficher ou masquer les membres du projet
+                    document.getElementById('membersList').style.display = 'block';
+                    document.getElementById('membersList-coordonateur').style.display = 'none';
+                    document.getElementById('membersList-chef-de-projet').style.display = 'none';
+                    document.getElementById('membersList-partenaires').style.display = 'none';
+                    document.getElementById('membersList-consultants').style.display = 'none';
+                    document.getElementById('membersList-comptables').style.display = 'none';
+                    document.getElementById('membersList-bailleurs').style.display = 'none';
+        
+                    document.getElementById('tous').style.backgroundColor = '#29A6A7';
+                    document.getElementById('tous').style.color = 'white';
+                    document.getElementById('coordonnateurs').style.backgroundColor = 'white';
+                    document.getElementById('coordonnateurs').style.color = 'gray';
+                    document.getElementById('chefs-de-projets').style.backgroundColor = 'white';
+                    document.getElementById('chefs-de-projets').style.color = 'gray';
+                    document.getElementById('partenaires').style.backgroundColor = 'white';
+                    document.getElementById('partenaires').style.color = 'gray';
+                    document.getElementById('consultants').style.backgroundColor = 'white';
+                    document.getElementById('consultants').style.color = 'gray';
+                    document.getElementById('comptables').style.backgroundColor = 'white';
+                    document.getElementById('comptables').style.color = 'gray';
+                    document.getElementById('bailleurs').style.backgroundColor = 'white';
+                    document.getElementById('bailleurs').style.color = 'gray';
+                    //#endregion
+                });
+        
+                document.getElementById('coordonnateurs').addEventListener('click', function () {
+                    var projectId = new URL(window.location.href).searchParams.get('projectId');
+                    getCoordinator(projectId);
+        
+                    //#region Fonction pour afficher ou masquer les membres du projet
+                    document.getElementById('membersList').style.display = 'none';
+                    document.getElementById('membersList-coordonateur').style.display = 'block';
+                    document.getElementById('membersList-chef-de-projet').style.display = 'none';
+                    document.getElementById('membersList-partenaires').style.display = 'none';
+                    document.getElementById('membersList-consultants').style.display = 'none';
+                    document.getElementById('membersList-comptables').style.display = 'none';
+                    document.getElementById('membersList-bailleurs').style.display = 'none';
+        
+                    document.getElementById('tous').style.backgroundColor = 'white';
+                    document.getElementById('tous').style.color = 'gray';
+                    document.getElementById('coordonnateurs').style.backgroundColor = '#29A6A7';
+                    document.getElementById('coordonnateurs').style.color = 'white';
+                    document.getElementById('chefs-de-projets').style.backgroundColor = 'white';
+                    document.getElementById('chefs-de-projets').style.color = 'gray';
+                    document.getElementById('partenaires').style.backgroundColor = 'white';
+                    document.getElementById('partenaires').style.color = 'gray';
+                    document.getElementById('consultants').style.backgroundColor = 'white';
+                    document.getElementById('consultants').style.color = 'gray';
+                    document.getElementById('comptables').style.backgroundColor = 'white';
+                    document.getElementById('comptables').style.color = 'gray';
+                    document.getElementById('bailleurs').style.backgroundColor = 'white';
+                    document.getElementById('bailleurs').style.color = 'gray';
+                    //#endregion
+        
+                });
+        
+                document.getElementById('chefs-de-projets').addEventListener('click', function () {
+                    var projectId = new URL(window.location.href).searchParams.get('projectId');
+                    getProjectChief(projectId);
+        
+                    //#region Fonction pour afficher ou masquer les membres du projet
+                    document.getElementById('membersList').style.display = 'none';
+                    document.getElementById('membersList-coordonateur').style.display = 'none';
+                    document.getElementById('membersList-chef-de-projet').style.display = 'block';
+                    document.getElementById('membersList-partenaires').style.display = 'none';
+                    document.getElementById('membersList-consultants').style.display = 'none';
+                    document.getElementById('membersList-comptables').style.display = 'none';
+                    document.getElementById('membersList-bailleurs').style.display = 'none';
+        
+                    document.getElementById('tous').style.backgroundColor = 'white';
+                    document.getElementById('tous').style.color = 'gray';
+                    document.getElementById('coordonnateurs').style.backgroundColor = 'white';
+                    document.getElementById('coordonnateurs').style.color = 'gray';
+                    document.getElementById('chefs-de-projets').style.backgroundColor = '#29A6A7';
+                    document.getElementById('chefs-de-projets').style.color = 'white';
+                    document.getElementById('partenaires').style.backgroundColor = 'white';
+                    document.getElementById('partenaires').style.color = 'gray';
+                    document.getElementById('consultants').style.backgroundColor = 'white';
+                    document.getElementById('consultants').style.color = 'gray';
+                    document.getElementById('comptables').style.backgroundColor = 'white';
+                    document.getElementById('comptables').style.color = 'gray';
+                    document.getElementById('bailleurs').style.backgroundColor = 'white';
+                    document.getElementById('bailleurs').style.color = 'gray';
+                    //#endregion
+        
+                });
+        
+                document.getElementById('partenaires').addEventListener('click', function () {
+                    var projectId = new URL(window.location.href).searchParams.get('projectId');
+                    getPartners(projectId);
+        
+                    //#region Fonction pour afficher ou masquer les membres du projet
+                    document.getElementById('membersList').style.display = 'none';
+                    document.getElementById('membersList-coordonateur').style.display = 'none';
+                    document.getElementById('membersList-chef-de-projet').style.display = 'none';
+                    document.getElementById('membersList-partenaires').style.display = 'block';
+                    document.getElementById('membersList-consultants').style.display = 'none';
+                    document.getElementById('membersList-comptables').style.display = 'none';
+                    document.getElementById('membersList-bailleurs').style.display = 'none';
+        
+                    document.getElementById('tous').style.backgroundColor = 'white';
+                    document.getElementById('tous').style.color = 'gray';
+                    document.getElementById('coordonnateurs').style.backgroundColor = 'white';
+                    document.getElementById('coordonnateurs').style.color = 'gray';
+                    document.getElementById('chefs-de-projets').style.backgroundColor = 'white';
+                    document.getElementById('chefs-de-projets').style.color = 'gray';
+                    document.getElementById('partenaires').style.backgroundColor = '#29A6A7';
+                    document.getElementById('partenaires').style.color = 'white';
+                    document.getElementById('consultants').style.backgroundColor = 'white';
+                    document.getElementById('consultants').style.color = 'gray';
+                    document.getElementById('comptables').style.backgroundColor = 'white';
+                    document.getElementById('comptables').style.color = 'gray';
+                    document.getElementById('bailleurs').style.backgroundColor = 'white';
+                    document.getElementById('bailleurs').style.color = 'gray';
+                    //#endregion
+        
+                });
+        
+                document.getElementById('consultants').addEventListener('click', function () {
+                    var projectId = new URL(window.location.href).searchParams.get('projectId');
+                    getConsultants(projectId);
+        
+                    //#region Fonction pour afficher ou masquer les membres du projet
+                    document.getElementById('membersList').style.display = 'none';
+                    document.getElementById('membersList-coordonateur').style.display = 'none';
+                    document.getElementById('membersList-chef-de-projet').style.display = 'none';
+                    document.getElementById('membersList-partenaires').style.display = 'none';
+                    document.getElementById('membersList-consultants').style.display = 'block';
+                    document.getElementById('membersList-comptables').style.display = 'none';
+                    document.getElementById('membersList-bailleurs').style.display = 'none';
+        
+                    document.getElementById('tous').style.backgroundColor = 'white';
+                    document.getElementById('tous').style.color = 'gray';
+                    document.getElementById('coordonnateurs').style.backgroundColor = 'white';
+                    document.getElementById('coordonnateurs').style.color = 'gray';
+                    document.getElementById('chefs-de-projets').style.backgroundColor = 'white';
+                    document.getElementById('chefs-de-projets').style.color = 'gray';
+                    document.getElementById('partenaires').style.backgroundColor = 'white';
+                    document.getElementById('partenaires').style.color = 'gray';
+                    document.getElementById('consultants').style.backgroundColor = '#29A6A7';
+                    document.getElementById('consultants').style.color = 'white';
+                    document.getElementById('comptables').style.backgroundColor = 'white';
+                    document.getElementById('comptables').style.color = 'gray';
+                    document.getElementById('bailleurs').style.backgroundColor = 'white';
+                    document.getElementById('bailleurs').style.color = 'gray';
+                    //#endregion
+        
+                });
+        
+                document.getElementById('comptables').addEventListener('click', function () {
+                    var projectId = new URL(window.location.href).searchParams.get('projectId');
+                    getAccountants(projectId);
+        
+                    //#region Fonction pour afficher ou masquer les membres du projet
+                    document.getElementById('membersList').style.display = 'none';
+                    document.getElementById('membersList-coordonateur').style.display = 'none';
+                    document.getElementById('membersList-chef-de-projet').style.display = 'none';
+                    document.getElementById('membersList-partenaires').style.display = 'none';
+                    document.getElementById('membersList-consultants').style.display = 'none';
+                    document.getElementById('membersList-comptables').style.display = 'block';
+                    document.getElementById('membersList-bailleurs').style.display = 'none';
+        
+                    document.getElementById('tous').style.backgroundColor = 'white';
+                    document.getElementById('tous').style.color = 'gray';
+                    document.getElementById('coordonnateurs').style.backgroundColor = 'white';
+                    document.getElementById('coordonnateurs').style.color = 'gray';
+                    document.getElementById('chefs-de-projets').style.backgroundColor = 'white';
+                    document.getElementById('chefs-de-projets').style.color = 'gray';
+                    document.getElementById('partenaires').style.backgroundColor = 'white';
+                    document.getElementById('partenaires').style.color = 'gray';
+                    document.getElementById('consultants').style.backgroundColor = 'white';
+                    document.getElementById('consultants').style.color = 'gray';
+                    document.getElementById('comptables').style.backgroundColor = '#29A6A7';
+                    document.getElementById('comptables').style.color = 'white';
+                    document.getElementById('bailleurs').style.backgroundColor = 'white';
+                    document.getElementById('bailleurs').style.color = 'gray';
+                    //#endregion
+                });
+        
+                document.getElementById('bailleurs').addEventListener('click', function () {
+                    var projectId = new URL(window.location.href).searchParams.get('projectId');
+                    getFunders(projectId);
+        
+                    //#region Fonction pour afficher ou masquer les membres du projet
+                    document.getElementById('membersList').style.display = 'none';
+                    document.getElementById('membersList-coordonateur').style.display = 'none';
+                    document.getElementById('membersList-chef-de-projet').style.display = 'none';
+                    document.getElementById('membersList-partenaires').style.display = 'none';
+                    document.getElementById('membersList-consultants').style.display = 'none';
+                    document.getElementById('membersList-comptables').style.display = 'none';
+                    document.getElementById('membersList-bailleurs').style.display = 'block';
+        
+                    document.getElementById('tous').style.backgroundColor = 'white';
+                    document.getElementById('tous').style.color = 'gray';
+                    document.getElementById('coordonnateurs').style.backgroundColor = 'white';
+                    document.getElementById('coordonnateurs').style.color = 'gray';
+                    document.getElementById('chefs-de-projets').style.backgroundColor = 'white';
+                    document.getElementById('chefs-de-projets').style.color = 'gray';
+                    document.getElementById('partenaires').style.backgroundColor = 'white';
+                    document.getElementById('partenaires').style.color = 'gray';
+                    document.getElementById('consultants').style.backgroundColor = 'white';
+                    document.getElementById('consultants').style.color = 'gray';
+                    document.getElementById('comptables').style.backgroundColor = 'white';
+                    document.getElementById('comptables').style.color = 'gray';
+                    document.getElementById('bailleurs').style.backgroundColor = '#29A6A7';
+                    document.getElementById('bailleurs').style.color = 'white';
+                    //#endregion
+        
+                });
+        
+        */
         var colorStatusText = {
             '- Pas encore commencé': 'gray',
             '- Début': '#29A6A7',
@@ -424,184 +1483,9 @@
             document.getElementById('bailleurs').style.backgroundColor = 'white';
             document.getElementById('bailleurs').style.color = 'gray';
             //#endregion
-
-            var buttons = document.getElementsByClassName('box-clicable');
-            for (var i = 0; i < buttons.length; i++) {
-                buttons[i].addEventListener('click', function () {
-                    var id = this.id;
-                    var elements = document.getElementsByClassName('box-clicable');
-                    for (var j = 0; j < elements.length; j++) {
-                        elements[j].style.backgroundColor = 'white';
-                        elements[j].style.color = 'gray';
-                    }
-                    this.style.backgroundColor = '#29A6A7';
-                    this.style.color = 'white';
-
-                    if (id === 'tous') {
-                        var members = document.getElementById('membersList');
-                        members.innerHTML = '';
-                        getProjectMembers(projectId);
-
-                        //#region Fonction pour afficher ou masquer les membres du projet
-                        document.getElementById('tous').style.backgroundColor = '#29A6A7';
-                        document.getElementById('tous').style.color = 'white';
-                        document.getElementById('coordonnateurs').style.backgroundColor = 'white';
-                        document.getElementById('coordonnateurs').style.color = 'gray';
-                        document.getElementById('chefs-de-projets').style.backgroundColor = 'white';
-                        document.getElementById('chefs-de-projets').style.color = 'gray';
-                        document.getElementById('partenaires').style.backgroundColor = 'white';
-                        document.getElementById('partenaires').style.color = 'gray';
-                        document.getElementById('consultants').style.backgroundColor = 'white';
-                        document.getElementById('consultants').style.color = 'gray';
-                        document.getElementById('comptables').style.backgroundColor = 'white';
-                        document.getElementById('comptables').style.color = 'gray';
-                        document.getElementById('bailleurs').style.backgroundColor = 'white';
-                        document.getElementById('bailleurs').style.color = 'gray';
-                        //#endregion
-                    }
-
-                    if (id === 'coordonnateurs') {
-                        var members = document.getElementById('membersList');
-                        members.innerHTML = '';
-                        getCoordinator(projectId);
-
-                        //#region Fonction pour afficher ou masquer les membres du projet
-                        document.getElementById('tous').style.backgroundColor = 'white';
-                        document.getElementById('tous').style.color = 'gray';
-                        document.getElementById('coordonnateurs').style.backgroundColor = '#29A6A7';
-                        document.getElementById('coordonnateurs').style.color = 'white';
-                        document.getElementById('chefs-de-projets').style.backgroundColor = 'white';
-                        document.getElementById('chefs-de-projets').style.color = 'gray';
-                        document.getElementById('partenaires').style.backgroundColor = 'white';
-                        document.getElementById('partenaires').style.color = 'gray';
-                        document.getElementById('consultants').style.backgroundColor = 'white';
-                        document.getElementById('consultants').style.color = 'gray';
-                        document.getElementById('comptables').style.backgroundColor = 'white';
-                        document.getElementById('comptables').style.color = 'gray';
-                        document.getElementById('bailleurs').style.backgroundColor = 'white';
-                        document.getElementById('bailleurs').style.color = 'gray';
-                        //#endregion
-                    }
-
-                    if (id === 'chefs-de-projets') {
-                        var members = document.getElementById('membersList');
-                        members.innerHTML = '';
-                        getProjectChief(projectId);
-
-                        //#region Fonction pour afficher ou masquer les membres du projet
-                        document.getElementById('tous').style.backgroundColor = 'white';
-                        document.getElementById('tous').style.color = 'gray';
-                        document.getElementById('coordonnateurs').style.backgroundColor = 'white';
-                        document.getElementById('coordonnateurs').style.color = 'gray';
-                        document.getElementById('chefs-de-projets').style.backgroundColor = '#29A6A7';
-                        document.getElementById('chefs-de-projets').style.color = 'white';
-                        document.getElementById('partenaires').style.backgroundColor = 'white';
-                        document.getElementById('partenaires').style.color = 'gray';
-                        document.getElementById('consultants').style.backgroundColor = 'white';
-                        document.getElementById('consultants').style.color = 'gray';
-                        document.getElementById('comptables').style.backgroundColor = 'white';
-                        document.getElementById('comptables').style.color = 'gray';
-                        document.getElementById('bailleurs').style.backgroundColor = 'white';
-                        document.getElementById('bailleurs').style.color = 'gray';
-                        //#endregion
-                    }
-
-                    if (id === 'partenaires') {
-                        var members = document.getElementById('membersList');
-                        members.innerHTML = '';
-                        getPartners(projectId);
-
-                        //#region Fonction pour afficher ou masquer les membres du projet
-                        document.getElementById('tous').style.backgroundColor = 'white';
-                        document.getElementById('tous').style.color = 'gray';
-                        document.getElementById('coordonnateurs').style.backgroundColor = 'white';
-                        document.getElementById('coordonnateurs').style.color = 'gray';
-                        document.getElementById('chefs-de-projets').style.backgroundColor = 'white';
-                        document.getElementById('chefs-de-projets').style.color = 'gray';
-                        document.getElementById('partenaires').style.backgroundColor = '#29A6A7';
-                        document.getElementById('partenaires').style.color = 'white';
-                        document.getElementById('consultants').style.backgroundColor = 'white';
-                        document.getElementById('consultants').style.color = 'gray';
-                        document.getElementById('comptables').style.backgroundColor = 'white';
-                        document.getElementById('comptables').style.color = 'gray';
-                        document.getElementById('bailleurs').style.backgroundColor = 'white';
-                        document.getElementById('bailleurs').style.color = 'gray';
-                        //#endregion
-                    }
-
-                    if (id === 'comptables') {
-                        var members = document.getElementById('membersList');
-                        members.innerHTML = '';
-                        getAccountants(projectId);
-
-                        //#region Fonction pour afficher ou masquer les membres du projet
-                        document.getElementById('tous').style.backgroundColor = 'white';
-                        document.getElementById('tous').style.color = 'gray';
-                        document.getElementById('coordonnateurs').style.backgroundColor = 'white';
-                        document.getElementById('coordonnateurs').style.color = 'gray';
-                        document.getElementById('chefs-de-projets').style.backgroundColor = 'white';
-                        document.getElementById('chefs-de-projets').style.color = 'gray';
-                        document.getElementById('partenaires').style.backgroundColor = 'white';
-                        document.getElementById('partenaires').style.color = 'gray';
-                        document.getElementById('consultants').style.backgroundColor = 'white';
-                        document.getElementById('consultants').style.color = 'gray';
-                        document.getElementById('comptables').style.backgroundColor = '#29A6A7';
-                        document.getElementById('comptables').style.color = 'white';
-                        document.getElementById('bailleurs').style.backgroundColor = 'white';
-                        document.getElementById('bailleurs').style.color = 'gray';
-                        //#endregion
-                    }
-
-                    if (id === 'consultants') {
-                        var members = document.getElementById('membersList');
-                        members.innerHTML = '';
-                        getConsultants(projectId);
-
-                        //#region Fonction pour afficher ou masquer les membres du projet
-                        document.getElementById('tous').style.backgroundColor = 'white';
-                        document.getElementById('tous').style.color = 'gray';
-                        document.getElementById('coordonnateurs').style.backgroundColor = 'white';
-                        document.getElementById('coordonnateurs').style.color = 'gray';
-                        document.getElementById('chefs-de-projets').style.backgroundColor = 'white';
-                        document.getElementById('chefs-de-projets').style.color = 'gray';
-                        document.getElementById('partenaires').style.backgroundColor = 'white';
-                        document.getElementById('partenaires').style.color = 'gray';
-                        document.getElementById('consultants').style.backgroundColor = '#29A6A7';
-                        document.getElementById('consultants').style.color = 'white';
-                        document.getElementById('comptables').style.backgroundColor = 'white';
-                        document.getElementById('comptables').style.color = 'gray';
-                        document.getElementById('bailleurs').style.backgroundColor = 'white';
-                        document.getElementById('bailleurs').style.color = 'gray';
-                        //#endregion
-                    }
-
-                    if (id === 'bailleurs') {
-                        var members = document.getElementById('membersList');
-                        members.innerHTML = '';
-                        getFunders(projectId);
-
-                        //#region Fonction pour afficher ou masquer les membres du projet
-                        document.getElementById('tous').style.backgroundColor = 'white';
-                        document.getElementById('tous').style.color = 'gray';
-                        document.getElementById('coordonnateurs').style.backgroundColor = 'white';
-                        document.getElementById('coordonnateurs').style.color = 'gray';
-                        document.getElementById('chefs-de-projets').style.backgroundColor = 'white';
-                        document.getElementById('chefs-de-projets').style.color = 'gray';
-                        document.getElementById('partenaires').style.backgroundColor = 'white';
-                        document.getElementById('partenaires').style.color = 'gray';
-                        document.getElementById('consultants').style.backgroundColor = 'white';
-                        document.getElementById('consultants').style.color = 'gray';
-                        document.getElementById('comptables').style.backgroundColor = 'white';
-                        document.getElementById('comptables').style.color = 'gray';
-                        document.getElementById('bailleurs').style.backgroundColor = '#29A6A7';
-                        document.getElementById('bailleurs').style.color = 'white';
-                        //#endregion
-                    }
-                });
-            }
         }
 
-        // Fonction pour afficher les coordonnateurs
+        //#region Fonction pour afficher les coordonnateurs
         function getCoordinator(projectId) {
 
             var users_list = {
@@ -632,7 +1516,6 @@
                 }
             };
 
-            //#region Récupérer le nombre de participants dans le projet
             var participants = {};
             var isUserInProject = false;
             var numberOfParticipants = 0;
@@ -652,20 +1535,22 @@
                             var li = document.createElement('li');
                             li.classList.add('col-md-3');
                             li.innerHTML = `
-                                <div class="card mb-4 shadow-sm">
-                                    <img src="${user.member_avatar}" class="bd-placeholder-img card-img-top" width="30px" height="30px" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
+                                <div class="card mb-4 shadow-sm" style="width: fit-content;">
                                     <div class="card-body">
-                                        <p class="card-text">${user.coordinator_name}</p>
-                                        <p class="card-text">${user.coordinator_email}</p>
+                                        <p class="card-text">${user.coordinator_first_name}</p>
+                                        <p class="card-text">${user.coordinator_last_name}</p>
+                                        <a href="mailto:${user.coordinator_email}" class="card-text">${user.coordinator_email}</a>
                                         <div class="d-flex justify-content-between align-items-center">
-                                            <div class="btn-group">
-                                                <button type="button" id="remove_coordinator_${user.coordinator_id}" class="btn btn-sm btn-outline-secondary" style="width: fit-content; color: white;">Retirer</button>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div class="btn-group">
+                                                    <button type="button" id="remove_accountant_${user.coordinator_id}" class="btn btn-sm btn-outline-secondary" style="width: fit-content; color: white;">Retirer du projet</button>
+                                                </div>
                                             </div>
-                                        </div>
                                     </div>
                                 </div>
                             `;
                             document.getElementById('membersList').appendChild(li);
+                            document.getElementById('membersList-coordonateur').appendChild(li);
 
                             document.getElementById('remove_coordinator_' + user.coordinator_id).addEventListener('click', function () {
                                 fetch('https://lab.padem.org/wp-json/mo/v1/removeCoordinator', {
@@ -693,11 +1578,12 @@
                 .catch(error => {
                     console.error('Error:', error);
                 });
+            //#endregion
         }
         //#endregion
 
         //#region get Chef de projet
-        function getProjectChief(params) {
+        function getProjectChief(projectId) {
 
             var users_list = {
                 'emails_names': {
@@ -741,20 +1627,21 @@
                             var li = document.createElement('li');
                             li.classList.add('col-md-3');
                             li.innerHTML = `
-                                    <div class="card mb-4 shadow-sm">
-                                        <img src="${user.member_avatar}" class="bd-placeholder-img card-img-top" width="100%" height="225" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
+                                    <div class="card mb-4 shadow-sm" style="width: fit-content;">
                                         <div class="card-body">
-                                            <p class="card-text">${user.chief_name}</p>
-                                            <p class="card-text">${user.chief_email}</p>
+                                            <p class="card-text">${user.chief_first_name}</p>
+                                            <p class="card-text">${user.chief_last_name}</p>
+                                            <a href="mailto:${user.chief_email}" class="card-text">${user.chief_email}</a>
                                             <div class="d-flex justify-content-between align-items-center">
                                                 <div class="btn-group">
-                                                    <button type="button" id="remove_chief_${user.chief_id}" class="btn btn-sm btn-outline-secondary" style="width: fit-content; color: white;">Retirer</button>
+                                                    <button type="button" id="remove_chief_${user.chief_id}" class="btn btn-sm btn-outline-secondary" style="width: fit-content; color: white;">Retirer du projet</button>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 `;
                             document.getElementById('membersList').appendChild(li);
+                            document.getElementById('membersList-chef-de-projet').appendChild(li);
 
                             document.getElementById('remove_chief_' + user.chief_id).addEventListener('click', function () {
                                 fetch('https://lab.padem.org/wp-json/mo/v1/removeChief', {
@@ -830,20 +1717,21 @@
                             var li = document.createElement('li');
                             li.classList.add('col-md-3');
                             li.innerHTML = `
-                                    <div class="card mb-4 shadow-sm">
-                                        <img src="${user.member_avatar}" class="bd-placeholder-img card-img-top" width="100%" height="225" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
+                                    <div class="card mb-4 shadow-sm" style="width: fit-content;">
                                         <div class="card-body">
-                                            <p class="card-text">${user.partner_name}</p>
-                                            <p class="card-text">${user.partner_email}</p>
+                                            <p class="card-text">${user.partner_first_name}</p>
+                                            <p class="card-text">${user.partner_last_name}</p>
+                                            <a href="mailto:${user.partner_email}" class="card-text">${user.partner_email}</a>
                                             <div class="d-flex justify-content-between align-items-center">
                                                 <div class="btn-group">
-                                                    <button type="button" id="remove_partner_${user.partner_id}" class="btn btn-sm btn-outline-secondary" style="width: fit-content; color: white;">Retirer</button>
+                                                    <button type="button" id="remove_partner_${user.partner_id}" class="btn btn-sm btn-outline-secondary" style="width: fit-content; color: white;">Retirer du projet</button>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 `;
                             document.getElementById('membersList').appendChild(li);
+                            document.getElementById('membersList-partenaires').appendChild(li);
 
                             document.getElementById('remove_partner_' + user.partner_id).addEventListener('click', function () {
                                 fetch('https://lab.padem.org/wp-json/mo/v1/removePartner', {
@@ -875,7 +1763,7 @@
         //#endregion
 
         //#region get comptable
-        function getAccountants(params) {
+        function getAccountants(projectId) {
 
             var users_list = {
                 'emails_names': {
@@ -919,20 +1807,21 @@
                             var li = document.createElement('li');
                             li.classList.add('col-md-3');
                             li.innerHTML = `
-                                    <div class="card mb-4 shadow-sm">
-                                        <img src="${user.member_avatar}" class="bd-placeholder-img card-img-top" width="100%" height="225" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
+                                    <div class="card mb-4 shadow-sm" style="width: fit-content;">
                                         <div class="card-body">
-                                            <p class="card-text">${user.accountant_name}</p>
-                                            <p class="card-text">${user.accountant_email}</p>
+                                            <p class="card-text">${user.accountant_first_name}</p>
+                                            <p class="card-text">${user.accountant_last_name}</p>
+                                            <a href="mailto:${user.accountant_email}" class="card-text">${user.accountant_email}</a>
                                             <div class="d-flex justify-content-between align-items-center">
                                                 <div class="btn-group">
-                                                    <button type="button" id="remove_accountant_${user.accountant_id}" class="btn btn-sm btn-outline-secondary" style="width: fit-content; color: white;">Retirer</button>
+                                                    <button type="button" id="remove_accountant_${user.accountant_id}" class="btn btn-sm btn-outline-secondary" style="width: fit-content; color: white;">Retirer du projet</button>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 `;
                             document.getElementById('membersList').appendChild(li);
+                            document.getElementById('membersList-comptables').appendChild(li);
 
                             document.getElementById('remove_accountant_' + user.accountant_id).addEventListener('click', function () {
                                 fetch('https://lab.padem.org/wp-json/mo/v1/removeAccountant', {
@@ -964,7 +1853,7 @@
         //#endregion
 
         //#region get consultant
-        function getConsultants(params) {
+        function getConsultants(projectId) {
 
             var users_list = {
                 'emails_names': {
@@ -1004,24 +1893,26 @@
                 .then(data => {
                     data.forEach(user => {
                         // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
+                        console.log(user.project_id, projectId)
                         if (user.project_id === projectId) {
                             var li = document.createElement('li');
                             li.classList.add('col-md-3');
                             li.innerHTML = `
-                                    <div class="card mb-4 shadow-sm">
-                                        <img src="${user.member_avatar}" class="bd-placeholder-img card-img-top" width="100%" height="225" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
+                                    <div class="card mb-4 shadow-sm" style="width: fit-content;">
                                         <div class="card-body">
-                                            <p class="card-text">${user.consultant_name}</p>
-                                            <p class="card-text">${user.consultant_email}</p>
+                                            <p class="card-text">${user.consultant_first_name}</p>
+                                            <p class="card-text">${user.consultant_last_name}</p>
+                                            <a href="mailto:${user.consultant_email}" class="card-text">${user.consultant_email}</a>
                                             <div class="d-flex justify-content-between align-items-center">
                                                 <div class="btn-group">
-                                                    <button type="button" id="remove_consultant_${user.consultant_id}" class="btn btn-sm btn-outline-secondary" style="width: fit-content; color: white;">Retirer</button>
+                                                    <button type="button" id="remove_consultant_${user.consultant_id}" class="btn btn-sm btn-outline-secondary" style="width: fit-content; color: white;">Retirer du projet</button>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 `;
                             document.getElementById('membersList').appendChild(li);
+                            document.getElementById('membersList-consultants').appendChild(li);
 
                             document.getElementById('remove_consultant_' + user.consultant_id).addEventListener('click', function () {
                                 fetch('https://lab.padem.org/wp-json/mo/v1/removeConsultant', {
@@ -1053,8 +1944,8 @@
         //#endregion
 
         //#region get bailleur
-        function getFunders(params) {
-            
+        function getFunders(projectId) {
+
             var users_list = {
                 'emails_names': {
                     'Coordinateur': 'coordinator_email',
@@ -1097,20 +1988,21 @@
                             var li = document.createElement('li');
                             li.classList.add('col-md-3');
                             li.innerHTML = `
-                                    <div class="card mb-4 shadow-sm">
-                                        <img src="${user.member_avatar}" class="bd-placeholder-img card-img-top" width="100%" height="225" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
+                                    <div class="card mb-4 shadow-sm" style="width: fit-content;">
                                         <div class="card-body">
-                                            <p class="card-text">${user.funder_name}</p>
-                                            <p class="card-text">${user.funder_email}</p>
+                                            <p class="card-text">${user.funder_first_name}</p>
+                                            <p class="card-text">${user.funder_last_name}</p>
+                                            <a href="mailto:${user.funder_email}" class="card-text">${user.funder_email}</a>
                                             <div class="d-flex justify-content-between align-items-center">
                                                 <div class="btn-group">
-                                                    <button type="button" id="remove_funder_${user.funder_id}" class="btn btn-sm btn-outline-secondary" style="width: fit-content; color: white;">Retirer</button>
+                                                    <button type="button" id="remove_funder_${user.funder_id}" class="btn btn-sm btn-outline-secondary" style="width: fit-content; color: white;">Retirer du projet</button>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 `;
                             document.getElementById('membersList').appendChild(li);
+                            document.getElementById('membersList-bailleurs').appendChild(li);
 
                             document.getElementById('remove_funder_' + user.funder_id).addEventListener('click', function () {
                                 fetch('https://lab.padem.org/wp-json/mo/v1/removeFunder', {
@@ -1140,16 +2032,6 @@
                 });
         }
         //#endregion
-
-        // Fonction pour récupérer et afficher les membres du projet
-        function getProjectMembers(projectId) {
-            getCoordinator(projectId);
-            getProjectChief(projectId);
-            getPartners(projectId);
-            getAccountants(projectId);
-            getConsultants(projectId);
-            getFunders(projectId);
-        }
 
         // Fonction pour sauvegarder les informations du formulaire
         function saveFormReport() {
