@@ -55,8 +55,8 @@
 
 <!--#region Liste des membres du projet -->
 <button type="button" class="box-clicable" id="tous"
-style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px;">
-Tous </button>
+    style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px;">
+    Tous </button>
 <button type="button" class="box-clicable" id="coordonnateurs"
     style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px;">
     Coordinnateur </button>
@@ -407,6 +407,24 @@ Tous </button>
 
         // Fonction pour ajouter des écoutants d'événements sur les boutons: Tous, Coordonnateurs, Chefs de projet, Partenaires, Consultants, Comptables, Bailleurs
         function addEventListeners(projectId) {
+
+            //#region Fonction pour afficher ou masquer les membres du projet
+            document.getElementById('tous').style.backgroundColor = '#29A6A7';
+            document.getElementById('tous').style.color = 'white';
+            document.getElementById('coordonnateurs').style.backgroundColor = 'white';
+            document.getElementById('coordonnateurs').style.color = 'gray';
+            document.getElementById('chefs-de-projets').style.backgroundColor = 'white';
+            document.getElementById('chefs-de-projets').style.color = 'gray';
+            document.getElementById('partenaires').style.backgroundColor = 'white';
+            document.getElementById('partenaires').style.color = 'gray';
+            document.getElementById('consultants').style.backgroundColor = 'white';
+            document.getElementById('consultants').style.color = 'gray';
+            document.getElementById('comptables').style.backgroundColor = 'white';
+            document.getElementById('comptables').style.color = 'gray';
+            document.getElementById('bailleurs').style.backgroundColor = 'white';
+            document.getElementById('bailleurs').style.color = 'gray';
+            //#endregion
+
             var buttons = document.getElementsByClassName('box-clicable');
             for (var i = 0; i < buttons.length; i++) {
                 buttons[i].addEventListener('click', function () {
@@ -418,38 +436,173 @@ Tous </button>
                     }
                     this.style.backgroundColor = '#29A6A7';
                     this.style.color = 'white';
-                    showAndHide(id);
 
                     if (id === 'tous') {
                         var members = document.getElementById('membersList');
                         members.innerHTML = '';
                         getProjectMembers(projectId);
+
+                        //#region Fonction pour afficher ou masquer les membres du projet
+                        document.getElementById('tous').style.backgroundColor = '#29A6A7';
+                        document.getElementById('tous').style.color = 'white';
+                        document.getElementById('coordonnateurs').style.backgroundColor = 'white';
+                        document.getElementById('coordonnateurs').style.color = 'gray';
+                        document.getElementById('chefs-de-projets').style.backgroundColor = 'white';
+                        document.getElementById('chefs-de-projets').style.color = 'gray';
+                        document.getElementById('partenaires').style.backgroundColor = 'white';
+                        document.getElementById('partenaires').style.color = 'gray';
+                        document.getElementById('consultants').style.backgroundColor = 'white';
+                        document.getElementById('consultants').style.color = 'gray';
+                        document.getElementById('comptables').style.backgroundColor = 'white';
+                        document.getElementById('comptables').style.color = 'gray';
+                        document.getElementById('bailleurs').style.backgroundColor = 'white';
+                        document.getElementById('bailleurs').style.color = 'gray';
+                        //#endregion
+                    }
+
+                    if (id === 'coordonnateurs') {
+                        var members = document.getElementById('membersList');
+                        members.innerHTML = '';
+                        getCoordinator(projectId);
+
+                        //#region Fonction pour afficher ou masquer les membres du projet
+                        document.getElementById('tous').style.backgroundColor = 'white';
+                        document.getElementById('tous').style.color = 'gray';
+                        document.getElementById('coordonnateurs').style.backgroundColor = '#29A6A7';
+                        document.getElementById('coordonnateurs').style.color = 'white';
+                        document.getElementById('chefs-de-projets').style.backgroundColor = 'white';
+                        document.getElementById('chefs-de-projets').style.color = 'gray';
+                        document.getElementById('partenaires').style.backgroundColor = 'white';
+                        document.getElementById('partenaires').style.color = 'gray';
+                        document.getElementById('consultants').style.backgroundColor = 'white';
+                        document.getElementById('consultants').style.color = 'gray';
+                        document.getElementById('comptables').style.backgroundColor = 'white';
+                        document.getElementById('comptables').style.color = 'gray';
+                        document.getElementById('bailleurs').style.backgroundColor = 'white';
+                        document.getElementById('bailleurs').style.color = 'gray';
+                        //#endregion
+                    }
+
+                    if (id === 'chefs-de-projets') {
+                        var members = document.getElementById('membersList');
+                        members.innerHTML = '';
+                        getProjectChief(projectId);
+
+                        //#region Fonction pour afficher ou masquer les membres du projet
+                        document.getElementById('tous').style.backgroundColor = 'white';
+                        document.getElementById('tous').style.color = 'gray';
+                        document.getElementById('coordonnateurs').style.backgroundColor = 'white';
+                        document.getElementById('coordonnateurs').style.color = 'gray';
+                        document.getElementById('chefs-de-projets').style.backgroundColor = '#29A6A7';
+                        document.getElementById('chefs-de-projets').style.color = 'white';
+                        document.getElementById('partenaires').style.backgroundColor = 'white';
+                        document.getElementById('partenaires').style.color = 'gray';
+                        document.getElementById('consultants').style.backgroundColor = 'white';
+                        document.getElementById('consultants').style.color = 'gray';
+                        document.getElementById('comptables').style.backgroundColor = 'white';
+                        document.getElementById('comptables').style.color = 'gray';
+                        document.getElementById('bailleurs').style.backgroundColor = 'white';
+                        document.getElementById('bailleurs').style.color = 'gray';
+                        //#endregion
+                    }
+
+                    if (id === 'partenaires') {
+                        var members = document.getElementById('membersList');
+                        members.innerHTML = '';
+                        getPartners(projectId);
+
+                        //#region Fonction pour afficher ou masquer les membres du projet
+                        document.getElementById('tous').style.backgroundColor = 'white';
+                        document.getElementById('tous').style.color = 'gray';
+                        document.getElementById('coordonnateurs').style.backgroundColor = 'white';
+                        document.getElementById('coordonnateurs').style.color = 'gray';
+                        document.getElementById('chefs-de-projets').style.backgroundColor = 'white';
+                        document.getElementById('chefs-de-projets').style.color = 'gray';
+                        document.getElementById('partenaires').style.backgroundColor = '#29A6A7';
+                        document.getElementById('partenaires').style.color = 'white';
+                        document.getElementById('consultants').style.backgroundColor = 'white';
+                        document.getElementById('consultants').style.color = 'gray';
+                        document.getElementById('comptables').style.backgroundColor = 'white';
+                        document.getElementById('comptables').style.color = 'gray';
+                        document.getElementById('bailleurs').style.backgroundColor = 'white';
+                        document.getElementById('bailleurs').style.color = 'gray';
+                        //#endregion
+                    }
+
+                    if (id === 'comptables') {
+                        var members = document.getElementById('membersList');
+                        members.innerHTML = '';
+                        getAccountants(projectId);
+
+                        //#region Fonction pour afficher ou masquer les membres du projet
+                        document.getElementById('tous').style.backgroundColor = 'white';
+                        document.getElementById('tous').style.color = 'gray';
+                        document.getElementById('coordonnateurs').style.backgroundColor = 'white';
+                        document.getElementById('coordonnateurs').style.color = 'gray';
+                        document.getElementById('chefs-de-projets').style.backgroundColor = 'white';
+                        document.getElementById('chefs-de-projets').style.color = 'gray';
+                        document.getElementById('partenaires').style.backgroundColor = 'white';
+                        document.getElementById('partenaires').style.color = 'gray';
+                        document.getElementById('consultants').style.backgroundColor = 'white';
+                        document.getElementById('consultants').style.color = 'gray';
+                        document.getElementById('comptables').style.backgroundColor = '#29A6A7';
+                        document.getElementById('comptables').style.color = 'white';
+                        document.getElementById('bailleurs').style.backgroundColor = 'white';
+                        document.getElementById('bailleurs').style.color = 'gray';
+                        //#endregion
+                    }
+
+                    if (id === 'consultants') {
+                        var members = document.getElementById('membersList');
+                        members.innerHTML = '';
+                        getConsultants(projectId);
+
+                        //#region Fonction pour afficher ou masquer les membres du projet
+                        document.getElementById('tous').style.backgroundColor = 'white';
+                        document.getElementById('tous').style.color = 'gray';
+                        document.getElementById('coordonnateurs').style.backgroundColor = 'white';
+                        document.getElementById('coordonnateurs').style.color = 'gray';
+                        document.getElementById('chefs-de-projets').style.backgroundColor = 'white';
+                        document.getElementById('chefs-de-projets').style.color = 'gray';
+                        document.getElementById('partenaires').style.backgroundColor = 'white';
+                        document.getElementById('partenaires').style.color = 'gray';
+                        document.getElementById('consultants').style.backgroundColor = '#29A6A7';
+                        document.getElementById('consultants').style.color = 'white';
+                        document.getElementById('comptables').style.backgroundColor = 'white';
+                        document.getElementById('comptables').style.color = 'gray';
+                        document.getElementById('bailleurs').style.backgroundColor = 'white';
+                        document.getElementById('bailleurs').style.color = 'gray';
+                        //#endregion
+                    }
+
+                    if (id === 'bailleurs') {
+                        var members = document.getElementById('membersList');
+                        members.innerHTML = '';
+                        getFunders(projectId);
+
+                        //#region Fonction pour afficher ou masquer les membres du projet
+                        document.getElementById('tous').style.backgroundColor = 'white';
+                        document.getElementById('tous').style.color = 'gray';
+                        document.getElementById('coordonnateurs').style.backgroundColor = 'white';
+                        document.getElementById('coordonnateurs').style.color = 'gray';
+                        document.getElementById('chefs-de-projets').style.backgroundColor = 'white';
+                        document.getElementById('chefs-de-projets').style.color = 'gray';
+                        document.getElementById('partenaires').style.backgroundColor = 'white';
+                        document.getElementById('partenaires').style.color = 'gray';
+                        document.getElementById('consultants').style.backgroundColor = 'white';
+                        document.getElementById('consultants').style.color = 'gray';
+                        document.getElementById('comptables').style.backgroundColor = 'white';
+                        document.getElementById('comptables').style.color = 'gray';
+                        document.getElementById('bailleurs').style.backgroundColor = '#29A6A7';
+                        document.getElementById('bailleurs').style.color = 'white';
+                        //#endregion
                     }
                 });
             }
         }
 
-        // Fonction pour récupérer et afficher les membres du projet
-        function getProjectMembers(projectId) {
-
-            // Afficher les membres du projet
-            /*
-            document.getElementById('projectMembers').innerHTML += `
-                            <div class="col-md-3">
-                                <div class="card mb-4 shadow-sm">
-                                    <img src="${member.member_avatar}" class="bd-placeholder-img card-img-top" width="100%" height="225" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
-                                    <div class="card-body">
-                                        <p class="card-text">${member.member_name}</p>
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <div class="btn-group">
-                                                <button type="button" class="btn btn-sm btn-outline-secondary">Voir</button>
-                                                <button type="button" class="btn btn-sm btn-outline-secondary">Modifier</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        `;*/
+        // Fonction pour afficher les coordonnateurs
+        function getCoordinator(projectId) {
 
             var users_list = {
                 'emails_names': {
@@ -500,7 +653,7 @@ Tous </button>
                             li.classList.add('col-md-3');
                             li.innerHTML = `
                                 <div class="card mb-4 shadow-sm">
-                                    <img src="${user.member_avatar}" class="bd-placeholder-img card-img-top" width="100%" height="225" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
+                                    <img src="${user.member_avatar}" class="bd-placeholder-img card-img-top" width="30px" height="30px" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
                                     <div class="card-body">
                                         <p class="card-text">${user.coordinator_name}</p>
                                         <p class="card-text">${user.coordinator_email}</p>
@@ -513,7 +666,7 @@ Tous </button>
                                 </div>
                             `;
                             document.getElementById('membersList').appendChild(li);
-                            
+
                             document.getElementById('remove_coordinator_' + user.coordinator_id).addEventListener('click', function () {
                                 fetch('https://lab.padem.org/wp-json/mo/v1/removeCoordinator', {
                                     method: 'DELETE',
@@ -540,9 +693,40 @@ Tous </button>
                 .catch(error => {
                     console.error('Error:', error);
                 });
-            //#endregion
+        }
+        //#endregion
 
-            //#region get Chef de projet
+        //#region get Chef de projet
+        function getProjectChief(params) {
+
+            var users_list = {
+                'emails_names': {
+                    'Coordinateur': 'coordinator_email',
+                    'Chef de projet': 'chief_email',
+                    'partenaire': 'partner_email',
+                    'comptable': 'accountant_email',
+                    'consultant': 'consultant_email',
+                    'bailleur': 'funder_email'
+                },
+                'users': {
+                    'Coordinateur': [],
+                    'Chef de projet': [],
+                    'partenaire': [],
+                    'comptable': [],
+                    'consultant': [],
+                    'bailleur': []
+                },
+                'urls': {
+                    'Administrateur': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
+                    'Coordinateur': 'https://lab.padem.org/wp-json/mo/v1/getCoordinator',
+                    'Chef de projet': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
+                    'partenaire': 'https://lab.padem.org/wp-json/mo/v1/getPartner',
+                    'comptable': 'https://lab.padem.org/wp-json/mo/v1/getAccountant',
+                    'consultant': 'https://lab.padem.org/wp-json/mo/v1/getConsultant',
+                    'bailleur': 'https://lab.padem.org/wp-json/mo/v1/getFunder'
+                }
+            };
+
             fetch(users_list.urls['Chef de projet'], {
                 method: 'GET',
                 headers: {
@@ -557,19 +741,19 @@ Tous </button>
                             var li = document.createElement('li');
                             li.classList.add('col-md-3');
                             li.innerHTML = `
-                                <div class="card mb-4 shadow-sm">
-                                    <img src="${user.member_avatar}" class="bd-placeholder-img card-img-top" width="100%" height="225" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
-                                    <div class="card-body">
-                                        <p class="card-text">${user.chief_name}</p>
-                                        <p class="card-text">${user.chief_email}</p>
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <div class="btn-group">
-                                                <button type="button" id="remove_chief_${user.chief_id}" class="btn btn-sm btn-outline-secondary" style="width: fit-content; color: white;">Retirer</button>
+                                    <div class="card mb-4 shadow-sm">
+                                        <img src="${user.member_avatar}" class="bd-placeholder-img card-img-top" width="100%" height="225" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
+                                        <div class="card-body">
+                                            <p class="card-text">${user.chief_name}</p>
+                                            <p class="card-text">${user.chief_email}</p>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div class="btn-group">
+                                                    <button type="button" id="remove_chief_${user.chief_id}" class="btn btn-sm btn-outline-secondary" style="width: fit-content; color: white;">Retirer</button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            `;
+                                `;
                             document.getElementById('membersList').appendChild(li);
 
                             document.getElementById('remove_chief_' + user.chief_id).addEventListener('click', function () {
@@ -598,9 +782,40 @@ Tous </button>
                 .catch(error => {
                     console.error('Error:', error);
                 });
-            //#endregion
+        }
+        //#endregion
 
-            //#region get partenaire
+        //#region get partenaire
+        function getPartners(projectId) {
+
+            var users_list = {
+                'emails_names': {
+                    'Coordinateur': 'coordinator_email',
+                    'Chef de projet': 'chief_email',
+                    'partenaire': 'partner_email',
+                    'comptable': 'accountant_email',
+                    'consultant': 'consultant_email',
+                    'bailleur': 'funder_email'
+                },
+                'users': {
+                    'Coordinateur': [],
+                    'Chef de projet': [],
+                    'partenaire': [],
+                    'comptable': [],
+                    'consultant': [],
+                    'bailleur': []
+                },
+                'urls': {
+                    'Administrateur': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
+                    'Coordinateur': 'https://lab.padem.org/wp-json/mo/v1/getCoordinator',
+                    'Chef de projet': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
+                    'partenaire': 'https://lab.padem.org/wp-json/mo/v1/getPartner',
+                    'comptable': 'https://lab.padem.org/wp-json/mo/v1/getAccountant',
+                    'consultant': 'https://lab.padem.org/wp-json/mo/v1/getConsultant',
+                    'bailleur': 'https://lab.padem.org/wp-json/mo/v1/getFunder'
+                }
+            };
+
             fetch(users_list.urls['partenaire'], {
                 method: 'GET',
                 headers: {
@@ -615,19 +830,19 @@ Tous </button>
                             var li = document.createElement('li');
                             li.classList.add('col-md-3');
                             li.innerHTML = `
-                                <div class="card mb-4 shadow-sm">
-                                    <img src="${user.member_avatar}" class="bd-placeholder-img card-img-top" width="100%" height="225" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
-                                    <div class="card-body">
-                                        <p class="card-text">${user.partner_name}</p>
-                                        <p class="card-text">${user.partner_email}</p>
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <div class="btn-group">
-                                                <button type="button" id="remove_partner_${user.partner_id}" class="btn btn-sm btn-outline-secondary" style="width: fit-content; color: white;">Retirer</button>
+                                    <div class="card mb-4 shadow-sm">
+                                        <img src="${user.member_avatar}" class="bd-placeholder-img card-img-top" width="100%" height="225" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
+                                        <div class="card-body">
+                                            <p class="card-text">${user.partner_name}</p>
+                                            <p class="card-text">${user.partner_email}</p>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div class="btn-group">
+                                                    <button type="button" id="remove_partner_${user.partner_id}" class="btn btn-sm btn-outline-secondary" style="width: fit-content; color: white;">Retirer</button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            `;
+                                `;
                             document.getElementById('membersList').appendChild(li);
 
                             document.getElementById('remove_partner_' + user.partner_id).addEventListener('click', function () {
@@ -656,9 +871,40 @@ Tous </button>
                 .catch(error => {
                     console.error('Error:', error);
                 });
-            //#endregion
+        }
+        //#endregion
 
-            //#region get comptable
+        //#region get comptable
+        function getAccountants(params) {
+
+            var users_list = {
+                'emails_names': {
+                    'Coordinateur': 'coordinator_email',
+                    'Chef de projet': 'chief_email',
+                    'partenaire': 'partner_email',
+                    'comptable': 'accountant_email',
+                    'consultant': 'consultant_email',
+                    'bailleur': 'funder_email'
+                },
+                'users': {
+                    'Coordinateur': [],
+                    'Chef de projet': [],
+                    'partenaire': [],
+                    'comptable': [],
+                    'consultant': [],
+                    'bailleur': []
+                },
+                'urls': {
+                    'Administrateur': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
+                    'Coordinateur': 'https://lab.padem.org/wp-json/mo/v1/getCoordinator',
+                    'Chef de projet': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
+                    'partenaire': 'https://lab.padem.org/wp-json/mo/v1/getPartner',
+                    'comptable': 'https://lab.padem.org/wp-json/mo/v1/getAccountant',
+                    'consultant': 'https://lab.padem.org/wp-json/mo/v1/getConsultant',
+                    'bailleur': 'https://lab.padem.org/wp-json/mo/v1/getFunder'
+                }
+            };
+
             fetch(users_list.urls['comptable'], {
                 method: 'GET',
                 headers: {
@@ -673,19 +919,19 @@ Tous </button>
                             var li = document.createElement('li');
                             li.classList.add('col-md-3');
                             li.innerHTML = `
-                                <div class="card mb-4 shadow-sm">
-                                    <img src="${user.member_avatar}" class="bd-placeholder-img card-img-top" width="100%" height="225" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
-                                    <div class="card-body">
-                                        <p class="card-text">${user.accountant_name}</p>
-                                        <p class="card-text">${user.accountant_email}</p>
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <div class="btn-group">
-                                                <button type="button" id="remove_accountant_${user.accountant_id}" class="btn btn-sm btn-outline-secondary" style="width: fit-content; color: white;">Retirer</button>
+                                    <div class="card mb-4 shadow-sm">
+                                        <img src="${user.member_avatar}" class="bd-placeholder-img card-img-top" width="100%" height="225" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
+                                        <div class="card-body">
+                                            <p class="card-text">${user.accountant_name}</p>
+                                            <p class="card-text">${user.accountant_email}</p>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div class="btn-group">
+                                                    <button type="button" id="remove_accountant_${user.accountant_id}" class="btn btn-sm btn-outline-secondary" style="width: fit-content; color: white;">Retirer</button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            `;
+                                `;
                             document.getElementById('membersList').appendChild(li);
 
                             document.getElementById('remove_accountant_' + user.accountant_id).addEventListener('click', function () {
@@ -714,9 +960,40 @@ Tous </button>
                 .catch(error => {
                     console.error('Error:', error);
                 });
-            //#endregion
+        }
+        //#endregion
 
-            //#region get consultant
+        //#region get consultant
+        function getConsultants(params) {
+
+            var users_list = {
+                'emails_names': {
+                    'Coordinateur': 'coordinator_email',
+                    'Chef de projet': 'chief_email',
+                    'partenaire': 'partner_email',
+                    'comptable': 'accountant_email',
+                    'consultant': 'consultant_email',
+                    'bailleur': 'funder_email'
+                },
+                'users': {
+                    'Coordinateur': [],
+                    'Chef de projet': [],
+                    'partenaire': [],
+                    'comptable': [],
+                    'consultant': [],
+                    'bailleur': []
+                },
+                'urls': {
+                    'Administrateur': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
+                    'Coordinateur': 'https://lab.padem.org/wp-json/mo/v1/getCoordinator',
+                    'Chef de projet': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
+                    'partenaire': 'https://lab.padem.org/wp-json/mo/v1/getPartner',
+                    'comptable': 'https://lab.padem.org/wp-json/mo/v1/getAccountant',
+                    'consultant': 'https://lab.padem.org/wp-json/mo/v1/getConsultant',
+                    'bailleur': 'https://lab.padem.org/wp-json/mo/v1/getFunder'
+                }
+            };
+
             fetch(users_list.urls['consultant'], {
                 method: 'GET',
                 headers: {
@@ -731,19 +1008,19 @@ Tous </button>
                             var li = document.createElement('li');
                             li.classList.add('col-md-3');
                             li.innerHTML = `
-                                <div class="card mb-4 shadow-sm">
-                                    <img src="${user.member_avatar}" class="bd-placeholder-img card-img-top" width="100%" height="225" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
-                                    <div class="card-body">
-                                        <p class="card-text">${user.consultant_name}</p>
-                                        <p class="card-text">${user.consultant_email}</p>
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <div class="btn-group">
-                                                <button type="button" id="remove_consultant_${user.consultant_id}" class="btn btn-sm btn-outline-secondary" style="width: fit-content; color: white;">Retirer</button>
+                                    <div class="card mb-4 shadow-sm">
+                                        <img src="${user.member_avatar}" class="bd-placeholder-img card-img-top" width="100%" height="225" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
+                                        <div class="card-body">
+                                            <p class="card-text">${user.consultant_name}</p>
+                                            <p class="card-text">${user.consultant_email}</p>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div class="btn-group">
+                                                    <button type="button" id="remove_consultant_${user.consultant_id}" class="btn btn-sm btn-outline-secondary" style="width: fit-content; color: white;">Retirer</button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            `;
+                                `;
                             document.getElementById('membersList').appendChild(li);
 
                             document.getElementById('remove_consultant_' + user.consultant_id).addEventListener('click', function () {
@@ -772,9 +1049,40 @@ Tous </button>
                 .catch(error => {
                     console.error('Error:', error);
                 });
-            //#endregion
+        }
+        //#endregion
 
-            //#region get bailleur
+        //#region get bailleur
+        function getFunders(params) {
+            
+            var users_list = {
+                'emails_names': {
+                    'Coordinateur': 'coordinator_email',
+                    'Chef de projet': 'chief_email',
+                    'partenaire': 'partner_email',
+                    'comptable': 'accountant_email',
+                    'consultant': 'consultant_email',
+                    'bailleur': 'funder_email'
+                },
+                'users': {
+                    'Coordinateur': [],
+                    'Chef de projet': [],
+                    'partenaire': [],
+                    'comptable': [],
+                    'consultant': [],
+                    'bailleur': []
+                },
+                'urls': {
+                    'Administrateur': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
+                    'Coordinateur': 'https://lab.padem.org/wp-json/mo/v1/getCoordinator',
+                    'Chef de projet': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
+                    'partenaire': 'https://lab.padem.org/wp-json/mo/v1/getPartner',
+                    'comptable': 'https://lab.padem.org/wp-json/mo/v1/getAccountant',
+                    'consultant': 'https://lab.padem.org/wp-json/mo/v1/getConsultant',
+                    'bailleur': 'https://lab.padem.org/wp-json/mo/v1/getFunder'
+                }
+            };
+
             fetch(users_list.urls['bailleur'], {
                 method: 'GET',
                 headers: {
@@ -789,19 +1097,19 @@ Tous </button>
                             var li = document.createElement('li');
                             li.classList.add('col-md-3');
                             li.innerHTML = `
-                                <div class="card mb-4 shadow-sm">
-                                    <img src="${user.member_avatar}" class="bd-placeholder-img card-img-top" width="100%" height="225" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
-                                    <div class="card-body">
-                                        <p class="card-text">${user.funder_name}</p>
-                                        <p class="card-text">${user.funder_email}</p>
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <div class="btn-group">
-                                                <button type="button" id="remove_funder_${user.funder_id}" class="btn btn-sm btn-outline-secondary" style="width: fit-content; color: white;">Retirer</button>
+                                    <div class="card mb-4 shadow-sm">
+                                        <img src="${user.member_avatar}" class="bd-placeholder-img card-img-top" width="100%" height="225" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
+                                        <div class="card-body">
+                                            <p class="card-text">${user.funder_name}</p>
+                                            <p class="card-text">${user.funder_email}</p>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div class="btn-group">
+                                                    <button type="button" id="remove_funder_${user.funder_id}" class="btn btn-sm btn-outline-secondary" style="width: fit-content; color: white;">Retirer</button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            `;
+                                `;
                             document.getElementById('membersList').appendChild(li);
 
                             document.getElementById('remove_funder_' + user.funder_id).addEventListener('click', function () {
@@ -830,9 +1138,17 @@ Tous </button>
                 .catch(error => {
                     console.error('Error:', error);
                 });
-            //#endregion
+        }
+        //#endregion
 
-            //#endregion
+        // Fonction pour récupérer et afficher les membres du projet
+        function getProjectMembers(projectId) {
+            getCoordinator(projectId);
+            getProjectChief(projectId);
+            getPartners(projectId);
+            getAccountants(projectId);
+            getConsultants(projectId);
+            getFunders(projectId);
         }
 
         // Fonction pour sauvegarder les informations du formulaire
