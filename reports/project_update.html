@@ -1,70 +1,842 @@
+<!-- #region Card avec les infos du projet -->
+<div class="card" style="background-color: none; background: none;">
+    <div class="card-body">
+        <div class="settings-scroll">
+            <div style="margin-top: 3px;"></div>
+            <h5 class="card-title" style="color: #29A6A7;" id="projecttitle"></h5>
+            <div style="margin-top: 3px;"></div>
+            <h6 class="card-subtitle mb-2 text-muted" id="projecttype"></h6>
+            <hr class="my-4">
+            <div style="margin-top: 3px;"></div>
+            <p class="card-text" style="font-size: 12px;">
+            <div style="display: flex;">
+                <p style="color: gray;">Date de début : </p><span style="color: #29A6A7;" id="projectdate"></span><br>
+            </div>
+            <div style="margin-top: 3px;"></div>
+            <div style="display: flex;">
+                <p style="color: gray;">Date de fin : </p><span style="color: #29A6A7;" id="projectenddate"></span><br>
+            </div>
+            <div style="margin-top: 3px;"></div>
+            <div style="display: flex;">
+                <p style="color: gray;">Lieu : </p><span style="color: #29A6A7;" id="projectlocation"></span><br>
+            </div>
+            <div style="margin-top: 3px;"></div>
+            </p>
+            <div style="margin-top: 3px;"></div>
+            <hr class="my-4">
+            <p class="card-text" style="color: #29A6A7;"> Référent du projet : </p>
+            <div style="margin-top: 3px;"></div>
+            <span class="card-subtitle mb-2 text-muted" style="color: #29A6A7;" id="projectreferent"></span>
+            <div style="margin-top: 3px;"></div>
+            <p class="card-text" style="font-size: 12px;">
+            <div style="display: flex;">
+                <p style="color: gray;">Email : </p><span style="color: #29A6A7;" id="projectreferentemail"></span><br>
+            </div>
+            <div style="margin-top: 3px;"></div>
+            </p>
+            <div style="margin-top: 3px;"></div>
+            <hr class="my-4">
+            <p class="card-text" style="color: #29A6A7;"> Description du projet : </p>
+            <div style="margin-top: 3px;"></div>
+            <span class="card-subtitle mb-2 text-muted" style="color: gray;" id="projectdescription"></span>
+            <div style="margin-top: 3px;"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Barre de progression du projet -->
+<div style="display: flex; justify-content: space-between; margin-top: 5px; margin-bottom: 5px; width: 100%;">
+    <div id="projectHeaderTitle" style="width: fit-content;"></div>
+    <div id="projectHeaderCountry" style="width: fit-content;"></div>
+    <progress id="projectProgress" max="100" style="width: 200px;"></progress>
+    <div id="projectHeaderStatus" style="width: fit-content;"></div>
+</div>
+
+
+<!--#region Liste des membres du projet -->
+<button type="button" class="box-clicable" id="tous"
+style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px;">
+Tous </button>
+<button type="button" class="box-clicable" id="coordonnateurs"
+    style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px;">
+    Coordinnateur </button>
+<button type="button" class="box-clicable" id="chefs-de-projets"
+    style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px;"> Chef de
+    projet </button>
+<button type="button" class="box-clicable" id="partenaires"
+    style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px;">
+    Partenaires </button>
+<button type="button" class="box-clicable" id="consultants"
+    style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px;">
+    Consultants </button>
+<button type="button" class="box-clicable" id="comptables"
+    style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px;">
+    Comptables </button>
+<button type="button" class="box-clicable" id="bailleurs"
+    style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px;">
+    Bailleurs </button>
+<!--#endregion-->
+
+
+<!-- Liste des membres du projet -->
+<div class="settings-scroll">
+    <ul id="membersList" class="row"></ul>
+</div>
+
+
+
 <body>
-    <form id="projectForm" class="p-3 bg-white rounded"
+    <form id="projectUpdateForm" class="p-3 bg-white rounded"
         style="width: 100%; height: fit-content; border-radius: 15px; background: white;">
         <div style="margin-top: 10px; margin-bottom: 10px"></div>
         <!-- Ajout d'un espace entre les cartes -->
         <div class="mb-3">
-            <h5>Remplissez les champs suivants:</h5>
+            <div style="margin-top: 3px;"></div>
+            <div class="form-group">
+                <label for="projectTitle_">Titre du projet:</label>
+                <input type="text" class="form-control" id="projectTitle_" name="projectTitle_" required>
+            </div>
+            <div style="margin-top: 3px;"></div>
+            <div class="form-group">
+                <label for="projectType_">Type de projet:</label>
+                <input type="text" class="form-control" id="projectType_" name="projectType_" required>
+            </div>
+            <div style="margin-top: 3px;"></div>
+            <div class="form-group">
+                <label for="projectDate_">Date de début prévisionnelle:</label>
+                <input type="date" class="form-control" id="projectDate_" name="projectDate_" required>
+            </div>
+            <div style="margin-top: 3px;"></div>
+            <div class="form-group">
+                <label for="projectEndDate2_">Date de fin prévisionnelle:</label>
+                <input type="date" class="form-control" id="projectEndDate2_" name="projectEndDate2_" required>
+            </div>
+            <div style="margin-top: 3px;"></div>
+            <div class="form-group">
+                <label for="projectLocation_">Pays de réalisation du projet:</label>
+                <input type="text" class="form-control" id="projectLocation_" name="projectLocation_" required>
+            </div>
+            <div style="margin-top: 3px;"></div>
+            <div class="form-group">
+                <label for="pademResponsible_">Responsable Padem:</label>
+                <input type="text" class="form-control" id="pademResponsible_" name="pademResponsible_">
+            </div>
+            <div style="margin-top: 3px;"></div>
+            <div class="form-group">
+                <label for="pademResponsibleEmail_">Email du responsable Padem:</label>
+                <input type="email" class="form-control" id="pademResponsibleEmail_" name="pademResponsibleEmail_">
+            </div>
+            <div style="margin-top: 3px;"></div>
+            <div class="form-group">
+                <label for="projectReferent_">Référent du projet:</label>
+                <input type="text" class="form-control" id="projectReferent_" name="projectReferent_" required>
+            </div>
+            <div style="margin-top: 3px;"></div>
+            <div class="form-group">
+                <label for="projectReferentEmail_">Email du référent du projet:</label>
+                <input type="email" class="form-control" id="projectReferentEmail_" name="projectReferentEmail_"
+                    required>
+            </div>
+            <div style="margin-top: 3px;"></div>
+            <div class="form-group">
+                <label for="projectDescription_">Description du projet:</label>
+                <textarea class="form-control" id="projectDescription_" name="projectDescription_" rows="8"></textarea>
+            </div>
+            <div style="margin-top: 6px;"></div>
             <hr class="my-4">
-            <div class="form-group">
-                <label for="projectTitle">Titre du projet:</label>
-                <input type="text" class="form-control" id="projectTitle" name="projectTitle" required>
-            </div>
-            <div class="form-group">
-                <label for="projectType">Type de projet:</label>
-                <input type="text" class="form-control" id="projectType" name="projectType" required>
-            </div>
-            <div class="form-group">
-                <label for="projectDate">Date de début prévisionnelle:</label>
-                <input type="date" class="form-control" id="projectDate" name="projectDate" required>
-            </div>
-            <div class="form-group">
-                <label for="projectEndDate2">Date de fin prévisionnelle:</label>
-                <input type="date" class="form-control" id="projectEndDate2" name="projectEndDate2" required>
-            </div>
-            <div class="form-group">
-                <label for="projectLocation">Pays de réalisation du projet:</label>
-                <input type="text" class="form-control" id="projectLocation" name="projectLocation" required>
-            </div>
-            <div class="form-group">
-                <label for="pademResponsible">Responsable Padem:</label>
-                <input type="text" class="form-control" id="pademResponsible" name="pademResponsible">
-            </div>
-            <div class="form-group">
-                <label for="pademResponsibleEmail">Email du responsable Padem:</label>
-                <input type="email" class="form-control" id="pademResponsibleEmail" name="pademResponsibleEmail">
-            </div>
-            <div class="form-group">
-                <label for="projectReferent">Référent du projet:</label>
-                <input type="text" class="form-control" id="projectReferent" name="projectReferent" required>
-            </div>
-            <div class="form-group">
-                <label for="projectReferentEmail">Email du référent du projet:</label>
-                <input type="email" class="form-control" id="projectReferentEmail" name="projectReferentEmail" required>
-            </div>
-            <div class="form-group">
-                <label for="projectDescription">Description du projet:</label>
-                <textarea class="form-control" id="projectDescription" name="projectDescription" rows="8"></textarea>
-            </div>
-            <div class="d-flex justify-content-end">
-                <button type="button" class="btn btn-secondary mr-2" onclick="cancelProject()">
-                    <img src="https://lab.padem.org/wp-content/uploads/Annuler.png" alt="cancel" class="mr-1"
-                        style="width: 35px; height: 35px;" />
-                    Annuler
+            <div class="d-flex justify-content-space-between">
+                <button type="button" class="btn btn-secondary mr-2" id="closeProjectButton"
+                    style="width: fit-content; display: none; background-color: lightcoral;">
+                    Cloturer le projet
                 </button>
-                <button type="submit" class="btn btn-primary" onclick="saveFormData()" id="saveProjectButton">
-                    <img src="https://lab.padem.org/wp-content/uploads/save.png" alt="save" class="mr-1"
-                        style="width: 35px; height: 35px;" />
-                    Enregistrer
-                </button>
+                <div style="margin-left: 6px; margin-right: 6px;"></div>
+                <div class="d-flex justify-content-end">
+                    <button type="button" class="btn btn-secondary mr-2" onclick="cancelProject()"
+                        style="width: fit-content;">
+                        Annuler
+                    </button>
+                    <div style="margin-left: 6px; margin-right: 6px;"></div>
+                    <button type="submit" class="btn btn-primary" onclick="saveFormReport()" id="saveProjectButton_"
+                        style="width: fit-content;">
+                        Enregistrer
+                    </button>
+                </div>
             </div>
         </div>
         <div style="margin-top: 10px; margin-bottom: 10px;"></div>
     </form>
 
-    <script>
-        function saveFormData() {
 
+    <script>
+        // Attendre que le DOM soit chargé pour exécuter le code
+        document.addEventListener('DOMContentLoaded', function () {
+            // Obtenez l'URL actuelle et le paramètre de requête "projectId"
+            var url = new URL(window.location.href);
+            var params = new URLSearchParams(url.search);
+            var projectId = params.get('projectId');
+            console.log('projectId:', projectId);
+            // Récupérer les informations du projet
+            getProjectData(projectId);
+            // Ajouter des écouteurs d'événements sur les boutons de filtre et récupérer les membres du projet
+            addEventListeners(projectId);
+            // Récupérer les informations de l'utilisateur local
+            getConnectedUserInfos();
+        });
+        var userId = 0;
+        var userEmail = '';
+        var userFirstName = '';
+        var userLastName = '';
+        var userRole = '';
+
+        var colorStatusText = {
+            '- Pas encore commencé': 'gray',
+            '- Début': '#29A6A7',
+            '- En cours': 'green',
+            '- Terminé': 'red',
+            '- En pause': 'blue',
+            '- Annulé': 'gray',
+            '- Presque terminé': 'orange',
+        };
+
+        // Récupérer les informations de l'utilisateur connecté
+        function getConnectedUserInfos() {
+            // Récupérer les informations de l'utilisateur connecté
+            fetch('https://lab.padem.org/unserialize_usermeta.php', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+                .then(response => response.json())
+                .then(data => {
+                    userId = data.user_infos._id;
+                    userEmail = data.user_infos.email;
+                    userFirstName = data.user_infos.first_name;
+                    userLastName = data.user_infos.last_name;
+                    if (data.role.administrator) {
+                        userRole = 'Administrateur';
+                        document.getElementById('projectUpdateForm').disabled = false;
+                        document.getElementById('closeProjectButton').style.display = 'block';
+                    } else if (data.role['chef-de-projet']) {
+                        userRole = 'Chef de projet';
+                        document.getElementById('projectUpdateForm').disabled = false;
+                        document.getElementById('closeProjectButton').style.display = 'block';
+                    } else if (data.role.comptable) {
+                        userRole = 'Comptable';
+                        document.getElementById('projectUpdateForm').disabled = true;
+                        document.getElementById('closeProjectButton').style.display = 'none';
+                    } else if (data.role.consultant) {
+                        userRole = 'Consultant';
+                        document.getElementById('projectUpdateForm').disabled = true;
+                        document.getElementById('closeProjectButton').style.display = 'none';
+                    } else if (data.role.partenaire) {
+                        userRole = 'Partenaire';
+                        document.getElementById('projectUpdateForm').disabled = true;
+                        document.getElementById('closeProjectButton').style.display = 'none';
+                    } else {
+                        userRole = 'Utilisateur';
+                        document.getElementById('projectUpdateForm').disabled = true;
+                        document.getElementById('closeProjectButton').style.display = 'none';
+                    }
+                    document.getElementById('userFirstName').value = userFirstName;
+                    document.getElementById('userLastName').value = userLastName;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+
+        // Fonction pour obtenir le mois en fonction de son index et 
+        function getMonth(month) {
+            switch (month) {
+                case 1:
+                    return 'Janvier';
+                case 2:
+                    return 'Février';
+                case 3:
+                    return 'Mars';
+                case 4:
+                    return 'Avril';
+                case 5:
+                    return 'Mai';
+                case 6:
+                    return 'Juin';
+                case 7:
+                    return 'Juillet';
+                case 8:
+                    return 'Août';
+                case 9:
+                    return 'Septembre';
+                case 10:
+                    return 'Octobre';
+                case 11:
+                    return 'Novembre';
+                case 12:
+                    return 'Décembre';
+            }
+        }
+
+        // Fonction pour Récupérer les informations du projet
+        function getProjectData(projectId) {
+            // Récupérer les informations du projet
+            fetch('https://lab.padem.org/wp-json/mo/v1/getProjects', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            }).then(response => {
+                if (!response.ok) {
+                    console.error('Erreur lors de la requête vers l\'API.');
+                }
+                return response.json();
+            })
+                .then(data => {
+                    data.forEach(project => {
+                        if (project.project_id === projectId) {
+                            //#region Remplir les champs du formulaire
+                            document.getElementById('projectTitle_').value = project.project_title;
+                            document.getElementById('projectType_').value = project.project_type;
+                            document.getElementById('projectDate_').value = project.start_date;
+                            document.getElementById('projectEndDate2_').value = project.end_date;
+                            document.getElementById('projectLocation_').value = project.project_location;
+                            document.getElementById('pademResponsible_').value = project.padem_responsible;
+                            document.getElementById('pademResponsibleEmail_').value = project.padem_responsible_email;
+                            document.getElementById('projectReferent_').value = project.project_referent;
+                            document.getElementById('projectReferentEmail_').value = project.project_referent_email;
+                            document.getElementById('projectDescription_').value = JSON.parse(project.project_description);
+                            //#endregion
+
+
+                            //#region Barre de progression du projet
+                            var startDate = new Date(project.start_date);
+                            var endDate = new Date(project.end_date);
+                            var dateDuJour = new Date();
+
+                            var startDay = startDate.getDate();
+                            var startMonth = startDate.getMonth() + 1; // Les mois sont indexés à partir de 0 en JavaScript
+                            var startYear = startDate.getFullYear();
+
+                            var endDay = endDate.getDate();
+                            var endMonth = endDate.getMonth() + 1;
+                            var endYear = endDate.getFullYear();
+
+                            // Si le jour ou le mois est inférieur à 10, ajoutez un zéro devant
+                            startDay = startDay < 10 ? '0' + startDay : startDay;
+                            endDay = endDay < 10 ? '0' + endDay : endDay;
+
+                            var formattedStartDate = startDay + ' ' + getMonth(startMonth) + ' ' + startYear;
+                            var formattedEndDate = endDay + ' ' + getMonth(endMonth) + ' ' + endYear;
+
+                            if (startMonth < 10) {
+                                startMonth = '0' + startMonth;
+                            } else {
+                                startMonth = startMonth;
+                            }
+
+                            var dureeTotale = endDate.getTime() - startDate.getTime();
+                            var dureeEcoulee = dateDuJour.getTime() - startDate.getTime();
+
+                            var progression = (dureeEcoulee / dureeTotale) * 100;
+
+                            function getStatus() {
+                                if (progression < 0) {
+                                    progression = 0;
+                                    return '- Pas encore commencé';
+                                } else if (progression < 25) {
+                                    return '- Début';
+                                } else if (progression > 25 && progression < 50) {
+                                    return '- En cours';
+                                } else if (progression > 50 && progression < 75) {
+                                    return '- En cours';
+                                } else if (progression > 75 && progression < 100) {
+                                    return '- Presque terminé';
+                                } else if (progression > 100) {
+                                    progression = 100;
+                                    return '- Terminé';
+                                }
+                            }
+
+                            var status = getStatus();
+
+                            var barreProgression = document.getElementById('projectProgress');
+                            barreProgression.value = progression;
+                            barreProgression.max = 100;
+                            barreProgression.style.width = '30%';
+                            barreProgression.style.height = '10px';
+                            barreProgression.style.backgroundColor = 'none';
+                            barreProgression.style.borderRadius = '10px';
+                            barreProgression.classList.add('animated');
+                            barreProgression.classList.add('slideInLeft');
+                            //#endregion
+
+                            // Changer la couleur de la barre de progression en fonction de l'état du projet
+                            barreProgression.style.backgroundColor = colorStatusText[status];
+                            document.getElementById('projectHeaderStatus').innerText = parseInt(progression) + '% ' + status;
+                            document.getElementById('projectHeaderStatus').style.color = colorStatusText[status];
+                            document.getElementById('projectHeaderStatus').style.fontSize = '12px';
+                            document.getElementById('projectHeaderTitle').innerText = project.project_title;
+                            document.getElementById('projectHeaderTitle').style.color = '#29A6A7';
+                            document.getElementById('projectHeaderTitle').style.fontSize = '13px';
+                            document.getElementById('projectHeaderTitle').style.fontWeight = 'bold';
+                            document.getElementById('projectHeaderCountry').innerText = project.project_location;
+                            document.getElementById('projectHeaderCountry').style.color = 'gray';
+                            document.getElementById('projectHeaderCountry').style.fontSize = '12px';
+
+                            // Afficher les informations du projet
+                            document.getElementById('projecttitle').innerText = project.project_title;
+                            document.getElementById('projecttitle').style.color = '#29A6A7';
+                            document.getElementById('projecttype').innerText = project.project_type;
+                            document.getElementById('projectdate').innerText = ' ' + formattedStartDate;
+                            document.getElementById('projectenddate').innerText = ' ' + formattedEndDate;
+                            document.getElementById('projectlocation').innerText = ' ' + project.project_location;
+                            document.getElementById('projectreferent').innerText = project.project_referent;
+                            document.getElementById('projectreferentemail').innerText = ' ' + project.project_referent_email;
+                            document.getElementById('projectreferentemail').innerHTML = `<a href="mailto:${project.project_referent_email}" style="color:#29A6A7;">${project.project_referent_email}</a>`;
+                            document.getElementById('projectreferentemail').style.color = '#29A6A7';
+                            document.getElementById('projectdescription').innerText = JSON.parse(project.project_description);
+                            document.getElementById('projectdescription').style.color = 'gray';
+                            document.getElementById('projectdescription').style.fontSize = '14px';
+                        }
+                    });
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+
+        }
+
+        // Fonction pour ajouter des écoutants d'événements sur les boutons: Tous, Coordonnateurs, Chefs de projet, Partenaires, Consultants, Comptables, Bailleurs
+        function addEventListeners(projectId) {
+            var buttons = document.getElementsByClassName('box-clicable');
+            for (var i = 0; i < buttons.length; i++) {
+                buttons[i].addEventListener('click', function () {
+                    var id = this.id;
+                    var elements = document.getElementsByClassName('box-clicable');
+                    for (var j = 0; j < elements.length; j++) {
+                        elements[j].style.backgroundColor = 'white';
+                        elements[j].style.color = 'gray';
+                    }
+                    this.style.backgroundColor = '#29A6A7';
+                    this.style.color = 'white';
+                    showAndHide(id);
+
+                    if (id === 'tous') {
+                        var members = document.getElementById('membersList');
+                        members.innerHTML = '';
+                        getProjectMembers(projectId);
+                    }
+                });
+            }
+        }
+
+        // Fonction pour récupérer et afficher les membres du projet
+        function getProjectMembers(projectId) {
+
+            // Afficher les membres du projet
+            /*
+            document.getElementById('projectMembers').innerHTML += `
+                            <div class="col-md-3">
+                                <div class="card mb-4 shadow-sm">
+                                    <img src="${member.member_avatar}" class="bd-placeholder-img card-img-top" width="100%" height="225" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
+                                    <div class="card-body">
+                                        <p class="card-text">${member.member_name}</p>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="btn-group">
+                                                <button type="button" class="btn btn-sm btn-outline-secondary">Voir</button>
+                                                <button type="button" class="btn btn-sm btn-outline-secondary">Modifier</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;*/
+
+            var users_list = {
+                'emails_names': {
+                    'Coordinateur': 'coordinator_email',
+                    'Chef de projet': 'chief_email',
+                    'partenaire': 'partner_email',
+                    'comptable': 'accountant_email',
+                    'consultant': 'consultant_email',
+                    'bailleur': 'funder_email'
+                },
+                'users': {
+                    'Coordinateur': [],
+                    'Chef de projet': [],
+                    'partenaire': [],
+                    'comptable': [],
+                    'consultant': [],
+                    'bailleur': []
+                },
+                'urls': {
+                    'Administrateur': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
+                    'Coordinateur': 'https://lab.padem.org/wp-json/mo/v1/getCoordinator',
+                    'Chef de projet': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
+                    'partenaire': 'https://lab.padem.org/wp-json/mo/v1/getPartner',
+                    'comptable': 'https://lab.padem.org/wp-json/mo/v1/getAccountant',
+                    'consultant': 'https://lab.padem.org/wp-json/mo/v1/getConsultant',
+                    'bailleur': 'https://lab.padem.org/wp-json/mo/v1/getFunder'
+                }
+            };
+
+            //#region Récupérer le nombre de participants dans le projet
+            var participants = {};
+            var isUserInProject = false;
+            var numberOfParticipants = 0;
+
+            //#region get Coordinnateur
+            fetch(users_list.urls['Coordinateur'], {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(user => {
+                        // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
+                        if (user.project_id === parseInt(projectId)) {
+                            var li = document.createElement('li');
+                            li.classList.add('col-md-3');
+                            li.innerHTML = `
+                                <div class="card mb-4 shadow-sm">
+                                    <img src="${user.member_avatar}" class="bd-placeholder-img card-img-top" width="100%" height="225" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
+                                    <div class="card-body">
+                                        <p class="card-text">${user.coordinator_name}</p>
+                                        <p class="card-text">${user.coordinator_email}</p>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="btn-group">
+                                                <button type="button" id="remove_coordinator_${user.coordinator_id}" class="btn btn-sm btn-outline-secondary" style="width: fit-content; color: white;">Retirer</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                            document.getElementById('membersList').appendChild(li);
+                            
+                            document.getElementById('remove_coordinator_' + user.coordinator_id).addEventListener('click', function () {
+                                fetch('https://lab.padem.org/wp-json/mo/v1/removeCoordinator', {
+                                    method: 'DELETE',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                    body: JSON.stringify({
+                                        coordinator_id: user.coordinator_id,
+                                        project_id: projectId
+                                    }),
+                                })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        console.log('Success:', data);
+                                        window.location.href = 'https://lab.padem.org/accueil/partenaires/?projectId=' + projectId;
+                                    })
+                                    .catch((error) => {
+                                        console.error('Error:', error);
+                                    });
+                            });
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            //#endregion
+
+            //#region get Chef de projet
+            fetch(users_list.urls['Chef de projet'], {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(user => {
+                        // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
+                        if (user.project_id === parseInt(projectId)) {
+                            var li = document.createElement('li');
+                            li.classList.add('col-md-3');
+                            li.innerHTML = `
+                                <div class="card mb-4 shadow-sm">
+                                    <img src="${user.member_avatar}" class="bd-placeholder-img card-img-top" width="100%" height="225" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
+                                    <div class="card-body">
+                                        <p class="card-text">${user.chief_name}</p>
+                                        <p class="card-text">${user.chief_email}</p>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="btn-group">
+                                                <button type="button" id="remove_chief_${user.chief_id}" class="btn btn-sm btn-outline-secondary" style="width: fit-content; color: white;">Retirer</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                            document.getElementById('membersList').appendChild(li);
+
+                            document.getElementById('remove_chief_' + user.chief_id).addEventListener('click', function () {
+                                fetch('https://lab.padem.org/wp-json/mo/v1/removeChief', {
+                                    method: 'DELETE',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                    body: JSON.stringify({
+                                        chief_id: user.chief_id,
+                                        project_id: projectId
+                                    }),
+                                })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        console.log('Success:', data);
+                                        window.location.href = 'https://lab.padem.org/accueil/partenaires/?projectId=' + projectId;
+                                    })
+                                    .catch((error) => {
+                                        console.error('Error:', error);
+                                    });
+                            });
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            //#endregion
+
+            //#region get partenaire
+            fetch(users_list.urls['partenaire'], {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(user => {
+                        // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
+                        if (user.project_id === parseInt(projectId)) {
+                            var li = document.createElement('li');
+                            li.classList.add('col-md-3');
+                            li.innerHTML = `
+                                <div class="card mb-4 shadow-sm">
+                                    <img src="${user.member_avatar}" class="bd-placeholder-img card-img-top" width="100%" height="225" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
+                                    <div class="card-body">
+                                        <p class="card-text">${user.partner_name}</p>
+                                        <p class="card-text">${user.partner_email}</p>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="btn-group">
+                                                <button type="button" id="remove_partner_${user.partner_id}" class="btn btn-sm btn-outline-secondary" style="width: fit-content; color: white;">Retirer</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                            document.getElementById('membersList').appendChild(li);
+
+                            document.getElementById('remove_partner_' + user.partner_id).addEventListener('click', function () {
+                                fetch('https://lab.padem.org/wp-json/mo/v1/removePartner', {
+                                    method: 'DELETE',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                    body: JSON.stringify({
+                                        partner_id: user.partner_id,
+                                        project_id: projectId
+                                    }),
+                                })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        console.log('Success:', data);
+                                        window.location.href = 'https://lab.padem.org/accueil/partenaires/?projectId=' + projectId;
+                                    })
+                                    .catch((error) => {
+                                        console.error('Error:', error);
+                                    });
+                            });
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            //#endregion
+
+            //#region get comptable
+            fetch(users_list.urls['comptable'], {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(user => {
+                        // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
+                        if (user.project_id === projectId) {
+                            var li = document.createElement('li');
+                            li.classList.add('col-md-3');
+                            li.innerHTML = `
+                                <div class="card mb-4 shadow-sm">
+                                    <img src="${user.member_avatar}" class="bd-placeholder-img card-img-top" width="100%" height="225" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
+                                    <div class="card-body">
+                                        <p class="card-text">${user.accountant_name}</p>
+                                        <p class="card-text">${user.accountant_email}</p>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="btn-group">
+                                                <button type="button" id="remove_accountant_${user.accountant_id}" class="btn btn-sm btn-outline-secondary" style="width: fit-content; color: white;">Retirer</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                            document.getElementById('membersList').appendChild(li);
+
+                            document.getElementById('remove_accountant_' + user.accountant_id).addEventListener('click', function () {
+                                fetch('https://lab.padem.org/wp-json/mo/v1/removeAccountant', {
+                                    method: 'DELETE',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                    body: JSON.stringify({
+                                        accountant_id: user.accountant_id,
+                                        project_id: projectId
+                                    }),
+                                })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        console.log('Success:', data);
+                                        window.location.href = 'https://lab.padem.org/accueil/partenaires/?projectId=' + projectId;
+                                    })
+                                    .catch((error) => {
+                                        console.error('Error:', error);
+                                    });
+                            });
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            //#endregion
+
+            //#region get consultant
+            fetch(users_list.urls['consultant'], {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(user => {
+                        // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
+                        if (user.project_id === projectId) {
+                            var li = document.createElement('li');
+                            li.classList.add('col-md-3');
+                            li.innerHTML = `
+                                <div class="card mb-4 shadow-sm">
+                                    <img src="${user.member_avatar}" class="bd-placeholder-img card-img-top" width="100%" height="225" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
+                                    <div class="card-body">
+                                        <p class="card-text">${user.consultant_name}</p>
+                                        <p class="card-text">${user.consultant_email}</p>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="btn-group">
+                                                <button type="button" id="remove_consultant_${user.consultant_id}" class="btn btn-sm btn-outline-secondary" style="width: fit-content; color: white;">Retirer</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                            document.getElementById('membersList').appendChild(li);
+
+                            document.getElementById('remove_consultant_' + user.consultant_id).addEventListener('click', function () {
+                                fetch('https://lab.padem.org/wp-json/mo/v1/removeConsultant', {
+                                    method: 'DELETE',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                    body: JSON.stringify({
+                                        consultant_id: user.consultant_id,
+                                        project_id: projectId
+                                    }),
+                                })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        console.log('Success:', data);
+                                        window.location.href = 'https://lab.padem.org/accueil/partenaires/?projectId=' + projectId;
+                                    })
+                                    .catch((error) => {
+                                        console.error('Error:', error);
+                                    });
+                            });
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            //#endregion
+
+            //#region get bailleur
+            fetch(users_list.urls['bailleur'], {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(user => {
+                        // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
+                        if (user.project_id === projectId) {
+                            var li = document.createElement('li');
+                            li.classList.add('col-md-3');
+                            li.innerHTML = `
+                                <div class="card mb-4 shadow-sm">
+                                    <img src="${user.member_avatar}" class="bd-placeholder-img card-img-top" width="100%" height="225" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
+                                    <div class="card-body">
+                                        <p class="card-text">${user.funder_name}</p>
+                                        <p class="card-text">${user.funder_email}</p>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="btn-group">
+                                                <button type="button" id="remove_funder_${user.funder_id}" class="btn btn-sm btn-outline-secondary" style="width: fit-content; color: white;">Retirer</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                            document.getElementById('membersList').appendChild(li);
+
+                            document.getElementById('remove_funder_' + user.funder_id).addEventListener('click', function () {
+                                fetch('https://lab.padem.org/wp-json/mo/v1/removeFunder', {
+                                    method: 'DELETE',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                    body: JSON.stringify({
+                                        funder_id: user.funder_id,
+                                        project_id: projectId
+                                    }),
+                                })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        console.log('Success:', data);
+                                        window.location.href = 'https://lab.padem.org/accueil/partenaires/?projectId=' + projectId;
+                                    })
+                                    .catch((error) => {
+                                        console.error('Error:', error);
+                                    });
+                            });
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            //#endregion
+
+            //#endregion
+        }
+
+        // Fonction pour sauvegarder les informations du formulaire
+        function saveFormReport() {
             // Récupérer les informations du formulaire
             var dataInfosPreliminaires = {
                 project_title: '',
@@ -82,90 +854,23 @@
                 folder_name: '',
             };
 
-            //#region Récupérer le lien de l'image de couverture du projet
-            fetch('https://lab.padem.org/wp-json/mo/v1/getFileLink', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            }).then(response => {
-                if (!response.ok) {
-                    console.error('Erreur lors de la requête vers l\'API.');
-                }
-                return response.json();
-            })
-                .then(data => {
-                    dataInfosPreliminaires.background_image_link = data.url;
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
-                });
-
-
-            //#endregion
-
+            //#region Remplir les informations du projet
             dataInfosPreliminaires.project_title = document.getElementById('projectTitle').value || 'Titre du projet';
             dataInfosPreliminaires.project_type = document.getElementById('projectType').value || 'Type de projet';
             dataInfosPreliminaires.start_date = document.getElementById('projectDate').value || 'Date de début prévisionnelle';
             dataInfosPreliminaires.end_date = document.getElementById('projectEndDate2').value || 'Date de fin prévisionnelle';
-            dataInfosPreliminaires.project_location = document.getElementById('projectLocation').value;
-            dataInfosPreliminaires.padem_responsible = document.getElementById('pademResponsible').value;
-            dataInfosPreliminaires.padem_responsible_email = document.getElementById('pademResponsibleEmail').value
-            dataInfosPreliminaires.project_referent = document.getElementById('projectReferent').value;
-            dataInfosPreliminaires.project_referent_email = document.getElementById('projectReferentEmail').value;
-            dataInfosPreliminaires.project_description = JSON.stringify(document.getElementById('projectDescription').value);
-
-            //#region Créer le dossier des fichiers du projet
-            fetch('https://lab.padem.org/get_key.php',
-                {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                }).then(response => {
-                    if (!response.ok) {
-                        console.error('Erreur lors de la requête vers l\'API.');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    //#region Créer un dossier où stocker les fichiers du projet sur le serveur via l'API(https://lab.padem.org/wp-json/filebird/public/v1/folders)
-                    fetch('https://lab.padem.org/wp-json/filebird/public/v1/folders', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': 'Bearer ' + data.fileBird_api_key,
-                        },
-                        body: JSON.stringify({
-                            name: dataInfosPreliminaires.project_title,
-                            parent_id: 0,
-                        }),
-                    }).then(response => {
-                        if (!response.ok) {
-                            console.log('Erreur lors de la requête vers l\'API.');
-                        }
-                        return response.json();
-                    })
-                        .then(data => {
-                            console.log('Success:', data);
-                            dataInfosPreliminaires.folder_id = JSON.stringify({
-                                folder_id: data.folder_id,
-                                folder_name: dataInfosPreliminaires.project_title,
-                            });
-                        })
-                        .catch((error) => {
-                            console.error('Error:', error);
-                        });
-                    //#endregion
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
-                })
+            dataInfosPreliminaires.project_location = document.getElementById('projectLocation').value || 'Pays de réalisation du projet';
+            dataInfosPreliminaires.padem_responsible = document.getElementById('pademResponsible').value || 'Responsable Padem';
+            dataInfosPreliminaires.padem_responsible_email = document.getElementById('pademResponsibleEmail').value || 'Email du responsable Padem';
+            dataInfosPreliminaires.project_referent = document.getElementById('projectReferent').value || 'Référent du projet';
+            dataInfosPreliminaires.project_referent_email = document.getElementById('projectReferentEmail').value || 'Email du référent du projet';
+            dataInfosPreliminaires.project_description = JSON.stringify(document.getElementById('projectDescription').value) || 'Description du projet';
             //#endregion
 
             // 1. Create a new project
             // 2. Add the project to the database
             // 3. Redirect to the project page
+            //#region Créer un nouveau projet
             fetch('https://lab.padem.org/wp-json/mo/v1/createProject', {
                 method: 'POST',
                 headers: {
@@ -201,9 +906,8 @@
                         timer: 1500
                     });
                 });
+            //#endregion
         }
-
-
 
         // Fonction pour afficher/masquer le formulaire de création de projet
         function showAndHideProjectForm() {
@@ -217,7 +921,6 @@
                 element.style.title = "Afficher le formulaire";
             }
         }
-
 
         // Fonction pour masquer/afficher le bouton Annuler
         function showAndHideCancelButton() {
@@ -255,7 +958,7 @@
             }
         }
 
-        // Fonction pour annuler le projet
+        //#region Fonction pour annuler le projet
         function cancelProject() {
             var projectForm = document.getElementById("projectForm");
 
@@ -336,6 +1039,7 @@
                 document.getElementById("referants-1").src = "https://lab.padem.org/wp-content/uploads/plus.png";
             }
         }
+        //#endregion
 
         // Fonction pour switcher les images des boutons
         function switchFormsIcons(id) {
