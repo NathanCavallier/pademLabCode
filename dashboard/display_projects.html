@@ -185,6 +185,8 @@
     document.addEventListener('DOMContentLoaded', () => {
         // Récupérer les informations de l'utilisateur connecté
         getConnectedUserInfos();
+        // Afficher le spinner de chargement
+        document.getElementById('loading').style.display = 'block';
         // Afficher les projets
         displayProjects();
     });
@@ -470,6 +472,7 @@
                 var isUserInOneProject = false;
                 var projectContainer = document.getElementById('projectContainer');
                 projectContainer.innerHTML = '';
+                document.getElementById('loading').style.display = 'none';
                 var divider = 1;
                 var isClicked = false;
                 // Parcourir la liste des projets
@@ -590,8 +593,7 @@
                                     ${barreProgression.outerHTML} 
                                 </div> 
                                 <div class="card-footer"> 
-                                    <p class="small m-1 rounded" style="color: ${colorStatusText[status]}; font-size: 11px;" id="status_${project.project_id}">
-                                        ${parseInt(progression)}% - ${status}</p> <button id="goToProject_${project.project_id}" class="btn btn-primary" style="width:fit-content; color: white;">
+                                    <p class="small m-1 rounded" style="color: ${colorStatusText[status]}; font-size: 11px;" id="status_${project.project_id}"></p> <button id="goToProject_${project.project_id}" class="btn btn-primary" style="width:fit-content; color: white;">
                                             Voir le projet <i class="fas fa-external-link-alt"></i></button> 
                                 </div> 
                             </div>
@@ -617,7 +619,7 @@
                                         </div>
                                     </div>
                                     <div class="card-footer">
-                                        <p class="small m-1 rounded" style="color: ${colorStatusText[status]}; font-size: 11px;" id="status_${project.project_id}">${parseInt(progression)}% - ${status}</p>
+                                        <p class="small m-1 rounded" style="color: ${colorStatusText[status]}; font-size: 11px;" id="status_${project.project_id}"></p>
                                         <button class="btn btn-primary" style="width:fit-content; color: white;" id="goToProject_${project.project_id}">Voir le projet <i class="fas fa-external-link-alt"></i></button>
                                     </div>
                                 </div>
@@ -628,6 +630,7 @@
 
                         // Changer la classe de la carte pour le mode "card"
                         document.getElementById('cardViewBtn').addEventListener('click', function () {
+                            // Afficher le spinner de chargement
                             var cards = document.getElementById('card_id_' + project.project_id);
                             cards.innerHTML = '';
                             cards.innerHTML = `
@@ -656,8 +659,7 @@
                                              ${barreProgression.outerHTML} 
                                          </div> 
                                          <div class="card-footer"> 
-                                             <p class="small m-1 rounded" style="color: ${colorStatusText[status]}; font-size: 11px;" id="status_${project.project_id}">
-                                                 ${parseInt(progression)}% - ${status}</p> <button id="goToProject_${project.project_id}" class="btn btn-primary" style="width:fit-content; color: white;">
+                                             <p class="small m-1 rounded" style="color: ${colorStatusText[status]}; font-size: 11px;" id="status_${project.project_id}"></p> <button id="goToProject_${project.project_id}" class="btn btn-primary" style="width:fit-content; color: white;">
                                                      Voir le projet <i class="fas fa-external-link-alt"></i></button> 
                                          </div> 
                                      </div>
@@ -670,15 +672,22 @@
                         function addEventListener() {
                             if (userRole === 'Administrateur' || userRole === 'Chef de projet') {
                                 document.getElementById('goToProject_' + project.project_id).addEventListener('click', () => {
+                                    // Afficher le spinner de chargement
+                                    document.getElementById('loading').style.display = 'block';
                                     window.open(`https://lab.padem.org/accueil/partenaires/?projectId=${project.project_id}`, '_blank');
+                                    document.getElementById('loading').style.display = 'none';
                                 });
                             } else if (userRole === 'Consultant') {
                                 document.getElementById('goToProject_' + project.project_id).addEventListener('click', () => {
+                                    document.getElementById('loading').style.display = 'block';
                                     window.open(`https://lab.padem.org/accueil/partenaires/?projectId=${project.project_id}`, '_blank');
+                                    document.getElementById('loading').style.display = 'none';
                                 });
                             } else if (userRole === 'Partenaire') {
                                 document.getElementById('goToProject_' + project.project_id).addEventListener('click', () => {
+                                    document.getElementById('loading').style.display = 'block';
                                     window.open(`https://lab.padem.org/accueil/partenaires/?projectId=${project.project_id}`, '_blank');
+                                    document.getElementById('loading').style.display = 'none';
                                 });
                             } else if (userRole === 'Comptable') {
                                 document.getElementById('goToProject_' + project.project_id).addEventListener('click', () => {
@@ -686,7 +695,9 @@
                                 });
                             } else {
                                 document.getElementById('goToProject_' + project.project_id).addEventListener('click', () => {
+                                    document.getElementById('loading').style.display = 'block';
                                     window.open(`https://lab.padem.org/accueil/partenaires/?projectId=${project.project_id}`, '_blank');
+                                    document.getElementById('loading').style.display = 'none';
                                 });
                             }
                         }
@@ -906,7 +917,7 @@
                                     console.error('Error:', error);
                                 });
                             //#endregion
-                            
+
                             isClicked = false;
                         }
                         getParticipants();
@@ -949,5 +960,9 @@
                     projectContainer.appendChild(card);
                 }
             })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('loading').style.display = 'none';
+            });
     }
 </script>
