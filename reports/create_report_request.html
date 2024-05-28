@@ -2,7 +2,7 @@
     <form id="reportSubmissionForm">
         <div class="form-group">
             <label for="memberName">Votre adresse mail:</label>
-            <input type="text" class="form-control" id="memberName" required>
+            <input type="text" class="form-control" id="memberName">
         </div>
         <div class="form-group">
             <label for="projectName">Projet concerné:</label>
@@ -26,33 +26,6 @@
 
 
 <!-- Afficher la liste de demande de rapport -->
-<div class="container">
-    <h2>Demandes de rapport</h2>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Projet</th>
-                <th>Type de rapport</th>
-                <th>Documents models</th>
-                <th>Statut</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>Projet 1</td>
-                <td>Rapport d'avancement</td>
-                <td>Document 1, Document 2</td>
-                <td>En attente</td>
-            </tr>
-            <tr>
-                <td>Projet 2</td>
-                <td>Rapport final</td>
-                <td>Document 1, Document 2, Document 3</td>
-                <td>En attente</td>
-            </tr>
-        </tbody>
-    </table>
-</div>
 
 
 <script>
@@ -68,7 +41,7 @@
             })
             .then(response => {
                 if (!response.ok) {
-                    throw new Error('Erreur réseau lors de la demande à l\'API');
+                    console.log('Erreur réseau lors de la demande à l\'API');
                 }
                 return response.json();
             })
@@ -95,7 +68,7 @@
         var reportType = document.getElementById("reportType").value;
         var reportContent = document.getElementById("reportContent").value;
 
-        if (memberName == "" || projectName == "" || reportType == "" || reportContent == "") {
+        if (memberName === "" || project_id === "" || reportType === "" || reportContent === "") {
             alert("Veuillez remplir tous les champs.");
             return;
         }
@@ -107,15 +80,20 @@
             'link_description': reportContent
         };
 
-        var xhr = new XMLHttpRequest();
-        xhr.open("POST", "https://lab.padem.org/wp-json/mo/v1/createLink", true);
-        xhr.onload = function () {
-            if (xhr.status == 200) {
-                alert("Demande de rapport soumie avec succès!");
+        fetch("https://lab.padem.org/wp-json/mo/v1/createLink", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => {
+            if (response.ok) {
+                alert("Demande de rapport soumise avec succès!");
             } else {
-                alert("Erreur lors de la soumission du rapport.");
+                console.log("Erreur lors de la soumission du rapport.");
             }
-        };
-        xhr.send(JSON.stringify(data));
+        })
+        .catch(error => console.error('Erreur:', error));
     }
 </script>
