@@ -43,6 +43,17 @@
 
 
 <script>
+    var connectedUserEmail = '';
+
+    // Afficher les projets
+    document.addEventListener('DOMContentLoaded', () => {
+        // Récupérer les informations de l'utilisateur connecté
+        getConnectedUserInfos();
+        // Afficher le spinner de chargement
+        document.getElementById('loading').style.display = 'block';
+        // Afficher les projets
+        displayProjects();
+    });
 
     // Récupérer le nombre d'utilisateurs inscrits sur le site via l'API (https://lab.padem.org/wp-json/mo/v1/getUserEmailAndState)
     var numberOfMembers = 0;
@@ -180,16 +191,6 @@
 
     // Actualiser les projets toutes les 15 secondes
     //setInterval(displayProjects, 15000);
-
-    // Afficher les projets
-    document.addEventListener('DOMContentLoaded', () => {
-        // Récupérer les informations de l'utilisateur connecté
-        getConnectedUserInfos();
-        // Afficher le spinner de chargement
-        document.getElementById('loading').style.display = 'block';
-        // Afficher les projets
-        displayProjects();
-    });
 
     // Afficher les projets
     function displayProjects() {
@@ -611,7 +612,7 @@
                                     <div class="card-body">
                                         <div class="row">
                                             <div class="col">
-                                                <a onclick="window.open('https://lab.padem.org/accueil/partenaires/?projectId=${project.project_id}', '_blank')" class="h5 text-decoration-none text-primary">${project.project_title}</a>
+                                                <a onclick="window.location.href='https://lab.padem.org/accueil/partenaires/?projectId=${project.project_id}'" class="h5 text-decoration-none text-primary">${project.project_title}</a>
                                             </div>
                                             <div class="col">
                                                 <p class="text-muted small">${formattedStartDate} - ${formattedEndDate}</p>
@@ -648,7 +649,7 @@
                                                  </div> 
                                              </div> 
                                              <div class="mt-5 mb-1"></div>
-                                             <a href="window.open('https://lab.padem.org/accueil/partenaires/?projectId=${project.project_id}', '_blank')" class="h5 text-decoration-none text-primary">
+                                             <a href="window.location.href='https://lab.padem.org/accueil/partenaires/?projectId=${project.project_id}'" class="h5 text-decoration-none text-primary">
                                                  ${project.project_title}
                                              </a> 
                                              <div> 
@@ -670,36 +671,12 @@
 
                         //#region Ajouter un événement de clic sur le bouton "Modifier" en fonction de l'ID du projet, du rôle de l'utilisateur et en fonction de si l'utilisateur est dans le projet ou non
                         function addEventListener() {
-                            if (userRole === 'Administrateur' || userRole === 'Chef de projet') {
-                                document.getElementById('goToProject_' + project.project_id).addEventListener('click', () => {
+                            document.getElementById('goToProject_' + project.project_id).addEventListener('click', () => {
                                     // Afficher le spinner de chargement
                                     document.getElementById('loading').style.display = 'block';
                                     window.open(`https://lab.padem.org/accueil/partenaires/?projectId=${project.project_id}`, '_blank');
                                     document.getElementById('loading').style.display = 'none';
                                 });
-                            } else if (userRole === 'Consultant') {
-                                document.getElementById('goToProject_' + project.project_id).addEventListener('click', () => {
-                                    document.getElementById('loading').style.display = 'block';
-                                    window.open(`https://lab.padem.org/accueil/partenaires/?projectId=${project.project_id}`, '_blank');
-                                    document.getElementById('loading').style.display = 'none';
-                                });
-                            } else if (userRole === 'Partenaire') {
-                                document.getElementById('goToProject_' + project.project_id).addEventListener('click', () => {
-                                    document.getElementById('loading').style.display = 'block';
-                                    window.open(`https://lab.padem.org/accueil/partenaires/?projectId=${project.project_id}`, '_blank');
-                                    document.getElementById('loading').style.display = 'none';
-                                });
-                            } else if (userRole === 'Comptable') {
-                                document.getElementById('goToProject_' + project.project_id).addEventListener('click', () => {
-                                    window.open(`https://lab.padem.org/accueil/partenaires/?projectId=${project.project_id}`, '_blank');
-                                });
-                            } else {
-                                document.getElementById('goToProject_' + project.project_id).addEventListener('click', () => {
-                                    document.getElementById('loading').style.display = 'block';
-                                    window.open(`https://lab.padem.org/accueil/partenaires/?projectId=${project.project_id}`, '_blank');
-                                    document.getElementById('loading').style.display = 'none';
-                                });
-                            }
                         }
                         addEventListener();
                         //#endregion
@@ -925,11 +902,11 @@
 
                         // Ajouter l'image en arrière-plan du card-body
                         /*
-                        card.querySelector('#card-body').style.backgroundImage = `url(${project.background_image_link})`;
-                        card.querySelector('#card-body').style.backgroundSize = 'cover';
-                        card.querySelector('#card-body').style.backgroundPosition = 'center';
-                        card.querySelector('#card-body').style.backgroundRepeat = 'no-repeat';
-                        card.querySelector('#card-body').style.borderRadius = '25px'; 
+                            card.querySelector('#card-body').style.backgroundImage = `url(${project.background_image_link})`;
+                            card.querySelector('#card-body').style.backgroundSize = 'cover';
+                            card.querySelector('#card-body').style.backgroundPosition = 'center';
+                            card.querySelector('#card-body').style.backgroundRepeat = 'no-repeat';
+                            card.querySelector('#card-body').style.borderRadius = '25px'; 
                         */
 
                         // incrémenter le stepper
