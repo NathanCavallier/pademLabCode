@@ -37,85 +37,77 @@
         fetch(users_list.urls['Administrateur'])
             .then(response => response.json())
             .then(data => {
-                if (data.includes(userEmail)) {
+                if (data[users_list.emails_names['Administrateur']]) {
                     userRole = 'Administrateur';
+                    document.getElementById('userRoleToDispaly').style.backgroundColor = '#FF0000';
+                    document.getElementById('userRoleToDispaly').style.color = 'white';
                 }
             })
-            .then(() => {
-                if (userRole === '') {
-                    fetch(users_list.urls['Coordinateur'])
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.includes(userEmail)) {
-                                userRole = 'Coordinateur';
-                            }
-                        })
-                        .then(() => {
-                            if (userRole === '') {
-                                fetch(users_list.urls['Chef de projet'])
-                                    .then(response => response.json())
-                                    .then(data => {
-                                        if (data.includes(userEmail)) {
-                                            userRole = 'Chef de projet';
-                                        }
-                                    })
-                                    .then(() => {
-                                        if (userRole === '') {
-                                            fetch(users_list.urls['partenaire'])
-                                                .then(response => response.json())
-                                                .then(data => {
-                                                    if (data.includes(userEmail)) {
-                                                        userRole = 'partenaire';
-                                                    }
-                                                })
-                                                .then(() => {
-                                                    if (userRole === '') {
-                                                        fetch(users_list.urls['comptable'])
-                                                            .then(response => response.json())
-                                                            .then(data => {
-                                                                if (data.includes(userEmail)) {
-                                                                    userRole = 'comptable';
-                                                                }
-                                                            })
-                                                            .then(() => {
-                                                                if (userRole === '') {
-                                                                    fetch(users_list.urls['consultant'])
-                                                                        .then(response => response.json())
-                                                                        .then(data => {
-                                                                            if (data.includes(userEmail)) {
-                                                                                userRole = 'consultant';
-                                                                            }
-                                                                        })
-                                                                        .then(() => {
-                                                                            if (userRole === '') {
-                                                                                fetch(users_list.urls['bailleur'])
-                                                                                    .then(response => response.json())
-                                                                                    .then(data => {
-                                                                                        if (data.includes(userEmail)) {
-                                                                                            userRole = 'bailleur';
-                                                                                        }
-                                                                                    })
-                                                                                    .then(() => {
-                                                                                        if (userRole === '') {
-                                                                                            userRole = 'Membre';
-                                                                                        }
-                                                                                    })
-                                                                                    .catch(error => {
-                                                                                        console.error('Error:', error);
-                                                                                        document.getElementById('userRoleToDispaly').innerHTML = 'Erreur';
-                                                                                    });
-                                                                            }
-                                                                        });
-                                                                }
-                                                            });
-                                                    }
-                                                });
-                                        }
-                                    });
-                            }
-                        });
-                }
-            });
+            .then(data => {
+                fetch(users_list.urls['Coordinateur'])
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data[users_list.emails_names['Coordinateur']] == userEmail) {
+                            userRole = 'Coordinateur';
+                            document.getElementById('userRoleToDispaly').style.backgroundColor = '#FFA500';
+                        }
+                    })
+            })
+            .then(data => {
+                fetch(users_list.urls['Chef de projet'])
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data[users_list.emails_names['Chef de projet']] == userEmail) {
+                            userRole = 'Chef de projet';
+                            document.getElementById('userRoleToDispaly').style.backgroundColor = '#FFA500';
+                        }
+                    })
+            })
+            .then(data => {
+                fetch(users_list.urls['partenaire'])
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data[users_list.emails_names['partenaire']] == userEmail) {
+                            userRole = 'partenaire';
+                            document.getElementById('userRoleToDispaly').style.backgroundColor = '#008000';
+                        }
+                    })
+            })
+            .then(data => {
+                fetch(users_list.urls['comptable'])
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data[users_list.emails_names['comptable']] == userEmail) {
+                            userRole = 'comptable';
+                            document.getElementById('userRoleToDispaly').style.backgroundColor = '#0000FF';
+                        }
+                    })
+            })
+            .then(data => {
+                fetch(users_list.urls['consultant'])
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data[users_list.emails_names['consultant']] == userEmail) {
+                            userRole = 'consultant';
+                            document.getElementById('userRoleToDispaly').style.backgroundColor = '#800080';
+                        }
+                    })
+            })
+            .then(data => {
+                fetch(users_list.urls['bailleur'])
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data[users_list.emails_names['bailleur']] == userEmail) {
+                            userRole = 'bailleur';
+                            document.getElementById('userRoleToDispaly').style.backgroundColor = '#FF00FF';
+                        }
+                    })
+            })
+            .catch(error => console.error(error))
+
+
+
+
 
         // Afficher le rôle de l'utilisateur connecté
         document.getElementById('userRoleToDispaly').innerHTML = userRole;
