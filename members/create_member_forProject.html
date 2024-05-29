@@ -1,0 +1,125 @@
+<!-- Récupérer et afficher le rôle de l'utilisateur connecté -->
+<div id="userRoleToDispaly" class="badge badge-secondary rounded-pill"></div>
+
+<script>
+    // Récupérer le rôle de l'utilisateur connecté au chargement de la page
+    document.addEventListener('DOMContentLoaded', function () {
+        var userEmail = user_data.email;
+        var userRole = '';
+        var users_list = {
+            'emails_names': {
+                'Coordinateur': 'coordinator_email',
+                'Chef de projet': 'chief_email',
+                'partenaire': 'partner_email',
+                'comptable': 'accountant_email',
+                'consultant': 'consultant_email',
+                'bailleur': 'funder_email'
+            },
+            'users': {
+                'Coordinateur': [],
+                'Chef de projet': [],
+                'partenaire': [],
+                'comptable': [],
+                'consultant': [],
+                'bailleur': []
+            },
+            'urls': {
+                'Administrateur': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
+                'Coordinateur': 'https://lab.padem.org/wp-json/mo/v1/getCoordinator',
+                'Chef de projet': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
+                'partenaire': 'https://lab.padem.org/wp-json/mo/v1/getPartner',
+                'comptable': 'https://lab.padem.org/wp-json/mo/v1/getAccountant',
+                'consultant': 'https://lab.padem.org/wp-json/mo/v1/getConsultant',
+                'bailleur': 'https://lab.padem.org/wp-json/mo/v1/getFunder'
+            }
+        };
+        // Vérifier si l'utilisateur connecté est un administrateur, un coordinateur, un chef de projet, un partenaire, un comptable ou un consultant 
+        fetch(users_list.urls['Administrateur'])
+            .then(response => response.json())
+            .then(data => {
+                if (data.includes(userEmail)) {
+                    userRole = 'Administrateur';
+                }
+            })
+            .then(() => {
+                if (userRole === '') {
+                    fetch(users_list.urls['Coordinateur'])
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.includes(userEmail)) {
+                                userRole = 'Coordinateur';
+                            }
+                        })
+                        .then(() => {
+                            if (userRole === '') {
+                                fetch(users_list.urls['Chef de projet'])
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        if (data.includes(userEmail)) {
+                                            userRole = 'Chef de projet';
+                                        }
+                                    })
+                                    .then(() => {
+                                        if (userRole === '') {
+                                            fetch(users_list.urls['partenaire'])
+                                                .then(response => response.json())
+                                                .then(data => {
+                                                    if (data.includes(userEmail)) {
+                                                        userRole = 'partenaire';
+                                                    }
+                                                })
+                                                .then(() => {
+                                                    if (userRole === '') {
+                                                        fetch(users_list.urls['comptable'])
+                                                            .then(response => response.json())
+                                                            .then(data => {
+                                                                if (data.includes(userEmail)) {
+                                                                    userRole = 'comptable';
+                                                                }
+                                                            })
+                                                            .then(() => {
+                                                                if (userRole === '') {
+                                                                    fetch(users_list.urls['consultant'])
+                                                                        .then(response => response.json())
+                                                                        .then(data => {
+                                                                            if (data.includes(userEmail)) {
+                                                                                userRole = 'consultant';
+                                                                            }
+                                                                        })
+                                                                        .then(() => {
+                                                                            if (userRole === '') {
+                                                                                fetch(users_list.urls['bailleur'])
+                                                                                    .then(response => response.json())
+                                                                                    .then(data => {
+                                                                                        if (data.includes(userEmail)) {
+                                                                                            userRole = 'bailleur';
+                                                                                        }
+                                                                                    })
+                                                                                    .then(() => {
+                                                                                        if (userRole === '') {
+                                                                                            userRole = 'Membre';
+                                                                                        }
+                                                                                    })
+                                                                                    .catch(error => {
+                                                                                        console.error('Error:', error);
+                                                                                        document.getElementById('userRoleToDispaly').innerHTML = 'Erreur';
+                                                                                    });
+                                                                            }
+                                                                        });
+                                                                }
+                                                            });
+                                                    }
+                                                });
+                                        }
+                                    });
+                            }
+                        });
+                }
+            });
+
+        // Afficher le rôle de l'utilisateur connecté
+        document.getElementById('userRoleToDispaly').innerHTML = userRole;
+    });
+
+
+</script>
