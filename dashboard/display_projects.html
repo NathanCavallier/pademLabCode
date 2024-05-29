@@ -48,6 +48,8 @@
     // Afficher les projets
     document.addEventListener('DOMContentLoaded', () => {
         // Récupérer les informations de l'utilisateur connecté
+        connectedUserEmail = user_data.email;
+        console.log("Current User Email: " + connectedUserEmail);
         getConnectedUserInfos();
         // Afficher le spinner de chargement
         document.getElementById('loading').style.display = 'block';
@@ -672,11 +674,9 @@
                         //#region Ajouter un événement de clic sur le bouton "Modifier" en fonction de l'ID du projet, du rôle de l'utilisateur et en fonction de si l'utilisateur est dans le projet ou non
                         function addEventListener() {
                             document.getElementById('goToProject_' + project.project_id).addEventListener('click', () => {
-                                    // Afficher le spinner de chargement
-                                    document.getElementById('loading').style.display = 'block';
-                                    window.open(`https://lab.padem.org/accueil/partenaires/?projectId=${project.project_id}`, '_blank');
-                                    document.getElementById('loading').style.display = 'none';
-                                });
+                                // Afficher le spinner de chargement
+                                window.open(`https://lab.padem.org/accueil/partenaires/?projectId=${project.project_id}`, '_blank');
+                            });
                         }
                         addEventListener();
                         //#endregion
@@ -685,6 +685,7 @@
                         function getParticipants() {
 
                             //#region get Administrateur
+                            document.getElementById('loading').style.display = 'block';
                             fetch(users_list.urls['Administrateur'], {
                                 method: 'GET',
                                 headers: {
@@ -694,6 +695,7 @@
                                 .then(response => response.json())
                                 .then(data => {
                                     var counter = 0;
+                                    document.getElementById('loading').style.display = 'none';
                                     data.forEach(user => {
                                         // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
                                         if (user.project_id === project.project_id) {
@@ -716,6 +718,7 @@
                             //#endregion
 
                             //#region get Coordinnateur
+                            document.getElementById('loading').style.display = 'block';
                             fetch(users_list.urls['Coordinateur'], {
                                 method: 'GET',
                                 headers: {
@@ -724,6 +727,7 @@
                             })
                                 .then(response => response.json())
                                 .then(data => {
+                                    document.getElementById('loading').style.display = 'none';
                                     data.forEach(user => {
                                         // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
                                         if (user.project_id === project.project_id) {
@@ -746,6 +750,7 @@
                             //#endregion
 
                             //#region get Chef de projet
+                            document.getElementById('loading').style.display = 'block';
                             fetch(users_list.urls['Chef de projet'], {
                                 method: 'GET',
                                 headers: {
@@ -754,6 +759,7 @@
                             })
                                 .then(response => response.json())
                                 .then(data => {
+                                    document.getElementById('loading').style.display = 'none';
                                     data.forEach(user => {
                                         // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
                                         if (user.project_id === project.project_id) {
@@ -776,6 +782,7 @@
                             //#endregion
 
                             //#region get partenaire
+                            document.getElementById('loading').style.display = 'block';
                             fetch(users_list.urls['partenaire'], {
                                 method: 'GET',
                                 headers: {
@@ -784,6 +791,7 @@
                             })
                                 .then(response => response.json())
                                 .then(data => {
+                                    document.getElementById('loading').style.display = 'none';
                                     data.forEach(user => {
                                         // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
                                         if (user.project_id === project.project_id) {
@@ -806,6 +814,7 @@
                             //#endregion
 
                             //#region get comptable
+                            document.getElementById('loading').style.display = 'block';
                             fetch(users_list.urls['comptable'], {
                                 method: 'GET',
                                 headers: {
@@ -814,6 +823,7 @@
                             })
                                 .then(response => response.json())
                                 .then(data => {
+                                    document.getElementById('loading').style.display = 'none';
                                     data.forEach(user => {
                                         // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
                                         if (user.project_id === project.project_id) {
@@ -836,6 +846,7 @@
                             //#endregion
 
                             //#region get consultant
+                            document.getElementById('loading').style.display = 'block';
                             fetch(users_list.urls['consultant'], {
                                 method: 'GET',
                                 headers: {
@@ -844,6 +855,7 @@
                             })
                                 .then(response => response.json())
                                 .then(data => {
+                                    document.getElementById('loading').style.display = 'none';
                                     data.forEach(user => {
                                         // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
                                         if (user.project_id === project.project_id) {
@@ -866,6 +878,7 @@
                             //#endregion
 
                             //#region get bailleur
+                            document.getElementById('loading').style.display = 'block';
                             fetch(users_list.urls['bailleur'], {
                                 method: 'GET',
                                 headers: {
