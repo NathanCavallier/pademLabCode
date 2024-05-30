@@ -1,10 +1,10 @@
 <!-- Récupérer et afficher le rôle de l'utilisateur connecté -->
-<div id="userRoleToDispaly" class="badge badge-secondary rounded-pill"></div>
+<div id="userRoleToDispaly" style="font-size: 12px;"></div>
 
 <script>
     // Récupérer les données de l'utilisateur connecté
     var userEmail = user_data.email;
-    var userRole = '';
+    var userRole = 'Utilisateur';
     var users_list = {
         'bacground_colors': {
             'Administrateur': '#FF0000',
@@ -44,23 +44,24 @@
     };
     // Récupérer le rôle de l'utilisateur connecté au chargement de la page
     document.addEventListener('DOMContentLoaded', function () {
-        // Afficher le spinner de chargement
+        //#region Sty du rôle de l'utilisateur connecté
         document.getElementById('loading').style.display = 'block';
-        var fetchPromises = []; // Déclaration de fetchPromises
-        //#region Vérifier si l'utilisateur connecté est un administrateur, un coordinateur, un chef de projet, un partenaire, un comptable ou un consultant 
+        document.getElementById('userRoleToDispaly').style.display = 'block';
         document.getElementById('userRoleToDispaly').style.color = 'white';
         document.getElementById('userRoleToDispaly').style.fontWeight = 'normal';
         document.getElementById('userRoleToDispaly').style.fontSize = '12px';
         document.getElementById('userRoleToDispaly').style.padding = '5px';
         document.getElementById('userRoleToDispaly').style.borderRadius = '10px';
         document.getElementById('userRoleToDispaly').style.margin = '5px';
-        document.getElementById('userRoleToDispaly').style.display = 'none';
+        //#endregion
+
+        //#region Vérifier si l'utilisateur connecté est un administrateur, un coordinateur, un chef de projet, un partenaire, un comptable ou un consultant 
         // Vérifier si l'utilisateur connecté est un administrateur, un coordinateur, un chef de projet, un partenaire, un comptable ou un consultant
         checkIfUserIsAdmin();
         //#endregion
     });
     // Vérifier si l'utilisateur connecté est un administrateur
-    async function checkIfUserIsAdmin() {
+    function checkIfUserIsAdmin() {
         // Vérifier si l'utilisateur connecté est un administrateur
         fetch(users_list.urls.Administrateur,
             {
@@ -71,20 +72,27 @@
             })
             .then(response => response.json())
             .then(data => {
-                // Récupérer les emails des administrateurs
-                var data_emails = data.map(function (item) {
-                    return item[users_list.emails_names.admin];
-                });
-                // Vérifier si l'utilisateur connecté est un administrateur
-                if (data_emails.includes(userEmail)) {
-                    userRole = 'Administrateur';
-                    document.getElementById('userRoleToDispaly').innerHTML = userRole;
-                    document.getElementById('userRoleToDispaly').style.backgroundColor = users_list.bacground_colors[userRole];
-                    document.getElementById('userRoleToDispaly').style.display = 'block';
+                if (data.length > 0) {
+                    // Récupérer les emails des administrateurs
+                    var data_emails = [];
+                    data.forEach(item => {
+                        data_emails.push(item[users_list.emails_names.chef_de_projet]);
+                    });
+                    // Vérifier si l'utilisateur connecté est un administrateur
+                    if (data_emails.includes(userEmail)) {
+                        userRole = 'Administrateur';
+                        document.getElementById('userRoleToDispaly').innerHTML = userRole;
+                        document.getElementById('userRoleToDispaly').style.backgroundColor = users_list.bacground_colors.Administrateur;
+                        document.getElementById('userRoleToDispaly').style.display = 'block';
+                        // Masquer le spinner de chargement
+                        document.getElementById('loading').style.display = 'none';
+                    } else {
+                        // Vérifier si l'utilisateur connecté est un coordinateur
+                        checkIfUserIsCoordinator();
+                    }
+                } else {
                     // Masquer le spinner de chargement
                     document.getElementById('loading').style.display = 'none';
-                } else {
-                    // Vérifier si l'utilisateur connecté est un coordinateur
                     checkIfUserIsCoordinator();
                 }
             })
@@ -93,8 +101,8 @@
             });
     }
 
-    // Vérifier si l'utilisateur connecté est un coordinateur
-    async function checkIfUserIsCoordinator() {
+    // Vérifier si l'utilisateur connecté est un coordinateur 
+    function checkIfUserIsCoordinator() {
         // Vérifier si l'utilisateur connecté est un coordinateur
         fetch(users_list.urls.Coordinateur,
             {
@@ -105,20 +113,27 @@
             })
             .then(response => response.json())
             .then(data => {
-                // Récupérer les emails des coordinateurs
-                var data_emails = data.map(function (item) {
-                    return item[users_list.emails_names.coordinator];
-                });
-                // Vérifier si l'utilisateur connecté est un coordinateur
-                if (data_emails.includes(userEmail)) {
-                    userRole = 'Coordinateur';
-                    document.getElementById('userRoleToDispaly').innerHTML = userRole;
-                    document.getElementById('userRoleToDispaly').style.backgroundColor = users_list.bacground_colors[userRole];
-                    document.getElementById('userRoleToDispaly').style.display = 'block';
+                if (data.length > 0) {
+                    // Récupérer les emails des coordinateurs
+                    var data_emails = [];
+                    data.forEach(item => {
+                        data_emails.push(item[users_list.emails_names.Coordinateur]);
+                    });
+                    // Vérifier si l'utilisateur connecté est un coordinateur
+                    if (data_emails.includes(userEmail)) {
+                        userRole = 'Coordinateur';
+                        document.getElementById('userRoleToDispaly').innerText = userRole;
+                        document.getElementById('userRoleToDispaly').style.backgroundColor = users_list.bacground_colors.Coordinateur;
+                        document.getElementById('userRoleToDispaly').style.display = 'block';
+                        // Masquer le spinner de chargement
+                        document.getElementById('loading').style.display = 'none';
+                    } else {
+                        // Vérifier si l'utilisateur connecté est un chef de projet
+                        checkIfUserIsProjectChief();
+                    }
+                } else {
                     // Masquer le spinner de chargement
                     document.getElementById('loading').style.display = 'none';
-                } else {
-                    // Vérifier si l'utilisateur connecté est un chef de projet
                     checkIfUserIsProjectChief();
                 }
             })
@@ -128,7 +143,7 @@
     }
 
     // Vérifier si l'utilisateur connecté est un chef de projet
-    async function checkIfUserIsProjectChief() {
+    function checkIfUserIsProjectChief() {
         // Vérifier si l'utilisateur connecté est un chef de projet
         fetch(users_list.urls.chef_de_projet,
             {
@@ -139,20 +154,27 @@
             })
             .then(response => response.json())
             .then(data => {
-                // Récupérer les emails des chefs de projet
-                var data_emails = data.map(function (item) {
-                    return item[users_list.emails_names.chef_de_projet];
-                });
-                // Vérifier si l'utilisateur connecté est un chef de projet
-                if (data_emails.includes(userEmail)) {
-                    userRole = 'Chef de projet';
-                    document.getElementById('userRoleToDispaly').innerHTML = userRole;
-                    document.getElementById('userRoleToDispaly').style.backgroundColor = users_list.bacground_colors.chef_de_projet;
-                    document.getElementById('userRoleToDispaly').style.display = 'block';
+                if (data.length > 0) {
+                    // Récupérer les emails des chefs de projet
+                    var data_emails = [];
+                    data.forEach(item => {
+                        data_emails.push(item[users_list.emails_names.chef_de_projet]);
+                    });
+                    // Vérifier si l'utilisateur connecté est un chef de projet
+                    if (data_emails.includes(userEmail)) {
+                        userRole = 'Chef de projet';
+                        document.getElementById('userRoleToDispaly').innerText = userRole;
+                        document.getElementById('userRoleToDispaly').style.backgroundColor = users_list.bacground_colors.chef_de_projet;
+                        document.getElementById('userRoleToDispaly').style.display = 'block';
+                        // Masquer le spinner de chargement
+                        document.getElementById('loading').style.display = 'none';
+                    } else {
+                        // Vérifier si l'utilisateur connecté est un partenaire
+                        checkIfUserIsPartner();
+                    }
+                } else {
                     // Masquer le spinner de chargement
                     document.getElementById('loading').style.display = 'none';
-                } else {
-                    // Vérifier si l'utilisateur connecté est un partenaire
                     checkIfUserIsPartner();
                 }
             })
@@ -162,7 +184,7 @@
     }
 
     // Vérifier si l'utilisateur connecté est un partenaire
-    async function checkIfUserIsPartner() {
+    function checkIfUserIsPartner() {
         // Vérifier si l'utilisateur connecté est un partenaire
         fetch(users_list.urls.partenaire,
             {
@@ -173,20 +195,27 @@
             })
             .then(response => response.json())
             .then(data => {
-                // Récupérer les emails des partenaires
-                var data_emails = data.map(function (item) {
-                    return item[users_list.emails_names.partenaire];
-                });
-                // Vérifier si l'utilisateur connecté est un partenaire
-                if (data_emails.includes(userEmail)) {
-                    userRole = 'partenaire';
-                    document.getElementById('userRoleToDispaly').innerHTML = userRole;
-                    document.getElementById('userRoleToDispaly').style.backgroundColor = users_list.bacground_colors[userRole];
-                    document.getElementById('userRoleToDispaly').style.display = 'block';
+                if (data.length > 0) {
+                    // Récupérer les emails des partenaires
+                    var data_emails = [];
+                    data.forEach(item => {
+                        data_emails.push(item[users_list.emails_names.partenaire]);
+                    });
+                    // Vérifier si l'utilisateur connecté est un partenaire
+                    if (data_emails.includes(userEmail)) {
+                        userRole = 'Partenaire';
+                        document.getElementById('userRoleToDispaly').innerText = userRole;
+                        document.getElementById('userRoleToDispaly').style.backgroundColor = users_list.bacground_colors.partenaire;
+                        document.getElementById('userRoleToDispaly').style.display = 'block';
+                        // Masquer le spinner de chargement
+                        document.getElementById('loading').style.display = 'none';
+                    } else {
+                        // Vérifier si l'utilisateur connecté est un comptable
+                        checkIfUserIsAccountant();
+                    }
+                } else {
                     // Masquer le spinner de chargement
                     document.getElementById('loading').style.display = 'none';
-                } else {
-                    // Vérifier si l'utilisateur connecté est un comptable
                     checkIfUserIsAccountant();
                 }
             })
@@ -196,7 +225,7 @@
     }
 
     // Vérifier si l'utilisateur connecté est un comptable
-    async function checkIfUserIsAccountant() {
+    function checkIfUserIsAccountant() {
         // Vérifier si l'utilisateur connecté est un comptable
         fetch(users_list.urls.comptable,
             {
@@ -207,20 +236,27 @@
             })
             .then(response => response.json())
             .then(data => {
-                // Récupérer les emails des comptables
-                var data_emails = data.map(function (item) {
-                    return item[users_list.emails_names.comptable];
-                });
-                // Vérifier si l'utilisateur connecté est un comptable
-                if (data_emails.includes(userEmail)) {
-                    userRole = 'comptable';
-                    document.getElementById('userRoleToDispaly').innerHTML = userRole;
-                    document.getElementById('userRoleToDispaly').style.backgroundColor = users_list.bacground_colors[userRole];
-                    document.getElementById('userRoleToDispaly').style.display = 'block';
+                if (data.length > 0) {
+                    // Récupérer les emails des comptables
+                    var data_emails = [];
+                    data.forEach(item => {
+                        data_emails.push(item[users_list.emails_names.comptable]);
+                    });
+                    // Vérifier si l'utilisateur connecté est un comptable
+                    if (data_emails.includes(userEmail)) {
+                        userRole = 'Comptable';
+                        document.getElementById('userRoleToDispaly').innerText = userRole;
+                        document.getElementById('userRoleToDispaly').style.backgroundColor = users_list.bacground_colors.comptable;
+                        document.getElementById('userRoleToDispaly').style.display = 'block';
+                        // Masquer le spinner de chargement
+                        document.getElementById('loading').style.display = 'none';
+                    } else {
+                        // Vérifier si l'utilisateur connecté est un consultant
+                        checkIfUserIsConsultant();
+                    }
+                } else {
                     // Masquer le spinner de chargement
                     document.getElementById('loading').style.display = 'none';
-                } else {
-                    // Vérifier si l'utilisateur connecté est un consultant
                     checkIfUserIsConsultant();
                 }
             })
@@ -230,7 +266,7 @@
     }
 
     // Vérifier si l'utilisateur connecté est un consultant
-    async function checkIfUserIsConsultant() {
+    function checkIfUserIsConsultant() {
         // Vérifier si l'utilisateur connecté est un consultant
         fetch(users_list.urls.consultant,
             {
@@ -241,31 +277,38 @@
             })
             .then(response => response.json())
             .then(data => {
-                // Récupérer les emails des consultants
-                var data_emails = data.map(function (item) {
-                    return item[users_list.emails_names.consultant];
-                });
-                // Vérifier si l'utilisateur connecté est un consultant
-                if (data_emails.includes(userEmail)) {
-                    userRole = 'consultant';
-                    document.getElementById('userRoleToDispaly').innerHTML = userRole;
-                    document.getElementById('userRoleToDispaly').style.backgroundColor = users_list.bacground_colors[userRole];
-                    document.getElementById('userRoleToDispaly').style.display = 'block';
-                    // Masquer le spinner de chargement
-                    document.getElementById('loading').style.display = 'none';
+                if (data.length > 0) {
+                    // Récupérer les emails des consultants
+                    var data_emails = [];
+                    data.forEach(item => {
+                        data_emails.push(item[users_list.emails_names.consultant]);
+                    });
+                    // Vérifier si l'utilisateur connecté est un consultant
+                    if (data_emails.includes(userEmail)) {
+                        userRole = 'Consultant';
+                        document.getElementById('userRoleToDispaly').innerText = userRole;
+                        document.getElementById('userRoleToDispaly').style.backgroundColor = users_list.bacground_colors.consultant;
+                        document.getElementById('userRoleToDispaly').style.display = 'block';
+                        // Masquer le spinner de chargement
+                        document.getElementById('loading').style.display = 'none';
+                    } else {
+                        // Masquer le spinner de chargement
+                        document.getElementById('loading').style.display = 'none';
+                        userRole = 'Utilisateur';
+                        document.getElementById('userRoleToDispaly').innerText = userRole;
+                        document.getElementById('userRoleToDispaly').style.backgroundColor = users_list.bacground_colors.Utilisateur;
+                        document.getElementById('userRoleToDispaly').style.display = 'block';
+                    }
                 } else {
                     // Masquer le spinner de chargement
+                    document.getElementById('userRoleToDispaly').innerText = userRole;
+                    document.getElementById('userRoleToDispaly').style.backgroundColor = users_list.bacground_colors.Utilisateur;
                     document.getElementById('loading').style.display = 'none';
-                    userRole = 'Utilisateur';
-                    document.getElementById('userRoleToDispaly').innerHTML = userRole;
-                    document.getElementById('userRoleToDispaly').style.backgroundColor = users_list.bacground_colors[userRole];
-                    document.getElementById('userRoleToDispaly').style.display = 'block';
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
             });
     }
-
 
 </script>
