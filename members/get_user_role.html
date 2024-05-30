@@ -46,18 +46,17 @@
     document.addEventListener('DOMContentLoaded', function () {
         //#region Sty du rôle de l'utilisateur connecté
         document.getElementById('loading').style.display = 'block';
-        document.getElementById('userRoleToDispaly').style.display = 'block';
+        document.getElementById('userRoleToDispaly').innerText = userRole;
+        document.getElementById('userRoleToDispaly').style.backgroundColor = users_list.bacground_colors.Utilisateur;
         document.getElementById('userRoleToDispaly').style.color = 'white';
         document.getElementById('userRoleToDispaly').style.fontWeight = 'normal';
         document.getElementById('userRoleToDispaly').style.fontSize = '12px';
         document.getElementById('userRoleToDispaly').style.padding = '5px';
         document.getElementById('userRoleToDispaly').style.borderRadius = '10px';
         document.getElementById('userRoleToDispaly').style.margin = '5px';
-        //#endregion
-
-        //#region Vérifier si l'utilisateur connecté est un administrateur, un coordinateur, un chef de projet, un partenaire, un comptable ou un consultant 
-        // Vérifier si l'utilisateur connecté est un administrateur, un coordinateur, un chef de projet, un partenaire, un comptable ou un consultant
+        document.getElementById('userRoleToDispaly').style.textAlign = 'center';
         checkIfUserIsAdmin();
+        localStorage.setItem('userRole', userRole);
         //#endregion
     });
     // Vérifier si l'utilisateur connecté est un administrateur
@@ -301,8 +300,6 @@
                     }
                 } else {
                     // Masquer le spinner de chargement
-                    document.getElementById('userRoleToDispaly').innerText = userRole;
-                    document.getElementById('userRoleToDispaly').style.backgroundColor = users_list.bacground_colors.Utilisateur;
                     document.getElementById('loading').style.display = 'none';
                 }
             })
