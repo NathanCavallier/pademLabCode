@@ -25,21 +25,51 @@
 <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- Ajoutez ceci pour utiliser Font Awesome -->
 <!-- Afficher la liste de tout les bailleurs sociaux du site -->
 <ul id="funder" style="list-style: none; display: none;"></ul>
+
+
+
+<ul id="my-project-profile" style="list-style: none; display: none;"></ul>
+<ul id="add-member" style="list-style: none; display: none;"></ul>
+<ul id="tous-" style="list-style: none; display: none;"></ul>
+<ul id="with-project" style="list-style: none; display: none;"></ul>
+<ul id="with-role-without-project" style="list-style: none; display: none;"></ul>
+<ul id="without-role-without-project" style="list-style: none; display: none;"></ul>
+
 <!-- #endregion -->
 
+
 <!--#region Liste des boutons -->
-<button type="button" class="box-clicable" id="tous"
-style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px; border: none; margin: 5px; padding: 5px;font-size: 13px;">
-Tous les memebres</button>
-<button type="button" class="box-clicable" id="coordonnateurs"
-    style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px;border: none;">
-    Avec projet </button>
 <button type="button" class="box-clicable" id="my_project_profile"
-    style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px;border: none; margin: 5px; padding: 5px;">
+    style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px;border: none; margin: 5px; padding: 5px;font-size: 13px;">
     Mon profile projet </button>
+<button type="button" class="box-clicable" id="add_member"
+    style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px;border: none; margin: 5px; padding: 5px;font-size: 13px;">
+    <img src="https://lab.padem.org/wp-content/uploads/plus.png" width="30px" height="30px"
+        alt="Ajouter un membre projet">
+</button>
+<button type="button" class="box-clicable" id="tous"
+    style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px; border: none; margin: 5px; padding: 5px;font-size: 13px;">
+    Tous les memebres</button>
+<button type="button" class="box-clicable" id="with_project"
+    style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px;border: none; margin: 5px; padding: 5px;font-size: 13px;">
+    Avec projet </button>
+<button type="button" class="box-clicable" id="with_role_without_project"
+    style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px;border: none; margin: 5px; padding: 5px;font-size: 13px;">
+    Avec rôle et sans projet </button>
+<button type="button" class="box-clicable" id="without_role_without_project"
+    style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px;border: none; margin: 5px; padding: 5px;font-size: 13px;">
+    Sans rôle et sans projet </button>
+<!--#endregion-->
+
 
 <!--#region Script des boutons -->
 <script>
+    var menuActiveButtons = {
+        'selected_background': '#29A6A7',
+        'selected_color': 'white',
+        'unselected_background': 'white',
+        'unselected_color': 'gray',
+    };
     var userEmail = user_data.email;
     var userRole = localStorage.getItem('userRole');
     var users_list = {
@@ -80,81 +110,105 @@ Tous les memebres</button>
         }
     };
     document.addEventListener('DOMContentLoaded', function () {
+        //#region Couleurs initiales des boutons
+        document.getElementById('my_project_profile').style.backgroundColor = menuActiveButtons.unselected_background;
+        document.getElementById('my_project_profile').style.color = menuActiveButtons.unselected_color;
+        document.getElementById('add_member').style.backgroundColor = menuActiveButtons.unselected_background;
+        document.getElementById('add_member').style.color = menuActiveButtons.unselected_color;
+        document.getElementById('tous').style.backgroundColor = menuActiveButtons.selected_background;
+        document.getElementById('tous').style.color = menuActiveButtons.selected_color;
+        document.getElementById('with_project').style.backgroundColor = menuActiveButtons.unselected_background;
+        document.getElementById('with_project').style.color = menuActiveButtons.unselected_color;
+        document.getElementById('with_role_without_project').style.backgroundColor = menuActiveButtons.unselected_background;
+        document.getElementById('with_role_without_project').style.color = menuActiveButtons.unselected_color;
+        document.getElementById('without_role_without_project').style.backgroundColor = menuActiveButtons.unselected_background;
+        document.getElementById('without_role_without_project').style.color = menuActiveButtons.unselected_color;
+        //#endregion
 
-        // Afficher la liste de tout les membres du site
+        //#region État initial des listes
+        document.getElementById('all_members').style.display = 'block';
+        document.getElementById('coordinateur').style.display = 'block';
+        document.getElementById('chef_de_projet').style.display = 'block';
+        document.getElementById('accountant').style.display = 'block';
+        document.getElementById('consultant').style.display = 'block';
+        document.getElementById('partner').style.display = 'block';
+        document.getElementById('funder').style.display = 'block';
+        //#endregion
+
+        //#region des zones d'affichages
+        document.getElementById('my-project-profile').style.display = 'none';
+        document.getElementById('add-member').style.display = 'none';
+        document.getElementById('tous-').style.display = 'block';
+        document.getElementById('with-project').style.display = 'none';
+        document.getElementById('with-role-without-project').style.display = 'none';
+        document.getElementById('without-role-without-project').style.display = 'none';
+        //#endregion
+
+
+        // Ajouter un événement pour afficher la liste de tout les membres
         document.getElementById('tous').addEventListener('click', function () {
-            document.getElementById('all_members').style.display = 'block';
-            document.getElementById('coordinateur').style.display = 'none';
-            document.getElementById('chef_de_projet').style.display = 'none';
-            document.getElementById('accountant').style.display = 'none';
-            document.getElementById('consultant').style.display = 'none';
-            document.getElementById('partner').style.display = 'none';
-            document.getElementById('funder').style.display = 'none';
+            document.getElementById('my-project-profile').style.display = 'none';
+            document.getElementById('add-member').style.display = 'none';
+            document.getElementById('tous-').style.display = 'block';
+            document.getElementById('with-project').style.display = 'none';
+            document.getElementById('with-role-without-project').style.display = 'none';
+            document.getElementById('without-role-without-project').style.display = 'none';
+            document.getElementById('my_project_profile').style.backgroundColor = menuActiveButtons.unselected_background;
+            document.getElementById('my_project_profile').style.color = menuActiveButtons.unselected_color;
+            document.getElementById('add_member').style.backgroundColor = menuActiveButtons.unselected_background;
+            document.getElementById('add_member').style.color = menuActiveButtons.unselected_color;
+            document.getElementById('tous').style.backgroundColor = menuActiveButtons.selected_background;
+            document.getElementById('tous').style.color = menuActiveButtons.selected_color;
+            document.getElementById('with_project').style.backgroundColor = menuActiveButtons.unselected_background;
         });
 
-        // Afficher la liste de tout les coordinateurs du site
-        document.getElementById('coordonnateurs').addEventListener('click', function () {
+        // Ajouter un événement pour afficher la liste de tout les membres avec un projet
+        document.getElementById('with_project').addEventListener('click', function () {
             document.getElementById('all_members').style.display = 'none';
-            document.getElementById('coordinateur').style.display = 'block';
+            document.getElementById('coordinateur').style.display = 'none';
             document.getElementById('chef_de_projet').style.display = 'none';
             document.getElementById('accountant').style.display = 'none';
             document.getElementById('consultant').style.display = 'none';
             document.getElementById('partner').style.display = 'none';
             document.getElementById('funder').style.display = 'none';
+            document.getElementById('my_project_profile').style.backgroundColor = menuActiveButtons.unselected_background;
+            document.getElementById('my_project_profile').style.color = menuActiveButtons.unselected_color;
+            document.getElementById('add_member').style.backgroundColor = menuActiveButtons.unselected_background;
+            document.getElementById('add_member').style.color = menuActiveButtons.unselected_color;
+            document.getElementById('tous').style.backgroundColor = menuActiveButtons.unselected_background;
+            document.getElementById('tous').style.color = menuActiveButtons.unselected_color;
+            document.getElementById('with_project').style.backgroundColor = menuActiveButtons.selected_background;
+            document.getElementById('with_project').style.color = menuActiveButtons.selected_color;
+            document.getElementById('with_role_without_project').style.backgroundColor = menuActiveButtons.unselected_background;
+            document.getElementById('with_role_without_project').style.color = menuActiveButtons.unselected_color;
+            document.getElementById('without_role_without_project').style.backgroundColor = menuActiveButtons.unselected_background;
+            document.getElementById('without_role_without_project').style.color = menuActiveButtons.unselected_color;
         });
 
-        // Afficher la liste de tout les chefs de projet du site
-        document.getElementById('chef_de_projet').addEventListener('click', function () {
-            document.getElementById('all_members').style.display = 'none';
-            document.getElementById('coordinateur').style.display = 'none';
-            document.getElementById('chef_de_projet').style.display = 'block';
-            document.getElementById('accountant').style.display = 'none';
-            document.getElementById('consultant').style.display = 'none';
-            document.getElementById('partner').style.display = 'none';
-            document.getElementById('funder').style.display = 'none';
-        });
-        // Afficher la liste de tout les comptables du site
-        document.getElementById('comptables').addEventListener('click', function () {
-            document.getElementById('all_members').style.display = 'none';
-            document.getElementById('coordinateur').style.display = 'none';
-            document.getElementById('chef_de_projet').style.display = 'none';
-            document.getElementById('accountant').style.display = 'block';
-            document.getElementById('consultant').style.display = 'none';
-            document.getElementById('partner').style.display = 'none';
-            document.getElementById('funder').style.display = 'none';
-        });
-        // Afficher la liste de tout les consultants du site
-        document.getElementById('consultants').addEventListener('click', function () {
+        // Ajouter un événement pour afficher la liste de tout les membres avec un rôle et sans projet
+        document.getElementById('with_role_without_project').addEventListener('click', function () {
             document.getElementById('all_members').style.display = 'none';
             document.getElementById('coordinateur').style.display = 'none';
             document.getElementById('chef_de_projet').style.display = 'none';
             document.getElementById('accountant').style.display = 'none';
-            document.getElementById('consultant').style.display = 'block';
+            document.getElementById('consultant').style.display = 'none';
             document.getElementById('partner').style.display = 'none';
             document.getElementById('funder').style.display = 'none';
+            document.getElementById('my_project_profile').style.backgroundColor = menuActiveButtons.unselected_background;
+            document.getElementById('my_project_profile').style.color = menuActiveButtons.unselected_color;
+            document.getElementById('add_member').style.backgroundColor = menuActiveButtons.unselected_background;
+            document.getElementById('add_member').style.color = menuActiveButtons.unselected_color;
+            document.getElementById('tous').style.backgroundColor = menuActiveButtons.unselected_background;
+            document.getElementById('tous').style.color = menuActiveButtons.unselected_color;
+            document.getElementById('with_project').style.backgroundColor = menuActiveButtons.unselected_background;
+            document.getElementById('with_project').style.color = menuActiveButtons.unselected_color;
+            document.getElementById('with_role_without_project').style.backgroundColor = menuActiveButtons.selected_background;
+            document.getElementById('with_role_without_project').style.color = menuActiveButtons.selected_color;
+            document.getElementById('without_role_without_project').style.backgroundColor = menuActiveButtons.unselected_background;
+            document.getElementById('without_role_without_project').style.color = menuActiveButtons.unselected_color;
         });
 
-        // Afficher la liste de tout les partenaires du site
-        document.getElementById('partenaires').addEventListener('click', function () {
-            document.getElementById('all_members').style.display = 'none';
-            document.getElementById('coordinateur').style.display = 'none';
-            document.getElementById('chef_de_projet').style.display = 'none';
-            document.getElementById('accountant').style.display = 'none';
-            document.getElementById('consultant').style.display = 'none';
-            document.getElementById('partner').style.display = 'block';
-            document.getElementById('funder').style.display = 'none';
-        });
 
-        // Afficher la liste de tout les bailleurs sociaux du site
-        document.getElementById('funders').addEventListener('click', function () {
-            document.getElementById('all_members').style.display = 'none';
-            document.getElementById('coordinateur').style.display = 'none';
-            document.getElementById('chef_de_projet').style.display = 'none';
-            document.getElementById('accountant').style.display = 'none';
-            document.getElementById('consultant').style.display = 'none';
-            document.getElementById('partner').style.display = 'none';
-            document.getElementById('funder').style.display = 'block';
-        });
     });
 </script>
 <!--#endregion-->
@@ -163,6 +217,7 @@ Tous les memebres</button>
 <script>
     // Récupérer la liste de tout les membres de la plate-forme
     document.addEventListener('DOMContentLoaded', function () {
+        // Récupérer les informations du projet
         var users_list = {
             'emails_names': {
                 'coordinateur': 'coordinator_email',
@@ -206,6 +261,7 @@ Tous les memebres</button>
             }
         }
 
+        // Récupérer les informations du projet
         var urls_and_data = {
             'coordinateur': {
                 'url': 'https://lab.padem.org/wp-json/mo/v1/createCoordinator',
