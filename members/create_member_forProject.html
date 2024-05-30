@@ -1,116 +1,101 @@
 <!-- Récupérer et afficher le rôle de l'utilisateur connecté -->
-<div id="userRoleToDispaly" class="badge badge-secondary rounded-pill"></div>
+<p id="userRoleToDispaly" class="badge badge-secondary rounded-pill"></p>
 
 <script>
+    var userRole = '';
+    var users_list = {
+        'bacground_colors': {
+            'Administrateur': '#FF0000',
+            'Coordinateur': '#FFA500',
+            'Chef de projet': '#FFA500',
+            'partenaire': '#008000',
+            'comptable': '#0000FF',
+            'consultant': '#800080',
+            'bailleur': '#FF00FF'
+        },
+        'emails_names': {
+            'Coordinateur': 'coordinator_email',
+            'Chef de projet': 'chief_email',
+            'partenaire': 'partner_email',
+            'comptable': 'accountant_email',
+            'consultant': 'consultant_email',
+            'bailleur': 'funder_email'
+        },
+        'users': {
+            'Coordinateur': [],
+            'Chef de projet': [],
+            'partenaire': [],
+            'comptable': [],
+            'consultant': [],
+            'bailleur': []
+        },
+        'urls': {
+            'Administrateur': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
+            'Coordinateur': 'https://lab.padem.org/wp-json/mo/v1/getCoordinator',
+            'Chef de projet': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
+            'partenaire': 'https://lab.padem.org/wp-json/mo/v1/getPartner',
+            'comptable': 'https://lab.padem.org/wp-json/mo/v1/getAccountant',
+            'consultant': 'https://lab.padem.org/wp-json/mo/v1/getConsultant',
+            'bailleur': 'https://lab.padem.org/wp-json/mo/v1/getFunder'
+        }
+    };
     // Récupérer le rôle de l'utilisateur connecté au chargement de la page
     document.addEventListener('DOMContentLoaded', function () {
+        // Afficher le spinner de chargement
+        document.getElementById('loading').style.display = 'block';
+        // Récupérer les données de l'utilisateur connecté
         var userEmail = user_data.email;
-        var userRole = '';
-        var users_list = {
-            'emails_names': {
-                'Coordinateur': 'coordinator_email',
-                'Chef de projet': 'chief_email',
-                'partenaire': 'partner_email',
-                'comptable': 'accountant_email',
-                'consultant': 'consultant_email',
-                'bailleur': 'funder_email'
-            },
-            'users': {
-                'Coordinateur': [],
-                'Chef de projet': [],
-                'partenaire': [],
-                'comptable': [],
-                'consultant': [],
-                'bailleur': []
-            },
-            'urls': {
-                'Administrateur': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
-                'Coordinateur': 'https://lab.padem.org/wp-json/mo/v1/getCoordinator',
-                'Chef de projet': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
-                'partenaire': 'https://lab.padem.org/wp-json/mo/v1/getPartner',
-                'comptable': 'https://lab.padem.org/wp-json/mo/v1/getAccountant',
-                'consultant': 'https://lab.padem.org/wp-json/mo/v1/getConsultant',
-                'bailleur': 'https://lab.padem.org/wp-json/mo/v1/getFunder'
+        var fetchPromises = []; // Déclaration de fetchPromises
+        //#region Vérifier si l'utilisateur connecté est un administrateur, un coordinateur, un chef de projet, un partenaire, un comptable ou un consultant 
+
+        for (const key in users_list.urls) {
+            if (users_list.urls.hasOwnProperty(key)) {
+                const url = users_list.urls[key];
+                fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        users_list.users[key] = data;
+                        data.forEach(element => {
+                            if (element[users_list.emails_names[key]] === userEmail) {
+                                userRole = key;
+                                document.getElementById('userRoleToDispaly').style.backgroundColor = users_list.bacground_colors[key];
+                                document.getElementById('userRoleToDispaly').style.color = 'white';
+                                document.getElementById('userRoleToDispaly').style.fontWeight = 'normal';
+                                document.getElementById('userRoleToDispaly').style.fontSize = '12px';
+                                document.getElementById('userRoleToDispaly').style.padding = '5px';
+                                document.getElementById('userRoleToDispaly').style.borderRadius = '10px';
+                                document.getElementById('userRoleToDispaly').style.margin = '5px';
+                                // Afficher le rôle de l'utilisateur connecté
+                                document.getElementById('userRoleToDispaly').textContent = userRole;
+                                document.getElementById('loading').style.display = 'none';
+                                console.log(key);
+                                return;
+                            } else if (key === 'bailleur') {
+                                document.getElementById('loading').style.display = 'none';
+                                userRole = 'Utilisateur';
+                                document.getElementById('userRoleToDispaly').style.backgroundColor = '#7D7D7D';
+                                document.getElementById('userRoleToDispaly').style.color = 'white';
+                                document.getElementById('userRoleToDispaly').style.fontWeight = 'normal';
+                                document.getElementById('userRoleToDispaly').style.fontSize = '12px';
+                                document.getElementById('userRoleToDispaly').style.padding = '5px';
+                                document.getElementById('userRoleToDispaly').style.borderRadius = '10px';
+                                document.getElementById('userRoleToDispaly').style.margin = '5px';
+                                // Afficher le rôle de l'utilisateur connecté
+                                document.getElementById('userRoleToDispaly').textContent = userRole;
+                                document.getElementById('loading').style.display = 'none';
+                                return;
+                            }
+                        });
+                    })
+                    .catch(error => console.error(error))
             }
-        };
-        // Vérifier si l'utilisateur connecté est un administrateur, un coordinateur, un chef de projet, un partenaire, un comptable ou un consultant 
-        fetch(users_list.urls['Administrateur'])
-            .then(response => response.json())
-            .then(data => {
-                if (data[users_list.emails_names['Administrateur']]) {
-                    userRole = 'Administrateur';
-                    document.getElementById('userRoleToDispaly').style.backgroundColor = '#FF0000';
-                    document.getElementById('userRoleToDispaly').style.color = 'white';
-                }
-            })
-            .then(data => {
-                fetch(users_list.urls['Coordinateur'])
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data[users_list.emails_names['Coordinateur']] == userEmail) {
-                            userRole = 'Coordinateur';
-                            document.getElementById('userRoleToDispaly').style.backgroundColor = '#FFA500';
-                        }
-                    })
-            })
-            .then(data => {
-                fetch(users_list.urls['Chef de projet'])
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data[users_list.emails_names['Chef de projet']] == userEmail) {
-                            userRole = 'Chef de projet';
-                            document.getElementById('userRoleToDispaly').style.backgroundColor = '#FFA500';
-                        }
-                    })
-            })
-            .then(data => {
-                fetch(users_list.urls['partenaire'])
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data[users_list.emails_names['partenaire']] == userEmail) {
-                            userRole = 'partenaire';
-                            document.getElementById('userRoleToDispaly').style.backgroundColor = '#008000';
-                        }
-                    })
-            })
-            .then(data => {
-                fetch(users_list.urls['comptable'])
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data[users_list.emails_names['comptable']] == userEmail) {
-                            userRole = 'comptable';
-                            document.getElementById('userRoleToDispaly').style.backgroundColor = '#0000FF';
-                        }
-                    })
-            })
-            .then(data => {
-                fetch(users_list.urls['consultant'])
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data[users_list.emails_names['consultant']] == userEmail) {
-                            userRole = 'consultant';
-                            document.getElementById('userRoleToDispaly').style.backgroundColor = '#800080';
-                        }
-                    })
-            })
-            .then(data => {
-                fetch(users_list.urls['bailleur'])
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data[users_list.emails_names['bailleur']] == userEmail) {
-                            userRole = 'bailleur';
-                            document.getElementById('userRoleToDispaly').style.backgroundColor = '#FF00FF';
-                        }
-                    })
-            })
-            .catch(error => console.error(error))
-
-
-
-
-
-        // Afficher le rôle de l'utilisateur connecté
-        document.getElementById('userRoleToDispaly').innerHTML = userRole;
+        }
+        //#endregion
     });
 
 
