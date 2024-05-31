@@ -25,16 +25,6 @@
 <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- Ajoutez ceci pour utiliser Font Awesome -->
 <!-- Afficher la liste de tout les bailleurs sociaux du site -->
 <ul id="funder" style="list-style: none; display: none;"></ul>
-
-
-
-<ul id="my-project-profile" style="list-style: none; display: none;"></ul>
-<ul id="add-member" style="list-style: none; display: none;"></ul>
-<ul id="tous-" style="list-style: none; display: none;"></ul>
-<ul id="with-project" style="list-style: none; display: none;"></ul>
-<ul id="with-role-without-project" style="list-style: none; display: none;"></ul>
-<ul id="without-role-without-project" style="list-style: none; display: none;"></ul>
-
 <!-- #endregion -->
 
 
@@ -44,7 +34,7 @@
     Mon profile projet </button>
 <button type="button" class="box-clicable" id="add_member"
     style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px;border: none; margin: 5px; padding: 5px;font-size: 13px;">
-    <img src="https://lab.padem.org/wp-content/uploads/plus.png" width="30px" height="30px"
+    <img src="https://lab.padem.org/wp-content/uploads/plus.png" width="30px" height="30px" id="add_member_button"
         alt="Ajouter un membre projet">
 </button>
 <button type="button" class="box-clicable" id="tous"
@@ -60,6 +50,21 @@
     style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px;border: none; margin: 5px; padding: 5px;font-size: 13px;">
     Sans rôle et sans projet </button>
 <!--#endregion-->
+
+<div class="row" style="height: fit-content;">
+    <div class="col">
+        <ul id="my-project-profile" style="list-style: none; display: none;"></ul>
+    </div>
+    <hr>
+    <div class="col">
+        <ul id="connected_user_projects" style="list-style: none; display: none;"></ul>
+    </div>
+</div>
+<ul id="add-member" style="list-style: none; display: none;"></ul>
+<ul id="tous-" style="list-style: none; display: none;"></ul>
+<ul id="with-project" style="list-style: none; display: none;"></ul>
+<ul id="with-role-without-project" style="list-style: none; display: none;"></ul>
+<ul id="without-role-without-project" style="list-style: none; display: none;"></ul>
 
 
 <!--#region Script des boutons -->
@@ -110,6 +115,20 @@
         }
     };
     document.addEventListener('DOMContentLoaded', function () {
+        var menuActiveButtons = {
+            'selected_background': '#29A6A7',
+            'selected_color': 'white',
+            'unselected_background': 'white',
+            'unselected_color': 'gray',
+        };
+        // Afficher/Masquer le bouton de d'ajout d'un membre en fonction du rôle de l'utilisateur
+        if (userRole === 'Coordinateur' || userRole === 'chef_de_projet' || userRole === 'Administrateur' || userRole === 'partenaire' || userRole === 'comptable' || userRole === 'consultant') {
+            document.getElementById('add_member').style.display = 'block';
+        } else {
+            document.getElementById('add_member').style.display = 'none';
+        }
+        // Afficher le loader
+        document.getElementById('loading').style.display = 'block';
         //#region Couleurs initiales des boutons
         document.getElementById('my_project_profile').style.backgroundColor = menuActiveButtons.unselected_background;
         document.getElementById('my_project_profile').style.color = menuActiveButtons.unselected_color;
@@ -126,7 +145,6 @@
         //#endregion
 
         //#region État initial des listes
-        document.getElementById('all_members').style.display = 'block';
         document.getElementById('coordinateur').style.display = 'block';
         document.getElementById('chef_de_projet').style.display = 'block';
         document.getElementById('accountant').style.display = 'block';
@@ -144,37 +162,140 @@
         document.getElementById('without-role-without-project').style.display = 'none';
         //#endregion
 
+        // Ajouter un événement pour afficher le profile projet de l'utilisateur
+        document.getElementById('my_project_profile').addEventListener('click', function () {
+            //#region des zones d'affichages
+            document.getElementById('my-project-profile').style.display = 'block';
+            document.getElementById('add-member').style.display = 'none';
+            document.getElementById('tous-').style.display = 'none';
+            document.getElementById('with-project').style.display = 'none';
+            document.getElementById('with-role-without-project').style.display = 'none';
+            document.getElementById('without-role-without-project').style.display = 'none';
+            //#endregion
+            //#region Couleurs des boutons
+            document.getElementById('my_project_profile').style.backgroundColor = menuActiveButtons.selected_background;
+            document.getElementById('my_project_profile').style.color = menuActiveButtons.selected_color;
+            document.getElementById('add_member').style.backgroundColor = menuActiveButtons.unselected_background;
+            document.getElementById('add_member').style.color = menuActiveButtons.unselected_color;
+            document.getElementById('add_member_button').src = 'https://lab.padem.org/wp-content/uploads/plus.png';
+            document.getElementById('tous').style.backgroundColor = menuActiveButtons.unselected_background;
+            document.getElementById('tous').style.color = menuActiveButtons.unselected_color;
+            document.getElementById('with_project').style.backgroundColor = menuActiveButtons.unselected_background;
+            document.getElementById('with_project').style.color = menuActiveButtons.unselected_color;
+            document.getElementById('with_role_without_project').style.backgroundColor = menuActiveButtons.unselected_background;
+            document.getElementById('with_role_without_project').style.color = menuActiveButtons.unselected_color;
+            document.getElementById('without_role_without_project').style.backgroundColor = menuActiveButtons.unselected_background;
+            document.getElementById('without_role_without_project').style.color = menuActiveButtons.unselected_color;
+
+            // Afficher le profile projet de l'utilisateur
+            displayUserProfile();
+            //#endregion
+        });
+
+        // Ajouter un événement pour afficher le formulaire d'ajout d'un membre
+        document.getElementById('add_member').addEventListener('click', function () {
+            //#region des zones d'affichages
+            document.getElementById('my-project-profile').style.display = 'none';
+            document.getElementById('add-member').style.display = 'block';
+            document.getElementById('tous-').style.display = 'none';
+            document.getElementById('with-project').style.display = 'none';
+            document.getElementById('with-role-without-project').style.display = 'none';
+            document.getElementById('without-role-without-project').style.display = 'none';
+            //#endregion
+            //#region Couleurs des boutons
+            document.getElementById('my_project_profile').style.backgroundColor = menuActiveButtons.unselected_background;
+            document.getElementById('my_project_profile').style.color = menuActiveButtons.unselected_color;
+            document.getElementById('add_member').style.backgroundColor = menuActiveButtons.selected_background;
+            document.getElementById('add_member').style.color = menuActiveButtons.selected_color;
+            document.getElementById('add_member_button').src = 'https://lab.padem.org/wp-content/uploads/plus_white.png';
+            document.getElementById('tous').style.backgroundColor = menuActiveButtons.unselected_background;
+            document.getElementById('tous').style.color = menuActiveButtons.unselected_color;
+            document.getElementById('with_project').style.backgroundColor = menuActiveButtons.unselected_background;
+            document.getElementById('with_project').style.color = menuActiveButtons.unselected_color;
+            document.getElementById('with_role_without_project').style.backgroundColor = menuActiveButtons.unselected_background;
+            document.getElementById('with_role_without_project').style.color = menuActiveButtons.unselected_color;
+            document.getElementById('without_role_without_project').style.backgroundColor = menuActiveButtons.unselected_background;
+            document.getElementById('without_role_without_project').style.color = menuActiveButtons.unselected_color;
+
+            // Afficher le formulaire d'ajout d'un membre
+            var add_member_form = document.createElement('form');
+            add_member_form.id = 'add_member_form';
+            add_member_form.style.display = 'block';
+            add_member_form.style.padding = '10px';
+            add_member_form.style.border = '1px solid #29A6A7';
+            add_member_form.style.borderRadius = '15px';
+            add_member_form.style.margin = '5px';
+            add_member_form.style.backgroundColor = 'white';
+            add_member_form.style.color = 'gray';
+            add_member_form.style.fontSize = '13px';
+            add_member_form.style.width = '100%';
+            add_member_form.innerHTML = `
+                <label for="new_member_email">Adresse email du nouveau membre :</label>
+                <input type="email" id="new_member_email" name="new_member_email" placeholder="Adresse email du nouveau membre" required>
+                <button type="button" id="add_member_button" style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px;border: none; margin: 5px; padding: 5px;font-size: 13px;">
+                    <img src="https://lab.padem.org/wp-content/uploads/plus.png" width="25px" height="25px" id="add_member_button" alt="Ajouter un membre projet">
+                </button>
+            `;
+            document.getElementById('add-member').appendChild(add_member_form);
+            document.getElementById('add_member_button').addEventListener('click', function () {
+                //addMemberToProject();
+            });
+            //#endregion
+        });
 
         // Ajouter un événement pour afficher la liste de tout les membres
         document.getElementById('tous').addEventListener('click', function () {
+            //#region des zones d'affichages
             document.getElementById('my-project-profile').style.display = 'none';
             document.getElementById('add-member').style.display = 'none';
             document.getElementById('tous-').style.display = 'block';
             document.getElementById('with-project').style.display = 'none';
             document.getElementById('with-role-without-project').style.display = 'none';
             document.getElementById('without-role-without-project').style.display = 'none';
+            //#endregion
+            //#region Couleurs des boutons
             document.getElementById('my_project_profile').style.backgroundColor = menuActiveButtons.unselected_background;
             document.getElementById('my_project_profile').style.color = menuActiveButtons.unselected_color;
             document.getElementById('add_member').style.backgroundColor = menuActiveButtons.unselected_background;
             document.getElementById('add_member').style.color = menuActiveButtons.unselected_color;
+            document.getElementById('add_member_button').src = 'https://lab.padem.org/wp-content/uploads/plus.png';
             document.getElementById('tous').style.backgroundColor = menuActiveButtons.selected_background;
             document.getElementById('tous').style.color = menuActiveButtons.selected_color;
             document.getElementById('with_project').style.backgroundColor = menuActiveButtons.unselected_background;
+            document.getElementById('with_project').style.color = menuActiveButtons.unselected_color;
+            document.getElementById('with_role_without_project').style.backgroundColor = menuActiveButtons.unselected_background;
+            document.getElementById('with_role_without_project').style.color = menuActiveButtons.unselected_color;
+            document.getElementById('without_role_without_project').style.backgroundColor = menuActiveButtons.unselected_background;
+            document.getElementById('without_role_without_project').style.color = menuActiveButtons.unselected_color;
+            //#endregion
+
+            // Afficher la liste de tout les membres
+            document.getElementById('all_members').style.display = 'block';
+            document.getElementById('coordinateur').style.display = 'block';
+            document.getElementById('chef_de_projet').style.display = 'block';
+            document.getElementById('accountant').style.display = 'block';
+            document.getElementById('consultant').style.display = 'block';
+            document.getElementById('partner').style.display = 'block';
+            document.getElementById('funder').style.display = 'block';
+
+            getAllWordPressMembers();
         });
 
         // Ajouter un événement pour afficher la liste de tout les membres avec un projet
         document.getElementById('with_project').addEventListener('click', function () {
-            document.getElementById('all_members').style.display = 'none';
-            document.getElementById('coordinateur').style.display = 'none';
-            document.getElementById('chef_de_projet').style.display = 'none';
-            document.getElementById('accountant').style.display = 'none';
-            document.getElementById('consultant').style.display = 'none';
-            document.getElementById('partner').style.display = 'none';
-            document.getElementById('funder').style.display = 'none';
+            //#region des zones d'affichages
+            document.getElementById('my-project-profile').style.display = 'none';
+            document.getElementById('add-member').style.display = 'none';
+            document.getElementById('tous-').style.display = 'none';
+            document.getElementById('with-project').style.display = 'block';
+            document.getElementById('with-role-without-project').style.display = 'none';
+            document.getElementById('without-role-without-project').style.display = 'none';
+            //#endregion
             document.getElementById('my_project_profile').style.backgroundColor = menuActiveButtons.unselected_background;
             document.getElementById('my_project_profile').style.color = menuActiveButtons.unselected_color;
             document.getElementById('add_member').style.backgroundColor = menuActiveButtons.unselected_background;
             document.getElementById('add_member').style.color = menuActiveButtons.unselected_color;
+            document.getElementById('add_member_button').src = 'https://lab.padem.org/wp-content/uploads/plus.png';
             document.getElementById('tous').style.backgroundColor = menuActiveButtons.unselected_background;
             document.getElementById('tous').style.color = menuActiveButtons.unselected_color;
             document.getElementById('with_project').style.backgroundColor = menuActiveButtons.selected_background;
@@ -187,17 +308,17 @@
 
         // Ajouter un événement pour afficher la liste de tout les membres avec un rôle et sans projet
         document.getElementById('with_role_without_project').addEventListener('click', function () {
-            document.getElementById('all_members').style.display = 'none';
-            document.getElementById('coordinateur').style.display = 'none';
-            document.getElementById('chef_de_projet').style.display = 'none';
-            document.getElementById('accountant').style.display = 'none';
-            document.getElementById('consultant').style.display = 'none';
-            document.getElementById('partner').style.display = 'none';
-            document.getElementById('funder').style.display = 'none';
+            document.getElementById('my-project-profile').style.display = 'none';
+            document.getElementById('add-member').style.display = 'none';
+            document.getElementById('tous-').style.display = 'none';
+            document.getElementById('with-project').style.display = 'none';
+            document.getElementById('with-role-without-project').style.display = 'block';
+            document.getElementById('without-role-without-project').style.display = 'none';
             document.getElementById('my_project_profile').style.backgroundColor = menuActiveButtons.unselected_background;
             document.getElementById('my_project_profile').style.color = menuActiveButtons.unselected_color;
             document.getElementById('add_member').style.backgroundColor = menuActiveButtons.unselected_background;
             document.getElementById('add_member').style.color = menuActiveButtons.unselected_color;
+            document.getElementById('add_member_button').src = 'https://lab.padem.org/wp-content/uploads/plus.png';
             document.getElementById('tous').style.backgroundColor = menuActiveButtons.unselected_background;
             document.getElementById('tous').style.color = menuActiveButtons.unselected_color;
             document.getElementById('with_project').style.backgroundColor = menuActiveButtons.unselected_background;
@@ -208,245 +329,146 @@
             document.getElementById('without_role_without_project').style.color = menuActiveButtons.unselected_color;
         });
 
+        // Ajouter un événement pour afficher la liste de tout les membres sans rôle et sans projet
+        document.getElementById('without_role_without_project').addEventListener('click', function () {
+            document.getElementById('my-project-profile').style.display = 'none';
+            document.getElementById('add-member').style.display = 'none';
+            document.getElementById('tous-').style.display = 'none';
+            document.getElementById('with-project').style.display = 'none';
+            document.getElementById('with-role-without-project').style.display = 'none';
+            document.getElementById('without-role-without-project').style.display = 'block';
+            document.getElementById('my_project_profile').style.backgroundColor = menuActiveButtons.unselected_background;
+            document.getElementById('my_project_profile').style.color = menuActiveButtons.unselected_color;
+            document.getElementById('add_member').style.backgroundColor = menuActiveButtons.unselected_background;
+            document.getElementById('add_member').style.color = menuActiveButtons.unselected_color;
+            document.getElementById('tous').style.backgroundColor = menuActiveButtons.unselected_background;
+            document.getElementById('tous').style.color = menuActiveButtons.unselected_color;
+            document.getElementById('with_project').style.backgroundColor = menuActiveButtons.unselected_background;
+            document.getElementById('with_project').style.color = menuActiveButtons.unselected_color;
+            document.getElementById('with_role_without_project').style.backgroundColor = menuActiveButtons.unselected_background;
+            document.getElementById('with_role_without_project').style.color = menuActiveButtons.unselected_color;
+            document.getElementById('without_role_without_project').style.backgroundColor = menuActiveButtons.selected_background;
+            document.getElementById('without_role_without_project').style.color = menuActiveButtons.selected_color;
+        });
 
+        // Récupérer la liste de tout les membres de la plate-forme
+        getAllWordPressMembers();
     });
-</script>
-<!--#endregion-->
 
 
-<script>
     // Récupérer la liste de tout les membres de la plate-forme
-    document.addEventListener('DOMContentLoaded', function () {
-        // Récupérer les informations du projet
-        var users_list = {
-            'emails_names': {
-                'coordinateur': 'coordinator_email',
-                'chef_de_projet': 'chief_email',
-                'partner': 'partner_email',
-                'accountant': 'accountant_email',
-                'consultant': 'consultant_email',
-                'funder': 'funder_email'
+    var all_members = [];
+    function getAllWordPressMembers() {
+        fetch('https://lab.padem.org/wp-json/mo/v1/getAllMembers', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
             },
-            'users_first_names': {
-                'coordinateur': 'coordinator_first_name',
-                'chef_de_projet': 'chief_first_name',
-                'partner': 'partner_first_name',
-                'accountant': 'accountant_first_name',
-                'consultant': 'consultant_first_name',
-                'funder': 'funder_first_name'
-            },
-            'users_last_names': {
-                'coordinateur': 'coordinator_last_name',
-                'chef_de_projet': 'chief_last_name',
-                'partner': 'partner_last_name',
-                'accountant': 'accountant_last_name',
-                'consultant': 'consultant_last_name',
-                'funder': 'funder_last_name'
-            },
-            'users': {
-                'coordinateur': [],
-                'chef_de_projet': [],
-                'partner': [],
-                'comptable': [],
-                'consultant': [],
-                'funder': []
-            },
-            'urls': {
-                'coordinateur': 'https://lab.padem.org/wp-json/mo/v1/getCoordinator',
-                'chef_de_projet': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
-                'partner': 'https://lab.padem.org/wp-json/mo/v1/getPartner',
-                'accountant': 'https://lab.padem.org/wp-json/mo/v1/getAccountant',
-                'consultant': 'https://lab.padem.org/wp-json/mo/v1/getConsultant',
-                'funder': 'https://lab.padem.org/wp-json/mo/v1/getFunder'
-            }
-        }
+        })
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(user => {
+                    all_members.push({
+                        '_id': user.ID,
+                        'role': '',
+                        'display_name': user.display_name,
+                        'email': user.user_email,
+                        'user_registered_date': user.user_registered
+                    });
+                });
+                // Vérifier le rôle de l'utilisateur
+                all_members.forEach(member => {
+                    for (var role in users_list.urls) {
+                        fetch(users_list.urls[role], {
+                            method: 'GET',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                data.forEach(user => {
+                                    users_list.users[role].push(user[users_list.emails_names[role]]);
+                                });
+                                // Ajouter les membres à la liste des membres
+                                users_list.users[role].forEach(user => {
+                                    if (user === member.email) {
+                                        member.role = role;
+                                        var li = document.createElement('li');
+                                        li.innerHTML = `
+                                            <i class="fas fa-user"></i> ${member.display_name} (${member.email}) - ${member.role}
+                                        `;
+                                        document.getElementById('tous-').appendChild(li);
+                                        if (member.role === 'Coordinateur') {
+                                            var li_coordinateur = document.createElement('li');
+                                            li_coordinateur.innerHTML = `
+                                                <i class="fas fa-user"></i> ${member.display_name} (${member.email}) - ${member.role}
+                                            `;
+                                            document.getElementById('coordinateur').appendChild(li_coordinateur);
+                                        } else if (member.role === 'chef_de_projet') {
+                                            var li_chef_de_projet = document.createElement('li');
+                                            li_chef_de_projet.innerHTML = `
+                                                <i class="fas fa-user"></i> ${member.display_name} (${member.email}) - ${member.role}
+                                            `;
+                                            document.getElementById('chef_de_projet').appendChild(li_chef_de_projet);
+                                        } else if (member.role === 'comptable') {
+                                            var li_comptable = document.createElement('li');
+                                            li_comptable.innerHTML = `
+                                                <i class="fas fa-user"></i> ${member.display_name} (${member.email}) - ${member.role}
+                                            `;
+                                            document.getElementById('accountant').appendChild(li_comptable);
+                                        } else if (member.role === 'consultant') {
+                                            var li_consultant = document.createElement('li');
+                                            li_consultant.innerHTML = `
+                                                <i class="fas fa-user"></i> ${member.display_name} (${member.email}) - ${member.role}
+                                            `;
+                                            document.getElementById('consultant').appendChild(li_consultant);
+                                        } else if (member.role === 'partenaire') {
+                                            var li_partenaire = document.createElement('li');
+                                            li_partenaire.innerHTML = `
+                                                <i class="fas fa-user"></i> ${member.display_name} (${member.email}) - ${member.role}
+                                            `;
+                                            document.getElementById('partner').appendChild(li_partenaire);
+                                        } else if (member.role === 'bailleur') {
+                                            var li_bailleur = document.createElement('li');
+                                            li_bailleur.innerHTML = `
+                                                <i class="fas fa-user"></i> ${member.display_name} (${member.email}) - ${member.role}
+                                            `;
+                                            document.getElementById('funder').appendChild(li_bailleur);
+                                        }
+                                    } else {
+                                        var li = document.createElement('li');
+                                        li.innerHTML = `
+                                            <i class="fas fa-user"></i> ${member.display_name} (${member.email}) - Utilisateur
+                                        `;
+                                        document.getElementById('tous-').appendChild(li);
+                                    }
+                                });
+                            })
+                            .catch(error => {
+                                console.error('Erreur lors de la récupération des données de l\'utilisateur :', error);
+                            });
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Erreur lors de la récupération des données de l\'utilisateur :', error);
+            });
+    }
 
-        // Récupérer les informations du projet
-        var urls_and_data = {
-            'coordinateur': {
-                'url': 'https://lab.padem.org/wp-json/mo/v1/createCoordinator',
-                'data': {
-                    'project_id': project_id,
-                    'coordinator_email': existingMemberEmail,
-                    'coordinator_first_name': existingMember_first_name,
-                    'coordinator_last_name': existingMember_last_name,
-                    'coordinator_countryAndCity': existingMember_countryAndCity,
-                    'coordinator_activity_history': JSON.stringify([
-                        {
-                            'Date': {
-                                'hour': new Date().getHours(),
-                                'minute': new Date().getMinutes(),
-                                'day': new Date().getDate(),
-                                'month': new Date().getMonth() + 1,
-                                'year': new Date().getFullYear(),
-                            }
-                        },
-                        {
-                            'Activité': `Création du projet ${project.project_title} et ajout des membres`,
-                        },
-                        {
-                            'Commentaire': 'Le projet est en cours de création',
-                        },
-                        {
-                            'Divers': '',
-                        }
-                    ]),
-                }
-            },
-            'chef_de_projet': {
-                'url': 'https://lab.padem.org/wp-json/mo/v1/createProjectChief',
-                'data': {
-                    'project_id': project_id,
-                    'chief_email': existingMemberEmail,
-                    'chief_first_name': existingMember_first_name,
-                    'chief_last_name': existingMember_last_name,
-                    'chief_countryAndCity': existingMember_countryAndCity,
-                    'chief_activity_history': JSON.stringify([
-                        {
-                            'Date': {
-                                'hour': new Date().getHours(),
-                                'minute': new Date().getMinutes(),
-                                'day': new Date().getDate(),
-                                'month': new Date().getMonth() + 1,
-                                'year': new Date().getFullYear(),
-                            }
-                        },
-                        {
-                            'Activité': `Création du projet ${project.project_title} et ajout des membres`,
-                        },
-                        {
-                            'Commentaire': 'Le projet est en cours de création',
-                        },
-                        {
-                            'Divers': '',
-                        }
-                    ]),
-                }
-            },
-            'accountant': {
-                'url': 'https://lab.padem.org/wp-json/mo/v1/createAccountant',
-                'data': {
-                    'project_id': project_id,
-                    'accountant_email': existingMemberEmail,
-                    'accountant_first_name': existingMember_first_name,
-                    'accountant_last_name': existingMember_last_name,
-                    'accountant_countryAndCity': existingMember_countryAndCity,
-                    'accountant_activity_history': JSON.stringify([
-                        {
-                            'Date': {
-                                'hour': new Date().getHours(),
-                                'minute': new Date().getMinutes(),
-                                'day': new Date().getDate(),
-                                'month': new Date().getMonth() + 1,
-                                'year': new Date().getFullYear(),
-                            }
-                        },
-                        {
-                            'Activité': `Création du projet ${project.project_title} et ajout des membres`,
-                        },
-                        {
-                            'Commentaire': 'Le projet est en cours de création',
-                        },
-                        {
-                            'Divers': '',
-                        },
-                    ]),
-                },
-            },
-            'consultant': {
-                'url': 'https://lab.padem.org/wp-json/mo/v1/createConsultant',
-                'data': {
-                    'project_id': project_id,
-                    'consultant_email': existingMemberEmail,
-                    'consultant_first_name': existingMember_first_name,
-                    'consultant_last_name': existingMember_last_name,
-                    'consultant_countryAndCity': existingMember_countryAndCity,
-                    'consultant_activity_history': JSON.stringify([
-                        {
-                            'Date': {
-                                'hour': new Date().getHours(),
-                                'minute': new Date().getMinutes(),
-                                'day': new Date().getDate(),
-                                'month': new Date().getMonth() + 1,
-                                'year': new Date().getFullYear(),
-                            },
-                        },
-                        {
-                            'activite': `Création du projet ${project.project_title} et ajout des membres`,
-                        },
-                        {
-                            'commentaire': 'Le projet est en cours de création',
-                        },
-                        {
-                            'Divers': '',
-                        }
-                    ]),
-                },
-            },
-            'partner': {
-                'url': 'https://lab.padem.org/wp-json/mo/v1/createPartner',
-                'data': {
-                    'project_id': project_id,
-                    'partner_email': existingMemberEmail,
-                    'partner_first_name': existingMember_first_name,
-                    'partner_last_name': existingMember_last_name,
-                    'partner_countryAndCity': existingMember_countryAndCity,
-                    'partner_activity_history': JSON.stringify([
-                        {
-                            'Date': {
-                                'hour': new Date().getHours(),
-                                'minute': new Date().getMinutes(),
-                                'day': new Date().getDate(),
-                                'month': new Date().getMonth() + 1,
-                                'year': new Date().getFullYear(),
-                            },
-                        },
-                        {
-                            'activite': `Création du projet ${project.project_title} et ajout des membres`,
-                        },
-                        {
-                            'commentaire': 'Le projet est en cours de création',
-                        },
-                        {
-                            'Divers': '',
-                        }
-                    ]),
-                },
-            },
-            'funder': {
-                'url': 'https://lab.padem.org/wp-json/mo/v1/createFunder',
-                'data': {
-                    'project_id': project_id,
-                    'funder_email': existingMemberEmail,
-                    'funder_first_name': existingMember_first_name,
-                    'funder_last_name': existingMember_last_name,
-                    'funder_countryAndCity': existingMember_countryAndCity,
-                    'funder_activity_history': JSON.stringify([
-                        {
-                            'Date': {
-                                'hour': new Date().getHours(),
-                                'minute': new Date().getMinutes(),
-                                'day': new Date().getDate(),
-                                'month': new Date().getMonth() + 1,
-                                'year': new Date().getFullYear(),
-                            },
-                        },
-                        {
-                            'activite': `Création du projet ${project.project_title} et ajout des membres`,
-                        },
-                        {
-                            'commentaire': 'Le projet est en cours de création',
-                        },
-                        {
-                            'Divers': '',
-                        }
-                    ]),
-                },
-            },
-        };
-        // Vérifier si l'utilisateur existe déjà en fonction de son email (méthode GET)
-        for (var role in users_list.urls) {
-            fetch(users_list.urls[role], {
+    // Récupérer le profile projet de l'utilisateur
+    // Fonction pour afficher les diverses informations de l'utilisateur connecté (la liste des projets et rapports dont il est membre, son rôle, son adresse email, son nom, son prénom, son pays, sa ville, sa date de création de compte, sa date de dernière connexion, sa date de dernière activité, sa date de dernière modification, etc..) sous forme d'un formulaire modifiable
+    function displayUserProfile() {
+        // Récupérer les informations de l'utilisateur connecté
+        var user_email = user_data.email;
+        var userRole = localStorage.getItem('userRole');
+
+        // Vérifier le rôle de l'utilisateur avant d'afficher les informations de son profile projet
+        if (userRole === 'Coordinateur' || userRole === 'chef_de_projet' || userRole === 'Administrateur') {
+
+            var allUserProjectsIDs = [];
+            // Récupérer tout les IDs des projets de l'utilisateur connecté
+            fetch('https://lab.padem.org/wp-json/mo/v1/getWorkingTable', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -454,26 +476,196 @@
             })
                 .then(response => response.json())
                 .then(data => {
-                    data.forEach(user => {
-                        users_list.users[role].push(user[users_list.emails_names[role]]);
+                    data.forEach(project => {
+                        if (project.user_email === user_email) {
+                            allUserProjectsIDs.push(project.project_id);
+                        }
                     });
-                    // Ajouter les membres à la liste des membres
-                    users_list.users[role].forEach(user => {
-                        var li = document.createElement('li');
-                        var li2 = document.createElement('li');
-                        li.innerHTML = user;
-                        // Ajouter les membres à la liste des membres (Noms, Prénoms, Rôles, Pays ou Villes, date de création du compte, date de dernière connexion, date de dernière activité, date de dernière modification)
-                        // Ajouter un bonton pour mettre à jour les informations du membre (Nom, Prénom, Pays ou Ville, Mot de passe, Email, Rôle)
-                        li2.innerHTML = `
-                            <button type="" <i class="fas fa-user"></i> ${user} <br> 
-                        `;
-                        document.getElementById(role).appendChild(li);
-                        document.getElementById('all_members').appendChild(li2);
-                    });
+                    // Vérifier si l'utilisateur connecté a des projets
+                    if (allUserProjectsIDs.length > 0) {
+                        // Récupérer tout les projets de l'utilisateur connecté
+                        allUserProjectsIDs.forEach(project_id => {
+                            fetch('https://lab.padem.org/wp-json/mo/v1/getProjectData', {
+                                method: 'GET',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                            })
+                                .then(response => response.json())
+                                .then(data => {
+                                    data.forEach(project => {
+                                        if (project.project_id === project_id) {
+                                            var li = document.createElement('li');
+                                            li.innerHTML = `
+                                                <i class="fas fa-project-diagram"></i> ${project.project_title} (${project.created_date}) - ${project.project_status} <button type="button" id="see_project_${project.project_id}" style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px;border: none; margin: 5px; padding: 5px;font-size: 13px;">
+                                                    Aller au projet <i class="fas fa-arrow-right"></i>
+                                                </button> <button type="button" id="quit_project_${project.project_id}" style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px;border: none; margin: 5px; padding: 5px;font-size: 13px;">
+                                                    Quitter le projet <i class="fas fa-sign-out-alt"></i>
+                                            `;
+                                            document.getElementById('connected_user_projects').appendChild(li);
+                                            // Ajouter un événement pour voir le projet
+                                            document.getElementById(`see_project_${project.project_id}`).addEventListener('click', function () {
+                                                localStorage.setItem('project_id', project.project_id);
+                                                window.open('https://lab.padem.org/projet', '_blank');
+                                            });
+                                            //#region Ajouter un événement pour quitter le projet
+                                            document.getElementById(`quit_project_${project.project_id}`).addEventListener('click', function () {
+                                                Swal.fire({
+                                                    title: 'Êtes-vous sûr de vouloir quitter ce projet ?',
+                                                    showDenyButton: true,
+                                                    confirmButtonText: `Oui`,
+                                                    denyButtonText: `Non`,
+                                                }).then((result) => {
+                                                    if (result.isConfirmed) {
+                                                        // Rechercher le projet
+                                                        fetch('https://lab.padem.org/wp-json/mo/v1/getWorkingTable', {
+                                                            method: 'GET',
+                                                            headers: {
+                                                                'Content-Type': 'application/json',
+                                                            },
+                                                        })
+                                                            .then(response => response.json())
+                                                            .then(data => {
+                                                                data.forEach(project => {
+                                                                    if (project.project_id === project_id) {
+                                                                        // Supprimer le projet de la liste des projets de l'utilisateur connecté
+                                                                        workingTableID = project.Working_Table_Id;
+                                                                        // Récupérer la liste des adresses mails des utilisateurs de ce projet
+                                                                        var listOfusers = JSON.parse(project.users_emails_list);
+                                                                        // Supprimer l'adresse mail de l'utilisateur connecté de la liste des utilisateurs de ce projet
+                                                                        var index = listOfusers.indexOf(user_email);
+                                                                        if (index > -1) {
+                                                                            listOfusers.splice(index, 1);
+                                                                        }
+                                                                        // Mettre à jour la liste des utilisateurs de ce projet
+                                                                        fetch('https://lab.padem.org/wp-json/mo/v1/createWorkingTable', {
+                                                                            method: 'POST',
+                                                                            headers: {
+                                                                                'Content-Type': 'application/json',
+                                                                            },
+                                                                            body: JSON.stringify({
+                                                                                'project_id': project.project_id,
+                                                                                'users_emails_list': JSON.stringify(listOfusers)
+                                                                            }),
+                                                                        })
+                                                                            .then(response => response.json())
+                                                                            .then(data => {
+                                                                                console.log('Liste des utilisateurs mise à jour avec succès :', data);
+                                                                                // Supprimer le projet de la liste des projets de l'utilisateur connecté
+                                                                                fetch('https://lab.padem.org/wp-json/mo/v1/removeWorkingTable', {
+                                                                                    method: 'DELETE',
+                                                                                    headers: {
+                                                                                        'Content-Type': 'application/json',
+                                                                                    },
+                                                                                    body: JSON.stringify({
+                                                                                        'Working_Table_Id': workingTableID
+                                                                                    }),
+                                                                                })
+                                                                                    .then(response => response.json())
+                                                                                    .then(data => {
+                                                                                        alert('Projet supprimé avec succès !');
+                                                                                        console.log('Projet supprimé avec succès :', data);
+                                                                                        // Actualiser la page
+                                                                                        window.location.href = 'https://lab.padem.org/membres';
+                                                                                    })
+                                                                                    .catch(error => {
+                                                                                        console.error('Erreur lors de la suppression du projet :', error);
+                                                                                    });
+
+                                                                            })
+                                                                            .catch(error => {
+                                                                                console.error('Erreur lors de la mise à jour de la liste des utilisateurs :', error);
+                                                                            });
+                                                                    }
+                                                                });
+                                                            })
+                                                            .catch(error => {
+                                                                console.error('Erreur lors de la récupération des projets :', error);
+                                                            });
+                                                    }
+                                                });
+                                            });
+                                            //#endregion
+                                        }
+                                    });
+                                })
+                                .catch(error => {
+                                    console.error('Erreur lors de la récupération des projets :', error);
+                                });
+                        });
+
+                    } else {
+                        // Afficher un message d'erreur si l'utilisateur n'a pas de projets
+                        var p = document.createElement('p');
+                        p.innerHTML = 'Vous n\'avez pas de projets pour le moment.';
+                        document.getElementById('connected_user_projects').appendChild(p);
+                    }
                 })
                 .catch(error => {
-                    console.error('Erreur lors de la récupération des données de l\'utilisateur :', error);
+                    console.error('Erreur lors de la récupération des projets de l\'utilisateur :', error);
                 });
+
+            all_members.forEach(member => {
+                if (member.email === user_email) {
+                    var form = document.createElement('form');
+                    form.id = 'user_profile_form';
+                    form.style.display = 'block';
+                    form.style.padding = '10px';
+                    form.style.border = '1px solid #29A6A7';
+                    form.style.borderRadius = '15px';
+                    form.style.margin = '5px';
+                    form.style.backgroundColor = 'white';
+                    form.style.color = 'gray';
+                    form.style.fontSize = '13px';
+                    form.style.width = '100%';
+                    form.innerHTML = `
+                    <label for="email">Adresse email :</label>
+                    <input type="email" id="email" name="email" value="${member.email}" readonly>
+                    <label for="role">Rôle :</label>
+                    <input type="text" id="role" name="role" value="${member.role}" readonly>
+                    <label for="display_name">Nom d'affichage :</label>
+                    <input type="text" id="display_name" name="display_name" value="${member.display_name}" readonly>
+                    <label for="user_registered_date">Date de création de compte :</label>
+                    <input type="text" id="user_registered_date" name="user_registered_date" value="${member.user_registered_date}" readonly>
+                `;
+                    document.getElementById('my-project-profile').appendChild(form);
+                }
+            });
+
+        } else {
+            // Afficher un message d'erreur si l'utilisateur n'a pas le rôle de chef de projet, consultant, comptable ou partenaire.
+            var p = document.createElement('p');
+            p.innerHTML = 'Vous devez être chef de projet, consultant, comptable ou partenaire pour voir les informations de votre profile projet.';
+            document.getElementById('connected_user_projects').appendChild(p);
         }
-    });
+    }
+
+    // Ajouter un membre à un projet
+    function addMemberToProject() {
+        var user_email = user_data.email;
+        var userRole = localStorage.getItem('userRole');
+
+        // Attribuer un rôle et ajouter un utilisateur déjà inscrit sur le site mais n'ayant pas accès à un projet (grâce à son adresse email)
+
+        // Ajouter un utilisateur non inscrit sur le site (grâce à son adresse email) et lui attribuer un rôle
+        /*
+                fetch('https://lab.padem.org/wp-json/mo/v1/createWorkingTable', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(member),
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Membre ajouté avec succès :', data);
+                    })
+                    .catch(error => {
+                        console.error('Erreur lors de l\'ajout du membre :', error);
+                    });
+                    */
+    }
+
+
 </script>
+<!--#endregion-->

@@ -277,6 +277,8 @@
             .then(response => response.json())
             .then(data => {
                 if (data.length > 0) {
+                    // Masquer le spinner de chargement
+                    document.getElementById('loading').style.display = 'none';
                     // Récupérer les emails des consultants
                     var data_emails = [];
                     data.forEach(item => {
@@ -288,11 +290,7 @@
                         document.getElementById('userRoleToDispaly').innerText = userRole;
                         document.getElementById('userRoleToDispaly').style.backgroundColor = users_list.bacground_colors.consultant;
                         document.getElementById('userRoleToDispaly').style.display = 'block';
-                        // Masquer le spinner de chargement
-                        document.getElementById('loading').style.display = 'none';
                     } else {
-                        // Masquer le spinner de chargement
-                        document.getElementById('loading').style.display = 'none';
                         userRole = 'Utilisateur';
                         document.getElementById('userRoleToDispaly').innerText = userRole;
                         document.getElementById('userRoleToDispaly').style.backgroundColor = users_list.bacground_colors.Utilisateur;
