@@ -1,3 +1,4 @@
+<!-- #region -->
 <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- Ajoutez ceci pour utiliser Font Awesome -->
 <!-- Afficher la liste de tout les membres du site -->
 <ul id="all_members" style="list-style: none; display: none;"></ul>
@@ -21,10 +22,6 @@
 <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- Ajoutez ceci pour utiliser Font Awesome -->
 <!-- Afficher la liste de tout les partenaires du site -->
 <ul id="partner" style="list-style: none; display: none;"></ul>
-
-<script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- Ajoutez ceci pour utiliser Font Awesome -->
-<!-- Afficher la liste de tout les bailleurs sociaux du site -->
-<ul id="funder" style="list-style: none; display: none;"></ul>
 <!-- #endregion -->
 
 
@@ -75,8 +72,28 @@
         'unselected_background': 'white',
         'unselected_color': 'gray',
     };
-    var userEmail = user_data.email;
-    var userRole = localStorage.getItem('userRole');
+    // Récupérer les données de l'utilisateur connecté
+    var userEmail = current_user_data.email;
+    var userRoles = current_user_data.roles;
+    var userId = current_user_data.ID;
+    var userRole = '';
+    //#region Vérifier le rôle de l'utilisateur connecté
+    if (userRoles.includes('administrator')) {
+        userRole = 'Administrateur';
+    } else if (userRoles.includes('coordinator')) {
+        userRole = 'Coordinateur';
+    } else if (userRoles.includes('chief')) {
+        userRole = 'chef_de_projet';
+    } else if (userRoles.includes('partner')) {
+        userRole = 'partenaire';
+    } else if (userRoles.includes('accountant')) {
+        userRole = 'comptable';
+    } else if (userRoles.includes('consultant')) {
+        userRole = 'consultant';
+    } else {
+        userRole = 'Utilisateur';
+    }
+    localStorage.setItem('userRole', userRole);
     var users_list = {
         'bacground_colors': {
             'Administrateur': '#FF0000',
@@ -85,7 +102,6 @@
             'partenaire': '#008000',
             'comptable': '#0000FF',
             'consultant': '#800080',
-            'bailleur': '#FF00FF',
             'Utilisateur': '#808080'
         },
         'emails_names': {
@@ -94,15 +110,13 @@
             'partenaire': 'partner_email',
             'comptable': 'accountant_email',
             'consultant': 'consultant_email',
-            'bailleur': 'funder_email'
         },
         'users': {
             'Coordinateur': [],
             'chef_de_projet': [],
             'partenaire': [],
             'comptable': [],
-            'consultant': [],
-            'bailleur': []
+            'consultant': []
         },
         'urls': {
             'Administrateur': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
@@ -110,11 +124,11 @@
             'chef_de_projet': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
             'partenaire': 'https://lab.padem.org/wp-json/mo/v1/getPartner',
             'comptable': 'https://lab.padem.org/wp-json/mo/v1/getAccountant',
-            'consultant': 'https://lab.padem.org/wp-json/mo/v1/getConsultant',
-            'bailleur': 'https://lab.padem.org/wp-json/mo/v1/getFunder'
+            'consultant': 'https://lab.padem.org/wp-json/mo/v1/getConsultant'
         }
     };
     document.addEventListener('DOMContentLoaded', function () {
+
         var menuActiveButtons = {
             'selected_background': '#29A6A7',
             'selected_color': 'white',
@@ -127,232 +141,266 @@
         } else {
             document.getElementById('add_member').style.display = 'none';
         }
-        // Afficher le loader
-        document.getElementById('loading').style.display = 'block';
-        //#region Couleurs initiales des boutons
-        document.getElementById('my_project_profile').style.backgroundColor = menuActiveButtons.unselected_background;
-        document.getElementById('my_project_profile').style.color = menuActiveButtons.unselected_color;
-        document.getElementById('add_member').style.backgroundColor = menuActiveButtons.unselected_background;
-        document.getElementById('add_member').style.color = menuActiveButtons.unselected_color;
-        document.getElementById('tous').style.backgroundColor = menuActiveButtons.selected_background;
-        document.getElementById('tous').style.color = menuActiveButtons.selected_color;
-        document.getElementById('with_project').style.backgroundColor = menuActiveButtons.unselected_background;
-        document.getElementById('with_project').style.color = menuActiveButtons.unselected_color;
-        document.getElementById('with_role_without_project').style.backgroundColor = menuActiveButtons.unselected_background;
-        document.getElementById('with_role_without_project').style.color = menuActiveButtons.unselected_color;
-        document.getElementById('without_role_without_project').style.backgroundColor = menuActiveButtons.unselected_background;
-        document.getElementById('without_role_without_project').style.color = menuActiveButtons.unselected_color;
-        //#endregion
+        try {
+            // Afficher le loader
+            //#region Couleurs initiales des boutons
+            try {
+                document.getElementById('my_project_profile').style.backgroundColor = menuActiveButtons.unselected_background;
+                document.getElementById('my_project_profile').style.color = menuActiveButtons.unselected_color;
+                document.getElementById('add_member').style.backgroundColor = menuActiveButtons.unselected_background;
+                document.getElementById('add_member').style.color = menuActiveButtons.unselected_color;
+                document.getElementById('tous').style.backgroundColor = menuActiveButtons.selected_background;
+                document.getElementById('tous').style.color = menuActiveButtons.selected_color;
+                document.getElementById('with_project').style.backgroundColor = menuActiveButtons.unselected_background;
+                document.getElementById('with_project').style.color = menuActiveButtons.unselected_color;
+                document.getElementById('with_role_without_project').style.backgroundColor = menuActiveButtons.unselected_background;
+                document.getElementById('with_role_without_project').style.color = menuActiveButtons.unselected_color;
+                document.getElementById('without_role_without_project').style.backgroundColor = menuActiveButtons.unselected_background;
+                document.getElementById('without_role_without_project').style.color = menuActiveButtons.unselected_color;
+            } catch (error) {
+                console.log('Erreur lors de l\'exécution du script(couleurs initiales des bouttons) :', error);
+            }
+            //#endregion
 
-        //#region État initial des listes
-        document.getElementById('coordinateur').style.display = 'block';
-        document.getElementById('chef_de_projet').style.display = 'block';
-        document.getElementById('accountant').style.display = 'block';
-        document.getElementById('consultant').style.display = 'block';
-        document.getElementById('partner').style.display = 'block';
-        document.getElementById('funder').style.display = 'block';
-        //#endregion
+            //#region État initial des listes
+            try {
+                document.getElementById('coordinateur').style.display = 'block';
+                document.getElementById('chef_de_projet').style.display = 'block';
+                document.getElementById('accountant').style.display = 'block';
+                document.getElementById('consultant').style.display = 'block';
+                document.getElementById('partner').style.display = 'block';
+            } catch (error) {
+                console.log('Erreur lors de l\'exécution du script(état initial des listes) :', error);
+            }
+            //#endregion
 
-        //#region des zones d'affichages
-        document.getElementById('my-project-profile').style.display = 'none';
-        document.getElementById('add-member').style.display = 'none';
-        document.getElementById('tous-').style.display = 'block';
-        document.getElementById('with-project').style.display = 'none';
-        document.getElementById('with-role-without-project').style.display = 'none';
-        document.getElementById('without-role-without-project').style.display = 'none';
-        //#endregion
-
-        // Ajouter un événement pour afficher le profile projet de l'utilisateur
-        document.getElementById('my_project_profile').addEventListener('click', function () {
             //#region des zones d'affichages
-            document.getElementById('my-project-profile').style.display = 'block';
-            document.getElementById('add-member').style.display = 'none';
-            document.getElementById('tous-').style.display = 'none';
-            document.getElementById('with-project').style.display = 'none';
-            document.getElementById('with-role-without-project').style.display = 'none';
-            document.getElementById('without-role-without-project').style.display = 'none';
+            try {
+                document.getElementById('my-project-profile').style.display = 'none';
+                document.getElementById('add-member').style.display = 'none';
+                document.getElementById('tous-').style.display = 'block';
+                document.getElementById('with-project').style.display = 'none';
+                document.getElementById('with-role-without-project').style.display = 'none';
+                document.getElementById('without-role-without-project').style.display = 'none';
+            } catch (error) {
+                console.log('Erreur lors de l\'exécution du script(des zones d\'affichages) :', error);
+            }
             //#endregion
-            //#region Couleurs des boutons
-            document.getElementById('my_project_profile').style.backgroundColor = menuActiveButtons.selected_background;
-            document.getElementById('my_project_profile').style.color = menuActiveButtons.selected_color;
-            document.getElementById('add_member').style.backgroundColor = menuActiveButtons.unselected_background;
-            document.getElementById('add_member').style.color = menuActiveButtons.unselected_color;
-            document.getElementById('add_member_button').src = 'https://lab.padem.org/wp-content/uploads/plus.png';
-            document.getElementById('tous').style.backgroundColor = menuActiveButtons.unselected_background;
-            document.getElementById('tous').style.color = menuActiveButtons.unselected_color;
-            document.getElementById('with_project').style.backgroundColor = menuActiveButtons.unselected_background;
-            document.getElementById('with_project').style.color = menuActiveButtons.unselected_color;
-            document.getElementById('with_role_without_project').style.backgroundColor = menuActiveButtons.unselected_background;
-            document.getElementById('with_role_without_project').style.color = menuActiveButtons.unselected_color;
-            document.getElementById('without_role_without_project').style.backgroundColor = menuActiveButtons.unselected_background;
-            document.getElementById('without_role_without_project').style.color = menuActiveButtons.unselected_color;
 
-            // Afficher le profile projet de l'utilisateur
-            displayUserProfile();
-            //#endregion
-        });
+            document.getElementById('my_project_profile').addEventListener('click', function () {
+                try {
+                    document.getElementById('my-project-profile').style.display = 'block';
+                    document.getElementById('add-member').style.display = 'none';
+                    document.getElementById('tous-').style.display = 'none';
+                    document.getElementById('with-project').style.display = 'none';
+                    document.getElementById('with-role-without-project').style.display = 'none';
+                    document.getElementById('without-role-without-project').style.display = 'none';
+                    
+                    document.getElementById('my_project_profile').style.backgroundColor = menuActiveButtons.selected_background;
+                    document.getElementById('my_project_profile').style.color = menuActiveButtons.selected_color;
+                    document.getElementById('add_member').style.backgroundColor = menuActiveButtons.unselected_background;
+                    document.getElementById('add_member').style.color = menuActiveButtons.unselected_color;
+                    document.getElementById('add_member_button').src = 'https://lab.padem.org/wp-content/uploads/plus.png';
+                    document.getElementById('tous').style.backgroundColor = menuActiveButtons.unselected_background;
+                    document.getElementById('tous').style.color = menuActiveButtons.unselected_color;
+                    document.getElementById('with_project').style.backgroundColor = menuActiveButtons.unselected_background;
+                    document.getElementById('with_project').style.color = menuActiveButtons.unselected_color;
+                    document.getElementById('with_role_without_project').style.backgroundColor = menuActiveButtons.unselected_background;
+                    document.getElementById('with_role_without_project').style.color = menuActiveButtons.unselected_color;
+                    document.getElementById('without_role_without_project').style.backgroundColor = menuActiveButtons.unselected_background;
+                    document.getElementById('without_role_without_project').style.color = menuActiveButtons.unselected_color;
 
-        // Ajouter un événement pour afficher le formulaire d'ajout d'un membre
-        document.getElementById('add_member').addEventListener('click', function () {
-            //#region des zones d'affichages
-            document.getElementById('my-project-profile').style.display = 'none';
-            document.getElementById('add-member').style.display = 'block';
-            document.getElementById('tous-').style.display = 'none';
-            document.getElementById('with-project').style.display = 'none';
-            document.getElementById('with-role-without-project').style.display = 'none';
-            document.getElementById('without-role-without-project').style.display = 'none';
-            //#endregion
-            //#region Couleurs des boutons
-            document.getElementById('my_project_profile').style.backgroundColor = menuActiveButtons.unselected_background;
-            document.getElementById('my_project_profile').style.color = menuActiveButtons.unselected_color;
-            document.getElementById('add_member').style.backgroundColor = menuActiveButtons.selected_background;
-            document.getElementById('add_member').style.color = menuActiveButtons.selected_color;
-            document.getElementById('add_member_button').src = 'https://lab.padem.org/wp-content/uploads/plus_white.png';
-            document.getElementById('tous').style.backgroundColor = menuActiveButtons.unselected_background;
-            document.getElementById('tous').style.color = menuActiveButtons.unselected_color;
-            document.getElementById('with_project').style.backgroundColor = menuActiveButtons.unselected_background;
-            document.getElementById('with_project').style.color = menuActiveButtons.unselected_color;
-            document.getElementById('with_role_without_project').style.backgroundColor = menuActiveButtons.unselected_background;
-            document.getElementById('with_role_without_project').style.color = menuActiveButtons.unselected_color;
-            document.getElementById('without_role_without_project').style.backgroundColor = menuActiveButtons.unselected_background;
-            document.getElementById('without_role_without_project').style.color = menuActiveButtons.unselected_color;
-
-            // Afficher le formulaire d'ajout d'un membre
-            var add_member_form = document.createElement('form');
-            add_member_form.id = 'add_member_form';
-            add_member_form.style.display = 'block';
-            add_member_form.style.padding = '10px';
-            add_member_form.style.border = '1px solid #29A6A7';
-            add_member_form.style.borderRadius = '15px';
-            add_member_form.style.margin = '5px';
-            add_member_form.style.backgroundColor = 'white';
-            add_member_form.style.color = 'gray';
-            add_member_form.style.fontSize = '13px';
-            add_member_form.style.width = '100%';
-            add_member_form.innerHTML = `
-                <label for="new_member_email">Adresse email du nouveau membre :</label>
-                <input type="email" id="new_member_email" name="new_member_email" placeholder="Adresse email du nouveau membre" required>
-                <button type="button" id="add_member_button" style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px;border: none; margin: 5px; padding: 5px;font-size: 13px;">
-                    <img src="https://lab.padem.org/wp-content/uploads/plus.png" width="25px" height="25px" id="add_member_button" alt="Ajouter un membre projet">
-                </button>
-            `;
-            document.getElementById('add-member').appendChild(add_member_form);
-            document.getElementById('add_member_button').addEventListener('click', function () {
-                //addMemberToProject();
+                    displayUserProfile();
+                } catch (error) {
+                    console.log('Erreur lors de l\'exécution du script (boutton "my_project_profile") :', error);
+                }
             });
-            //#endregion
-        });
 
-        // Ajouter un événement pour afficher la liste de tout les membres
-        document.getElementById('tous').addEventListener('click', function () {
-            //#region des zones d'affichages
-            document.getElementById('my-project-profile').style.display = 'none';
-            document.getElementById('add-member').style.display = 'none';
-            document.getElementById('tous-').style.display = 'block';
-            document.getElementById('with-project').style.display = 'none';
-            document.getElementById('with-role-without-project').style.display = 'none';
-            document.getElementById('without-role-without-project').style.display = 'none';
-            //#endregion
-            //#region Couleurs des boutons
-            document.getElementById('my_project_profile').style.backgroundColor = menuActiveButtons.unselected_background;
-            document.getElementById('my_project_profile').style.color = menuActiveButtons.unselected_color;
-            document.getElementById('add_member').style.backgroundColor = menuActiveButtons.unselected_background;
-            document.getElementById('add_member').style.color = menuActiveButtons.unselected_color;
-            document.getElementById('add_member_button').src = 'https://lab.padem.org/wp-content/uploads/plus.png';
-            document.getElementById('tous').style.backgroundColor = menuActiveButtons.selected_background;
-            document.getElementById('tous').style.color = menuActiveButtons.selected_color;
-            document.getElementById('with_project').style.backgroundColor = menuActiveButtons.unselected_background;
-            document.getElementById('with_project').style.color = menuActiveButtons.unselected_color;
-            document.getElementById('with_role_without_project').style.backgroundColor = menuActiveButtons.unselected_background;
-            document.getElementById('with_role_without_project').style.color = menuActiveButtons.unselected_color;
-            document.getElementById('without_role_without_project').style.backgroundColor = menuActiveButtons.unselected_background;
-            document.getElementById('without_role_without_project').style.color = menuActiveButtons.unselected_color;
-            //#endregion
+            // Ajouter un événement pour afficher le formulaire d'ajout d'un membre
+            document.getElementById('add_member').addEventListener('click', function () {
+                try {
+                    //#region des zones d'affichages
+                    document.getElementById('my-project-profile').style.display = 'none';
+                    document.getElementById('add-member').style.display = 'block';
+                    document.getElementById('tous-').style.display = 'none';
+                    document.getElementById('with-project').style.display = 'none';
+                    document.getElementById('with-role-without-project').style.display = 'none';
+                    document.getElementById('without-role-without-project').style.display = 'none';
+                    //#endregion
+                    //#region Couleurs des boutons
+                    document.getElementById('my_project_profile').style.backgroundColor = menuActiveButtons.unselected_background;
+                    document.getElementById('my_project_profile').style.color = menuActiveButtons.unselected_color;
+                    document.getElementById('add_member').style.backgroundColor = menuActiveButtons.selected_background;
+                    document.getElementById('add_member').style.color = menuActiveButtons.selected_color;
+                    document.getElementById('add_member_button').src = 'https://lab.padem.org/wp-content/uploads/plus_white.png';
+                    document.getElementById('tous').style.backgroundColor = menuActiveButtons.unselected_background;
+                    document.getElementById('tous').style.color = menuActiveButtons.unselected_color;
+                    document.getElementById('with_project').style.backgroundColor = menuActiveButtons.unselected_background;
+                    document.getElementById('with_project').style.color = menuActiveButtons.unselected_color;
+                    document.getElementById('with_role_without_project').style.backgroundColor = menuActiveButtons.unselected_background;
+                    document.getElementById('with_role_without_project').style.color = menuActiveButtons.unselected_color;
+                    document.getElementById('without_role_without_project').style.backgroundColor = menuActiveButtons.unselected_background;
+                    document.getElementById('without_role_without_project').style.color = menuActiveButtons.unselected_color;
 
-            // Afficher la liste de tout les membres
-            document.getElementById('all_members').style.display = 'block';
-            document.getElementById('coordinateur').style.display = 'block';
-            document.getElementById('chef_de_projet').style.display = 'block';
-            document.getElementById('accountant').style.display = 'block';
-            document.getElementById('consultant').style.display = 'block';
-            document.getElementById('partner').style.display = 'block';
-            document.getElementById('funder').style.display = 'block';
+                    // Afficher le formulaire d'ajout d'un membre
+                    var add_member_form = document.createElement('form');
+                    add_member_form.id = 'add_member_form';
+                    add_member_form.style.display = 'block';
+                    add_member_form.style.padding = '10px';
+                    add_member_form.style.border = '1px solid #29A6A7';
+                    add_member_form.style.borderRadius = '15px';
+                    add_member_form.style.margin = '5px';
+                    add_member_form.style.backgroundColor = 'white';
+                    add_member_form.style.color = 'gray';
+                    add_member_form.style.fontSize = '13px';
+                    add_member_form.style.width = '100%';
+                    add_member_form.innerHTML = `
+                        <label for="new_member_email">Adresse email du nouveau membre :</label>
+                        <input type="email" id="new_member_email" name="new_member_email" placeholder="Adresse email du nouveau membre" required>
+                        <button type="button" id="add_member_button" style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px;border: none; margin: 5px; padding: 5px;font-size: 13px;">
+                            <img src="https://lab.padem.org/wp-content/uploads/plus.png" width="25px" height="25px" id="add_member_button" alt="Ajouter un membre projet">
+                        </button>
+                    `;
+                    document.getElementById('add-member').appendChild(add_member_form);
+                    document.getElementById('add_member_button').addEventListener('click', function () {
+                        //addMemberToProject();
+                    });
+                } catch (error) {
+                    console.log('Erreur lors de l\'exécution du script (boutton "add_member") :', error);
+                }
+            });
 
-            getAllWordPressMembers();
-        });
+            // Ajouter un événement pour afficher la liste de tout les membres
+            document.getElementById('tous').addEventListener('click', function () {
+                try {
+                    //#region des zones d'affichages
+                    document.getElementById('my-project-profile').style.display = 'none';
+                    document.getElementById('add-member').style.display = 'none';
+                    document.getElementById('tous-').style.display = 'block';
+                    document.getElementById('with-project').style.display = 'none';
+                    document.getElementById('with-role-without-project').style.display = 'none';
+                    document.getElementById('without-role-without-project').style.display = 'none';
+                    //#endregion
+                    //#region Couleurs des boutons
+                    document.getElementById('my_project_profile').style.backgroundColor = menuActiveButtons.unselected_background;
+                    document.getElementById('my_project_profile').style.color = menuActiveButtons.unselected_color;
+                    document.getElementById('add_member').style.backgroundColor = menuActiveButtons.unselected_background;
+                    document.getElementById('add_member').style.color = menuActiveButtons.unselected_color;
+                    document.getElementById('add_member_button').src = 'https://lab.padem.org/wp-content/uploads/plus.png';
+                    document.getElementById('tous').style.backgroundColor = menuActiveButtons.selected_background;
+                    document.getElementById('tous').style.color = menuActiveButtons.selected_color;
+                    document.getElementById('with_project').style.backgroundColor = menuActiveButtons.unselected_background;
+                    document.getElementById('with_project').style.color = menuActiveButtons.unselected_color;
+                    document.getElementById('with_role_without_project').style.backgroundColor = menuActiveButtons.unselected_background;
+                    document.getElementById('with_role_without_project').style.color = menuActiveButtons.unselected_color;
+                    document.getElementById('without_role_without_project').style.backgroundColor = menuActiveButtons.unselected_background;
+                    document.getElementById('without_role_without_project').style.color = menuActiveButtons.unselected_color;
+                    //#endregion
 
-        // Ajouter un événement pour afficher la liste de tout les membres avec un projet
-        document.getElementById('with_project').addEventListener('click', function () {
-            //#region des zones d'affichages
-            document.getElementById('my-project-profile').style.display = 'none';
-            document.getElementById('add-member').style.display = 'none';
-            document.getElementById('tous-').style.display = 'none';
-            document.getElementById('with-project').style.display = 'block';
-            document.getElementById('with-role-without-project').style.display = 'none';
-            document.getElementById('without-role-without-project').style.display = 'none';
-            //#endregion
-            document.getElementById('my_project_profile').style.backgroundColor = menuActiveButtons.unselected_background;
-            document.getElementById('my_project_profile').style.color = menuActiveButtons.unselected_color;
-            document.getElementById('add_member').style.backgroundColor = menuActiveButtons.unselected_background;
-            document.getElementById('add_member').style.color = menuActiveButtons.unselected_color;
-            document.getElementById('add_member_button').src = 'https://lab.padem.org/wp-content/uploads/plus.png';
-            document.getElementById('tous').style.backgroundColor = menuActiveButtons.unselected_background;
-            document.getElementById('tous').style.color = menuActiveButtons.unselected_color;
-            document.getElementById('with_project').style.backgroundColor = menuActiveButtons.selected_background;
-            document.getElementById('with_project').style.color = menuActiveButtons.selected_color;
-            document.getElementById('with_role_without_project').style.backgroundColor = menuActiveButtons.unselected_background;
-            document.getElementById('with_role_without_project').style.color = menuActiveButtons.unselected_color;
-            document.getElementById('without_role_without_project').style.backgroundColor = menuActiveButtons.unselected_background;
-            document.getElementById('without_role_without_project').style.color = menuActiveButtons.unselected_color;
-        });
+                    // Afficher la liste de tout les membres
+                    document.getElementById('coordinateur').style.display = 'block';
+                    document.getElementById('chef_de_projet').style.display = 'block';
+                    document.getElementById('accountant').style.display = 'block';
+                    document.getElementById('consultant').style.display = 'block';
+                    document.getElementById('partner').style.display = 'block';
 
-        // Ajouter un événement pour afficher la liste de tout les membres avec un rôle et sans projet
-        document.getElementById('with_role_without_project').addEventListener('click', function () {
-            document.getElementById('my-project-profile').style.display = 'none';
-            document.getElementById('add-member').style.display = 'none';
-            document.getElementById('tous-').style.display = 'none';
-            document.getElementById('with-project').style.display = 'none';
-            document.getElementById('with-role-without-project').style.display = 'block';
-            document.getElementById('without-role-without-project').style.display = 'none';
-            document.getElementById('my_project_profile').style.backgroundColor = menuActiveButtons.unselected_background;
-            document.getElementById('my_project_profile').style.color = menuActiveButtons.unselected_color;
-            document.getElementById('add_member').style.backgroundColor = menuActiveButtons.unselected_background;
-            document.getElementById('add_member').style.color = menuActiveButtons.unselected_color;
-            document.getElementById('add_member_button').src = 'https://lab.padem.org/wp-content/uploads/plus.png';
-            document.getElementById('tous').style.backgroundColor = menuActiveButtons.unselected_background;
-            document.getElementById('tous').style.color = menuActiveButtons.unselected_color;
-            document.getElementById('with_project').style.backgroundColor = menuActiveButtons.unselected_background;
-            document.getElementById('with_project').style.color = menuActiveButtons.unselected_color;
-            document.getElementById('with_role_without_project').style.backgroundColor = menuActiveButtons.selected_background;
-            document.getElementById('with_role_without_project').style.color = menuActiveButtons.selected_color;
-            document.getElementById('without_role_without_project').style.backgroundColor = menuActiveButtons.unselected_background;
-            document.getElementById('without_role_without_project').style.color = menuActiveButtons.unselected_color;
-        });
+                    getAllWordPressMembers();
+                } catch (error) {
+                    console.log('Erreur lors de l\'exécution du script (boutton "tous") :', error);
+                }
+            });
 
-        // Ajouter un événement pour afficher la liste de tout les membres sans rôle et sans projet
-        document.getElementById('without_role_without_project').addEventListener('click', function () {
-            document.getElementById('my-project-profile').style.display = 'none';
-            document.getElementById('add-member').style.display = 'none';
-            document.getElementById('tous-').style.display = 'none';
-            document.getElementById('with-project').style.display = 'none';
-            document.getElementById('with-role-without-project').style.display = 'none';
-            document.getElementById('without-role-without-project').style.display = 'block';
-            document.getElementById('my_project_profile').style.backgroundColor = menuActiveButtons.unselected_background;
-            document.getElementById('my_project_profile').style.color = menuActiveButtons.unselected_color;
-            document.getElementById('add_member').style.backgroundColor = menuActiveButtons.unselected_background;
-            document.getElementById('add_member').style.color = menuActiveButtons.unselected_color;
-            document.getElementById('tous').style.backgroundColor = menuActiveButtons.unselected_background;
-            document.getElementById('tous').style.color = menuActiveButtons.unselected_color;
-            document.getElementById('with_project').style.backgroundColor = menuActiveButtons.unselected_background;
-            document.getElementById('with_project').style.color = menuActiveButtons.unselected_color;
-            document.getElementById('with_role_without_project').style.backgroundColor = menuActiveButtons.unselected_background;
-            document.getElementById('with_role_without_project').style.color = menuActiveButtons.unselected_color;
-            document.getElementById('without_role_without_project').style.backgroundColor = menuActiveButtons.selected_background;
-            document.getElementById('without_role_without_project').style.color = menuActiveButtons.selected_color;
-        });
+            // Ajouter un événement pour afficher la liste de tout les membres avec un projet
+            document.getElementById('with_project').addEventListener('click', function () {
+                try {
+                    //#region des zones d'affichages
+                    document.getElementById('my-project-profile').style.display = 'none';
+                    document.getElementById('add-member').style.display = 'none';
+                    document.getElementById('tous-').style.display = 'none';
+                    document.getElementById('with-project').style.display = 'block';
+                    document.getElementById('with-role-without-project').style.display = 'none';
+                    document.getElementById('without-role-without-project').style.display = 'none';
+                    //#endregion
+                    document.getElementById('my_project_profile').style.backgroundColor = menuActiveButtons.unselected_background;
+                    document.getElementById('my_project_profile').style.color = menuActiveButtons.unselected_color;
+                    document.getElementById('add_member').style.backgroundColor = menuActiveButtons.unselected_background;
+                    document.getElementById('add_member').style.color = menuActiveButtons.unselected_color;
+                    document.getElementById('add_member_button').src = 'https://lab.padem.org/wp-content/uploads/plus.png';
+                    document.getElementById('tous').style.backgroundColor = menuActiveButtons.unselected_background;
+                    document.getElementById('tous').style.color = menuActiveButtons.unselected_color;
+                    document.getElementById('with_project').style.backgroundColor = menuActiveButtons.selected_background;
+                    document.getElementById('with_project').style.color = menuActiveButtons.selected_color;
+                    document.getElementById('with_role_without_project').style.backgroundColor = menuActiveButtons.unselected_background;
+                    document.getElementById('with_role_without_project').style.color = menuActiveButtons.unselected_color;
+                    document.getElementById('without_role_without_project').style.backgroundColor = menuActiveButtons.unselected_background;
+                    document.getElementById('without_role_without_project').style.color = menuActiveButtons.unselected_color;
+                } catch (error) {
+                    console.log('Erreur lors de l\'exécution du script (boutton "with_project") :', error);
+                }
+            });
 
-        // Récupérer la liste de tout les membres de la plate-forme
-        getAllWordPressMembers();
+            // Ajouter un événement pour afficher la liste de tout les membres avec un rôle et sans projet
+            document.getElementById('with_role_without_project').addEventListener('click', function () {
+
+                try {
+                    document.getElementById('my-project-profile').style.display = 'none';
+                    document.getElementById('add-member').style.display = 'none';
+                    document.getElementById('tous-').style.display = 'none';
+                    document.getElementById('with-project').style.display = 'none';
+                    document.getElementById('with-role-without-project').style.display = 'block';
+                    document.getElementById('without-role-without-project').style.display = 'none';
+
+                    document.getElementById('my_project_profile').style.backgroundColor = menuActiveButtons.unselected_background;
+                    document.getElementById('my_project_profile').style.color = menuActiveButtons.unselected_color;
+                    document.getElementById('add_member').style.backgroundColor = menuActiveButtons.unselected_background;
+                    document.getElementById('add_member').style.color = menuActiveButtons.unselected_color;
+                    document.getElementById('add_member_button').src = 'https://lab.padem.org/wp-content/uploads/plus.png';
+                    document.getElementById('tous').style.backgroundColor = menuActiveButtons.unselected_background;
+                    document.getElementById('tous').style.color = menuActiveButtons.unselected_color;
+                    document.getElementById('with_project').style.backgroundColor = menuActiveButtons.unselected_background;
+                    document.getElementById('with_project').style.color = menuActiveButtons.unselected_color;
+                    document.getElementById('with_role_without_project').style.backgroundColor = menuActiveButtons.selected_background;
+                    document.getElementById('with_role_without_project').style.color = menuActiveButtons.selected_color;
+                    document.getElementById('without_role_without_project').style.backgroundColor = menuActiveButtons.unselected_background;
+                    document.getElementById('without_role_without_project').style.color = menuActiveButtons.unselected_color;
+                } catch (error) {
+                    console.log('Erreur lors de l\'exécution du script (boutton "with_role_without_project") :', error);
+                }
+            });
+
+            // Ajouter un événement pour afficher la liste de tout les membres sans rôle et sans projet
+            document.getElementById('without_role_without_project').addEventListener('click', function () {
+
+                try {
+                    document.getElementById('my-project-profile').style.display = 'none';
+                    document.getElementById('add-member').style.display = 'none';
+                    document.getElementById('tous-').style.display = 'none';
+                    document.getElementById('with-project').style.display = 'none';
+                    document.getElementById('with-role-without-project').style.display = 'none';
+                    document.getElementById('without-role-without-project').style.display = 'block';
+
+                    document.getElementById('my_project_profile').style.backgroundColor = menuActiveButtons.unselected_background;
+                    document.getElementById('my_project_profile').style.color = menuActiveButtons.unselected_color;
+                    document.getElementById('add_member').style.backgroundColor = menuActiveButtons.unselected_background;
+                    document.getElementById('add_member').style.color = menuActiveButtons.unselected_color;
+                    document.getElementById('tous').style.backgroundColor = menuActiveButtons.unselected_background;
+                    document.getElementById('tous').style.color = menuActiveButtons.unselected_color;
+                    document.getElementById('with_project').style.backgroundColor = menuActiveButtons.unselected_background;
+                    document.getElementById('with_project').style.color = menuActiveButtons.unselected_color;
+                    document.getElementById('with_role_without_project').style.backgroundColor = menuActiveButtons.unselected_background;
+                    document.getElementById('with_role_without_project').style.color = menuActiveButtons.unselected_color;
+                    document.getElementById('without_role_without_project').style.backgroundColor = menuActiveButtons.selected_background;
+                    document.getElementById('without_role_without_project').style.color = menuActiveButtons.selected_color;
+
+                    // Récupérer la liste de tout les membres de la plate-forme
+                    getAllWordPressMembers();
+                } catch (error) {
+                    console.log('Erreur lors de l\'exécution du script (boutton "without_role_without_project") :', error);
+                }
+            });
+        } catch (error) {
+            console.log('Erreur lors de l\'exécution du script :', error);
+        }
     });
 
 
@@ -429,12 +477,6 @@
                                                 <i class="fas fa-user"></i> ${member.display_name} (${member.email}) - ${member.role}
                                             `;
                                             document.getElementById('partner').appendChild(li_partenaire);
-                                        } else if (member.role === 'bailleur') {
-                                            var li_bailleur = document.createElement('li');
-                                            li_bailleur.innerHTML = `
-                                                <i class="fas fa-user"></i> ${member.display_name} (${member.email}) - ${member.role}
-                                            `;
-                                            document.getElementById('funder').appendChild(li_bailleur);
                                         }
                                     } else {
                                         var li = document.createElement('li');
