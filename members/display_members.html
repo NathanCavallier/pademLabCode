@@ -52,7 +52,6 @@
     <div class="col">
         <ul id="my-project-profile" style="list-style: none; display: none;"></ul>
     </div>
-    <hr>
     <div class="col">
         <ul id="connected_user_projects" style="list-style: none; display: none;"></ul>
     </div>
@@ -82,18 +81,19 @@
         userRole = 'Administrateur';
     } else if (userRoles.includes('coordinator')) {
         userRole = 'Coordinateur';
-    } else if (userRoles.includes('chief')) {
-        userRole = 'chef_de_projet';
+    } else if (userRoles.includes('chef-de-projet')) {
+        userRole = 'Chef de projet';
     } else if (userRoles.includes('partner')) {
-        userRole = 'partenaire';
+        userRole = 'Partenaire';
     } else if (userRoles.includes('accountant')) {
-        userRole = 'comptable';
+        userRole = 'Comptable';
     } else if (userRoles.includes('consultant')) {
-        userRole = 'consultant';
+        userRole = 'Consultant';
     } else {
-        userRole = 'Utilisateur';
+        userRole = 'Abonné';
     }
     localStorage.setItem('userRole', userRole);
+    //#endregion
     var users_list = {
         'bacground_colors': {
             'Administrateur': '#FF0000',
@@ -128,15 +128,20 @@
         }
     };
     document.addEventListener('DOMContentLoaded', function () {
-
+        // Afficher le spinner
+        document.getElementById('loading').style.display = 'block';
         var menuActiveButtons = {
             'selected_background': '#29A6A7',
             'selected_color': 'white',
             'unselected_background': 'white',
             'unselected_color': 'gray',
         };
+        // Récupérer la liste de tout les membres de la plate-forme
+        getAllWordPressMembers();
+        // Récupérer les données de l'utilisateur connecté
+        displayUserProfile();
         // Afficher/Masquer le bouton de d'ajout d'un membre en fonction du rôle de l'utilisateur
-        if (userRole === 'Coordinateur' || userRole === 'chef_de_projet' || userRole === 'Administrateur' || userRole === 'partenaire' || userRole === 'comptable' || userRole === 'consultant') {
+        if (userRole === 'Coordinateur' || userRole === 'Chef de projet' || userRole === 'Administrateur' || userRole === 'partenaire' || userRole === 'comptable' || userRole === 'consultant') {
             document.getElementById('add_member').style.display = 'block';
         } else {
             document.getElementById('add_member').style.display = 'none';
@@ -189,13 +194,14 @@
 
             document.getElementById('my_project_profile').addEventListener('click', function () {
                 try {
+                    //#region des zones d'affichages
                     document.getElementById('my-project-profile').style.display = 'block';
                     document.getElementById('add-member').style.display = 'none';
                     document.getElementById('tous-').style.display = 'none';
                     document.getElementById('with-project').style.display = 'none';
                     document.getElementById('with-role-without-project').style.display = 'none';
                     document.getElementById('without-role-without-project').style.display = 'none';
-                    
+
                     document.getElementById('my_project_profile').style.backgroundColor = menuActiveButtons.selected_background;
                     document.getElementById('my_project_profile').style.color = menuActiveButtons.selected_color;
                     document.getElementById('add_member').style.backgroundColor = menuActiveButtons.unselected_background;
@@ -209,12 +215,84 @@
                     document.getElementById('with_role_without_project').style.color = menuActiveButtons.unselected_color;
                     document.getElementById('without_role_without_project').style.backgroundColor = menuActiveButtons.unselected_background;
                     document.getElementById('without_role_without_project').style.color = menuActiveButtons.unselected_color;
-
-                    displayUserProfile();
+                    //#endregion
                 } catch (error) {
                     console.log('Erreur lors de l\'exécution du script (boutton "my_project_profile") :', error);
                 }
             });
+
+            // Afficher le formulaire d'ajout d'un membre
+            try {
+                var add_member_form = document.createElement('form');
+                add_member_form.id = 'add_member_form';
+                add_member_form.style.display = 'block';
+                add_member_form.style.padding = '10px';
+                add_member_form.style.border = '1px solid #29A6A7';
+                add_member_form.style.borderRadius = '15px';
+                add_member_form.style.margin = '5px';
+                add_member_form.style.backgroundColor = 'white';
+                add_member_form.style.color = 'gray';
+                add_member_form.style.fontSize = '13px';
+                add_member_form.style.width = '100%';
+                add_member_form.style.height = 'fit-content';
+                add_member_form.style.display = 'flex';
+                add_member_form.style.flexDirection = 'column';
+                add_member_form.style.alignItems = 'left';
+                add_member_form.style.justifyContent = 'center';
+                add_member_form.innerHTML = `
+                    <label for="new_member_role">Choisir le role du nouveau :</label>
+                    <select id="new_member_role" name="new_member_role" required>
+                        <option value="Coordinateur">Aucun role</option>
+                        <option value="Coordinateur">Coordinateur</option>
+                        <option value="chef_de_projet">Chef de projet</option>
+                        <option value="comptable">Comptable</option>
+                        <option value="consultant">Consultant</option>
+                        <option value="partenaire">Partenaire</option>
+                    </select>
+                    <select for="new_member_projects">Choisir un ou plusieurs projets :</select>
+                    <select id="new_member_projects" name="new_member_projects" required>
+                        <option value="0">Aucun projet</option>
+                    </select>
+                    <label for="new_member_name">Nom et prénom :</label>
+                    <input type="text" id="new_member_name" name="new_member_name" placeholder="Nom et prénom du nouveau membre" required>
+                    <label for="new_member_email">Adresse email du nouveau membre :</label>
+                    <input type="email" id="new_member_email" name="new_member_email" placeholder="Adresse email du nouveau membre" required>
+                    <button type="submit" id="add_member_button" style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px;border: none; margin: 5px; padding: 5px;font-size: 13px;">
+                        Ajouter le membre 
+                    </button>
+                    <button type="button" id="add_member_button" style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px;border: none; margin: 5px; padding: 5px;font-size: 13px;">
+                        <img src="https://lab.padem.org/wp-content/uploads/plus.png" width="25px" height="25px" id="add_member_button" alt="Ajouter un membre projet">
+                    </button>
+                `;
+                document.getElementById('add-member').appendChild(add_member_form);
+
+                //#region Récupérer la liste des projets(les noms et les IDs)
+                fetch('https://lab.padem.org/wp-json/mo/v1/getAllProjects', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        data.forEach(project => {
+                            var option = document.createElement('option');
+                            option.value = project.project_id;
+                            option.innerHTML = project.project_title;
+                            document.getElementById('new_member_projects').appendChild(option);
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Erreur lors de la récupération des données des projets :', error);
+                    });
+                //#endregion
+
+                document.getElementById('add_member_button').addEventListener('click', function () {
+                    //addMemberToProject();
+                });
+            } catch (error) {
+                console.log('Erreur lors de l\'exécution du script (formulaire d\'ajout d\'un membre) :', error);
+            }
 
             // Ajouter un événement pour afficher le formulaire d'ajout d'un membre
             document.getElementById('add_member').addEventListener('click', function () {
@@ -242,29 +320,7 @@
                     document.getElementById('without_role_without_project').style.backgroundColor = menuActiveButtons.unselected_background;
                     document.getElementById('without_role_without_project').style.color = menuActiveButtons.unselected_color;
 
-                    // Afficher le formulaire d'ajout d'un membre
-                    var add_member_form = document.createElement('form');
-                    add_member_form.id = 'add_member_form';
-                    add_member_form.style.display = 'block';
-                    add_member_form.style.padding = '10px';
-                    add_member_form.style.border = '1px solid #29A6A7';
-                    add_member_form.style.borderRadius = '15px';
-                    add_member_form.style.margin = '5px';
-                    add_member_form.style.backgroundColor = 'white';
-                    add_member_form.style.color = 'gray';
-                    add_member_form.style.fontSize = '13px';
-                    add_member_form.style.width = '100%';
-                    add_member_form.innerHTML = `
-                        <label for="new_member_email">Adresse email du nouveau membre :</label>
-                        <input type="email" id="new_member_email" name="new_member_email" placeholder="Adresse email du nouveau membre" required>
-                        <button type="button" id="add_member_button" style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px;border: none; margin: 5px; padding: 5px;font-size: 13px;">
-                            <img src="https://lab.padem.org/wp-content/uploads/plus.png" width="25px" height="25px" id="add_member_button" alt="Ajouter un membre projet">
-                        </button>
-                    `;
-                    document.getElementById('add-member').appendChild(add_member_form);
-                    document.getElementById('add_member_button').addEventListener('click', function () {
-                        //addMemberToProject();
-                    });
+
                 } catch (error) {
                     console.log('Erreur lors de l\'exécution du script (boutton "add_member") :', error);
                 }
@@ -304,7 +360,6 @@
                     document.getElementById('consultant').style.display = 'block';
                     document.getElementById('partner').style.display = 'block';
 
-                    getAllWordPressMembers();
                 } catch (error) {
                     console.log('Erreur lors de l\'exécution du script (boutton "tous") :', error);
                 }
@@ -392,8 +447,6 @@
                     document.getElementById('without_role_without_project').style.backgroundColor = menuActiveButtons.selected_background;
                     document.getElementById('without_role_without_project').style.color = menuActiveButtons.selected_color;
 
-                    // Récupérer la liste de tout les membres de la plate-forme
-                    getAllWordPressMembers();
                 } catch (error) {
                     console.log('Erreur lors de l\'exécution du script (boutton "without_role_without_project") :', error);
                 }
@@ -424,7 +477,18 @@
                         'user_registered_date': user.user_registered
                     });
                 });
-                // Vérifier le rôle de l'utilisateur
+                // Afficher la liste de tout les membres
+                all_members.forEach(member => {
+                    var li = document.createElement('li');
+                    li.innerHTML = `
+                        <i class="fas fa-user"></i> ${member.display_name} (${member.email}) - Utilisateur
+                    `;
+                    document.getElementById('tous-').appendChild(li);
+                });
+                // Masquer le spinner
+                document.getElementById('loading').style.display = 'none';
+                /*
+                //#region Vérifier le rôle de l'utilisateur
                 all_members.forEach(member => {
                     for (var role in users_list.urls) {
                         fetch(users_list.urls[role], {
@@ -492,6 +556,8 @@
                             });
                     }
                 });
+                //#endregion
+                */
             })
             .catch(error => {
                 console.error('Erreur lors de la récupération des données de l\'utilisateur :', error);
@@ -502,7 +568,7 @@
     // Fonction pour afficher les diverses informations de l'utilisateur connecté (la liste des projets et rapports dont il est membre, son rôle, son adresse email, son nom, son prénom, son pays, sa ville, sa date de création de compte, sa date de dernière connexion, sa date de dernière activité, sa date de dernière modification, etc..) sous forme d'un formulaire modifiable
     function displayUserProfile() {
         // Récupérer les informations de l'utilisateur connecté
-        var user_email = user_data.email;
+        var user_email = current_user_data.email;
         var userRole = localStorage.getItem('userRole');
 
         // Vérifier le rôle de l'utilisateur avant d'afficher les informations de son profile projet
@@ -684,7 +750,7 @@
 
     // Ajouter un membre à un projet
     function addMemberToProject() {
-        var user_email = user_data.email;
+        var user_email = current_user_data.email;
         var userRole = localStorage.getItem('userRole');
 
         // Attribuer un rôle et ajouter un utilisateur déjà inscrit sur le site mais n'ayant pas accès à un projet (grâce à son adresse email)
