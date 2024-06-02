@@ -168,7 +168,8 @@
             dataInfosPreliminaires.project_referent_email = document.getElementById('projectReferentEmail').value;
             dataInfosPreliminaires.project_description = JSON.stringify(document.getElementById('projectDescription').value);
 
-            //#region Créer le dossier des fichiers du projet
+
+            /*//#region Créer le dossier des fichiers du projet
             fetch('https://lab.padem.org/get_key.php',
                 {
                     method: 'GET',
@@ -215,16 +216,20 @@
                     console.error('Error:', error);
                 })
             //#endregion
+            */
 
             // 1. Create a new project
             // 2. Add the project to the database
             // 3. Redirect to the project page
-            fetch('https://lab.padem.org/wp-json/mo/v1/createProject', {
+            // Création de l'ID du projet
+            fetch('https://lab.padem.org/wp-json/mo/v1/createProjectID', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(dataInfosPreliminaires),
+                body: JSON.stringify({
+                    'created_by': dataInfosPreliminaires.project_referent,
+                }),
             }).then(response => {
                 if (!response.ok) {
                     console.log('Erreur lors de la requête vers l\'API.');
@@ -232,27 +237,82 @@
                 return response.json();
             })
                 .then(data => {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Projet créé avec succès',
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
+                    var project_id = data.d;
+                    // Création de la Working_Table associée au projet
+                    fetch('https://lab.padem.org/wp-json/mo/v1/createWorkingTable', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            'project_id': project_id,
+                            'users_emails_list': JSON.stringify({
+                                'project_referent': dataInfosPreliminaires.project_referent_email,
+                                'padem_responsible': dataInfosPreliminaires.padem_responsible_email || '',
+                            }),
+                        }),
+                    }).then(response => {
+                        if (!response.ok) {
+                            console.log('Erreur lors de la requête vers l\'API.');
+                        }
+                        return response.json();
+                    })
+                        .then(data => {
+                            // Création de la Project_Data associée au projet
+                            fetch('https://lab.padem.org/wp-json/mo/v1/createProjectData', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({
+                                    'project_id': project_id,
+                                    'project_title': dataInfosPreliminaires.project_title,
+                                    'project_type': dataInfosPreliminaires.project_type,
+                                    'start_date': dataInfosPreliminaires.start_date,
+                                    'end_date': dataInfosPreliminaires.end_date,
+                                    'project_location': dataInfosPreliminaires.project_location,
+                                    'project_status': 'En cours',
+                                    'padem_responsible': dataInfosPreliminaires.padem_responsible,
+                                    'padem_responsible_email': dataInfosPreliminaires.padem_responsible_email,
+                                    'project_referent': dataInfosPreliminaires.project_referent,
+                                    'project_referent_email': dataInfosPreliminaires.project_referent_email,
+                                    'project_description': dataInfosPreliminaires.project_description,
+                                    'background_image_link': dataInfosPreliminaires.background_image_link,
+                                    'folder_id': dataInfosPreliminaires.folder_id,
+                                    'folder_name': dataInfosPreliminaires.project_title,
+                                }),
+                            }).then(response => {
+                                if (!response.ok) {
+                                    console.log('Erreur lors de la requête vers l\'API.');
+                                }
+                                return response.json();
+                            })
+                                .then(data => {
+                                    console.log('Success:', data);
+                                    // Rediriger vers la page du projet
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Projet créé avec succès',
+                                        showConfirmButton: false,
+                                        timer: 1500
+                                    });
+                                    // Masquer le formulaire
+                                    showAndHide('projectForm');
 
-                    // Masquer le formulaire
-                    showAndHide('projectForm');
+                                    // Recharger la page
+                                    window.location.href = "https://lab.padem.org/projets";
+                                })
+                                .catch((error) => {
+                                    console.error('Error:', error);
+                                });
+                        })
+                        .catch((error) => {
+                            console.error('Error:', error);
+                        });
 
-                    // Recharger la page
-                    window.location.href = "https://lab.padem.org/projets";
                 })
                 .catch((error) => {
                     console.error('Error:', error);
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Erreur lors de la création du projet',
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
                 });
         }
 
