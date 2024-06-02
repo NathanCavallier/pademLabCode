@@ -365,15 +365,16 @@
                         <p>Remplissez les champs suivants:</p>
                         <hr class="gray-border">
                         <div style="margin-top: 10px; margin-bottom: 10px"></div>
-                        <label for="projectTitle">Titre du projet:</label>
+                        <label for="projectTitle">Titre du projet: <span style="color: red;">*</span></label>
                         <input type="text" id="projectTitle" name="projectTitle"><br><br>
-                        <label for="projectType">Type de projet:</label>
+                        <label for="projectType">Type de projet: <span style="color: red;">*</span></label>
                         <input type="text" id="projectType" name="projectType"><br><br>
-                        <label for="projectDate">Date de début:</label>
+                        <label for="projectDate">Date de début: <span style="color: red;">*</span></label>
                         <input type="date" id="projectDate" name="projectDate"><br><br>
-                        <label for="projectEndDate2">Date de fin:</label>
+                        <label for="projectEndDate2">Date de fin: <span style="color: red;">*</span></label>
                         <input type="date" id="projectEndDate2" name="projectEndDate2"><br><br>
-                        <label for="projectLocation">Pays de réalisation du projet:</label>
+                        <label for="projectLocation">Pays de réalisation du projet: <span
+                                style="color: red;">*</span></label>
                         <input type="text" id="projectLocation" name="projectLocation"><br><br>
                         <label for="projectStatus">Statut initial du projet:</label>
                         <select id="projectStatus" name="projectStatus">
@@ -720,7 +721,7 @@
                 <!-- Bouton pour sauvegarder le projet -->
                 <script>
                     function saveFormData() {
-                        
+
                         var data = document.getElementById("projectForm");
 
                         // Envoi des données du formulaire vers l'API
@@ -734,7 +735,7 @@
                         })
                             .then(response => {
                                 if (!response.ok) {
-                                    throw new Error('Erreur lors de la requête vers l\'API.');
+                                    console.log('Erreur lors de la requête vers l\'API.');
                                 }
                                 return response.json();
                             })

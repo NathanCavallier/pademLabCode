@@ -8,6 +8,9 @@
         var userEmail = current_user_data.email;
         var userRole = current_user_data.roles;
         var userId = current_user_data.ID;
+        localStorage.setItem('userEmail', userEmail);
+        localStorage.setItem('userRole', userRole);
+        localStorage.setItem('userId', userId);
         bacground_colors = {
             'Administrateur': '#FF0000',
             'Coordinateur': '#FFA500',

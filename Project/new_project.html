@@ -3,77 +3,140 @@
         <!-- Bouton pour afficher/masquer le formulaire de création de projet -->
         <button type="button"
             onclick="showAndHideProjectForm(); showAndHideCancelButton(); switchAddProjectButtonIcon('add-file')"
-            id="addProjectButton" class="action-buttons" style="width: auto; height: auto;">
+            style="background: none; width: fit-content; display: none;" id="addProjectButton"
+            class="action-buttons btn btn-primary">
             <img src="https://lab.padem.org/wp-content/uploads/plus.png" alt="add-file" id="add-file"
                 title="Ajouter un projet" />
         </button>
         <div style="margin-left: auto; margin-right: auto;"></div>
         <div class="action-buttons">
             <!-- Bouton pour annuler le projet -->
-            <button type="button" onclick="cancelProject()" id="cancelProjectButton"
-                style=" display: none; width: auto;" title="Annuler">
+            <button type="button" onclick="cancelProject()" id="cancelProjectButton" style="display: none; width: auto;"
+                title="Annuler">
                 <img src="https://lab.padem.org/wp-content/uploads/Annuler.png" alt="cancel" id="cancel" />
             </button>
         </div>
     </div>
-    <form id="projectForm"
-        style="display: none; width: 100%; height: fit-content; border-radius: 15px; background: white;">
-        <div style="margin-top: 10px; margin-bottom: 10px"></div>
-        <!-- Ajout d'un espace entre les cartes -->
-        <div id="step1"
-            style="display: block; width: 100%; height: fit-content; border-radius: 15px; background: white;">
-            <p>Remplissez les champs suivants:</p>
-            <hr class="gray-border">
-            <div style="margin-top: 10px; margin-bottom: 10px"></div>
-            <label for="projectTitle">Titre du projet:</label>
-            <input type="text" id="projectTitle" name="projectTitle" required><br><br>
-            <label for="projectType">Type de projet:</label>
-            <input type="text" id="projectType" name="projectType" required><br><br>
-            <label for="projectDate">Date de début prévisionnelle:</label>
-            <input type="date" id="projectDate" name="projectDate" required><br><br>
-            <label for="projectEndDate2">Date de fin prévisionnelle:</label>
-            <input type="date" id="projectEndDate2" name="projectEndDate2" required><br><br>
-            <label for="projectLocation">Pays de réalisation du projet:</label>
-            <input type="text" id="projectLocation" name="projectLocation" required><br><br>
-            <label for="pademResponsible">Responsable Padem:</label>
-            <input type="text" id="pademResponsible" name="pademResponsible"><br><br>
-            <label for="pademResponsibleEmail">Email du responsable Padem:</label>
-            <input type="email" id="pademResponsibleEmail" name="pademResponsibleEmail"><br><br>
-            <label for="projectReferent">Référent du projet:</label>
-            <input type="text" id="projectReferent" name="projectReferent" required><br><br>
-            <label for="projectReferentEmail">Email du référent du projet:</label>
-            <input type="email" id="projectReferentEmail" name="projectReferentEmail" required><br><br>
-
-            <!-- Description du projet -->
-            <div>
-                <p>Description du projet:</p>
-                <textarea id="projectDescription" name="projectDescription" rows="4" cols="50"></textarea><br><br>
-            </div>
-            <!-- Uploader une image de couverture -->
-            <div>
-                <p>Ajoutez une image de couverture pour le projet:</p>
-                <input type="file" id="projectCover" name="projectCover" accept="image/*"><br><br>
-            </div>
-            <div style="margin-top: 10px; margin-bottom: 10px"></div>
-            <div class="action-buttons" style="display: flex; justify-content: flex-end;">
-                <!-- Bouton pour annuler le projet -->
-                <button type="button" onclick="cancelProject()" style="width: auto;">
-                    <p style="width: auto; margin-top: 20px; margin-right: 5px;">Annuler</p>
-                    <img src="https://lab.padem.org/wp-content/uploads/Annuler.png" alt="cancel"
-                        style="width: 35px; height: 35px;" />
-                </button>
-                <!-- Bouton pour sauvegarder le projet -->
-                <button type="submit" onclick="saveFormData()" style="width: auto;" id="saveProjectButton">
-                    <p style="width: auto; margin-top: 20px; margin-right: 5px;">Enregistrer</p>
-                    <img src="https://lab.padem.org/wp-content/uploads/save.png" alt="save"
-                        style="width: 35px; height: 35px;" />
-                </button>
+    <form id="projectForm" class="container" style="display: none; border-radius: 15px;">
+        <div class="row">
+            <div class="col-md-12">
+                <p>Remplissez les champs suivants:</p>
+                <hr class="gray-border">
             </div>
         </div>
-        <div style="margin-top: 10px; margin-bottom: 10px;"></div>
+        <div class="row">
+            <div class="col-md-6">
+                <label for="projectTitle">Titre du projet: <span style="color: red;">*</span></label>
+                <input type="text" id="projectTitle" name="projectTitle" class="form-control" required>
+            </div>
+            <div class="col-md-6">
+                <label for="projectType">Type de projet: <span style="color: red;">*</span></label>
+                <input type="text" id="projectType" name="projectType" class="form-control" required>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <label for="projectDate">Date de début prévisionnelle: <span style="color: red;">*</span></label>
+                <input type="date" id="projectDate" name="projectDate" class="form-control" required>
+            </div>
+            <div class="col-md-6">
+                <label for="projectEndDate2">Date de fin prévisionnelle: <span style="color: red;">*</span></label>
+                <input type="date" id="projectEndDate2" name="projectEndDate2" class="form-control" required>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <label for="projectLocation">Pays de réalisation du projet: <span style="color: red;">*</span></label>
+                <input type="text" id="projectLocation" name="projectLocation" class="form-control" required>
+            </div>
+            <div class="col-md-6">
+                <label for="pademResponsible">Responsable Padem:</label>
+                <input type="text" id="pademResponsible" name="pademResponsible" class="form-control">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <label for="pademResponsibleEmail">Email du responsable Padem:</label>
+                <input type="email" id="pademResponsibleEmail" name="pademResponsibleEmail" class="form-control">
+            </div>
+            <div class="col-md-6">
+                <label for="projectReferent">Référent du projet: <span style="color: red;">*</span></label>
+                <input type="text" id="projectReferent" name="projectReferent" class="form-control" required>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <label for="projectReferentEmail">Email du référent du projet: <span
+                        style="color: red;">*</span></label>
+                <input type="email" id="projectReferentEmail" name="projectReferentEmail" class="form-control" required>
+            </div>
+            <div class="col-md-6">
+                <label for="projectDescription">Description du projet: <span style="color: red;">*</span></label>
+                <textarea id="projectDescription" name="projectDescription" rows="4" cols="50"
+                    class="form-control"></textarea>
+            </div>
+        </div>
+        <!--
+        <div class="row">
+            <div class="col-md-6">
+                <label for="projectCover">Ajoutez une image de couverture pour le projet:</label>
+                <input type="file" id="projectCover" name="projectCover" accept="image/*" class="form-control-file">
+            </div>
+        </div>-->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="action-buttons" style="display: flex; justify-content: flex-end;">
+                    <button type="button" onclick="cancelProject()" class="btn btn-secondary"
+                        style="width: fit-content;">
+                        Annuler
+                        <img src="https://lab.padem.org/wp-content/uploads/Annuler.png" alt="cancel"
+                            style="width: 35px; height: 35px;">
+                    </button>
+                    <button type="submit" onclick="saveFormData()" class="btn btn-primary"
+                        style="color: white; width: fit-content;">
+                        Enregistrer
+                        <img src="https://lab.padem.org/wp-content/uploads/save_black.png" alt="save"
+                            style="width: 35px; height: 35px;">
+                    </button>
+                </div>
+            </div>
+        </div>
     </form>
 
     <script>
+        // Récupérer les données de l'utilisateur connecté
+        var userEmail = current_user_data.email;
+        var userRole = current_user_data.roles;
+        var userId = current_user_data.ID;
+
+        // Chargement du DOM
+        document.addEventListener('DOMContentLoaded', function () {
+
+            //#region Vérifier si l'utilisateur connecté est un administrateur, un coordinateur, un chef de projet, un partenaire, un comptable, un consultant ou un bailleur
+            if (userRole.includes('administrator')) {
+                document.getElementById('addProjectButton').style.display = 'block';
+            }
+            else if (userRole.includes('um_coordinateur')) {
+                document.getElementById('addProjectButton').style.display = 'block';
+            }
+            else if (userRole.includes('chef-de-projet')) {
+                document.getElementById('addProjectButton').style.display = 'block';
+            }
+            else if (userRole.includes('partenaire')) {
+                document.getElementById('addProjectButton').style.display = 'none';
+            }
+            else if (userRole.includes('comptable')) {
+                document.getElementById('addProjectButton').style.display = 'none';
+            }
+            else if (userRole.includes('consultant')) {
+                document.getElementById('addProjectButton').style.display = 'none';
+            }
+            else {
+                document.getElementById('addProjectButton').style.display = 'none';
+            }
+            //#endregion
+        });
+
         function saveFormData() {
 
             // Récupérer les informations du formulaire
@@ -93,62 +156,6 @@
                 folder_id: 0,
                 folder_name: '',
             };
-
-            // Récupérer l'image de couverture du projet à envoyer au serveur sous forme de fichier Blob
-            var formData = new FormData();
-            var fileField = document.querySelector('input[type="file"]');
-            var imageData = {}
-
-            //#region Vérifier si un fichier a été sélectionné
-            if (fileField.files.length) {
-                imageData = {
-                    type: 'image',
-                    title: document.getElementById('projectTitle').value,
-                    file_size: fileField.files[0].size,
-                    file_name: fileField.files[0].name,
-                    file_path: fileField.files[0].path,
-                    file_content: fileField.files[0].content,
-                };
-
-                //#region Envoi de l'image de couverture du projet
-                fetch('https://lab.padem.org/wp-json/mo/v1/createMedia', {
-                    method: 'POST',
-                    body: JSON.stringify(imageData),
-                }).then(response => {
-                    if (!response.ok) {
-                        console.error('Erreur lors de la requête vers l\'API.');
-                    }
-                    return response.json();
-                })
-                    .then(data => {
-                        dataInfosPreliminaires.background_image_link = data.file_path;
-                    })
-                    .catch((error) => {
-                        console.error('Error:', error);
-                    });
-                //#endregion
-
-                //#region Récupérer le lien de l'image de couverture du projet
-                fetch('https://lab.padem.org/wp-json/mo/v1/getFileLink', {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                }).then(response => {
-                    if (!response.ok) {
-                        console.error('Erreur lors de la requête vers l\'API.');
-                    }
-                    return response.json();
-                })
-                    .then(data => {
-                        dataInfosPreliminaires.background_image_link = data.url;
-                    })
-                    .catch((error) => {
-                        console.error('Error:', error);
-                    });
-
-            }
-            //#endregion
 
             dataInfosPreliminaires.project_title = document.getElementById('projectTitle').value || 'Titre du projet';
             dataInfosPreliminaires.project_type = document.getElementById('projectType').value || 'Type de projet';
