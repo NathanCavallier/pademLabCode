@@ -47,20 +47,16 @@
 </button>
 <button type="button" class="box-clicable" id="tous"
     style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px; border: none; margin: 5px; padding: 5px;font-size: 13px;">
-    Tous les memebres <p id="number_of_members"
-        style="margin: 3px; padding: 3px; color: white; background-color: #29A6A7;"></p></button>
+    Tous les memebres </button>
 <button type="button" class="box-clicable" id="with_project"
     style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px;border: none; margin: 5px; padding: 5px;font-size: 13px;">
-    Avec projet <p id="number_of_members_whith_project"
-        style="margin: 3px; padding: 3px; color: white; background-color: #29A6A7;"></p></button>
+    Avec projet </button>
 <button type="button" class="box-clicable" id="with_role_without_project"
     style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px;border: none; margin: 5px; padding: 5px;font-size: 13px;">
-    Avec rôle et sans projet <p id="number_of_members_whith_role_only"
-        style="margin: 3px; padding: 3px; color: white; background-color: #29A6A7;"></p></button>
+    Avec rôle et sans projet </button>
 <button type="button" class="box-clicable" id="without_role_without_project"
     style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px;border: none; margin: 5px; padding: 5px;font-size: 13px;">
-    Sans rôle et sans projet <p id="number_of_members_whith_nothing"
-        style="margin: 3px; padding: 3px; color: white; background-color: #29A6A7;"></p></button>
+    Sans rôle et sans projet </button>
 <!--#endregion-->
 
 <hr style="border: 1px solid gray; margin: 10px; padding: 10px;">
@@ -161,9 +157,10 @@
 
     document.addEventListener('DOMContentLoaded', function () {
 
-        document.getElementById('my-project-profile').innerText = 'Cette section sera bientôt disponible';
+        //document.getElementById('my-project-profile').innerText = 'Cette section sera bientôt disponible';
 
         //#region initialiser les zones d'affichages des membres par rôle
+        /*
         document.getElementById('coordinateur_info_text').innerText = 'Aucun coordinateur pour le moment';
         document.getElementById('coordinateur_info_text').style.color = 'gray';
         document.getElementById('coordinateur_info_text').style.display = 'block';
@@ -179,6 +176,7 @@
         document.getElementById('partner_info_text').innerText = 'Aucun partenaire pour le moment';
         document.getElementById('partner_info_text').style.color = 'gray';
         document.getElementById('partner_info_text').style.display = 'block';
+        */
         //#endregion
 
         // Afficher le spinner
@@ -205,7 +203,6 @@
             // Afficher le loader
             //#region Couleurs initiales des boutons
             try {
-                
                 document.getElementById('my_project_profile').style.backgroundColor = menuActiveButtons.unselected_background;
                 document.getElementById('my_project_profile').style.color = menuActiveButtons.unselected_color;
                 document.getElementById('add_member').style.backgroundColor = menuActiveButtons.unselected_background;
