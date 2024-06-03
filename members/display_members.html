@@ -63,6 +63,8 @@
         style="margin: 3px; padding: 3px; color: white; background-color: #29A6A7;"></p></button>
 <!--#endregion-->
 
+<hr style="border: 1px solid gray; margin: 10px; padding: 10px;">
+
 <div class="row" style="height: fit-content;">
     <div class="col">
         <ul id="my-project-profile" style="list-style: none; display: none;"></ul>
@@ -203,6 +205,7 @@
             // Afficher le loader
             //#region Couleurs initiales des boutons
             try {
+                
                 document.getElementById('my_project_profile').style.backgroundColor = menuActiveButtons.unselected_background;
                 document.getElementById('my_project_profile').style.color = menuActiveButtons.unselected_color;
                 document.getElementById('add_member').style.backgroundColor = menuActiveButtons.unselected_background;

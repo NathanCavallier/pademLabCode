@@ -1,28 +1,26 @@
-<div class="container">
-    <form id="reportSubmissionForm">
-        <div class="form-group">
-            <label for="memberName">Votre adresse mail:</label>
-            <input type="text" class="form-control" id="memberName">
-        </div>
-        <div class="form-group">
-            <label for="projectName">Projet concerné:</label>
-            <select class="form-control" id="projectName" required></select>
-        </div>
-        <div class="form-group">
-            <label for="reportType">Type de rapport à fournir:</label>
-            <select class="form-control" id="reportType" required>
-                <option value="progress">Rapport d'avancement</option>
-                <option value="final">Rapport final</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="reportContent">Nom des documents models:</label>
-            <textarea class="form-control" id="reportContent" rows="3" required></textarea>
-        </div>
-        <button type="submit" class="btn btn-primary" style="width: fit-content;">Soumettre la demande de
-            rapport</button>
-    </form>
-</div>
+<form id="reportSubmissionForm" class="container" style="border-radius: 15px;">
+    <div class="form-group">
+        <label for="memberName">Votre adresse mail:</label>
+        <input type="text" class="form-control" id="memberName">
+    </div>
+    <div class="form-group">
+        <label for="projectName">Projet concerné:</label>
+        <select class="form-control" id="projectName" required></select>
+    </div>
+    <div class="form-group">
+        <label for="reportType">Type de rapport à fournir:</label>
+        <select class="form-control" id="reportType" required>
+            <option value="progress">Rapport d'avancement</option>
+            <option value="final">Rapport final</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="reportContent">Nom des documents models:</label>
+        <textarea class="form-control" id="reportContent" rows="3" required></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary" style="width: fit-content;">Soumettre la demande de
+        rapport</button>
+</form>
 
 
 <!-- Afficher la liste de demande de rapport -->
@@ -87,13 +85,13 @@
             },
             body: JSON.stringify(data)
         })
-        .then(response => {
-            if (response.ok) {
-                alert("Demande de rapport soumise avec succès!");
-            } else {
-                console.log("Erreur lors de la soumission du rapport.");
-            }
-        })
-        .catch(error => console.error('Erreur:', error));
+            .then(response => {
+                if (response.ok) {
+                    alert("Demande de rapport soumise avec succès!");
+                } else {
+                    console.log("Erreur lors de la soumission du rapport.");
+                }
+            })
+            .catch(error => console.error('Erreur:', error));
     }
 </script>

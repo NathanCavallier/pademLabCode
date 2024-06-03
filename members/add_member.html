@@ -1,0 +1,1069 @@
+<!--#region Liste des boutons -->
+
+<div style="display: flex; justify-content: flex-end;">
+    <button type="button" class="box-clicable" id="tous"
+        style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px; border: none; margin: 5px; padding: 5px;font-size: 13px;">
+        Tous les membres </button>
+    <button type="button" class="box-clicable" id="with_project"
+        style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px;border: none; margin: 5px; padding: 5px;font-size: 13px;">
+        Avec projet </button>
+    <button type="button" class="box-clicable" id="with_role_without_project"
+        style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px;border: none; margin: 5px; padding: 5px;font-size: 13px;">
+        Avec rôle et sans projet </button>
+    <button type="button" class="box-clicable" id="without_role_without_project"
+        style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px;border: none; margin: 5px; padding: 5px;font-size: 13px;">
+        Sans rôle et sans projet </button>
+</div>
+<!--#endregion-->
+
+<hr style="border: 1px solid gray; margin: 10px; padding: 10px;">
+
+<!--#region Liste des membres -->
+<ul id="tous-" style="list-style: none; display: none;"></ul>
+<ul id="with-project" style="list-style: none; display: none;"></ul>
+<ul id="with-role-without-project" style="list-style: none; display: none;"></ul>
+<ul id="without-role-without-project" style="list-style: none; display: none;"></ul>
+<!--#endregion-->
+
+<!--#region Script des boutons -->
+<script>
+    bacground_colors = {
+        'Administrateur': '#FF0000',
+        'Coordinateur': '#FFA500',
+        'chef-de-projet': '#FFA500',
+        'partenaire': '#008000',
+        'comptable': '#0000FF',
+        'consultant': '#800080',
+        'subscriber': '#808080'
+    };
+    var menuActiveButtons = {
+        'selected_background': '#29A6A7',
+        'selected_color': 'white',
+        'unselected_background': 'white',
+        'unselected_color': 'gray',
+    };
+    // Récupérer les données de l'utilisateur connecté
+    var userEmail = current_user_data.email;
+    var userRoles = current_user_data.roles;
+    var userId = current_user_data.ID;
+
+    // Tableau contenant les rôles et les IDs de tout les utilisateurs
+    var final_table = [];
+    var all_users_roles = JSON.parse(users_IDs_roles);
+
+    var userRole = '';
+    //#region Vérifier le rôle de l'utilisateur connecté
+    if (userRoles.includes('administrator')) {
+        userRole = 'Administrateur';
+    } else if (userRoles.includes('coordinator')) {
+        userRole = 'Coordinateur';
+    } else if (userRoles.includes('chef-de-projet')) {
+        userRole = 'Chef de projet';
+    } else if (userRoles.includes('partner')) {
+        userRole = 'Partenaire';
+    } else if (userRoles.includes('accountant')) {
+        userRole = 'Comptable';
+    } else if (userRoles.includes('consultant')) {
+        userRole = 'Consultant';
+    } else {
+        userRole = 'Abonné';
+    }
+    localStorage.setItem('userRole', userRole);
+    //#endregion
+
+    var users_list = {
+        'bacground_colors': {
+            'Administrateur': '#FF0000',
+            'Coordinateur': '#FFA500',
+            'chef_de_projet': '#FFA500',
+            'partenaire': '#008000',
+            'comptable': '#0000FF',
+            'consultant': '#800080',
+            'Utilisateur': '#808080'
+        },
+        'emails_names': {
+            'Coordinateur': 'coordinator_email',
+            'chef_de_projet': 'chief_email',
+            'partenaire': 'partner_email',
+            'comptable': 'accountant_email',
+            'consultant': 'consultant_email',
+        },
+        'users': {
+            'Coordinateur': [],
+            'chef_de_projet': [],
+            'partenaire': [],
+            'comptable': [],
+            'consultant': []
+        },
+        'urls': {
+            'Administrateur': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
+            'Coordinateur': 'https://lab.padem.org/wp-json/mo/v1/getCoordinator',
+            'chef_de_projet': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
+            'partenaire': 'https://lab.padem.org/wp-json/mo/v1/getPartner',
+            'comptable': 'https://lab.padem.org/wp-json/mo/v1/getAccountant',
+            'consultant': 'https://lab.padem.org/wp-json/mo/v1/getConsultant'
+        }
+    };
+
+    document.addEventListener('DOMContentLoaded', function () {
+
+        document.getElementById('my-project-profile').innerText = 'Cette section sera bientôt disponible';
+
+        //#region initialiser les zones d'affichages des membres par rôle
+        document.getElementById('coordinateur_info_text').innerText = 'Aucun coordinateur pour le moment';
+        document.getElementById('coordinateur_info_text').style.color = 'gray';
+        document.getElementById('coordinateur_info_text').style.display = 'block';
+        document.getElementById('chef_de_projet_info_text').innerText = 'Aucun chef de projet pour le moment';
+        document.getElementById('chef_de_projet_info_text').style.color = 'gray';
+        document.getElementById('chef_de_projet_info_text').style.display = 'block';
+        document.getElementById('accountant_info_text').innerText = 'Aucun comptable pour le moment';
+        document.getElementById('accountant_info_text').style.color = 'gray';
+        document.getElementById('accountant_info_text').style.display = 'block';
+        document.getElementById('consultant_info_text').innerText = 'Aucun consultant pour le moment';
+        document.getElementById('consultant_info_text').style.color = 'gray';
+        document.getElementById('consultant_info_text').style.display = 'block';
+        document.getElementById('partner_info_text').innerText = 'Aucun partenaire pour le moment';
+        document.getElementById('partner_info_text').style.color = 'gray';
+        document.getElementById('partner_info_text').style.display = 'block';
+        //#endregion
+
+        // Afficher le spinner
+        document.getElementById('loading').style.display = 'block';
+        var menuActiveButtons = {
+            'selected_background': '#29A6A7',
+            'selected_color': 'white',
+            'unselected_background': 'white',
+            'unselected_color': 'gray',
+        };
+        // Récupérer les noms et IDs de tout les projets
+        getProjects();
+        // Récupérer la liste de tout les membres de la plate-forme
+        getAllWordPressMembers();
+        
+        try {
+            // Afficher le loader
+            //#region Couleurs initiales des boutons
+            try {
+                document.getElementById('tous').style.backgroundColor = menuActiveButtons.selected_background;
+                document.getElementById('tous').style.color = menuActiveButtons.selected_color;
+                document.getElementById('with_project').style.backgroundColor = menuActiveButtons.unselected_background;
+                document.getElementById('with_project').style.color = menuActiveButtons.unselected_color;
+                document.getElementById('with_role_without_project').style.backgroundColor = menuActiveButtons.unselected_background;
+                document.getElementById('with_role_without_project').style.color = menuActiveButtons.unselected_color;
+                document.getElementById('without_role_without_project').style.backgroundColor = menuActiveButtons.unselected_background;
+                document.getElementById('without_role_without_project').style.color = menuActiveButtons.unselected_color;
+            } catch (error) {
+                console.log('Erreur lors de l\'exécution du script(couleurs initiales des bouttons) :', error);
+            }
+            //#endregion
+
+            //#region État initial des listes
+            try {
+                document.getElementById('coordinateur').style.display = 'block';
+                document.getElementById('chef_de_projet').style.display = 'block';
+                document.getElementById('accountant').style.display = 'block';
+                document.getElementById('consultant').style.display = 'block';
+                document.getElementById('partner').style.display = 'block';
+            } catch (error) {
+                console.log('Erreur lors de l\'exécution du script(état initial des listes) :', error);
+            }
+            //#endregion
+
+            //#region des zones d'affichages
+            try {
+                document.getElementById('tous-').style.display = 'block';
+                document.getElementById('with-project').style.display = 'none';
+                document.getElementById('with-role-without-project').style.display = 'none';
+                document.getElementById('without-role-without-project').style.display = 'none';
+            } catch (error) {
+                console.log('Erreur lors de l\'exécution du script(des zones d\'affichages) :', error);
+            }
+            //#endregion
+
+            // Ajouter un événement pour afficher la liste de tout les membres
+            document.getElementById('tous').addEventListener('click', function () {
+                try {
+                    //#region des zones d'affichages
+                    document.getElementById('my-project-profile').style.display = 'none';
+                    document.getElementById('add-member').style.display = 'none';
+                    document.getElementById('tous-').style.display = 'block';
+                    document.getElementById('with-project').style.display = 'none';
+                    document.getElementById('with-role-without-project').style.display = 'none';
+                    document.getElementById('without-role-without-project').style.display = 'none';
+                    //#endregion
+                    //#region Couleurs des boutons
+                    document.getElementById('my_project_profile').style.backgroundColor = menuActiveButtons.unselected_background;
+                    document.getElementById('my_project_profile').style.color = menuActiveButtons.unselected_color;
+                    document.getElementById('add_member').style.backgroundColor = menuActiveButtons.unselected_background;
+                    document.getElementById('add_member').style.color = menuActiveButtons.unselected_color;
+                    document.getElementById('add_member_button').src = 'https://lab.padem.org/wp-content/uploads/plus.png';
+                    document.getElementById('tous').style.backgroundColor = menuActiveButtons.selected_background;
+                    document.getElementById('tous').style.color = menuActiveButtons.selected_color;
+                    document.getElementById('with_project').style.backgroundColor = menuActiveButtons.unselected_background;
+                    document.getElementById('with_project').style.color = menuActiveButtons.unselected_color;
+                    document.getElementById('with_role_without_project').style.backgroundColor = menuActiveButtons.unselected_background;
+                    document.getElementById('with_role_without_project').style.color = menuActiveButtons.unselected_color;
+                    document.getElementById('without_role_without_project').style.backgroundColor = menuActiveButtons.unselected_background;
+                    document.getElementById('without_role_without_project').style.color = menuActiveButtons.unselected_color;
+                    //#endregion
+
+                    // Afficher la liste de tout les membres
+                    document.getElementById('coordinateur').style.display = 'block';
+                    document.getElementById('chef_de_projet').style.display = 'block';
+                    document.getElementById('accountant').style.display = 'block';
+                    document.getElementById('consultant').style.display = 'block';
+                    document.getElementById('partner').style.display = 'block';
+
+                } catch (error) {
+                    console.log('Erreur lors de l\'exécution du script (boutton "tous") :', error);
+                }
+            });
+
+            // Ajouter un événement pour afficher la liste de tout les membres avec un projet
+            document.getElementById('with_project').addEventListener('click', function () {
+                try {
+                    //#region des zones d'affichages
+                    document.getElementById('my-project-profile').style.display = 'none';
+                    document.getElementById('add-member').style.display = 'none';
+                    document.getElementById('tous-').style.display = 'none';
+                    document.getElementById('with-project').style.display = 'block';
+                    document.getElementById('with-role-without-project').style.display = 'none';
+                    document.getElementById('without-role-without-project').style.display = 'none';
+                    //#endregion
+                    document.getElementById('my_project_profile').style.backgroundColor = menuActiveButtons.unselected_background;
+                    document.getElementById('my_project_profile').style.color = menuActiveButtons.unselected_color;
+                    document.getElementById('add_member').style.backgroundColor = menuActiveButtons.unselected_background;
+                    document.getElementById('add_member').style.color = menuActiveButtons.unselected_color;
+                    document.getElementById('add_member_button').src = 'https://lab.padem.org/wp-content/uploads/plus.png';
+                    document.getElementById('tous').style.backgroundColor = menuActiveButtons.unselected_background;
+                    document.getElementById('tous').style.color = menuActiveButtons.unselected_color;
+                    document.getElementById('with_project').style.backgroundColor = menuActiveButtons.selected_background;
+                    document.getElementById('with_project').style.color = menuActiveButtons.selected_color;
+                    document.getElementById('with_role_without_project').style.backgroundColor = menuActiveButtons.unselected_background;
+                    document.getElementById('with_role_without_project').style.color = menuActiveButtons.unselected_color;
+                    document.getElementById('without_role_without_project').style.backgroundColor = menuActiveButtons.unselected_background;
+                    document.getElementById('without_role_without_project').style.color = menuActiveButtons.unselected_color;
+                } catch (error) {
+                    console.log('Erreur lors de l\'exécution du script (boutton "with_project") :', error);
+                }
+            });
+
+            // Ajouter un événement pour afficher la liste de tout les membres avec un rôle et sans projet
+            document.getElementById('with_role_without_project').addEventListener('click', function () {
+
+                try {
+                    document.getElementById('my-project-profile').style.display = 'none';
+                    document.getElementById('add-member').style.display = 'none';
+                    document.getElementById('tous-').style.display = 'none';
+                    document.getElementById('with-project').style.display = 'none';
+                    document.getElementById('with-role-without-project').style.display = 'block';
+                    document.getElementById('without-role-without-project').style.display = 'none';
+
+                    document.getElementById('my_project_profile').style.backgroundColor = menuActiveButtons.unselected_background;
+                    document.getElementById('my_project_profile').style.color = menuActiveButtons.unselected_color;
+                    document.getElementById('add_member').style.backgroundColor = menuActiveButtons.unselected_background;
+                    document.getElementById('add_member').style.color = menuActiveButtons.unselected_color;
+                    document.getElementById('add_member_button').src = 'https://lab.padem.org/wp-content/uploads/plus.png';
+                    document.getElementById('tous').style.backgroundColor = menuActiveButtons.unselected_background;
+                    document.getElementById('tous').style.color = menuActiveButtons.unselected_color;
+                    document.getElementById('with_project').style.backgroundColor = menuActiveButtons.unselected_background;
+                    document.getElementById('with_project').style.color = menuActiveButtons.unselected_color;
+                    document.getElementById('with_role_without_project').style.backgroundColor = menuActiveButtons.selected_background;
+                    document.getElementById('with_role_without_project').style.color = menuActiveButtons.selected_color;
+                    document.getElementById('without_role_without_project').style.backgroundColor = menuActiveButtons.unselected_background;
+                    document.getElementById('without_role_without_project').style.color = menuActiveButtons.unselected_color;
+                } catch (error) {
+                    console.log('Erreur lors de l\'exécution du script (boutton "with_role_without_project") :', error);
+                }
+            });
+
+            // Ajouter un événement pour afficher la liste de tout les membres sans rôle et sans projet
+            document.getElementById('without_role_without_project').addEventListener('click', function () {
+
+                try {
+                    document.getElementById('my-project-profile').style.display = 'none';
+                    document.getElementById('add-member').style.display = 'none';
+                    document.getElementById('tous-').style.display = 'none';
+                    document.getElementById('with-project').style.display = 'none';
+                    document.getElementById('with-role-without-project').style.display = 'none';
+                    document.getElementById('without-role-without-project').style.display = 'block';
+
+                    document.getElementById('my_project_profile').style.backgroundColor = menuActiveButtons.unselected_background;
+                    document.getElementById('my_project_profile').style.color = menuActiveButtons.unselected_color;
+                    document.getElementById('add_member').style.backgroundColor = menuActiveButtons.unselected_background;
+                    document.getElementById('add_member').style.color = menuActiveButtons.unselected_color;
+                    document.getElementById('tous').style.backgroundColor = menuActiveButtons.unselected_background;
+                    document.getElementById('tous').style.color = menuActiveButtons.unselected_color;
+                    document.getElementById('with_project').style.backgroundColor = menuActiveButtons.unselected_background;
+                    document.getElementById('with_project').style.color = menuActiveButtons.unselected_color;
+                    document.getElementById('with_role_without_project').style.backgroundColor = menuActiveButtons.unselected_background;
+                    document.getElementById('with_role_without_project').style.color = menuActiveButtons.unselected_color;
+                    document.getElementById('without_role_without_project').style.backgroundColor = menuActiveButtons.selected_background;
+                    document.getElementById('without_role_without_project').style.color = menuActiveButtons.selected_color;
+
+                } catch (error) {
+                    console.log('Erreur lors de l\'exécution du script (boutton "without_role_without_project") :', error);
+                }
+            });
+        } catch (error) {
+            console.log('Erreur lors de l\'exécution du script :', error);
+        }
+    });
+
+    // Récupérer les noms et IDs de tout les projets
+    var projects = [];
+    function getProjects() {
+        fetch('https://lab.padem.org/wp-json/mo/v1/getProjectData', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(project => {
+                    projects.push({
+                        'project_id': project.project_id,
+                        'project_title': project.project_title
+                    });
+                });
+            })
+            .catch(error => {
+                console.error('Erreur lors de la récupération des données des projets :', error);
+            });
+    }
+
+    // Récupérer la liste de tout les membres de la plate-forme
+    var all_members = [];
+    function getAllWordPressMembers() {
+
+        var stepper = 0;
+        fetch('https://lab.padem.org/wp-json/mo/v1/getAllMembers', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                var number_of_all_members = data.length;   // Nombre de tout les membres
+                data.forEach(user => {
+                    var userRole = '';
+                    if (all_users_roles.hasOwnProperty(user.ID))
+                        userRole = all_users_roles[user.ID][0];
+                    else
+                        userRole = 'subscriber';
+                    all_members.push({
+                        '_id': user.ID,
+                        'role': userRole,
+                        'display_name': user.display_name,
+                        'email': user.user_email,
+                        'user_registered_date': user.user_registered
+                    });
+                });
+
+                var counter_coordinateur = 0;
+                var counter_chef_de_projet = 0;
+                var counter_comptable = 0;
+                var counter_consultant = 0;
+                var counter_partenaire = 0;
+                var counter_abonne = 0;
+                var counter_with_project = 0;
+                var counter_with_role_without_project = 0;
+                var counter_without_role_without_project = 0;
+
+                // Afficher la liste de tout les membres
+                try {
+                    // Afficher la liste de tout les membres
+                    all_members.forEach(member => {
+
+                        //#region Style du conteneur de l'utilisateur
+                        var li = document.createElement('li');
+                        li.style.backgroundColor = 'white';
+                        li.style.color = 'black';
+                        li.style.border = '1px solid #29A6A7';
+                        li.style.borderRadius = '15px';
+                        li.style.margin = '5px';
+                        li.style.padding = '5px';
+                        li.style.fontSize = '13px';
+                        li.style.width = '100%';
+                        li.style.height = 'fit-content';
+                        li.style.display = 'flex';
+                        li.style.alignItems = 'fit-content';
+                        li.style.justifyContent = 'space-between';
+                        //#endregion
+
+                        //#region Style de la pastille contenant le role de l'utilisateur
+                        var role_span = document.createElement('span');
+                        role_span.style.backgroundColor = 'white';
+                        role_span.style.borderRadius = '15px';
+                        role_span.style.padding = '5px';
+                        role_span.style.margin = '5px';
+                        role_span.style.marginRight = '50px';
+                        role_span.style.fontSize = '13px';
+
+                        if (member.role === 'administrator') {
+                            role_span.innerText = 'Administrateur';
+                            role_span.style.color = '#FF0000';
+                            role_span.style.border = '1px solid #FF0000';
+                        } else if (member.role === 'um_coordinateur') {
+                            role_span.innerText = 'Coordinateur';
+                            role_span.style.color = '#FFA500';
+                            role_span.style.border = '1px solid #FFA500';
+                        } else if (member.role === 'chef-de-projet') {
+                            role_span.innerText = 'Chef de projet';
+                            role_span.style.color = '#FFA500';
+                            role_span.style.border = '1px solid #FFA500';
+                        } else if (member.role === 'partenaire') {
+                            role_span.innerText = 'Partenaire';
+                            role_span.style.color = '#008000';
+                            role_span.style.border = '1px solid #008000';
+                        } else if (member.role === 'comptable') {
+                            role_span.innerText = 'Comptable';
+                            role_span.style.color = '#0000FF';
+                            role_span.style.border = '1px solid #0000FF';
+                        } else if (member.role === 'consultant') {
+                            role_span.innerText = 'Consultant';
+                            role_span.style.color = '#800080';
+                            role_span.style.border = '1px solid #800080';
+                        } else {
+                            role_span.innerText = 'Abonné';
+                            role_span.style.color = '#808080';
+                            role_span.style.border = '1px solid #808080';
+                        }
+                        //#endregion
+
+                        //#region Style du conteneur de l'adresse email de l'utilisateur
+                        var mail_container = document.createElement('span');
+                        mail_container.style.backgroundColor = 'white';
+                        mail_container.style.color = '#29A6A7';
+                        mail_container.style.borderRadius = '15px';
+                        mail_container.style.padding = '5px';
+                        mail_container.style.margin = '5px';
+                        mail_container.style.fontSize = '13px';
+                        mail_container.style.cursor = 'pointer';
+                        mail_container.id = 'mail_container' + member._id;
+                        mail_container.addEventListener('click', function () {
+                            window.location.href = 'mailto:' + member.email;
+                        });
+                        mail_container.innerHTML = member.email;
+                        //#endregion
+
+                        //#region Style pour afficher le sélecteur de projets
+                        getProjects();
+                        var select_projects = document.createElement('select');
+                        select_projects.style.backgroundColor = 'white';
+                        select_projects.style.borderRadius = '15px';
+                        select_projects.style.padding = '5px';
+                        select_projects.style.margin = '5px';
+                        select_projects.style.fontSize = '13px';
+                        select_projects.name = 'projects';
+                        select_projects.id = 'projects' + member._id;
+                        select_projects.innerHTML = `
+                            <option value="0">Choisir un projet</option>
+                        `;
+                        projects.forEach(project => {
+                            var option = document.createElement('option');
+                            option.value = project.project_id;
+                            option.innerText = project.project_title;
+                            select_projects.appendChild(option);
+                        });
+                        //#endregion
+
+                        //#region Style du bouton pour ajouter le membre à un ou plusieurs projets
+                        var add_member_to_project_button = document.createElement('button');
+                        add_member_to_project_button.style.backgroundColor = '#29A6A7';
+                        add_member_to_project_button.style.color = 'white';
+                        add_member_to_project_button.style.borderRadius = '15px';
+                        add_member_to_project_button.style.border = 'none';
+                        add_member_to_project_button.style.padding = '5px';
+                        add_member_to_project_button.style.margin = '5px';
+                        add_member_to_project_button.style.fontSize = '13px';
+                        add_member_to_project_button.innerText = 'Ajouter au projet';
+                        add_member_to_project_button.id = 'add_member_to_project_button' + member._id;
+                        add_member_to_project_button.addEventListener('click', function () {
+                            if (document.getElementById('projects' + member._id).value === '0') {
+                                alert('Veuillez choisir un projet');
+                            } else {
+                                addMemberToProject(document.getElementById('projects' + member._id).value, member.email);
+                                document.getElementById('remove_member_from_project_button' + member._id).style.display = 'block'; 
+                            }
+                        });
+                        //#endregion
+
+                        //#region Formater la date de création de compte de l'utilisateur (jour mois année heure minute)
+                        var formated_date = document.createElement('span');
+                        formated_date.style.backgroundColor = 'white';
+                        formated_date.style.borderRadius = '15px';
+                        formated_date.style.padding = '5px';
+                        formated_date.style.margin = '5px';
+                        formated_date.style.fontSize = '13px';
+                        var date = new Date(member.user_registered_date);
+                        formated_date.innerText = date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
+                        //#endregion
+
+                        //#region Style du conteneur du nom du membre
+                        var name_container = document.createElement('span');
+                        name_container.style.backgroundColor = 'white';
+                        name_container.style.color = 'black';
+                        name_container.style.borderRadius = '15px';
+                        name_container.style.padding = '5px';
+                        name_container.style.margin = '5px';
+                        name_container.style.fontSize = '13px';
+                        name_container.id = 'name_container' + member._id;
+                        name_container.innerHTML = member.display_name;
+                        //#endregion
+
+                        //#region Style du conteneur du numéro de décompte des membres
+                        var numberOfMembers_container = document.createElement('span');
+                        numberOfMembers_container.style.backgroundColor = 'white';
+                        numberOfMembers_container.style.color = '#29A6A7';
+                        numberOfMembers_container.style.borderRadius = '15px';
+                        numberOfMembers_container.style.padding = '5px';
+                        numberOfMembers_container.style.margin = '5px';
+                        numberOfMembers_container.style.fontSize = '13px';
+                        numberOfMembers_container.id = 'numberOfMembers_container' + member._id;
+                        numberOfMembers_container.innerHTML = stepper + 1;
+                        //#endregion
+
+                        //#region Style du conteneur du bouton pour retirer un membre d'un projet
+                        var remove_member_from_project_button = document.createElement('button');
+                        remove_member_from_project_button.style.backgroundColor = '#D13010';
+                        remove_member_from_project_button.style.color = 'white';
+                        remove_member_from_project_button.style.borderRadius = '15px';
+                        remove_member_from_project_button.style.border = 'none';
+                        remove_member_from_project_button.style.padding = '5px';
+                        remove_member_from_project_button.style.margin = '5px';
+                        remove_member_from_project_button.style.fontSize = '13px';
+                        remove_member_from_project_button.innerText = 'Retirer du projet';
+                        remove_member_from_project_button.style.display = 'none';
+                        remove_member_from_project_button.id = 'remove_member_from_project_button' + member._id;
+                        remove_member_from_project_button.addEventListener('click', function () {
+                            if (document.getElementById('projects' + member._id).value === '0') {
+                                alert('Veuillez choisir un projet');
+                            } else {
+                                removeMemberFromProject(document.getElementById('projects' + member._id).value, member.email);
+                            }
+                        });
+                        //#endregion
+
+                        // Incrémenter le décompte des membres
+                        stepper++;
+
+                        li.innerHTML = `
+                           ${numberOfMembers_container.outerHTML}  <i class="fas fa-user"></i> ${name_container.outerHTML}   ${role_span.outerHTML}  ${select_projects.outerHTML}  ${add_member_to_project_button.outerHTML} ${remove_member_from_project_button.outerHTML}
+                        `;
+                        document.getElementById('tous-').appendChild(li);
+                        try {
+
+                            //#region Afficher les membres avec un projet
+                            fetch('https://lab.padem.org/wp-json/mo/v1/getWorkingTable', {
+                                method: 'GET',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                            })
+                                .then(response => response.json())
+                                .then(data => {
+                                    var numberOfProjects = 0;
+                                    var counte_just_one_time = 0;
+                                    data.forEach(project => {
+                                        if (project.user_email === member.email) {
+                                            numberOfProjects++;
+                                            counte_just_one_time++;
+                                            if (counte_just_one_time === 1) {
+                                                counter_with_project++;
+                                            }
+
+                                            var numberOfmember_container = document.createElement('span');
+                                            numberOfmember_container.style.backgroundColor = 'white';
+                                            numberOfmember_container.style.color = '#29A6A7';
+                                            numberOfmember_container.style.borderRadius = '15px';
+                                            numberOfmember_container.style.padding = '5px';
+                                            numberOfmember_container.style.margin = '5px';
+                                            numberOfmember_container.style.fontSize = '13px';
+                                            numberOfmember_container.id = 'numberOfmember_container' + member._id;
+                                            numberOfmember_container.innerText = numberOfProjects + ' projet(s)';
+
+                                            var li_with_project = document.createElement('li');
+                                            li_with_project.style.backgroundColor = 'white';
+                                            li_with_project.style.color = 'black';
+                                            li_with_project.style.border = '1px solid #29A6A7';
+                                            li_with_project.style.borderRadius = '15px';
+                                            li_with_project.style.margin = '5px';
+                                            li_with_project.style.padding = '5px';
+                                            li_with_project.style.fontSize = '13px';
+                                            li_with_project.style.width = '100%';
+                                            li_with_project.style.height = 'fit-content';
+                                            li_with_project.style.display = 'flex';
+                                            li_with_project.style.alignItems = 'fit-content';
+                                            li_with_project.style.justifyContent = 'space-between';
+                                            li_with_project.id = 'li_with_project' + member._id;
+
+                                            // Style du conteneur du numéro de décompte des membres avec un projet
+                                            var numberOfMembersWithProject_container = document.createElement('span');
+                                            numberOfMembersWithProject_container.style.backgroundColor = 'white';
+                                            numberOfMembersWithProject_container.style.color = '#29A6A7';
+                                            numberOfMembersWithProject_container.style.borderRadius = '15px';
+                                            numberOfMembersWithProject_container.style.padding = '5px';
+                                            numberOfMembersWithProject_container.style.margin = '5px';
+                                            numberOfMembersWithProject_container.style.fontSize = '13px';
+                                            numberOfMembersWithProject_container.id = 'numberOfMembersWithProject_container' + member._id;
+                                            numberOfMembersWithProject_container.innerHTML = counter_with_project;
+
+
+                                            li_with_project.innerHTML = `
+                                               ${numberOfMembersWithProject_container.outerHTML}  <i class="fas fa-user"></i>  ${name_container.outerHTML}  ${role_span.outerHTML}  ${select_projects.outerHTML}  ${add_member_to_project_button.outerHTML} ${numberOfmember_container.outerHTML} ${remove_member_from_project_button.outerHTML}
+                                            `;
+                                            document.getElementById('with-project').appendChild(li_with_project);
+                                        }
+                                    });
+                                    if (numberOfProjects === 0) {
+                                        document.getElementById('with-project').innerText = 'Aucun membre avec un projet n\'a été trouvé';
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Erreur lors de la récupération des données de l\'utilisateur :', error);
+                                });
+                            //#endregion
+
+                        } catch (error) {
+                            console.log('Erreur lors de l\'exécution du script (afficher les membres avec un projet) :', error);
+                        }
+
+                        try {
+
+                            //#region Afficher les membres avec un rôle et sans projet
+                            fetch('https://lab.padem.org/wp-json/mo/v1/getWorkingTable', {
+                                method: 'GET',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                            })
+                                .then(response => response.json())
+                                .then(data => {
+                                    var numberOfProjects = 0;
+                                    var counte_just_one_time = 0;
+                                    data.forEach(project => {
+                                        counte_just_one_time++;
+                                        if (project.user_email === member.email) {
+                                            numberOfProjects++;
+                                        }
+                                    });
+                                    if (numberOfProjects === 0 && member.role !== 'subscriber') {
+                                        counter_with_role_without_project++;
+                                        var li_with_role_without_project = document.createElement('li');
+                                        li_with_role_without_project.style.backgroundColor = 'white';
+                                        li_with_role_without_project.style.color = 'black';
+                                        li_with_role_without_project.style.border = '1px solid #29A6A7';
+                                        li_with_role_without_project.style.borderRadius = '15px';
+                                        li_with_role_without_project.style.margin = '5px';
+                                        li_with_role_without_project.style.padding = '5px';
+                                        li_with_role_without_project.style.fontSize = '13px';
+                                        li_with_role_without_project.style.width = '100%';
+                                        li_with_role_without_project.style.height = 'fit-content';
+                                        li_with_role_without_project.style.display = 'flex';
+                                        li_with_role_without_project.style.alignItems = 'left';
+                                        li_with_role_without_project.style.justifyContent = 'space-between';
+                                        li_with_role_without_project.id = 'li_with_role_without_project' + member._id;
+
+                                        // Style du conteneur du numéro de décompte des membres avec un rôle et sans projet
+                                        var numberOfMembersWithRoleWithoutProject_container = document.createElement('span');
+                                        numberOfMembersWithRoleWithoutProject_container.style.backgroundColor = 'white';
+                                        numberOfMembersWithRoleWithoutProject_container.style.color = '#29A6A7';
+                                        numberOfMembersWithRoleWithoutProject_container.style.borderRadius = '15px';
+                                        numberOfMembersWithRoleWithoutProject_container.style.padding = '5px';
+                                        numberOfMembersWithRoleWithoutProject_container.style.margin = '5px';
+                                        numberOfMembersWithRoleWithoutProject_container.style.fontSize = '13px';
+                                        numberOfMembersWithRoleWithoutProject_container.id = 'numberOfMembersWithRoleWithoutProject_container' + member._id;
+                                        numberOfMembersWithRoleWithoutProject_container.innerHTML = counter_with_role_without_project;
+
+                                        li_with_role_without_project.innerHTML = `
+                                           ${numberOfMembersWithRoleWithoutProject_container.outerHTML}  <i class="fas fa-user"></i> ${name_container.outerHTML}   ${role_span.outerHTML}  ${select_projects.outerHTML}  ${add_member_to_project_button.outerHTML} ${remove_member_from_project_button.outerHTML}
+                                        `;
+                                        document.getElementById('with-role-without-project').appendChild(li_with_role_without_project);
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Erreur lors de la récupération des données de l\'utilisateur :', error);
+                                });
+                            //#endregion
+
+                        } catch (error) {
+                            console.log('Erreur lors de l\'exécution du script (afficher les membres avec un rôle et sans projet) :', error);
+                        }
+
+                        try {
+
+                            //#region Afficher les membres sans rôle et sans projet
+                            fetch('https://lab.padem.org/wp-json/mo/v1/getWorkingTable', {
+                                method: 'GET',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                            })
+                                .then(response => response.json())
+                                .then(data => {
+                                    var numberOfProjects = 0;
+                                    var counte_just_one_time = 0;
+                                    data.forEach(project => {
+                                        if (project.user_email === member.email) {
+                                            numberOfProjects++;
+                                        }
+                                    });
+                                    if (numberOfProjects === 0 && member.role === 'subscriber') {
+                                        counter_without_role_without_project++;
+                                        var li_without_role_without_project = document.createElement('li');
+                                        li_without_role_without_project.style.backgroundColor = 'white';
+                                        li_without_role_without_project.style.color = 'black';
+                                        li_without_role_without_project.style.border = '1px solid #29A6A7';
+                                        li_without_role_without_project.style.borderRadius = '15px';
+                                        li_without_role_without_project.style.margin = '5px';
+                                        li_without_role_without_project.style.padding = '5px';
+                                        li_without_role_without_project.style.fontSize = '13px';
+                                        li_without_role_without_project.style.width = '100%';
+                                        li_without_role_without_project.style.height = 'fit-content';
+                                        li_without_role_without_project.style.display = 'flex';
+                                        li_without_role_without_project.style.alignItems = 'left';
+                                        li_without_role_without_project.style.justifyContent = 'space-between';
+                                        li_without_role_without_project.id = 'li_without_role_without_project' + member._id;
+
+                                        // Style du conteneur du numéro de décompte des membres sans rôle et sans projet
+                                        var numberOfMembersWithoutRoleWithoutProject_container = document.createElement('span');
+                                        numberOfMembersWithoutRoleWithoutProject_container.style.backgroundColor = 'white';
+                                        numberOfMembersWithoutRoleWithoutProject_container.style.color = '#29A6A7';
+                                        numberOfMembersWithoutRoleWithoutProject_container.style.borderRadius = '15px';
+                                        numberOfMembersWithoutRoleWithoutProject_container.style.padding = '5px';
+                                        numberOfMembersWithoutRoleWithoutProject_container.style.margin = '5px';
+                                        numberOfMembersWithoutRoleWithoutProject_container.style.fontSize = '13px';
+                                        numberOfMembersWithoutRoleWithoutProject_container.id = 'numberOfMembersWithoutRoleWithoutProject_container' + member._id;
+                                        numberOfMembersWithoutRoleWithoutProject_container.innerHTML = counter_without_role_without_project;
+
+                                        li_without_role_without_project.innerHTML = `
+                                           ${numberOfMembersWithoutRoleWithoutProject_container.outerHTML}  <i class="fas fa-user"></i> ${name_container.outerHTML}  ${role_span.outerHTML} ${select_projects.outerHTML}  ${add_member_to_project_button.outerHTML} ${remove_member_from_project_button.outerHTML}
+                                        `;
+                                        document.getElementById('without-role-without-project').appendChild(li_without_role_without_project);
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Erreur lors de la récupération des données de l\'utilisateur :', error);
+                                });
+                            //#endregion
+
+                        } catch (error) {
+
+                        }
+
+                        try {
+
+                            //#region Afficher les membres par rôle(Coordinateur, Chef de projet, Comptable, Consultant, Partenaire)
+                            if (member.role === 'um_coordinateur' || member.role === 'administrator') {
+                                counter_coordinateur++;
+                                var li_coordinateur = document.createElement('li');
+                                li_coordinateur.style.backgroundColor = 'white';
+                                li_coordinateur.style.color = 'black';
+                                li_coordinateur.style.border = '1px solid #29A6A7';
+                                li_coordinateur.style.borderRadius = '15px';
+                                li_coordinateur.style.margin = '5px';
+                                li_coordinateur.style.padding = '5px';
+                                li_coordinateur.style.fontSize = '13px';
+                                li_coordinateur.style.width = '100%';
+                                li_coordinateur.style.height = 'fit-content';
+                                li_coordinateur.style.display = 'flex';
+                                li_coordinateur.style.alignItems = 'left';
+                                li_coordinateur.style.justifyContent = 'space-between';
+                                li_coordinateur.id = 'coordinateur' + member._id;
+
+                                // Style du conteneur du numéro de décompte des coordinateurs
+                                var numberOfCoordinators_container = document.createElement('span');
+                                numberOfCoordinators_container.style.backgroundColor = '#29A6A7';
+                                numberOfCoordinators_container.style.color = 'white';
+                                numberOfCoordinators_container.style.borderRadius = '15px';
+                                numberOfCoordinators_container.style.padding = '5px';
+                                numberOfCoordinators_container.style.margin = '5px';
+                                numberOfCoordinators_container.style.fontSize = '13px';
+                                numberOfCoordinators_container.id = 'numberOfCoordinators_container' + member._id;
+                                numberOfCoordinators_container.innerHTML = counter_coordinateur;
+
+                                li_coordinateur.innerHTML = `
+                                   ${numberOfCoordinators_container.outerHTML}  <i class="fas fa-user"></i>  ${name_container.outerHTML} ${role_span.outerHTML}  ${select_projects.outerHTML}  ${add_member_to_project_button.outerHTML} ${remove_member_from_project_button.outerHTML}
+                                `;
+                                document.getElementById('coordinateur_info_text').style.display = 'none';
+                                document.getElementById('coordinateur').appendChild(li_coordinateur);
+                            }
+                            else if (member.role === 'chef-de-projet') {
+                                counter_chef_de_projet++;
+                                var li_chef_de_projet = document.createElement('li');
+                                li_chef_de_projet.style.backgroundColor = 'white';
+                                li_chef_de_projet.style.color = 'black';
+                                li_chef_de_projet.style.border = '1px solid #29A6A7';
+                                li_chef_de_projet.style.borderRadius = '15px';
+                                li_chef_de_projet.style.margin = '5px';
+                                li_chef_de_projet.style.padding = '5px';
+                                li_chef_de_projet.style.fontSize = '13px';
+                                li_chef_de_projet.style.width = '100%';
+                                li_chef_de_projet.style.height = 'fit-content';
+                                li_chef_de_projet.style.display = 'flex';
+                                li_chef_de_projet.style.alignItems = 'left';
+                                li_chef_de_projet.style.justifyContent = 'space-between';
+                                li_chef_de_projet.id = 'chef_de_projet' + member._id;
+
+                                // Style du conteneur du numéro de décompte des chefs de projet
+                                var numberOfProjectManagers_container = document.createElement('span');
+                                numberOfProjectManagers_container.style.backgroundColor = '#29A6A7';
+                                numberOfProjectManagers_container.style.color = 'white';
+                                numberOfProjectManagers_container.style.borderRadius = '15px';
+                                numberOfProjectManagers_container.style.padding = '5px';
+                                numberOfProjectManagers_container.style.margin = '5px';
+                                numberOfProjectManagers_container.style.fontSize = '13px';
+                                numberOfProjectManagers_container.id = 'numberOfProjectManagers_container' + member._id;
+                                numberOfProjectManagers_container.innerHTML = counter_chef_de_projet;
+
+                                li_chef_de_projet.innerHTML = `
+                                   ${numberOfProjectManagers_container.outerHTML}  <i class="fas fa-user"></i> ${name_container.outerHTML}  ${select_projects.outerHTML}  ${add_member_to_project_button.outerHTML} ${remove_member_from_project_button.outerHTML}
+                                `;
+                                document.getElementById('chef_de_projet_info_text').style.display = 'none';
+                                document.getElementById('chef_de_projet').appendChild(li_chef_de_projet);
+                            }
+                            else if (member.role === 'comptable') {
+                                counter_comptable++;
+                                var li_comptable = document.createElement('li');
+                                li_comptable.style.backgroundColor = 'white';
+                                li_comptable.style.color = 'black';
+                                li_comptable.style.border = '1px solid #29A6A7';
+                                li_comptable.style.borderRadius = '15px';
+                                li_comptable.style.margin = '5px';
+                                li_comptable.style.padding = '5px';
+                                li_comptable.style.fontSize = '13px';
+                                li_comptable.style.width = '100%';
+                                li_comptable.style.height = 'fit-content';
+                                li_comptable.style.display = 'flex';
+                                li_comptable.style.alignItems = 'left';
+                                li_comptable.style.justifyContent = 'space-between';
+                                li_comptable.id = 'accountant' + member._id;
+
+                                // Style du conteneur du numéro de décompte des comptables
+                                var numberOfAccountants_container = document.createElement('span');
+                                numberOfAccountants_container.style.backgroundColor = '#29A6A7';
+                                numberOfAccountants_container.style.color = 'white';
+                                numberOfAccountants_container.style.borderRadius = '15px';
+                                numberOfAccountants_container.style.padding = '5px';
+                                numberOfAccountants_container.style.margin = '5px';
+                                numberOfAccountants_container.style.fontSize = '13px';
+                                numberOfAccountants_container.id = 'numberOfAccountants_container' + member._id;
+                                numberOfAccountants_container.innerHTML = counter_comptable;
+
+                                li_comptable.innerHTML = `
+                                    ${numberOfAccountants_container.outerHTML}  <i class="fas fa-user"></i> ${name_container.outerHTML}  ${select_projects.outerHTML}  ${add_member_to_project_button.outerHTML} ${remove_member_from_project_button.outerHTML}
+                                `;
+                                document.getElementById('accountant_info_text').style.display = 'none';
+                                document.getElementById('accountant').appendChild(li_comptable);
+                            }
+                            else if (member.role === 'consultant') {
+                                counter_consultant++;
+                                var li_consultant = document.createElement('li');
+                                li_consultant.style.backgroundColor = 'white';
+                                li_consultant.style.color = 'black';
+                                li_consultant.style.border = '1px solid #29A6A7';
+                                li_consultant.style.borderRadius = '15px';
+                                li_consultant.style.margin = '5px';
+                                li_consultant.style.padding = '5px';
+                                li_consultant.style.fontSize = '13px';
+                                li_consultant.style.width = '100%';
+                                li_consultant.style.height = 'fit-content';
+                                li_consultant.style.display = 'flex';
+                                li_consultant.style.alignItems = 'left';
+                                li_consultant.style.justifyContent = 'space-between';
+                                li_consultant.id = 'consultant' + member._id;
+
+                                // Style du conteneur du numéro de décompte des consultants
+                                var numberOfConsultants_container = document.createElement('span');
+                                numberOfConsultants_container.style.backgroundColor = '#29A6A7';
+                                numberOfConsultants_container.style.color = 'white';
+                                numberOfConsultants_container.style.borderRadius = '15px';
+                                numberOfConsultants_container.style.padding = '5px';
+                                numberOfConsultants_container.style.margin = '5px';
+                                numberOfConsultants_container.style.fontSize = '13px';
+                                numberOfConsultants_container.id = 'numberOfConsultants_container' + member._id;
+                                numberOfConsultants_container.innerHTML = counter_consultant;
+
+                                li_consultant.innerHTML = `
+                                   ${numberOfConsultants_container.outerHTML}  <i class="fas fa-user"></i> ${name_container.outerHTML} ${select_projects.outerHTML}  ${add_member_to_project_button.outerHTML} ${remove_member_from_project_button.outerHTML}
+                                `;
+                                document.getElementById('consultant_info_text').style.display = 'none';
+                                document.getElementById('consultant').appendChild(li_consultant);
+                            }
+                            else if (member.role === 'partenaire') {
+                                counter_partenaire++;
+                                var li_partenaire = document.createElement('li');
+                                li_partenaire.style.backgroundColor = 'white';
+                                li_partenaire.style.color = 'black';
+                                li_partenaire.style.border = '1px solid #29A6A7';
+                                li_partenaire.style.borderRadius = '15px';
+                                li_partenaire.style.margin = '5px';
+                                li_partenaire.style.padding = '5px';
+                                li_partenaire.style.fontSize = '13px';
+                                li_partenaire.style.width = '100%';
+                                li_partenaire.style.height = 'fit-content';
+                                li_partenaire.style.display = 'flex';
+                                li_partenaire.style.alignItems = 'left';
+                                li_partenaire.style.justifyContent = 'space-between';
+                                li_partenaire.id = 'partner' + member._id;
+
+                                // Style du conteneur du numéro de décompte des partenaires
+                                var numberOfPartners_container = document.createElement('span');
+                                numberOfPartners_container.style.backgroundColor = '#29A6A7';
+                                numberOfPartners_container.style.color = 'white';
+                                numberOfPartners_container.style.borderRadius = '15px';
+                                numberOfPartners_container.style.padding = '5px';
+                                numberOfPartners_container.style.margin = '5px';
+                                numberOfPartners_container.style.fontSize = '13px';
+                                numberOfPartners_container.id = 'numberOfPartners_container' + member._id;
+                                numberOfPartners_container.innerHTML = counter_partenaire;
+
+                                li_partenaire.innerHTML = `
+                                    ${numberOfPartners_container.outerHTML}  <i class="fas fa-user"></i> ${name_container.outerHTML}  ${select_projects.outerHTML}  ${add_member_to_project_button.outerHTML} ${remove_member_from_project_button.outerHTML}
+                                `;
+                                document.getElementById('partner_info_text').style.display = 'none';
+                                document.getElementById('partner').appendChild(li_partenaire);
+                            }
+
+                            //#endregion
+
+                        } catch (error) {
+                            console.log('Erreur lors de l\'exécution du script (afficher les membres par rôle) :', error);
+                        }
+                    });
+
+                } catch (error) {
+                    console.log('Erreur lors de l\'exécution du script (afficher la liste des membres) :', error);
+                }
+                // Masquer le spinner
+                document.getElementById('loading').style.display = 'none';
+            })
+            .catch(error => {
+                console.error('Erreur lors de la récupération des données de l\'utilisateur :', error);
+            });
+    }
+
+    // Ajouter un membre à un projet
+    function addMemberToProject(projectId, member_email) {
+        var member = {
+            'project_id': projectId,
+            'user_email': member_email
+        };
+
+        //#region Vérifier si le membre est déjà dans le projet
+        fetch('https://lab.padem.org/wp-json/mo/v1/getWorkingTable', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                var isMemberAlreadyInProject = false;
+                data.forEach(project => {
+                    if (project.project_id === projectId && project.user_email === member_email) {
+                        isMemberAlreadyInProject = true;
+                    }
+                });
+                if (isMemberAlreadyInProject) {
+                    alert('Le membre est déjà dans le projet');
+                } else {
+                    // Ajouter le membre au projet
+                    fetch('https://lab.padem.org/wp-json/mo/v1/createWorkingTable', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(member),
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            alert('Membre ajouté avec succès !');
+                            console.log('Membre ajouté avec succès :', data);
+                        })
+                        .catch(error => {
+                            console.error('Erreur lors de l\'ajout du membre :', error);
+                        });
+                }
+            })
+            .catch(error => {
+                console.error('Erreur lors de la récupération des données des projets :', error);
+            });
+        //#endregion
+    }
+
+    // Retirer un membre d'un projet
+    function removeMemberFromProject(projectId, member_email) {
+        var member = {
+            'project_id': projectId,
+            'user_email': member_email
+        };
+
+        //#region Vérifier si le membre est déjà dans le projet
+        fetch('https://lab.padem.org/wp-json/mo/v1/getWorkingTable', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                var isMemberAlreadyInProject = false;
+                var all_emails = [];
+                var id = 0;
+                data.forEach(project => {
+                    all_emails.push(project.user_email);
+                    if (project.project_id === projectId && project.user_email === member_email) {
+                        isMemberAlreadyInProject = true;
+                        id = project.id;
+                    }
+                });
+                if (!isMemberAlreadyInProject) {
+                    alert('Le membre n\'est pas dans le projet');
+                } else {
+                    var new_emails = all_emails.filter(email => email !== member_email);
+                    // Retirer le membre du projet
+                    fetch('https://lab.padem.org/wp-json/mo/v1/removeWorkingTable', {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            'id': id,
+                        }),
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            // Mettre à jour la liste des membres
+                            fetch('https://lab.padem.org/wp-json/mo/v1/createWorkingTable', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                            })
+                                .then(response => response.json())
+                                .then(data => {
+                                    console.log('Liste des membres mise à jour avec succès :', data);
+                                })
+                                .catch(error => {
+                                    console.error('Erreur lors de la récupération des données des projets :', error);
+                                });
+                            alert('Membre retiré avec succès !');
+                            console.log('Membre retiré avec succès :', data);
+                        })
+                        .catch(error => {
+                            console.error('Erreur lors du retrait du membre :', error);
+                        });
+                }
+            })
+            .catch(error => {
+                console.error('Erreur lors de la récupération des données des projets :', error);
+            });
+        //#endregion
+    }
+
+</script>
+<!--#endregion-->
