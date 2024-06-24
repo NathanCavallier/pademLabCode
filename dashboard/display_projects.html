@@ -117,7 +117,7 @@
         var numberOfNewMessages = 0;
         var numberOfNewNotifications = 0;
         var allProjectsIds = [];
-        var allConnectedUserProjectsIds = [];
+        var allUserProjectsIds = [];
         var numberOfParticipantsInProject = new Array().fill(0);
 
         //#region Récupérer les ids de tous les projets
@@ -226,7 +226,7 @@
                     // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
                     if (allProjectsIds.includes(user.project_id)) {
                         if (user.chief_email === userEmail) {
-                            allConnectedUserProjectsIds.push(user.project_id);
+                            allUserProjectsIds.push(user.project_id);
                         }
                     }
                 });
@@ -249,7 +249,7 @@
                     // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
                     if (allProjectsIds.includes(user.project_id)) {
                         if (user.coordinator_email === userEmail) {
-                            allConnectedUserProjectsIds.push(user.project_id); // Ajouter l'ID du projet à la liste des projets de l'utilisateur connecté
+                            allUserProjectsIds.push(user.project_id); // Ajouter l'ID du projet à la liste des projets de l'utilisateur connecté
                         }
                     }
                 });
@@ -272,7 +272,7 @@
                     // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
                     if (allProjectsIds.includes(user.project_id)) {
                         if (user.chief_email === userEmail) {
-                            allConnectedUserProjectsIds.push(user.project_id);
+                            allUserProjectsIds.push(user.project_id);
                         }
                     }
                 });
@@ -295,7 +295,7 @@
                     // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
                     if (allProjectsIds.includes(user.project_id)) {
                         if (user.partner_email === userEmail) {
-                            allConnectedUserProjectsIds.push(user.project_id);
+                            allUserProjectsIds.push(user.project_id);
                         }
                     }
                 });
@@ -318,7 +318,7 @@
                     // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
                     if (allProjectsIds.includes(user.project_id)) {
                         if (user.accountant_email === userEmail) {
-                            allConnectedUserProjectsIds.push(user.project_id);
+                            allUserProjectsIds.push(user.project_id);
                         }
                     }
                 });
@@ -341,7 +341,7 @@
                     // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
                     if (allProjectsIds.includes(user.project_id)) {
                         if (user.consultant_email === userEmail) {
-                            allConnectedUserProjectsIds.push(user.project_id);
+                            allUserProjectsIds.push(user.project_id);
                         }
                     }
                 });
@@ -364,7 +364,7 @@
                     // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
                     if (allProjectsIds.includes(user.project_id)) {
                         if (user.funder_email === userEmail) {
-                            allConnectedUserProjectsIds.push(user.project_id);
+                            allUserProjectsIds.push(user.project_id);
                         }
                     }
                 });
@@ -375,6 +375,34 @@
         //#endregion
 
         //#endregion
+
+        // Vérifier si l'utilisateur est dans un projet ou non (Api: https://lab.padem.org/wp-json/mo/v1/getWorkingTable)
+        fetch('https://lab.padem.org/wp-json/mo/v1/getWorkingTable', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(table => {
+                    var allUsersEmails = JSON.parse(table.users_emails_list) || [];
+                    console.log(allUsersEmails);
+                    if (allUsersEmails.project_referent !== null && allUsersEmails.project_referent !== undefined && allUsersEmails.project_referent !== '') {
+                        if (allUsersEmails.project_referent === userEmail) {
+                            allUserProjectsIds.push(table.project_id);
+                        }
+                    } else if (allUsersEmails.padem_responsible !== null && allUsersEmails.padem_responsible !== undefined && allUsersEmails.padem_responsible !== '') {
+                        if (allUsersEmails.padem_responsible === userEmail) {
+                            allUserProjectsIds.push(table.project_id);
+                        }
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+
 
         // Récupérer la liste des projets depuis la base de données (à partir de l'API (https://lab.padem.org/wp-json/mo/v1/getProjects))
         // les projets sont affichés dans des cartes individuelles
@@ -394,14 +422,7 @@
                 var isClicked = false;
                 // Parcourir la liste des projets
                 data.forEach(project => {
-
-                    // Vérifier si le projet est dans la liste des projets de l'utilisateur connecté
-                    if (allConnectedUserProjectsIds.includes(project.project_id)) {
-                        isUserInOneProject = true;
-                    } else {
-                        isUserInOneProject = true;
-                    }
-
+                    // Créer une carte pour chaque projet
                     var card = document.createElement('div');
                     card.className = 'card';
                     card.style.borderRadius = '15px';
@@ -482,7 +503,9 @@
                     card.style.color = 'gray'; // Change la couleur de la police
                     //#endregion
 
-                    if (isUserInOneProject) {
+                    if (allUserProjectsIds.includes(project.project_id)) {
+                        // L'utilisateur est dans le projet
+                        isUserInOneProject = true;
                         // Afficher les projets en fonction du filtre
                         card.innerHTML = `
                             <div class="card" id="card_id_${project.project_id}" alt="${project.project_title}"> 

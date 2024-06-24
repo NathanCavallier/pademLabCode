@@ -91,13 +91,13 @@
 <div class="container">
     <form id="progressReportForm" style="display: none;">
         <div class="form-group">
-            <label for="progressReportName">Nom du rapport d'avancement: </label>
+            <label for="progressReportName">Nom du rapport d'avancement:  <span style="color: red;">*</span></label>
             <input type="text" class="form-control" id="progressReportName" required>
         </div>
         <div style="margin-top: 5px;"></div>
 
         <div class="form-group">
-            <label for="progressReportType">Type de rapport: </label>
+            <label for="progressReportType">Type de rapport:  <span style="color: red;">*</span></label>
             <select class="form-control" id="progressReportType" required>
                 <option value="progress">Rapport d'avancement</option>
                 <option value="final">Rapport final</option>
@@ -106,13 +106,13 @@
         <div style="margin-top: 5px;"></div>
 
         <div class="form-group">
-            <label for="progressReportContent">Ajouter des commentaires:</label>
+            <label for="progressReportContent">Ajouter des commentaires: <span style="color: red;">*</span></label>
             <textarea class="form-control" id="progressReportContent" rows="4" required></textarea>
         </div>
         <div style="margin-top: 5px;"></div>
 
         <div class="form-group">
-            <label for="progressReportFiles">Saisir tous les noms des fichiers à joindre au rapport: </label>
+            <label for="progressReportFiles">Saisir tous les noms des fichiers à joindre au rapport:  <span style="color: red;">*</span></label>
             <textarea type="text" class="form-control" id="progressReportFiles" rows="6" required></textarea>
         </div>
         <div style="margin-top: 10px;"></div>
