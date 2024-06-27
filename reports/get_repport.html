@@ -1,0 +1,115 @@
+<!-- Description de la page: Afficher la liste des rapports sous forme de liste (ul et li)-->
+<div class="container" style="color: gray;">
+    <div class="row">
+        <div class="col-md-12">
+            <ul class="list-group" id="reportsList_" style="list-style: none;">
+                <!-- Les rapports seront affichés ici -->
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    
+    document.addEventListener('DOMContentLoaded', function () {
+        getReports();
+    });
+
+    //#region Fonction pour soumettre le rapport
+    function submitReport() {
+        //#region Récupérer les types de rapports(https://lab.padem.org/wp-json/mo/v1/getReportTypes)
+        fetch('https://lab.padem.org/wp-json/mo/v1/getReportTypes',
+            {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Vérifier si le type de rapport est valide
+                if (data.length > 0) {
+                    data.forEach(report_type => {
+                        if (report_type.report_type_name !== null && report_type.report_type_name !== '' && report_type.report_type_name === undefined) {
+                            var option = document.createElement('option');
+                            option.value = report_type.report_type_name;
+                            option.text = report_type.report_type_name;
+                            document.getElementById('progressReportType').appendChild(option);
+                        }
+                    });
+                } else {
+                    var option = document.createElement('option');
+                    option.value = 'Aucun type de rapport trouvé';
+                    option.text = 'Aucun type de rapport trouvé';
+                    document.getElementById('progressReportType').appendChild(option);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        //#endregion
+
+        var reportName = document.getElementById('progressReportName').value;
+        var reportType = document.getElementById('progressReportType').value;
+        var reportContent = document.getElementById('progressReportContent').value;
+        var reportFiles = document.getElementById('progressReportFiles').value;
+        var project_id = parseInt(new URLSearchParams(window.location.search).get('projectId'));
+
+        if (reportName === '' || reportType === '' || reportContent === '' || reportFiles === '') {
+            Swal.fire({
+                icon: 'error',
+                title: 'Erreur',
+                text: 'Veuillez remplir tous les champs'
+            });
+            return;
+        }
+
+        if (reportType === 'progress') {
+            rapports_avancement = {
+                'rapport_name': reportName,
+                'rapport_type': reportType,
+                'rapport_content': reportContent,
+                'rapport_files': reportFiles,
+                'created_date': new Date().toLocaleString(),
+            };
+            rapports_finaux = null;
+        } else {
+            rapports_finaux = {
+                'rapport_name': reportName,
+                'rapport_type': reportType,
+                'rapport_content': reportContent,
+                'rapport_files': reportFiles,
+                'created_date': new Date().toLocaleString(),
+            };
+            rapports_avancement = null;
+        }
+
+
+        var data = {
+            'project_id': project_id,
+            'rapports_avancement': JSON.stringify(rapports_avancement),
+            'rapports_finaux': JSON.stringify(rapports_finaux)
+        };
+
+        fetch('https://lab.padem.org/wp-json/mo/v1/createReport', {
+            method: 'POST',
+            body: JSON.stringify(data),
+        })
+            .then(response => response.json())
+            .then(data => {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Succès',
+                    text: 'Le rapport a été soumis avec succès'
+                });
+                document.getElementById('progressReportForm').reset() = 'none';
+                document.getElementById('showReportForm').innerText = 'Ajouter un projet';
+                getReports();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+    //#endregion
+</script>

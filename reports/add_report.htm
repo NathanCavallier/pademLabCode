@@ -23,7 +23,6 @@
     </div>
 </div>
 
-
 <!-- Description de la page: Afficher les informations d'un rapport -->
 <div class="container">
     <div class="row">
@@ -50,32 +49,6 @@
 </div>
 
 
-<!-- Description de la page: Afficher la liste des rapports d'avancement sous forme de liste (ul et li)-->
-<div class="container" style="color: gray;">
-    <div class="row">
-        <div class="col-md-12">
-            <ul class="list-group" id="reportsList_avancement" style="list-style: none;">
-                <!-- Les rapports seront affichés ici -->
-            </ul>
-
-        </div>
-    </div>
-</div>
-
-
-<!-- Description de la page: Afficher la liste des rapports finaux sous forme de liste (ul et li) -->
-<div class="container" style="color: gray;">
-    <div class="row">
-        <div class="col-md-12">
-            <ul class="list-group" id="reportsList_final" style="list-style: none;">
-                <!-- Les rapports seront affichés ici -->
-            </ul>
-
-        </div>
-    </div>
-</div>
-
-
 <!-- Description de la page: Bouton pour afficher/masquer le formulaire d'ajout de rapport -->
 <div class="container">
     <div class="row">
@@ -91,16 +64,15 @@
 <div class="container">
     <form id="progressReportForm" style="display: none;">
         <div class="form-group">
-            <label for="progressReportName">Nom du rapport d'avancement:  <span style="color: red;">*</span></label>
+            <label for="progressReportName">Nom du rapport: <span style="color: red;">*</span></label>
             <input type="text" class="form-control" id="progressReportName" required>
         </div>
         <div style="margin-top: 5px;"></div>
 
         <div class="form-group">
-            <label for="progressReportType">Type de rapport:  <span style="color: red;">*</span></label>
+            <label for="progressReportType">Type de rapport: <span style="color: red;">*</span></label>
             <select class="form-control" id="progressReportType" required>
-                <option value="progress">Rapport d'avancement</option>
-                <option value="final">Rapport final</option>
+                <option value="">Sélectionner le type de rapport</option>
             </select>
         </div>
         <div style="margin-top: 5px;"></div>
@@ -112,7 +84,8 @@
         <div style="margin-top: 5px;"></div>
 
         <div class="form-group">
-            <label for="progressReportFiles">Saisir tous les noms des fichiers à joindre au rapport:  <span style="color: red;">*</span></label>
+            <label for="progressReportFiles">Saisir tous les noms des fichiers à joindre au rapport: <span
+                    style="color: red;">*</span></label>
             <textarea type="text" class="form-control" id="progressReportFiles" rows="6" required></textarea>
         </div>
         <div style="margin-top: 10px;"></div>
@@ -129,7 +102,6 @@
     // Récupérer les rapports
     document.addEventListener('DOMContentLoaded', function (e) {
         e.preventDefault();
-        getReports();
     });
 
     // Ajouter un événement pour afficher/masquer le formulaire d'ajout de rapport
@@ -154,133 +126,34 @@
         submitReport();
     });
 
-    //#region Fonction pour soumettre le rapport
-    function submitReport() {
-        var reportName = document.getElementById('progressReportName').value;
-        var reportType = document.getElementById('progressReportType').value;
-        var reportContent = document.getElementById('progressReportContent').value;
-        var reportFiles = document.getElementById('progressReportFiles').value;
+    //#region Fonction récupérer les rapports
+    function getReports() {
+        //#region Récupérer les rapports qui font partie du projet (https://lab.padem.org/wp-json/mo/v1/getWorkingTable)
+        var all_reports_ids = [];
         var project_id = parseInt(new URLSearchParams(window.location.search).get('projectId'));
-
-        if (reportName === '' || reportType === '' || reportContent === '' || reportFiles === '') {
-            Swal.fire({
-                icon: 'error',
-                title: 'Erreur',
-                text: 'Veuillez remplir tous les champs'
-            });
-            return;
-        }
-
-        var users_list = {
-            'emails_names': {
-                'Coordinateur': 'coordinator_email',
-                'Chef de projet': 'chief_email',
-                'partenaire': 'partner_email',
-                'comptable': 'accountant_email',
-                'consultant': 'consultant_email',
-                'bailleur': 'funder_email'
-            },
-            'users': {
-                'Coordinateur': [],
-                'Chef de projet': [],
-                'partenaire': [],
-                'comptable': [],
-                'consultant': [],
-                'bailleur': []
-            },
-            'urls': {
-                'Administrateur': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
-                'Coordinateur': 'https://lab.padem.org/wp-json/mo/v1/getCoordinator',
-                'Chef de projet': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
-                'partenaire': 'https://lab.padem.org/wp-json/mo/v1/getPartner',
-                'comptable': 'https://lab.padem.org/wp-json/mo/v1/getAccountant',
-                'consultant': 'https://lab.padem.org/wp-json/mo/v1/getConsultant',
-                'bailleur': 'https://lab.padem.org/wp-json/mo/v1/getFunder'
-            }
-        };
-
-        var reportReceivers = new Array();
-        // Récupérer le référent du projet
-        var referent = document.getElementById('projectReferentEmail_').value;
-        reportReceivers.push(referent);
-        // Récupérer les destinataires (Coordinateur, Chef de projet, partenaire, comptable, consultant, bailleur du projet)
-        for (var key in users_list.emails_names) {
-            var url = users_list.urls[key];
-            fetch(url, {
+        fetch('https://lab.padem.org/wp-json/mo/v1/getWorkingTable',
+            {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
                 }
             })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        if (data.project_id === project_id) {
-                            users_list.users[key] = data.email;
-                            reportReceivers.push(data[users_list.emails_names[key]]);
-                        }
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-        }
-
-        var rapports_avancement = {};
-        var rapports_finaux = {};
-
-        if (reportType === 'progress') {
-            rapports_avancement = {
-                'rapport_name': reportName,
-                'rapport_receivers': reportReceivers,
-                'rapport_type': reportType,
-                'rapport_content': reportContent,
-                'rapport_files': reportFiles,
-                'created_date': new Date().toLocaleString(),
-            };
-            rapports_finaux = null;
-        } else {
-            rapports_finaux = {
-                'rapport_name': reportName,
-                'rapport_receivers': reportReceivers,
-                'rapport_type': reportType,
-                'rapport_content': reportContent,
-                'rapport_files': reportFiles,
-                'created_date': new Date().toLocaleString(),
-            };
-            rapports_avancement = null;
-        }
-
-
-        var data = {
-            'project_id': project_id,
-            'rapports_avancement': JSON.stringify(rapports_avancement),
-            'rapports_finaux': JSON.stringify(rapports_finaux)
-        };
-
-        fetch('https://lab.padem.org/wp-json/mo/v1/createReport', {
-            method: 'POST',
-            body: JSON.stringify(data),
-        })
             .then(response => response.json())
             .then(data => {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Succès',
-                    text: 'Le rapport a été soumis avec succès'
+                // Récupérer l'ID du projet
+                data.forEach(working_table => {
+                    // Vérifier si le rapport fait partie du projet (dans la table de travail)
+                    if (parseInt(working_table.project_id) === project_id) {
+                        all_reports_ids.push(working_table.report_id);
+                    }
                 });
-                document.getElementById('progressReportForm').reset() = 'none';
-                document.getElementById('showReportForm').innerText = 'Ajouter un projet';
-                getReports();
             })
             .catch(error => {
                 console.error('Error:', error);
             });
-    }
-    //#endregion
+        //#endregion
 
-    //#region Fonction récupérer les rapports
-    function getReports() {
+        //#region Récupérer les rapports (https://lab.padem.org/wp-json/mo/v1/getReports)
         fetch('https://lab.padem.org/wp-json/mo/v1/getReports',
             {
                 method: 'GET',
@@ -290,11 +163,10 @@
             })
             .then(response => response.json())
             .then(data => {
-                var project_id = parseInt(new URLSearchParams(window.location.search).get('projectId'));
-                console.log('ID du projet: ', project_id);
-                console.log(data);
+                // Récupérer l'ID du projet
                 data.forEach(report => {
-                    if (parseInt(report.project_id) === project_id) {
+                    // Afficher les rapports qui font partie du projet
+                    if (all_reports_ids.includes(report.report_id)) {
                         if (report.rapports_avancement !== null) {
                             var li = document.createElement('li');
                             var _report = JSON.parse(report.rapports_avancement);
@@ -316,7 +188,7 @@
                                         </div>
                                     </li>
                                 `;
-                            document.getElementById('reportsList_avancement').appendChild(li);
+                            document.getElementById('reportsList_').appendChild(li);
                             document.getElementById(`btn_report_${report.report_id}`).addEventListener('click', function () {
                                 if (document.getElementById(`details_${report.report_id}`).style.display === 'none') {
                                     document.getElementById(`details_${report.report_id}`).style.display = 'block';
@@ -327,50 +199,19 @@
                                 }
                             });
 
-                        } else if (report.rapports_finaux !== null) {
-                            var li = document.createElement('li');
-                            var _report = JSON.parse(report.rapports_finaux);
-                            li.innerHTML = `
-                                <li class="list-group-items">
-                                        <div class="d-flex w-100 justify-content-between">
-                                            <h5 class="mb-1"  style="color: #29A6A7;">${_report.rapport_name}</h5>
-                                            <small>Status du rapport</small>
-                                        </div>
-                                        <p class="mb-1">${_report.created_date}</p>
-                                        <button type="button" class="btn btn-primary" data-toggle="collapse" id="btn_report_${report.report_id}" data-target="#details_${report.report_id}" style="width: fit-content; color: white;">Détails</button>
-                                        <div style="margin-top: 15px;"></div>
-                                        <div id="details_${report.report_id}" class="collapse">
-                                            <div class="card card-body">
-                                                <textarea rows="8" placeholder="Description" style="border-radius: 15px; width: fit-content;" disabled>Commentaires: ${_report.rapport_content}</textarea>
-                                                <br>
-                                                <div style="color: #29A6A7;">Fichiers à télécharger: ${_report.rapport_files}</div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                `;
-                            document.getElementById('reportsList_final').appendChild(li);
-                            document.getElementById(`btn_report_${report.report_id}`).addEventListener('click', function () {
-                                if (document.getElementById(`details_${report.report_id}`).style.display === 'none') {
-                                    document.getElementById(`details_${report.report_id}`).style.display = 'block';
-                                    document.getElementById(`btn_report_${report.report_id}`).innerText = 'Masquer les détails';
-                                } else {
-                                    document.getElementById(`details_${report.report_id}`).style.display = 'none';
-                                    document.getElementById(`btn_report_${report.report_id}`).innerText = 'Détails';
-                                }
-                            });
-                        } else {
-                            var li = document.createElement('li');
-                            li.innerHTML = ` <li class="list-group-item">Aucun rapport trouvé</li>`;
-                            document.getElementById('reportsList_avancement').appendChild(li);
-                            document.getElementById('reportsList_final').appendChild(li);
                         }
                     }
                 });
-
+                if (all_reports_ids.length === 0) {
+                    var li = document.createElement('li');
+                    li.innerHTML = ` <li class="list-group-item">Aucun rapport trouvé</li>`;
+                    document.getElementById('reportsList_').appendChild(li);
+                }
             })
             .catch(error => {
                 console.error('Error:', error);
             });
+        //#endregion
     }
     //#endregion
 

@@ -48,14 +48,16 @@
 
     </div>
 </div>
+<!--#endregion-->
 
-<!-- Barre de progression du projet -->
+<!--#region Barre de progression du projet -->
 <div style="display: flex; justify-content: space-between; margin-top: 5px; margin-bottom: 5px; width: 100%;">
     <div id="projectHeaderTitle" style="width: fit-content;"></div>
     <div id="projectHeaderCountry" style="width: fit-content;"></div>
     <progress id="projectProgress" max="100" style="width: 200px;"></progress>
     <div id="projectHeaderStatus" style="width: fit-content;"></div>
 </div>
+<!--#endregion-->
 
 
 <!--#region Liste des membres du projet -->
@@ -83,7 +85,7 @@
 <!--#endregion-->
 
 
-<!-- Liste des membres du projet -->
+<!--#region Liste des membres du projet -->
 <div>
     <ul id="membersList" class="row" style="display: block; list-style: none;"></ul>
 </div>
@@ -111,6 +113,7 @@
 <div class="settings-scroll" style="display: none;">
     <ul id="membersList-bailleurs" class="row" style="display: block; list-style: none;"></ul>
 </div>
+<!--#endregion-->
 
 
 <body>
@@ -194,7 +197,6 @@
         <div style="margin-top: 10px; margin-bottom: 10px;"></div>
     </form>
 
-
     <script>
         // Attendre que le DOM soit chargé pour exécuter le code
         document.addEventListener('DOMContentLoaded', function () {
@@ -202,834 +204,20 @@
             var url = new URL(window.location.href);
             var params = new URLSearchParams(url.search);
             var projectId = params.get('projectId');
-            console.log('projectId:', projectId);
-            //
-            var users_list = {
-                'emails_names': {
-                    'Coordinateur': 'coordinator_email',
-                    'Chef de projet': 'chief_email',
-                    'partenaire': 'partner_email',
-                    'comptable': 'accountant_email',
-                    'consultant': 'consultant_email',
-                    'bailleur': 'funder_email'
-                },
-                'users': {
-                    'Coordinateur': [],
-                    'Chef de projet': [],
-                    'partenaire': [],
-                    'comptable': [],
-                    'consultant': [],
-                    'bailleur': []
-                },
-                'urls': {
-                    'Administrateur': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
-                    'Coordinateur': 'https://lab.padem.org/wp-json/mo/v1/getCoordinator',
-                    'Chef de projet': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
-                    'partenaire': 'https://lab.padem.org/wp-json/mo/v1/getPartner',
-                    'comptable': 'https://lab.padem.org/wp-json/mo/v1/getAccountant',
-                    'consultant': 'https://lab.padem.org/wp-json/mo/v1/getConsultant',
-                    'bailleur': 'https://lab.padem.org/wp-json/mo/v1/getFunder'
-                }
-            };
-
-            fetch(users_list.urls['Chef de projet'], {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            })
-                .then(response => response.json())
-                .then(data => {
-                    data.forEach(user => {
-                        // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
-                        if (user.project_id === parseInt(projectId)) {
-                            var li = document.createElement('li');
-                            li.classList.add('col-md-3');
-                            li.innerHTML = `
-                                    <div class="card mb-4 shadow-sm" style="width: fit-content;">
-                                        <div class="card-body">
-                                            <p class="card-text">${user.chief_first_name}</p>
-                                            <p class="card-text">${user.chief_last_name}</p>
-                                            <a href="mailto:${user.chief_email}" class="card-text">${user.chief_email}</a>
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <div class="btn-group">
-                                                    <button type="button" id="remove_chief_${user.chief_id}" class="btn btn-sm btn-outline-secondary" style="width: fit-content; color: white;">Retirer du projet</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                `;
-                            document.getElementById('membersList').appendChild(li);
-                            document.getElementById('membersList-chef-de-projet').appendChild(li);
-
-                            document.getElementById('remove_chief_' + user.chief_id).addEventListener('click', function () {
-                                fetch('https://lab.padem.org/wp-json/mo/v1/removeChief', {
-                                    method: 'DELETE',
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                    },
-                                    body: JSON.stringify({
-                                        chief_id: user.chief_id,
-                                        project_id: projectId
-                                    }),
-                                })
-                                    .then(response => response.json())
-                                    .then(data => {
-                                        console.log('Success:', data);
-                                        window.location.href = 'https://lab.padem.org/accueil/partenaires/?projectId=' + projectId;
-                                    })
-                                    .catch((error) => {
-                                        console.error('Error:', error);
-                                    });
-                            });
-                        }
-                    });
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-            // Récupérer les informations du projet
+            // Obtenir tous les membres du site
+            getAllUsers();
+            // Obtenir les membres du projet
+            getProjectMembers(projectId);
+            // Obtenir les informations du projet
             getProjectData(projectId);
-            // Ajouter des écouteurs d'événements sur les boutons de filtre et récupérer les membres du projet
-            getCoordinator(projectId);
-            getProjectChief(projectId);
-            getPartners(projectId);
-            getAccountants(projectId);
-            getConsultants(projectId);
-            getFunders(projectId);
-            addEventListeners(projectId);
-            // Récupérer les informations de l'utilisateur local
+            // Obtenir les informations de l'utilisateur connecté
             getConnectedUserInfos();
-
-            document.getElementById('tous').addEventListener('click', function () {
-                getCoordinator(projectId);
-                getProjectChief(projectId);
-                getPartners(projectId);
-                getAccountants(projectId);
-                getConsultants(projectId);
-                getFunders(projectId);
-
-                //#region Fonction pour afficher ou masquer les membres du projet
-                document.getElementById('membersList').style.display = 'block';
-                document.getElementById('membersList-coordonateur').style.display = 'none';
-                document.getElementById('membersList-chef-de-projet').style.display = 'none';
-                document.getElementById('membersList-partenaires').style.display = 'none';
-                document.getElementById('membersList-consultants').style.display = 'none';
-                document.getElementById('membersList-comptables').style.display = 'none';
-                document.getElementById('membersList-bailleurs').style.display = 'none';
-
-                document.getElementById('tous').style.backgroundColor = '#29A6A7';
-                document.getElementById('tous').style.color = 'white';
-                document.getElementById('coordonnateurs').style.backgroundColor = 'white';
-                document.getElementById('coordonnateurs').style.color = 'gray';
-                document.getElementById('chefs-de-projets').style.backgroundColor = 'white';
-                document.getElementById('chefs-de-projets').style.color = 'gray';
-                document.getElementById('partenaires').style.backgroundColor = 'white';
-                document.getElementById('partenaires').style.color = 'gray';
-                document.getElementById('consultants').style.backgroundColor = 'white';
-                document.getElementById('consultants').style.color = 'gray';
-                document.getElementById('comptables').style.backgroundColor = 'white';
-                document.getElementById('comptables').style.color = 'gray';
-                document.getElementById('bailleurs').style.backgroundColor = 'white';
-                document.getElementById('bailleurs').style.color = 'gray';
-                //#endregion
-            });
-
-            document.getElementById('coordonnateurs').addEventListener('click', function () {
-
-                var users_list = {
-                    'emails_names': {
-                        'Coordinateur': 'coordinator_email',
-                        'Chef de projet': 'chief_email',
-                        'partenaire': 'partner_email',
-                        'comptable': 'accountant_email',
-                        'consultant': 'consultant_email',
-                        'bailleur': 'funder_email'
-                    },
-                    'users': {
-                        'Coordinateur': [],
-                        'Chef de projet': [],
-                        'partenaire': [],
-                        'comptable': [],
-                        'consultant': [],
-                        'bailleur': []
-                    },
-                    'urls': {
-                        'Administrateur': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
-                        'Coordinateur': 'https://lab.padem.org/wp-json/mo/v1/getCoordinator',
-                        'Chef de projet': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
-                        'partenaire': 'https://lab.padem.org/wp-json/mo/v1/getPartner',
-                        'comptable': 'https://lab.padem.org/wp-json/mo/v1/getAccountant',
-                        'consultant': 'https://lab.padem.org/wp-json/mo/v1/getConsultant',
-                        'bailleur': 'https://lab.padem.org/wp-json/mo/v1/getFunder'
-                    }
-                };
-
-                //#region Récupérer le nombre de participants dans le projet
-                var participants = {};
-                var isUserInProject = false;
-                var numberOfParticipants = 0;
-
-                //#region get Coordinnateur
-                fetch(users_list.urls['Coordinateur'], {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        data.forEach(user => {
-                            // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
-                            if (user.project_id === parseInt(projectId)) {
-                                var li = document.createElement('li');
-                                li.classList.add('col-md-3');
-                                li.innerHTML = `
-                                <div class="card mb-4 shadow-sm" style="width: fit-content;">
-                                    <div class="card-body">
-                                        <p class="card-text">${user.coordinator_first_name}</p>
-                                        <p class="card-text">${user.coordinator_last_name}</p>
-                                        <a href="mailto:${user.coordinator_email}" class="card-text">${user.coordinator_email}</a>
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <div class="btn-group">
-                                                    <button type="button" id="remove_accountant_${user.coordinator_id}" class="btn btn-sm btn-outline-secondary" style="width: fit-content; color: white;">Retirer du projet</button>
-                                                </div>
-                                            </div>
-                                    </div>
-                                </div>
-                            `;
-                                document.getElementById('membersList').appendChild(li);
-                                document.getElementById('membersList-coordonateur').appendChild(li);
-
-                                document.getElementById('remove_coordinator_' + user.coordinator_id).addEventListener('click', function () {
-                                    fetch('https://lab.padem.org/wp-json/mo/v1/removeCoordinator', {
-                                        method: 'DELETE',
-                                        headers: {
-                                            'Content-Type': 'application/json',
-                                        },
-                                        body: JSON.stringify({
-                                            coordinator_id: user.coordinator_id,
-                                            project_id: projectId
-                                        }),
-                                    })
-                                        .then(response => response.json())
-                                        .then(data => {
-                                            console.log('Success:', data);
-                                            window.location.href = 'https://lab.padem.org/accueil/partenaires/?projectId=' + projectId;
-                                        })
-                                        .catch((error) => {
-                                            console.error('Error:', error);
-                                        });
-                                });
-                            }
-                        });
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                    });
-
-                //#region Fonction pour afficher ou masquer les membres du projet
-                document.getElementById('membersList').style.display = 'none';
-                document.getElementById('membersList-coordonateur').style.display = 'block';
-                document.getElementById('membersList-chef-de-projet').style.display = 'none';
-                document.getElementById('membersList-partenaires').style.display = 'none';
-                document.getElementById('membersList-consultants').style.display = 'none';
-                document.getElementById('membersList-comptables').style.display = 'none';
-                document.getElementById('membersList-bailleurs').style.display = 'none';
-
-                document.getElementById('tous').style.backgroundColor = 'white';
-                document.getElementById('tous').style.color = 'gray';
-                document.getElementById('coordonnateurs').style.backgroundColor = '#29A6A7';
-                document.getElementById('coordonnateurs').style.color = 'white';
-                document.getElementById('chefs-de-projets').style.backgroundColor = 'white';
-                document.getElementById('chefs-de-projets').style.color = 'gray';
-                document.getElementById('partenaires').style.backgroundColor = 'white';
-                document.getElementById('partenaires').style.color = 'gray';
-                document.getElementById('consultants').style.backgroundColor = 'white';
-                document.getElementById('consultants').style.color = 'gray';
-                document.getElementById('comptables').style.backgroundColor = 'white';
-                document.getElementById('comptables').style.color = 'gray';
-                document.getElementById('bailleurs').style.backgroundColor = 'white';
-                document.getElementById('bailleurs').style.color = 'gray';
-                //#endregion
-            });
-
-            document.getElementById('chefs-de-projets').addEventListener('click', function () {
-
-                var users_list = {
-                    'emails_names': {
-                        'Coordinateur': 'coordinator_email',
-                        'Chef de projet': 'chief_email',
-                        'partenaire': 'partner_email',
-                        'comptable': 'accountant_email',
-                        'consultant': 'consultant_email',
-                        'bailleur': 'funder_email'
-                    },
-                    'users': {
-                        'Coordinateur': [],
-                        'Chef de projet': [],
-                        'partenaire': [],
-                        'comptable': [],
-                        'consultant': [],
-                        'bailleur': []
-                    },
-                    'urls': {
-                        'Administrateur': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
-                        'Coordinateur': 'https://lab.padem.org/wp-json/mo/v1/getCoordinator',
-                        'Chef de projet': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
-                        'partenaire': 'https://lab.padem.org/wp-json/mo/v1/getPartner',
-                        'comptable': 'https://lab.padem.org/wp-json/mo/v1/getAccountant',
-                        'consultant': 'https://lab.padem.org/wp-json/mo/v1/getConsultant',
-                        'bailleur': 'https://lab.padem.org/wp-json/mo/v1/getFunder'
-                    }
-                };
-
-                fetch(users_list.urls['Chef de projet'], {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        data.forEach(user => {
-                            // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
-                            if (user.project_id === parseInt(projectId)) {
-                                var li = document.createElement('li');
-                                li.classList.add('col-md-3');
-                                li.innerHTML = `
-                                    <div class="card mb-4 shadow-sm" style="width: fit-content;">
-                                        <div class="card-body">
-                                            <p class="card-text">${user.chief_first_name}</p>
-                                            <p class="card-text">${user.chief_last_name}</p>
-                                            <a href="mailto:${user.chief_email}" class="card-text">${user.chief_email}</a>
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <div class="btn-group">
-                                                    <button type="button" id="remove_chief_${user.chief_id}" class="btn btn-sm btn-outline-secondary" style="width: fit-content; color: white;">Retirer du projet</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                `;
-                                document.getElementById('membersList').appendChild(li);
-                                document.getElementById('membersList-chef-de-projet').appendChild(li);
-
-                                document.getElementById('remove_chief_' + user.chief_id).addEventListener('click', function () {
-                                    fetch('https://lab.padem.org/wp-json/mo/v1/removeChief', {
-                                        method: 'DELETE',
-                                        headers: {
-                                            'Content-Type': 'application/json',
-                                        },
-                                        body: JSON.stringify({
-                                            chief_id: user.chief_id,
-                                            project_id: projectId
-                                        }),
-                                    })
-                                        .then(response => response.json())
-                                        .then(data => {
-                                            console.log('Success:', data);
-                                            window.location.href = 'https://lab.padem.org/accueil/partenaires/?projectId=' + projectId;
-                                        })
-                                        .catch((error) => {
-                                            console.error('Error:', error);
-                                        });
-                                });
-                            }
-                        });
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                    });
-
-                //#region Fonction pour afficher ou masquer les membres du projet
-                document.getElementById('membersList').style.display = 'none';
-                document.getElementById('membersList-coordonateur').style.display = 'none';
-                document.getElementById('membersList-chef-de-projet').style.display = 'block';
-                document.getElementById('membersList-partenaires').style.display = 'none';
-                document.getElementById('membersList-consultants').style.display = 'none';
-                document.getElementById('membersList-comptables').style.display = 'none';
-                document.getElementById('membersList-bailleurs').style.display = 'none';
-
-                document.getElementById('tous').style.backgroundColor = 'white';
-                document.getElementById('tous').style.color = 'gray';
-                document.getElementById('coordonnateurs').style.backgroundColor = 'white';
-                document.getElementById('coordonnateurs').style.color = 'gray';
-                document.getElementById('chefs-de-projets').style.backgroundColor = '#29A6A7';
-                document.getElementById('chefs-de-projets').style.color = 'white';
-                document.getElementById('partenaires').style.backgroundColor = 'white';
-                document.getElementById('partenaires').style.color = 'gray';
-                document.getElementById('consultants').style.backgroundColor = 'white';
-                document.getElementById('consultants').style.color = 'gray';
-                document.getElementById('comptables').style.backgroundColor = 'white';
-                document.getElementById('comptables').style.color = 'gray';
-                document.getElementById('bailleurs').style.backgroundColor = 'white';
-                document.getElementById('bailleurs').style.color = 'gray';
-                //#endregion
-
-            });
-
-            document.getElementById('partenaires').addEventListener('click', function () {
-
-                var users_list = {
-                    'emails_names': {
-                        'Coordinateur': 'coordinator_email',
-                        'Chef de projet': 'chief_email',
-                        'partenaire': 'partner_email',
-                        'comptable': 'accountant_email',
-                        'consultant': 'consultant_email',
-                        'bailleur': 'funder_email'
-                    },
-                    'users': {
-                        'Coordinateur': [],
-                        'Chef de projet': [],
-                        'partenaire': [],
-                        'comptable': [],
-                        'consultant': [],
-                        'bailleur': []
-                    },
-                    'urls': {
-                        'Administrateur': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
-                        'Coordinateur': 'https://lab.padem.org/wp-json/mo/v1/getCoordinator',
-                        'Chef de projet': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
-                        'partenaire': 'https://lab.padem.org/wp-json/mo/v1/getPartner',
-                        'comptable': 'https://lab.padem.org/wp-json/mo/v1/getAccountant',
-                        'consultant': 'https://lab.padem.org/wp-json/mo/v1/getConsultant',
-                        'bailleur': 'https://lab.padem.org/wp-json/mo/v1/getFunder'
-                    }
-                };
-
-                fetch(users_list.urls['partenaire'], {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        data.forEach(user => {
-                            // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
-                            if (user.project_id === parseInt(projectId)) {
-                                var li = document.createElement('li');
-                                li.classList.add('col-md-3');
-                                li.innerHTML = `
-                                    <div class="card mb-4 shadow-sm" style="width: fit-content;">
-                                        <div class="card-body">
-                                            <p class="card-text">${user.chief_first_name}</p>
-                                            <p class="card-text">${user.chief_last_name}</p>
-                                            <a href="mailto:${user.chief_email}" class="card-text">${user.chief_email}</a>
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <div class="btn-group">
-                                                    <button type="button" id="remove_chief_${user.chief_id}" class="btn btn-sm btn-outline-secondary" style="width: fit-content; color: white;">Retirer du projet</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                `;
-                                document.getElementById('membersList').appendChild(li);
-                                document.getElementById('membersList-chef-de-projet').appendChild(li);
-
-                                document.getElementById('remove_chief_' + user.chief_id).addEventListener('click', function () {
-                                    fetch('https://lab.padem.org/wp-json/mo/v1/removeChief', {
-                                        method: 'DELETE',
-                                        headers: {
-                                            'Content-Type': 'application/json',
-                                        },
-                                        body: JSON.stringify({
-                                            chief_id: user.chief_id,
-                                            project_id: projectId
-                                        }),
-                                    })
-                                        .then(response => response.json())
-                                        .then(data => {
-                                            console.log('Success:', data);
-                                            window.location.href = 'https://lab.padem.org/accueil/partenaires/?projectId=' + projectId;
-                                        })
-                                        .catch((error) => {
-                                            console.error('Error:', error);
-                                        });
-                                });
-                            }
-                        });
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                    });
-
-                //#region Fonction pour afficher ou masquer les membres du projet
-                document.getElementById('membersList').style.display = 'none';
-                document.getElementById('membersList-coordonateur').style.display = 'none';
-                document.getElementById('membersList-chef-de-projet').style.display = 'none';
-                document.getElementById('membersList-partenaires').style.display = 'block';
-                document.getElementById('membersList-consultants').style.display = 'none';
-                document.getElementById('membersList-comptables').style.display = 'none';
-                document.getElementById('membersList-bailleurs').style.display = 'none';
-
-                document.getElementById('tous').style.backgroundColor = 'white';
-                document.getElementById('tous').style.color = 'gray';
-                document.getElementById('coordonnateurs').style.backgroundColor = 'white';
-                document.getElementById('coordonnateurs').style.color = 'gray';
-                document.getElementById('chefs-de-projets').style.backgroundColor = 'white';
-                document.getElementById('chefs-de-projets').style.color = 'gray';
-                document.getElementById('partenaires').style.backgroundColor = '#29A6A7';
-                document.getElementById('partenaires').style.color = 'white';
-                document.getElementById('consultants').style.backgroundColor = 'white';
-                document.getElementById('consultants').style.color = 'gray';
-                document.getElementById('comptables').style.backgroundColor = 'white';
-                document.getElementById('comptables').style.color = 'gray';
-                document.getElementById('bailleurs').style.backgroundColor = 'white';
-                document.getElementById('bailleurs').style.color = 'gray';
-                //#endregion
-
-            });
-
-            document.getElementById('consultants').addEventListener('click', function () {
-
-                var users_list = {
-                    'emails_names': {
-                        'Coordinateur': 'coordinator_email',
-                        'Chef de projet': 'chief_email',
-                        'partenaire': 'partner_email',
-                        'comptable': 'accountant_email',
-                        'consultant': 'consultant_email',
-                        'bailleur': 'funder_email'
-                    },
-                    'users': {
-                        'Coordinateur': [],
-                        'Chef de projet': [],
-                        'partenaire': [],
-                        'comptable': [],
-                        'consultant': [],
-                        'bailleur': []
-                    },
-                    'urls': {
-                        'Administrateur': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
-                        'Coordinateur': 'https://lab.padem.org/wp-json/mo/v1/getCoordinator',
-                        'Chef de projet': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
-                        'partenaire': 'https://lab.padem.org/wp-json/mo/v1/getPartner',
-                        'comptable': 'https://lab.padem.org/wp-json/mo/v1/getAccountant',
-                        'consultant': 'https://lab.padem.org/wp-json/mo/v1/getConsultant',
-                        'bailleur': 'https://lab.padem.org/wp-json/mo/v1/getFunder'
-                    }
-                };
-
-                fetch(users_list.urls['consultant'], {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        data.forEach(user => {
-                            // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
-                            console.log(user.project_id, projectId)
-                            if (user.project_id === projectId) {
-                                var li = document.createElement('li');
-                                li.classList.add('col-md-3');
-                                li.innerHTML = `
-                                    <div class="card mb-4 shadow-sm" style="width: fit-content;">
-                                        <div class="card-body">
-                                            <p class="card-text">${user.consultant_first_name}</p>
-                                            <p class="card-text">${user.consultant_last_name}</p>
-                                            <a href="mailto:${user.consultant_email}" class="card-text">${user.consultant_email}</a>
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <div class="btn-group">
-                                                    <button type="button" id="remove_consultant_${user.consultant_id}" class="btn btn-sm btn-outline-secondary" style="width: fit-content; color: white;">Retirer du projet</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                `;
-                                document.getElementById('membersList').appendChild(li);
-                                document.getElementById('membersList-consultants').appendChild(li);
-
-                                document.getElementById('remove_consultant_' + user.consultant_id).addEventListener('click', function () {
-                                    fetch('https://lab.padem.org/wp-json/mo/v1/removeConsultant', {
-                                        method: 'DELETE',
-                                        headers: {
-                                            'Content-Type': 'application/json',
-                                        },
-                                        body: JSON.stringify({
-                                            consultant_id: user.consultant_id,
-                                            project_id: projectId
-                                        }),
-                                    })
-                                        .then(response => response.json())
-                                        .then(data => {
-                                            console.log('Success:', data);
-                                            window.location.href = 'https://lab.padem.org/accueil/partenaires/?projectId=' + projectId;
-                                        })
-                                        .catch((error) => {
-                                            console.error('Error:', error);
-                                        });
-                                });
-                            }
-                        });
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                    });
-
-                //#region Fonction pour afficher ou masquer les membres du projet
-                document.getElementById('membersList').style.display = 'none';
-                document.getElementById('membersList-coordonateur').style.display = 'none';
-                document.getElementById('membersList-chef-de-projet').style.display = 'none';
-                document.getElementById('membersList-partenaires').style.display = 'none';
-                document.getElementById('membersList-consultants').style.display = 'block';
-                document.getElementById('membersList-comptables').style.display = 'none';
-                document.getElementById('membersList-bailleurs').style.display = 'none';
-
-                document.getElementById('tous').style.backgroundColor = 'white';
-                document.getElementById('tous').style.color = 'gray';
-                document.getElementById('coordonnateurs').style.backgroundColor = 'white';
-                document.getElementById('coordonnateurs').style.color = 'gray';
-                document.getElementById('chefs-de-projets').style.backgroundColor = 'white';
-                document.getElementById('chefs-de-projets').style.color = 'gray';
-                document.getElementById('partenaires').style.backgroundColor = 'white';
-                document.getElementById('partenaires').style.color = 'gray';
-                document.getElementById('consultants').style.backgroundColor = '#29A6A7';
-                document.getElementById('consultants').style.color = 'white';
-                document.getElementById('comptables').style.backgroundColor = 'white';
-                document.getElementById('comptables').style.color = 'gray';
-                document.getElementById('bailleurs').style.backgroundColor = 'white';
-                document.getElementById('bailleurs').style.color = 'gray';
-                //#endregion
-
-            });
-
-            document.getElementById('comptables').addEventListener('click', function () {
-
-                var users_list = {
-                    'emails_names': {
-                        'Coordinateur': 'coordinator_email',
-                        'Chef de projet': 'chief_email',
-                        'partenaire': 'partner_email',
-                        'comptable': 'accountant_email',
-                        'consultant': 'consultant_email',
-                        'bailleur': 'funder_email'
-                    },
-                    'users': {
-                        'Coordinateur': [],
-                        'Chef de projet': [],
-                        'partenaire': [],
-                        'comptable': [],
-                        'consultant': [],
-                        'bailleur': []
-                    },
-                    'urls': {
-                        'Administrateur': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
-                        'Coordinateur': 'https://lab.padem.org/wp-json/mo/v1/getCoordinator',
-                        'Chef de projet': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
-                        'partenaire': 'https://lab.padem.org/wp-json/mo/v1/getPartner',
-                        'comptable': 'https://lab.padem.org/wp-json/mo/v1/getAccountant',
-                        'consultant': 'https://lab.padem.org/wp-json/mo/v1/getConsultant',
-                        'bailleur': 'https://lab.padem.org/wp-json/mo/v1/getFunder'
-                    }
-                };
-
-                fetch(users_list.urls['comptable'], {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        data.forEach(user => {
-                            // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
-                            if (user.project_id === projectId) {
-                                var li = document.createElement('li');
-                                li.classList.add('col-md-3');
-                                li.innerHTML = `
-                                    <div class="card mb-4 shadow-sm" style="width: fit-content;">
-                                        <div class="card-body">
-                                            <p class="card-text">${user.accountant_first_name}</p>
-                                            <p class="card-text">${user.accountant_last_name}</p>
-                                            <a href="mailto:${user.accountant_email}" class="card-text">${user.accountant_email}</a>
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <div class="btn-group">
-                                                    <button type="button" id="remove_accountant_${user.accountant_id}" class="btn btn-sm btn-outline-secondary" style="width: fit-content; color: white;">Retirer du projet</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                `;
-                                document.getElementById('membersList').appendChild(li);
-                                document.getElementById('membersList-comptables').appendChild(li);
-
-                                document.getElementById('remove_accountant_' + user.accountant_id).addEventListener('click', function () {
-                                    fetch('https://lab.padem.org/wp-json/mo/v1/removeAccountant', {
-                                        method: 'DELETE',
-                                        headers: {
-                                            'Content-Type': 'application/json',
-                                        },
-                                        body: JSON.stringify({
-                                            accountant_id: user.accountant_id,
-                                            project_id: projectId
-                                        }),
-                                    })
-                                        .then(response => response.json())
-                                        .then(data => {
-                                            console.log('Success:', data);
-                                            window.location.href = 'https://lab.padem.org/accueil/partenaires/?projectId=' + projectId;
-                                        })
-                                        .catch((error) => {
-                                            console.error('Error:', error);
-                                        });
-                                });
-                            }
-                        });
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                    });
-
-                //#region Fonction pour afficher ou masquer les membres du projet
-                document.getElementById('membersList').style.display = 'none';
-                document.getElementById('membersList-coordonateur').style.display = 'none';
-                document.getElementById('membersList-chef-de-projet').style.display = 'none';
-                document.getElementById('membersList-partenaires').style.display = 'none';
-                document.getElementById('membersList-consultants').style.display = 'none';
-                document.getElementById('membersList-comptables').style.display = 'block';
-                document.getElementById('membersList-bailleurs').style.display = 'none';
-
-                document.getElementById('tous').style.backgroundColor = 'white';
-                document.getElementById('tous').style.color = 'gray';
-                document.getElementById('coordonnateurs').style.backgroundColor = 'white';
-                document.getElementById('coordonnateurs').style.color = 'gray';
-                document.getElementById('chefs-de-projets').style.backgroundColor = 'white';
-                document.getElementById('chefs-de-projets').style.color = 'gray';
-                document.getElementById('partenaires').style.backgroundColor = 'white';
-                document.getElementById('partenaires').style.color = 'gray';
-                document.getElementById('consultants').style.backgroundColor = 'white';
-                document.getElementById('consultants').style.color = 'gray';
-                document.getElementById('comptables').style.backgroundColor = '#29A6A7';
-                document.getElementById('comptables').style.color = 'white';
-                document.getElementById('bailleurs').style.backgroundColor = 'white';
-                document.getElementById('bailleurs').style.color = 'gray';
-                //#endregion
-            });
-
-            document.getElementById('bailleurs').addEventListener('click', function () {
-
-                var users_list = {
-                    'emails_names': {
-                        'Coordinateur': 'coordinator_email',
-                        'Chef de projet': 'chief_email',
-                        'partenaire': 'partner_email',
-                        'comptable': 'accountant_email',
-                        'consultant': 'consultant_email',
-                        'bailleur': 'funder_email'
-                    },
-                    'users': {
-                        'Coordinateur': [],
-                        'Chef de projet': [],
-                        'partenaire': [],
-                        'comptable': [],
-                        'consultant': [],
-                        'bailleur': []
-                    },
-                    'urls': {
-                        'Administrateur': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
-                        'Coordinateur': 'https://lab.padem.org/wp-json/mo/v1/getCoordinator',
-                        'Chef de projet': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
-                        'partenaire': 'https://lab.padem.org/wp-json/mo/v1/getPartner',
-                        'comptable': 'https://lab.padem.org/wp-json/mo/v1/getAccountant',
-                        'consultant': 'https://lab.padem.org/wp-json/mo/v1/getConsultant',
-                        'bailleur': 'https://lab.padem.org/wp-json/mo/v1/getFunder'
-                    }
-                };
-
-                fetch(users_list.urls['bailleur'], {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        data.forEach(user => {
-                            // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
-                            if (user.project_id === projectId) {
-                                var li = document.createElement('li');
-                                li.classList.add('col-md-3');
-                                li.innerHTML = `
-                                    <div class="card mb-4 shadow-sm" style="width: fit-content;">
-                                        <div class="card-body">
-                                            <p class="card-text">${user.funder_first_name}</p>
-                                            <p class="card-text">${user.funder_last_name}</p>
-                                            <a href="mailto:${user.funder_email}" class="card-text">${user.funder_email}</a>
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <div class="btn-group">
-                                                    <button type="button" id="remove_funder_${user.funder_id}" class="btn btn-sm btn-outline-secondary" style="width: fit-content; color: white;">Retirer du projet</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                `;
-                                document.getElementById('membersList').appendChild(li);
-                                document.getElementById('membersList-bailleurs').appendChild(li);
-
-                                document.getElementById('remove_funder_' + user.funder_id).addEventListener('click', function () {
-                                    fetch('https://lab.padem.org/wp-json/mo/v1/removeFunder', {
-                                        method: 'DELETE',
-                                        headers: {
-                                            'Content-Type': 'application/json',
-                                        },
-                                        body: JSON.stringify({
-                                            funder_id: user.funder_id,
-                                            project_id: projectId
-                                        }),
-                                    })
-                                        .then(response => response.json())
-                                        .then(data => {
-                                            console.log('Success:', data);
-                                            window.location.href = 'https://lab.padem.org/accueil/partenaires/?projectId=' + projectId;
-                                        })
-                                        .catch((error) => {
-                                            console.error('Error:', error);
-                                        });
-                                });
-                            }
-                        });
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                    });
-
-                //#region Fonction pour afficher ou masquer les membres du projet
-                document.getElementById('membersList').style.display = 'none';
-                document.getElementById('membersList-coordonateur').style.display = 'none';
-                document.getElementById('membersList-chef-de-projet').style.display = 'none';
-                document.getElementById('membersList-partenaires').style.display = 'none';
-                document.getElementById('membersList-consultants').style.display = 'none';
-                document.getElementById('membersList-comptables').style.display = 'none';
-                document.getElementById('membersList-bailleurs').style.display = 'block';
-
-                document.getElementById('tous').style.backgroundColor = 'white';
-                document.getElementById('tous').style.color = 'gray';
-                document.getElementById('coordonnateurs').style.backgroundColor = 'white';
-                document.getElementById('coordonnateurs').style.color = 'gray';
-                document.getElementById('chefs-de-projets').style.backgroundColor = 'white';
-                document.getElementById('chefs-de-projets').style.color = 'gray';
-                document.getElementById('partenaires').style.backgroundColor = 'white';
-                document.getElementById('partenaires').style.color = 'gray';
-                document.getElementById('consultants').style.backgroundColor = 'white';
-                document.getElementById('consultants').style.color = 'gray';
-                document.getElementById('comptables').style.backgroundColor = 'white';
-                document.getElementById('comptables').style.color = 'gray';
-                document.getElementById('bailleurs').style.backgroundColor = '#29A6A7';
-                document.getElementById('bailleurs').style.color = 'white';
-                //#endregion
-
-            });
-
         });
         var userId = 0;
         var userEmail = '';
         var userFirstName = '';
         var userLastName = '';
+        var allUsers = []; // Firstname, Lastname, Email
         var userRole = '';
         /*
                 document.getElementById('tous').addEventListener('click', function () {
@@ -1258,6 +446,30 @@
             '- Presque terminé': 'orange',
         };
 
+        // Fonction pour obtenir tous les utilisateurs(https://lab.padem.org/wp-json/mo/v1/getAllMembers)
+        function getAllUsers() {
+            // Récupérer tous les utilisateurs
+            fetch('https://lab.padem.org/wp-json/mo/v1/getAllMembers', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(user => {
+                        allUsers.push({
+                            first_name: user.first_name,
+                            last_name: user.last_name,
+                            email: user.email,
+                        });
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+
         // Récupérer les informations de l'utilisateur connecté
         function getConnectedUserInfos() {
             // Récupérer les informations de l'utilisateur connecté
@@ -1339,7 +551,7 @@
         // Fonction pour Récupérer les informations du projet
         function getProjectData(projectId) {
             // Récupérer les informations du projet
-            fetch('https://lab.padem.org/wp-json/mo/v1/getProjects', {
+            fetch('https://lab.padem.org/wp-json/mo/v1/getProjectData', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -1462,67 +674,12 @@
                 .catch((error) => {
                     console.error('Error:', error);
                 });
-
         }
 
-        // Fonction pour ajouter des écoutants d'événements sur les boutons: Tous, Coordonnateurs, Chefs de projet, Partenaires, Consultants, Comptables, Bailleurs
-        function addEventListeners(projectId) {
-
-            //#region Fonction pour afficher ou masquer les membres du projet
-            document.getElementById('tous').style.backgroundColor = '#29A6A7';
-            document.getElementById('tous').style.color = 'white';
-            document.getElementById('coordonnateurs').style.backgroundColor = 'white';
-            document.getElementById('coordonnateurs').style.color = 'gray';
-            document.getElementById('chefs-de-projets').style.backgroundColor = 'white';
-            document.getElementById('chefs-de-projets').style.color = 'gray';
-            document.getElementById('partenaires').style.backgroundColor = 'white';
-            document.getElementById('partenaires').style.color = 'gray';
-            document.getElementById('consultants').style.backgroundColor = 'white';
-            document.getElementById('consultants').style.color = 'gray';
-            document.getElementById('comptables').style.backgroundColor = 'white';
-            document.getElementById('comptables').style.color = 'gray';
-            document.getElementById('bailleurs').style.backgroundColor = 'white';
-            document.getElementById('bailleurs').style.color = 'gray';
-            //#endregion
-        }
-
-        //#region Fonction pour afficher les coordonnateurs
-        function getCoordinator(projectId) {
-
-            var users_list = {
-                'emails_names': {
-                    'Coordinateur': 'coordinator_email',
-                    'Chef de projet': 'chief_email',
-                    'partenaire': 'partner_email',
-                    'comptable': 'accountant_email',
-                    'consultant': 'consultant_email',
-                    'bailleur': 'funder_email'
-                },
-                'users': {
-                    'Coordinateur': [],
-                    'Chef de projet': [],
-                    'partenaire': [],
-                    'comptable': [],
-                    'consultant': [],
-                    'bailleur': []
-                },
-                'urls': {
-                    'Administrateur': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
-                    'Coordinateur': 'https://lab.padem.org/wp-json/mo/v1/getCoordinator',
-                    'Chef de projet': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
-                    'partenaire': 'https://lab.padem.org/wp-json/mo/v1/getPartner',
-                    'comptable': 'https://lab.padem.org/wp-json/mo/v1/getAccountant',
-                    'consultant': 'https://lab.padem.org/wp-json/mo/v1/getConsultant',
-                    'bailleur': 'https://lab.padem.org/wp-json/mo/v1/getFunder'
-                }
-            };
-
-            var participants = {};
-            var isUserInProject = false;
-            var numberOfParticipants = 0;
-
-            //#region get Coordinnateur
-            fetch(users_list.urls['Coordinateur'], {
+        // Fonction pour récupérer les membres du projet(https://lab.padem.org/wp-json/mo/v1/getWorkingTable)
+        function getProjectMembers(projectId) {
+            // Récupérer les membres du projet
+            fetch('https://lab.padem.org/wp-json/mo/v1/getWorkingTable', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -1530,140 +687,55 @@
             })
                 .then(response => response.json())
                 .then(data => {
-                    data.forEach(user => {
+                    data.forEach(working_table => {
                         // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
-                        if (user.project_id === parseInt(projectId)) {
-                            var li = document.createElement('li');
-                            li.classList.add('col-md-3');
-                            li.innerHTML = `
-                                <div class="card mb-4 shadow-sm" style="width: fit-content;">
-                                    <div class="card-body">
-                                        <p class="card-text">${user.coordinator_first_name}</p>
-                                        <p class="card-text">${user.coordinator_last_name}</p>
-                                        <a href="mailto:${user.coordinator_email}" class="card-text">${user.coordinator_email}</a>
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <div class="btn-group">
-                                                    <button type="button" id="remove_accountant_${user.coordinator_id}" class="btn btn-sm btn-outline-secondary" style="width: fit-content; color: white;">Retirer du projet</button>
+                        if (working_table.project_id === projectId) {
+                            var users = JSON.parse(working_table.users_emails_list);
+                            var email = users.project_referent_email || '';
+                            allUsers.forEach(user => {                                
+                                if (u === user.email) {
+                                        var li = document.createElement('li');
+                                        li.classList.add('col-md-3');
+                                        li.innerHTML = `
+                                            <div class="card mb-4 shadow-sm" style="width: fit-content;">
+                                                <div class="card-body">
+                                                    <p class="card-text">${user.first_name}</p>
+                                                    <p class="card-text">${user.last_name}</p>
+                                                    <a href="mailto:${user.email}" class="card-text">${user.email}</a>
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <div class="btn-group">
+                                                            <button type="button" id="remove_user_${user.email}" class="btn btn-sm btn-outline-secondary" style="width: fit-content; color: white;">Retirer du projet</button>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                    </div>
-                                </div>
-                            `;
-                            document.getElementById('membersList').appendChild(li);
-                            document.getElementById('membersList-coordonateur').appendChild(li);
+                                        `;
+                                        document.getElementById('membersList').appendChild(li);
 
-                            document.getElementById('remove_coordinator_' + user.coordinator_id).addEventListener('click', function () {
-                                fetch('https://lab.padem.org/wp-json/mo/v1/removeCoordinator', {
-                                    method: 'DELETE',
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                    },
-                                    body: JSON.stringify({
-                                        coordinator_id: user.coordinator_id,
-                                        project_id: projectId
-                                    }),
-                                })
-                                    .then(response => response.json())
-                                    .then(data => {
-                                        console.log('Success:', data);
-                                        window.location.href = 'https://lab.padem.org/accueil/partenaires/?projectId=' + projectId;
-                                    })
-                                    .catch((error) => {
-                                        console.error('Error:', error);
-                                    });
+                                        document.getElementById('remove_user_' + user.email).addEventListener('click', function () {
+                                            fetch('https://lab.padem.org/wp-json/mo/v1/removeUser', {
+                                                method: 'DELETE',
+                                                headers: {
+                                                    'Content-Type': 'application/json',
+                                                },
+                                                body: JSON.stringify({
+                                                    user_id: user.user_id,
+                                                    project_id: projectId
+                                                }),
+                                            })
+                                                .then(response => response.json())
+                                                .then(data => {
+                                                    console.log('Success:', data);
+                                                    window.location.href = 'https://lab.padem.org/accueil/partenaires/?projectId=' + projectId;
+                                                })
+                                                .catch((error) => {
+                                                    console.error('Error:', error);
+                                                });
+                                        });
+                                    }
+                                
                             });
-                        }
-                    });
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-            //#endregion
-        }
-        //#endregion
 
-        //#region get Chef de projet
-        function getProjectChief(projectId) {
-
-            var users_list = {
-                'emails_names': {
-                    'Coordinateur': 'coordinator_email',
-                    'Chef de projet': 'chief_email',
-                    'partenaire': 'partner_email',
-                    'comptable': 'accountant_email',
-                    'consultant': 'consultant_email',
-                    'bailleur': 'funder_email'
-                },
-                'users': {
-                    'Coordinateur': [],
-                    'Chef de projet': [],
-                    'partenaire': [],
-                    'comptable': [],
-                    'consultant': [],
-                    'bailleur': []
-                },
-                'urls': {
-                    'Administrateur': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
-                    'Coordinateur': 'https://lab.padem.org/wp-json/mo/v1/getCoordinator',
-                    'Chef de projet': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
-                    'partenaire': 'https://lab.padem.org/wp-json/mo/v1/getPartner',
-                    'comptable': 'https://lab.padem.org/wp-json/mo/v1/getAccountant',
-                    'consultant': 'https://lab.padem.org/wp-json/mo/v1/getConsultant',
-                    'bailleur': 'https://lab.padem.org/wp-json/mo/v1/getFunder'
-                }
-            };
-
-            fetch(users_list.urls['Chef de projet'], {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            })
-                .then(response => response.json())
-                .then(data => {
-                    data.forEach(user => {
-                        // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
-                        if (user.project_id === parseInt(projectId)) {
-                            var li = document.createElement('li');
-                            li.classList.add('col-md-3');
-                            li.innerHTML = `
-                                    <div class="card mb-4 shadow-sm" style="width: fit-content;">
-                                        <div class="card-body">
-                                            <p class="card-text">${user.chief_first_name}</p>
-                                            <p class="card-text">${user.chief_last_name}</p>
-                                            <a href="mailto:${user.chief_email}" class="card-text">${user.chief_email}</a>
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <div class="btn-group">
-                                                    <button type="button" id="remove_chief_${user.chief_id}" class="btn btn-sm btn-outline-secondary" style="width: fit-content; color: white;">Retirer du projet</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                `;
-                            document.getElementById('membersList').appendChild(li);
-                            document.getElementById('membersList-chef-de-projet').appendChild(li);
-
-                            document.getElementById('remove_chief_' + user.chief_id).addEventListener('click', function () {
-                                fetch('https://lab.padem.org/wp-json/mo/v1/removeChief', {
-                                    method: 'DELETE',
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                    },
-                                    body: JSON.stringify({
-                                        chief_id: user.chief_id,
-                                        project_id: projectId
-                                    }),
-                                })
-                                    .then(response => response.json())
-                                    .then(data => {
-                                        console.log('Success:', data);
-                                        window.location.href = 'https://lab.padem.org/accueil/partenaires/?projectId=' + projectId;
-                                    })
-                                    .catch((error) => {
-                                        console.error('Error:', error);
-                                    });
-                            });
                         }
                     });
                 })
@@ -1671,368 +743,6 @@
                     console.error('Error:', error);
                 });
         }
-        //#endregion
-
-        //#region get partenaire
-        function getPartners(projectId) {
-
-            var users_list = {
-                'emails_names': {
-                    'Coordinateur': 'coordinator_email',
-                    'Chef de projet': 'chief_email',
-                    'partenaire': 'partner_email',
-                    'comptable': 'accountant_email',
-                    'consultant': 'consultant_email',
-                    'bailleur': 'funder_email'
-                },
-                'users': {
-                    'Coordinateur': [],
-                    'Chef de projet': [],
-                    'partenaire': [],
-                    'comptable': [],
-                    'consultant': [],
-                    'bailleur': []
-                },
-                'urls': {
-                    'Administrateur': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
-                    'Coordinateur': 'https://lab.padem.org/wp-json/mo/v1/getCoordinator',
-                    'Chef de projet': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
-                    'partenaire': 'https://lab.padem.org/wp-json/mo/v1/getPartner',
-                    'comptable': 'https://lab.padem.org/wp-json/mo/v1/getAccountant',
-                    'consultant': 'https://lab.padem.org/wp-json/mo/v1/getConsultant',
-                    'bailleur': 'https://lab.padem.org/wp-json/mo/v1/getFunder'
-                }
-            };
-
-            fetch(users_list.urls['partenaire'], {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            })
-                .then(response => response.json())
-                .then(data => {
-                    data.forEach(user => {
-                        // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
-                        if (user.project_id === parseInt(projectId)) {
-                            var li = document.createElement('li');
-                            li.classList.add('col-md-3');
-                            li.innerHTML = `
-                                    <div class="card mb-4 shadow-sm" style="width: fit-content;">
-                                        <div class="card-body">
-                                            <p class="card-text">${user.partner_first_name}</p>
-                                            <p class="card-text">${user.partner_last_name}</p>
-                                            <a href="mailto:${user.partner_email}" class="card-text">${user.partner_email}</a>
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <div class="btn-group">
-                                                    <button type="button" id="remove_partner_${user.partner_id}" class="btn btn-sm btn-outline-secondary" style="width: fit-content; color: white;">Retirer du projet</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                `;
-                            document.getElementById('membersList').appendChild(li);
-                            document.getElementById('membersList-partenaires').appendChild(li);
-
-                            document.getElementById('remove_partner_' + user.partner_id).addEventListener('click', function () {
-                                fetch('https://lab.padem.org/wp-json/mo/v1/removePartner', {
-                                    method: 'DELETE',
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                    },
-                                    body: JSON.stringify({
-                                        partner_id: user.partner_id,
-                                        project_id: projectId
-                                    }),
-                                })
-                                    .then(response => response.json())
-                                    .then(data => {
-                                        console.log('Success:', data);
-                                        window.location.href = 'https://lab.padem.org/accueil/partenaires/?projectId=' + projectId;
-                                    })
-                                    .catch((error) => {
-                                        console.error('Error:', error);
-                                    });
-                            });
-                        }
-                    });
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-        }
-        //#endregion
-
-        //#region get comptable
-        function getAccountants(projectId) {
-
-            var users_list = {
-                'emails_names': {
-                    'Coordinateur': 'coordinator_email',
-                    'Chef de projet': 'chief_email',
-                    'partenaire': 'partner_email',
-                    'comptable': 'accountant_email',
-                    'consultant': 'consultant_email',
-                    'bailleur': 'funder_email'
-                },
-                'users': {
-                    'Coordinateur': [],
-                    'Chef de projet': [],
-                    'partenaire': [],
-                    'comptable': [],
-                    'consultant': [],
-                    'bailleur': []
-                },
-                'urls': {
-                    'Administrateur': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
-                    'Coordinateur': 'https://lab.padem.org/wp-json/mo/v1/getCoordinator',
-                    'Chef de projet': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
-                    'partenaire': 'https://lab.padem.org/wp-json/mo/v1/getPartner',
-                    'comptable': 'https://lab.padem.org/wp-json/mo/v1/getAccountant',
-                    'consultant': 'https://lab.padem.org/wp-json/mo/v1/getConsultant',
-                    'bailleur': 'https://lab.padem.org/wp-json/mo/v1/getFunder'
-                }
-            };
-
-            fetch(users_list.urls['comptable'], {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            })
-                .then(response => response.json())
-                .then(data => {
-                    data.forEach(user => {
-                        // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
-                        if (user.project_id === projectId) {
-                            var li = document.createElement('li');
-                            li.classList.add('col-md-3');
-                            li.innerHTML = `
-                                    <div class="card mb-4 shadow-sm" style="width: fit-content;">
-                                        <div class="card-body">
-                                            <p class="card-text">${user.accountant_first_name}</p>
-                                            <p class="card-text">${user.accountant_last_name}</p>
-                                            <a href="mailto:${user.accountant_email}" class="card-text">${user.accountant_email}</a>
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <div class="btn-group">
-                                                    <button type="button" id="remove_accountant_${user.accountant_id}" class="btn btn-sm btn-outline-secondary" style="width: fit-content; color: white;">Retirer du projet</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                `;
-                            document.getElementById('membersList').appendChild(li);
-                            document.getElementById('membersList-comptables').appendChild(li);
-
-                            document.getElementById('remove_accountant_' + user.accountant_id).addEventListener('click', function () {
-                                fetch('https://lab.padem.org/wp-json/mo/v1/removeAccountant', {
-                                    method: 'DELETE',
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                    },
-                                    body: JSON.stringify({
-                                        accountant_id: user.accountant_id,
-                                        project_id: projectId
-                                    }),
-                                })
-                                    .then(response => response.json())
-                                    .then(data => {
-                                        console.log('Success:', data);
-                                        window.location.href = 'https://lab.padem.org/accueil/partenaires/?projectId=' + projectId;
-                                    })
-                                    .catch((error) => {
-                                        console.error('Error:', error);
-                                    });
-                            });
-                        }
-                    });
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-        }
-        //#endregion
-
-        //#region get consultant
-        function getConsultants(projectId) {
-
-            var users_list = {
-                'emails_names': {
-                    'Coordinateur': 'coordinator_email',
-                    'Chef de projet': 'chief_email',
-                    'partenaire': 'partner_email',
-                    'comptable': 'accountant_email',
-                    'consultant': 'consultant_email',
-                    'bailleur': 'funder_email'
-                },
-                'users': {
-                    'Coordinateur': [],
-                    'Chef de projet': [],
-                    'partenaire': [],
-                    'comptable': [],
-                    'consultant': [],
-                    'bailleur': []
-                },
-                'urls': {
-                    'Administrateur': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
-                    'Coordinateur': 'https://lab.padem.org/wp-json/mo/v1/getCoordinator',
-                    'Chef de projet': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
-                    'partenaire': 'https://lab.padem.org/wp-json/mo/v1/getPartner',
-                    'comptable': 'https://lab.padem.org/wp-json/mo/v1/getAccountant',
-                    'consultant': 'https://lab.padem.org/wp-json/mo/v1/getConsultant',
-                    'bailleur': 'https://lab.padem.org/wp-json/mo/v1/getFunder'
-                }
-            };
-
-            fetch(users_list.urls['consultant'], {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            })
-                .then(response => response.json())
-                .then(data => {
-                    data.forEach(user => {
-                        // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
-                        console.log(user.project_id, projectId)
-                        if (user.project_id === projectId) {
-                            var li = document.createElement('li');
-                            li.classList.add('col-md-3');
-                            li.innerHTML = `
-                                    <div class="card mb-4 shadow-sm" style="width: fit-content;">
-                                        <div class="card-body">
-                                            <p class="card-text">${user.consultant_first_name}</p>
-                                            <p class="card-text">${user.consultant_last_name}</p>
-                                            <a href="mailto:${user.consultant_email}" class="card-text">${user.consultant_email}</a>
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <div class="btn-group">
-                                                    <button type="button" id="remove_consultant_${user.consultant_id}" class="btn btn-sm btn-outline-secondary" style="width: fit-content; color: white;">Retirer du projet</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                `;
-                            document.getElementById('membersList').appendChild(li);
-                            document.getElementById('membersList-consultants').appendChild(li);
-
-                            document.getElementById('remove_consultant_' + user.consultant_id).addEventListener('click', function () {
-                                fetch('https://lab.padem.org/wp-json/mo/v1/removeConsultant', {
-                                    method: 'DELETE',
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                    },
-                                    body: JSON.stringify({
-                                        consultant_id: user.consultant_id,
-                                        project_id: projectId
-                                    }),
-                                })
-                                    .then(response => response.json())
-                                    .then(data => {
-                                        console.log('Success:', data);
-                                        window.location.href = 'https://lab.padem.org/accueil/partenaires/?projectId=' + projectId;
-                                    })
-                                    .catch((error) => {
-                                        console.error('Error:', error);
-                                    });
-                            });
-                        }
-                    });
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-        }
-        //#endregion
-
-        //#region get bailleur
-        function getFunders(projectId) {
-
-            var users_list = {
-                'emails_names': {
-                    'Coordinateur': 'coordinator_email',
-                    'Chef de projet': 'chief_email',
-                    'partenaire': 'partner_email',
-                    'comptable': 'accountant_email',
-                    'consultant': 'consultant_email',
-                    'bailleur': 'funder_email'
-                },
-                'users': {
-                    'Coordinateur': [],
-                    'Chef de projet': [],
-                    'partenaire': [],
-                    'comptable': [],
-                    'consultant': [],
-                    'bailleur': []
-                },
-                'urls': {
-                    'Administrateur': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
-                    'Coordinateur': 'https://lab.padem.org/wp-json/mo/v1/getCoordinator',
-                    'Chef de projet': 'https://lab.padem.org/wp-json/mo/v1/getProjectChief',
-                    'partenaire': 'https://lab.padem.org/wp-json/mo/v1/getPartner',
-                    'comptable': 'https://lab.padem.org/wp-json/mo/v1/getAccountant',
-                    'consultant': 'https://lab.padem.org/wp-json/mo/v1/getConsultant',
-                    'bailleur': 'https://lab.padem.org/wp-json/mo/v1/getFunder'
-                }
-            };
-
-            fetch(users_list.urls['bailleur'], {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            })
-                .then(response => response.json())
-                .then(data => {
-                    data.forEach(user => {
-                        // Vérifier si l'utilisateur est dans le projet et incrémenter le nombre de participants
-                        if (user.project_id === projectId) {
-                            var li = document.createElement('li');
-                            li.classList.add('col-md-3');
-                            li.innerHTML = `
-                                    <div class="card mb-4 shadow-sm" style="width: fit-content;">
-                                        <div class="card-body">
-                                            <p class="card-text">${user.funder_first_name}</p>
-                                            <p class="card-text">${user.funder_last_name}</p>
-                                            <a href="mailto:${user.funder_email}" class="card-text">${user.funder_email}</a>
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <div class="btn-group">
-                                                    <button type="button" id="remove_funder_${user.funder_id}" class="btn btn-sm btn-outline-secondary" style="width: fit-content; color: white;">Retirer du projet</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                `;
-                            document.getElementById('membersList').appendChild(li);
-                            document.getElementById('membersList-bailleurs').appendChild(li);
-
-                            document.getElementById('remove_funder_' + user.funder_id).addEventListener('click', function () {
-                                fetch('https://lab.padem.org/wp-json/mo/v1/removeFunder', {
-                                    method: 'DELETE',
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                    },
-                                    body: JSON.stringify({
-                                        funder_id: user.funder_id,
-                                        project_id: projectId
-                                    }),
-                                })
-                                    .then(response => response.json())
-                                    .then(data => {
-                                        console.log('Success:', data);
-                                        window.location.href = 'https://lab.padem.org/accueil/partenaires/?projectId=' + projectId;
-                                    })
-                                    .catch((error) => {
-                                        console.error('Error:', error);
-                                    });
-                            });
-                        }
-                    });
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-        }
-        //#endregion
 
         // Fonction pour sauvegarder les informations du formulaire
         function saveFormReport() {
