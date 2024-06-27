@@ -1,0 +1,88 @@
+<!-- Afficher la liste de tout les types de rapports -->
+<ul class="list-group" id="report_typeList" style="list-style: none;">
+    <!-- Les types de rapports seront affichés ici -->
+</ul>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        getReportTypes();
+    });
+
+    //#region Fonction récupérer les types de rapports
+    function getReportTypes() {
+        fetch('https://lab.padem.org/wp-json/mo/v1/getReportTypes',
+            {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(report_type => {
+                    var li = document.createElement('li');
+                    li.innerHTML = `
+                        <li class="list-group">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">${report_type.report_type_name}</h5>
+                                    <p class="card-text">${report_type.report_type_description}</p>
+                                    <button type="button" class="btn btn-primary" onclick="removeReportType(${report_type.report_type_id});">Supprimer</button>
+                                    <button type="button" class="btn btn-primary" onclick="createReport(${report_type.report_type_id});">Créer</button>
+                                </div>
+                            </div>
+                        </li>
+                    `;
+                    document.getElementById('report_typeList').appendChild(li);
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+
+    // Fonction pour vérifier si le type de rapport est utilisé dans au moins un rapport avant de le supprimer
+    function removeReportType(report_type_id) {
+        fetch('https://lab.padem.org/wp-json/mo/v1/getReports',
+            {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                var isUsed = false;
+                data.forEach(report => {
+                    if (report.report_type_id === report_type_id) {
+                        isUsed = true;
+                    }
+                });
+                if (isUsed) {
+                    alert('Ce type de rapport est utilisé dans au moins un rapport. Vous ne pouvez pas le supprimer.');
+                } else {
+                    fetch('https://lab.padem.org/wp-json/mo/v1/removeReportType',
+                        {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                'report_type_id': report_type_id
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log('Success:', data);
+                            location.reload();
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+</script>

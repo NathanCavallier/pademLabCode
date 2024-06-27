@@ -1,0 +1,87 @@
+<!-- Bouton pour afficher/masquer le formulaire de création de type de rapport -->
+<button type="button"
+    onclick="showAndHideProjectForm(); showAndHideCancelButton(); switchAddProjectButtonIcon('add_report_type')"
+    style="background: none; width: fit-content; display: none;" id="addProjectButton"
+    class="action-buttons btn btn-primary">
+    <img src="https://lab.padem.org/wp-content/uploads/plus.png" alt="add_report_type" id="add_report_type"
+        title="Ajouter un projet" /> Ajouter un type de rapport
+</button>
+
+<!-- Bouton pour annuler la création de type de rapport -->
+<button type="button"
+    onclick="showAndHideProjectForm(); showAndHideCancelButton(); switchAddProjectButtonIcon('add-file')"
+    style="background: none; width: fit-content; display: none;" id="cancelButton"
+    class="action-buttons btn btn-primary">
+</button>
+
+<!-- Formulaire de création de type de rapport -->
+<div id="projectForm" style="display: none;">
+    <form id="projectForm" class="container" style="display: none; border-radius: 15px; margin-top: 15px;" >
+        <div class="form-group">
+            <label for="projectName">Nom du type de rapport</label>
+            <input type="text" class="form-control" id="projectName" placeholder="Nom du type de rapport">
+        </div>
+        <div class="form-group">
+            <label for="projectDescription">Description du type de rapport</label>
+            <textarea class="form-control" id="projectDescription" rows="3"
+                placeholder="Description du type de rapport"></textarea>
+        </div>
+        <button type="button" class="btn btn-primary" onclick="createProjectType();">Créer</button>
+    </form>
+</div>
+
+
+<!-- Fonction pour afficher/masquer le formulaire de création de type de rapport -->
+<script>
+
+    function createProjectType() {
+        var projectName = document.getElementById('projectName').value;
+        var projectDescription = document.getElementById('projectDescription').value;
+
+        fetch('https://lab.padem.org/wp-json/mo/v1/createReportType', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                'report_type_name': projectName,
+                'report_type_description': projectDescription
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+                location.reload();
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    }
+
+
+    function showAndHideProjectForm() {
+        var projectForm = document.getElementById('projectForm');
+        if (projectForm.style.display === 'none') {
+            projectForm.style.display = 'block';
+        } else {
+            projectForm.style.display = 'none';
+        }
+    }
+
+    function showAndHideCancelButton() {
+        var cancelButton = document.getElementById('cancelButton');
+        if (cancelButton.style.display === 'none') {
+            cancelButton.style.display = 'block';
+        } else {
+            cancelButton.style.display = 'none';
+        }
+    }
+
+    function switchAddProjectButtonIcon(icon) {
+        var addProjectButton = document.getElementById('addProjectButton');
+        addProjectButton.innerHTML = `<img src="https://lab.padem.org/wp-content/uploads/${icon}.png" alt="${icon}" id="${icon}" title="Ajouter un projet" /> Ajouter un type de rapport`;
+    }
+
+</script>
+
+

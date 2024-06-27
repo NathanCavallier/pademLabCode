@@ -1,54 +1,3 @@
-<!-- Description de la page: Afficher une liste des demandes de rapport à soumettre -->
-<div class="container">
-    <div class="row">
-        <div class="col-md-12">
-            <h1>Liste des demandes de rapport à soumettre</h1>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th scope="col">Nom du rapport</th>
-                        <th scope="col">Destinataires du rapport</th>
-                        <th scope="col">Type de rapport</th>
-                        <th scope="col">Contenu du rapport</th>
-                        <th scope="col">Fichiers joints</th>
-                        <th scope="col">Status du rapport</th>
-                        <th scope="col">Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="reportsList_">
-                    <!-- Les rapports seront affichés ici -->
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-
-<!-- Description de la page: Afficher les informations d'un rapport -->
-<div class="container">
-    <div class="row">
-        <div class="col-md-12">
-            <h1>Informations du rapport</h1>
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Nom du rapport: </h5>
-                    <p class="card-text" id="reportName_"></p>
-                    <h5 class="card-title">Destinataires du rapport: </h5>
-                    <p class="card-text" id="reportReceivers_"></p>
-                    <h5 class="card-title">Type de rapport: </h5>
-                    <p class="card-text" id="reportType_"></p>
-                    <h5 class="card-title">Contenu du rapport: </h5>
-                    <p class="card-text" id="reportContent_"></p>
-                    <h5 class="card-title">Fichiers joints: </h5>
-                    <p class="card-text" id="reportFiles"></p>
-                    <h5 class="card-title">Status du rapport: </h5>
-                    <p class="card-text" id="reportStatus_"></p>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-
 <!-- Description de la page: Bouton pour afficher/masquer le formulaire d'ajout de rapport -->
 <div class="container">
     <div class="row">
@@ -102,6 +51,7 @@
     // Récupérer les rapports
     document.addEventListener('DOMContentLoaded', function (e) {
         e.preventDefault();
+        getReportsTypes();
     });
 
     // Ajouter un événement pour afficher/masquer le formulaire d'ajout de rapport
@@ -116,7 +66,7 @@
             document.getElementById('progressReportFiles').value = '';
         } else {
             document.getElementById('progressReportForm').style.display = 'none';
-            document.getElementById('showReportForm').innerText = 'Ajouter un projet';
+            document.getElementById('showReportForm').innerText = 'Ajouter un rapport';
         }
     });
 
@@ -126,11 +76,10 @@
         submitReport();
     });
 
-    //#region Fonction récupérer les rapports
-    function getReports() {
-        //#region Récupérer les rapports qui font partie du projet (https://lab.padem.org/wp-json/mo/v1/getWorkingTable)
+    //#region Fonction pour vérifier si le rapport fait déjà partie du projet
+    function checkIfReportExists(project_id, reportName) {
         var all_reports_ids = [];
-        var project_id = parseInt(new URLSearchParams(window.location.search).get('projectId'));
+        // Récupérer la table de travail (working_table) correspondante au projet
         fetch('https://lab.padem.org/wp-json/mo/v1/getWorkingTable',
             {
                 method: 'GET',
@@ -151,9 +100,8 @@
             .catch(error => {
                 console.error('Error:', error);
             });
-        //#endregion
 
-        //#region Récupérer les rapports (https://lab.padem.org/wp-json/mo/v1/getReports)
+        // Récupérer les rapports (https://lab.padem.org/wp-json/mo/v1/getReports)
         fetch('https://lab.padem.org/wp-json/mo/v1/getReports',
             {
                 method: 'GET',
@@ -168,50 +116,184 @@
                     // Afficher les rapports qui font partie du projet
                     if (all_reports_ids.includes(report.report_id)) {
                         if (report.rapports_avancement !== null) {
-                            var li = document.createElement('li');
                             var _report = JSON.parse(report.rapports_avancement);
-                            li.innerHTML = `
-                                <li class="list-group-item">
-                                        <div class="d-flex w-100 justify-content-between">
-                                            <h5 class="mb-1" style="color: #29A6A7;">${_report.rapport_name}</h5>
-                                            <small>Status du rapport</small>
-                                        </div>
-                                        <p class="mb-1">${_report.created_date}</p>
-                                        <button type="button" class="btn btn-primary" data-toggle="collapse" id="btn_report_${report.report_id}" data-target="#details_${report.report_id}" style="width: fit-content; color: white;">Détails</button>
-                                        <div style="margin-top: 15px;"></div>
-                                        <div id="details_${report.report_id}" style="display: none;">
-                                            <div class="card card-body">
-                                                <textarea rows="8" placeholder="Description" style="border-radius: 15px; width: fit-content;" disabled style="width: fit-content;">Commentaires: ${_report.rapport_content}</textarea>
-                                                <br>
-                                                <div style="color: #29A6A7;">Fichiers à télécharger: ${_report.rapport_files}</div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                `;
-                            document.getElementById('reportsList_').appendChild(li);
-                            document.getElementById(`btn_report_${report.report_id}`).addEventListener('click', function () {
-                                if (document.getElementById(`details_${report.report_id}`).style.display === 'none') {
-                                    document.getElementById(`details_${report.report_id}`).style.display = 'block';
-                                    document.getElementById(`btn_report_${report.report_id}`).innerText = 'Masquer les détails';
-                                } else {
-                                    document.getElementById(`details_${report.report_id}`).style.display = 'none';
-                                    document.getElementById(`btn_report_${report.report_id}`).innerText = 'Détails';
-                                }
-                            });
-
+                            if (_report.rapport_name === reportName) {
+                                return true;
+                            }
                         }
                     }
                 });
-                if (all_reports_ids.length === 0) {
-                    var li = document.createElement('li');
-                    li.innerHTML = ` <li class="list-group-item">Aucun rapport trouvé</li>`;
-                    document.getElementById('reportsList_').appendChild(li);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        return false;
+    }
+    //#endregion
+
+    //#region Fonction pour récupérer les types de rapports(https://lab.padem.org/wp-json/mo/v1/getReportTypes)
+    function getReportsTypes() {
+        fetch('https://lab.padem.org/wp-json/mo/v1/getReportTypes',
+            {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Vérifier si le type de rapport est valide
+                if (data.length > 0) {
+                    data.forEach(report_type => {
+                        if ((report_type.report_type_name !== null) && (report_type.report_type_name !== '') && (report_type.report_type_name === undefined)) {
+                            var option = document.createElement('option');
+                            option.value = report_type.report_type_name;
+                            option.text = report_type.report_type_name;
+                            document.getElementById('progressReportType').appendChild(option);
+                        }
+                    });
+                } else {
+                    var option = document.createElement('option');
+                    option.value = 'Aucun type de rapport trouvé';
+                    option.text = 'Aucun type de rapport trouvé';
+                    document.getElementById('progressReportType').appendChild(option);
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
             });
-        //#endregion
+    }
+    //#endregion
+
+    //#region Fonction pour soumettre le rapport
+    function submitReport() {
+
+        var reportName = document.getElementById('progressReportName').value;
+        var reportType = document.getElementById('progressReportType').value;
+        var reportContent = document.getElementById('progressReportContent').value;
+        var reportFiles = document.getElementById('progressReportFiles').value;
+        var project_id = parseInt(new URLSearchParams(window.location.search).get('projectId'));
+
+        if (reportName === '' || reportType === '' || reportContent === '' || reportFiles === '') {
+            Swal.fire({
+                icon: 'error',
+                title: 'Erreur',
+                text: 'Veuillez remplir tous les champs'
+            });
+            return;
+        }
+
+        var data = {
+            'project_id': project_id,
+            'rapport_name': reportName,
+            'rapport_type': reportType,
+            'rapport_content': reportContent,
+            'rapport_files': reportFiles,
+            'created_date': new Date().toLocaleString(),
+        };
+
+        // Vérifier si le rapport fait déjà partie du projet
+        if (checkIfReportExists(project_id, reportName)) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Erreur',
+                text: 'Le rapport existe déjà'
+            });
+            return;
+        }
+
+        // Soumettre le rapport (créer un rapport)
+        fetch('https://lab.padem.org/wp-json/mo/v1/createReport', {
+            method: 'POST',
+            body: JSON.stringify(data),
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+
+        
+        var report_id = 0; // ID du rapport
+        
+        // Récupérer l'ID du rapport
+        fetch('https://lab.padem.org/wp-json/mo/v1/getReports', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(report => {
+                    // Vérifier si le rapport fait partie du projet
+                    if (report.report_id !== null && report.project_id === project_id) {
+                        var _report = JSON.parse(report.report_id);
+                        if (_report.rapport_name === reportName) {
+                            report_id = _report.report_id;
+                        }
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+
+        
+        var current_WorkingTable = {};
+
+        // Récupérer la Working Table corespendante au projet (https://lab.padem.org/wp-json/mo/v1/getWorkingTable)
+        fetch('https://lab.padem.org/wp-json/mo/v1/createWorkingTable', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                // Récupérer l'ID du projet
+                data.forEach(working_table => {
+                    if (parseInt(working_table.project_id) === project_id) {
+                        current_WorkingTable = {
+                            'Working_Table_Id': working_table.Working_Table_Id,
+                            'project_id': working_table.project_id,
+                            'report_id': (JSON.parse(working_table.report_id)).push(report_id), // Ajouter l'ID du rapport à la liste des rapports
+                            'users_emails_list': working_table.users_emails_list,
+                        };
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+
+        // Supprimer l'ancienne Working Table (https://lab.padem.org/wp-json/mo/v1/removeWorkingTable)
+        fetch('https://lab.padem.org/wp-json/mo/v1/removeWorkingTable', {
+            method: 'DELETE',
+            body: JSON.stringify({ 'column_param1': project_id }), // Supprimer la Working Table correspondante au projet
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+
+        // Ajouter l'id du rapport à la table de travail(working_table)
+        fetch('https://lab.padem.org/wp-json/mo/v1/addToWorkingTable', {
+            method: 'POST',
+            body: JSON.stringify(current_WorkingTable),
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
     }
     //#endregion
 
