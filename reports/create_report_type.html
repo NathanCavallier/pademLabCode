@@ -1,39 +1,52 @@
 <!-- Afficher la liste des types de rapport existants -->
-<div class="container" style="color: gray;">
-    <div class="row">
-        <div class="col-md-12">
-            <ul class="list-group" id="reportTypesList_" style="list-style: none;">
-                <!-- Les types de rapport seront affichés ici -->
-            </ul>
-        </div>
-    </div>
+<div style="color: gray;">
+    <ul class="normal-heigth-scroll" id="reportTypesList_"
+        style="list-style: none; justify-content: space-between; background: none; background-color: none;">
+        <!-- Les types de rapport seront affichés ici -->
+    </ul>
 </div>
 
+
+<!-- Afficher la liste des types de rapport existants -->
+<div style="color: gray;">
+    <ul id="reportTypeNames_repportView"
+        style="list-style: none; justify-content: space-between; background: none; background-color: none;">
+        <!-- Les types de rapport seront affichés ici -->
+    </ul>
+</div>
 
 
 <body>
     <!-- Bouton pour afficher/masquer le formulaire -->
-    <div class="form-group">
-        <button type="button" class="btn btn-secondary" id="cancelButton" style="display: block;"
-            onclick="showAndHideProjectForm(); cancelForm();" style="width: min-content;">Nouveau filtre</button>
+    <div class="container" style=" display: flex; justify-content: left;">
+        <div class="row">
+            <div class="col-md-12">
+                <button type="button" id="cancelButton"
+                    style="width: min-content; display: block; justify-content: left;"
+                    onclick="showAndHideProjectForm();">
+                    <img src="https://lab.padem.org/wp-content/uploads/filtreSquared.png" alt="add"
+                        id="add_filtreSquared" title="Ajouter un type de rapport" style="width: 30px; height: 30px;" />
+                </button>
+            </div>
+        </div>
     </div>
 
     <!-- Formulaire de création de type de rapport -->
-    <div id="report_type" style="display: none;">
-        <form class="container" style=" border-radius: 15px; margin-top: 15px; background-color: white;">
-            <div class="form-group">
-                <label for="projectName">Nom du type de rapport: <span style="color: red;">*</span></label>
-                <input type="text" class="form-control" id="projectName" placeholder="Nom du type de rapport">
+    <div id="report_type" style="display: none; width: 100%;">
+        <form class="container" style=" border-radius: 15px; margin-top: 15px; background-color: white; width: 100%;">
+            <div class="form-group" style="width: 100%;">
+                <label for="reportType_Name">Nom du type de rapport: <span style="color: red;">*</span></label>
+                <input type="text" class="form-control" id="reportType_Name" placeholder="Nom du type de rapport">
             </div>
-            <div class="form-group">
-                <label for="projectDescription">Description du type de rapport: <span
+            <div class="form-group" style="width: 100%;">
+                <label for="reportType_Description">Description du type de rapport: <span
                         style="color: red;">*</span></label>
-                <textarea class="form-control" id="projectDescription" rows="4"
+                <textarea class="form-control" id="reportType_Description" rows="4"
                     placeholder="Description du type de rapport"></textarea>
             </div>
             <div style="margin: 15px;"></div>
             <div class="form-group">
-                <button type="button" class="btn btn-primary" onclick="createReportType();"
+                <button type="button" class="btn btn-primary" id="add_reportType"
                     style="width: fit-content;">Enregistrer</button>
             </div>
         </form>
@@ -43,14 +56,23 @@
     <!-- Fonction pour afficher/masquer le formulaire de création de type de rapport -->
     <script>
         document.addEventListener("DOMContentLoaded", function () {
+            document.getElementById('loading').display = 'block';
             displayAvailableReportTypes();
         });
 
-        function createReportType() {
-            var projectName = document.getElementById('projectName').value;
-            var projectDescription = document.getElementById('projectDescription').value;
+        document.getElementById('add_reportType').addEventListener('click', function () {
+            createReportType();
+        });
 
-            if(projectName === '' && projectDescription === '')
+        // Fonction pour créer un type de rapport
+        function createReportType() {
+            var projectName = document.getElementById('reportType_Name').value;
+            var projectDescription = document.getElementById('reportType_Description').value;
+
+            if (projectName === '' || projectDescription === '') {
+                alert("Veuillez remplir tous les champs.");
+                return;
+            }
 
             fetch('https://lab.padem.org/wp-json/mo/v1/createReportType', {
                 method: 'POST',
@@ -72,8 +94,33 @@
                 });
         }
 
+        // tableau de dictionnaire dynamique permetant de récupérer le nombre de rapports dans lesquel un type de rapport est utilisé
+        var reportTypeUsage = [{}];
+
+        // Fonction pour récupérer le nombre de rapports dans lesquel un type de rapport est utilisé
+        function getReportTypeUsage(reportTypeId) {
+            fetch('https://lab.padem.org/wp-json/mo/v1/getReports', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            })
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(report => {
+                        if (report.report_type_id === reportTypeId) {
+                            reportTypeUsage[reportTypeId] += 1;
+                        }
+                    });
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        }
+
+        // Fonction pour afficher les types de rapport disponibles
         function displayAvailableReportTypes() {
-            fetch('https://lab.padem.org/wp-json/mo/v1/getReportTypes', {
+            fetch('https://lab.padem.org/wp-json/mo/v1/getReportType', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
@@ -81,26 +128,119 @@
             })
                 .then(response => response.json())
                 .then(data => {
+                    document.getElementById('loading').display = 'none';
                     var reportTypesList = document.getElementById('reportTypesList_');
-                    data.forEach(reportType => {
+                    reportTypesList.innerHTML = '';
+                    var reportTypesIds = [];
+                    data.forEach((reportType, index) => {
+                        getReportTypeUsage(reportType.report_type_id);
+                        reportTypesIds.push(reportType.report_type_id);
+                        var textContent = reportTypeUsage[reportType.report_type_id] ? `En cours d'usage dans ${reportTypeUsage[reportType.report_type_id]} rapport(s).` : 'Filtre non utilisé pour le moment.'; // Afficher le nombre de rapports dans lesquel un type de rapport est utilisé
+                        var textContent_color = reportTypeUsage[reportType.report_type_id] ? 'green' : 'gray';
                         var li = document.createElement('li');
+                        li.style = 'margin: 10px;';
+                        li.style = 'padding: 10px;';
+                        li.className = 'list-group-item';
+                        li.style = 'border-radius: 15px;';
+                        li.style = 'border-width: 0px;';
+                        li.style = 'background-color: none;';
+                        li.style = 'background: none;';
                         li.innerHTML = `
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="card" style="margin-top: 15px;">
-                                        <div class="card-body">
-                                            <h5 class="card-title">${reportType.report_type_name}</h5>
-                                            <p class="card-text">${reportType.report_type_description}</p>
-                                        </div>
-                                    </div>
+                            <div class="card">
+                                <div class="card-body" style="background-color: #f8f9fa; border-radius: 15px;">
+                                    <h5 class="card-title" style="color: gray;">${reportType.report_type_name}</h5>
+                                    <p class="card-text" style="color: gray;">Description: ${reportType.report_type_description}</p>
+                                </div>
+                                <div class="card-footer">
+                                    <p class="card-text" style="color: gray;">${textContent}</p>
+                                    <button type="button" style="width: fit-content; background-Color: none;" id="deleteReportType_${reportType.report_type_id}" disable><img src="https://lab.padem.org/wp-content/uploads/bin.png" alt="delete" title="Supprimer" style="width: 20px; height: 20px; background-Color: none;"/></button>
                                 </div>
                             </div>
+                            <br>
                         `;
                         reportTypesList.appendChild(li);
+
+                        var li_reportTypeNames_repportView = document.createElement('li');
+                        li_reportTypeNames_repportView.style = 'margin: 10px;';
+                        li_reportTypeNames_repportView.style = 'padding: 10px;';
+                        li_reportTypeNames_repportView.style = 'border-radius: 15px;';
+                        li_reportTypeNames_repportView.style = 'border-width: 0px;';
+                        li_reportTypeNames_repportView.innerHTML = `<li style="margin: 10px; padding: 10px; border-radius: 15px; border-width: 0px; background-color: white; border-radius: 15px;" class="box-clicable" id="reportTypeNames_repportView_${reportType.report_type_id}">${reportType.report_type_name}</li>`;
+                        
+                        document.getElementById('reportTypeNames_repportView').appendChild(li_reportTypeNames_repportView);
+
+                        var reportTypeNames_repportView = document.getElementById(`reportTypeNames_repportView_${reportType.report_type_id}`);
+
+                        reportTypeNames_repportView.addEventListener('click', function () {
+                            if (reportTypeNames_repportView.style.backgroundColor === 'white') {
+                                reportTypeNames_repportView.style.backgroundColor = 'lightgray';
+                                reportTypeNames_repportView.style.color = 'black';
+                            } else if (reportTypeNames_repportView.style.backgroundColor === 'lightgray') {
+                                reportTypeNames_repportView.style.backgroundColor = 'white';
+                                reportTypeNames_repportView.style.color = 'gray';
+                            }
+
+                            // Changer la couleur de fond des autres types de rapport
+                            reportTypesIds.forEach(id => {
+                                if (id !== reportType.report_type_id) {
+                                    document.getElementById(`reportTypeNames_repportView_${id}`).style.backgroundColor = 'white';
+                                    document.getElementById(`reportTypeNames_repportView_${id}`).style.color = 'gray';
+                                }
+                            });
+                        });
+
+                        // Supprimer un type de rapport
+                        document.getElementById(`deleteReportType_${reportType.report_type_id}`).addEventListener('click', function () {
+                            // Vérifier si le type de rapport est utilisé dans un rapport
+                            if (reportTypeUsage[reportType.report_type_id] > 0) {
+                                alert("Ce type/filtre de rapport est utilisé dans un ou plusieurs rapports. Vous ne pouvez pas le supprimer.");
+                                return;
+                            }
+
+                            // Afficher une confirmation avant de supprimer un type de rapport
+                            Swal.fire({
+                                title: 'Confirmation',
+                                text: "Voulez-vous vraiment supprimer ce filtre de rapport?",
+                                icon: 'warning',
+                                showCancelButton: true,
+                                confirmButtonColor: '#29A6A7',
+                                cancelButtonColor: '#d33',
+                                confirmButtonText: 'Oui',
+                                cancelButtonText: 'Non'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    fetch(`https://lab.padem.org/wp-json/mo/v1/removeReportType`, {
+                                        method: 'DELETE',
+                                        headers: {
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify({
+                                            'column_param1': reportType.report_type_id
+                                        })
+                                    })
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            // Afficher un message de succès après la suppression
+                                            Swal.fire({
+                                                icon: 'success',
+                                                title: 'Filtre supprimé avec succès !',
+                                                showConfirmButton: false,
+                                                timer: 1500
+                                            });
+                                            console.log('Success:', data);
+                                            location.reload();
+                                        })
+                                        .catch((error) => {
+                                            console.error('Error:', error);
+                                        });
+                                }
+                            });
+                        });
                     });
                     if (data.length === 0) {
                         reportTypesList.innerHTML = '<h5 style="color: gray;">Aucun type de rapport disponible pour le moment.</h5>';
                     }
+                    document.getElementById('loading').display = 'none';
                 })
         }
 
@@ -111,12 +251,13 @@
 
         function showAndHideProjectForm() {
             var projectForm = document.getElementById('report_type');
+            var element = document.getElementById('add_filtreSquared');
             if (projectForm.style.display === 'none') {
                 projectForm.style.display = 'block';
-                document.getElementById('cancelButton').innerText = 'Annuler';
+                element.src = 'https://lab.padem.org/wp-content/uploads/close.png';
             } else {
                 projectForm.style.display = 'none';
-                document.getElementById('cancelButton').innerText = 'Nouveau filtre';
+                element.src = 'https://lab.padem.org/wp-content/uploads/filtreSquared.png';
             }
         }
 
@@ -127,11 +268,6 @@
             } else {
                 cancelButton.style.display = 'none';
             }
-        }
-
-        function switchAddProjectButtonIcon(icon) {
-            var addProjectButton = document.getElementById('addProjectButton');
-            addProjectButton.innerHTML = `<img src="https://lab.padem.org/wp-content/uploads/${icon}.png" alt="${icon}" id="${icon}" title="Ajouter un projet" /> Ajouter un type de rapport`;
         }
 
     </script>
