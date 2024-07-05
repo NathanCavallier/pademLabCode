@@ -30,7 +30,13 @@
 
 
     <script>
+        var userEmail = '';
+        var userProjectsNames = [];
+
         document.addEventListener("DOMContentLoaded", function () {
+            // Récupérer les informations de l'utilisateur connecté
+            userEmail = current_user_data.email;
+
             getProjectData();
             getReportTypes();
             displayReportsRequests();
@@ -68,9 +74,47 @@
                 .catch(error => console.error('Erreur:', error));
         }
 
-        // Fonction pour Récupérer les noms des projets et leurs id
+        // Fonction pour Récupérer les noms des projets et leurs id dans lesquels l'utilisateur est membre pour les afficher dans le formulaire
         function getProjectData() {
-            //#region Récupérer les noms des projets et leurs id
+
+            var user_projects_ids = [];
+            //#region Vérifier si l'utilisateur est membre d'un projet
+            fetch('https://lab.padem.org/wp-json/mo/v1/getWorkingTable',
+                {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        console.log('Erreur réseau lors de la demande à l\'API');
+                    }
+                    return response.json();
+                })
+                .then(workingTable => {
+                    workingTable.forEach(function (project) {
+                        var user_email = [];
+
+                        var emails = JSON.parse(project.users_emails_list);
+                        if(emails.project_referent)
+                            user_email.push(emails.project_referent);
+                        if(emails.padem_responsible)
+                            user_email.push(emails.padem_responsible);
+                        if(emails.other_user)
+                            user_email.push(emails.other_user);
+
+                        // Vérifier si l'utilisateur est membre du projet
+                        if (user_email.includes(userEmail)) {
+                            user_projects_ids.push(project.project_id);
+                        }
+                    });
+                })
+                .catch(error => console.error('Erreur:', error));
+            //#endregion
+            
+
+            //#region Récupérer les projets dans lesquels l'utilisateur est membre
             fetch('https://lab.padem.org/wp-json/mo/v1/getProjectData',
                 {
                     method: 'GET',
@@ -87,16 +131,20 @@
                 .then(projects => {
                     var projectNameInput = document.getElementById("projectName");
                     projects.forEach(function (project) {
-                        var option = document.createElement("option");
-                        option.value = project.project_id;
-                        option.text = project.project_title;
-                        projectNameInput.appendChild(option);
+                        if (user_projects_ids.includes(project.project_id)) {
+                            var option = document.createElement("option");
+                            option.value = project.project_id;
+                            option.text = project.project_name;
+                            projectNameInput.appendChild(option);
+                            userProjectsNames.push(project.project_name);
+                        }
                     });
+                    localStorage.setItem('userProjectsNames', JSON.stringify(userProjectsNames));
                 })
                 .catch(error => console.error('Erreur:', error));
             //#endregion
         }
-
+        
         // Fonction pour soumettre la demande de rapport
         function submitReportRequest() {
             var memberName = document.getElementById("memberName").value;
