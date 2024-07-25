@@ -16,8 +16,35 @@
         document.getElementById('loading').style.display = 'block';
         // Récupérer les projets de l'utilisateur
         userEmail = current_user_data.email;
+        getAllReportTypes();
         getEveryThing(userEmail);
     });
+
+    var reportTypeIds = [];
+
+    //#region Récupérer ids des types de rapports et les mettre dans un tableau
+    function getAllReportTypes() {
+        fetch('https://lab.padem.org/wp-json/mo/v1/getReportType',
+            {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => {
+                if (!response.ok) {
+                    console.log('Erreur réseau lors de la demande à l\'API');
+                }
+                return response.json();
+            })
+            .then(reportTypes => {
+                reportTypes.forEach(function (reportType) {
+                    reportTypeIds.push(reportType.report_type_id);
+                });
+            })
+            .catch(error => console.error('Erreur:', error));
+    }
+    //#endregion
 
 
     //#region Récupérer les projets de l'utilisateur
@@ -48,25 +75,29 @@
 
                     var emails = JSON.parse(project.users_emails_list);
 
-                    if (emails.project_referent !== undefined) {
+                    if (emails.project_referent !== undefined && emails.project_referent !== null) {
                         user_email.push(emails.project_referent);
-                        projects_ids.push(parseInt(project.project_id)); // Les IDs des projets auxquels l'utilisateur est membre
+                        projects_ids.push(parseInt(project.project_id));
                     }
-                    if (emails.padem_responsible) {
+                    if (emails.padem_responsible !== undefined && emails.padem_responsible !== null) {
                         user_email.push(emails.padem_responsible);
-                        projects_ids.push(parseInt(project.project_id)); // Les IDs des projets auxquels l'utilisateur est membre
+                        projects_ids.push(parseInt(project.project_id));
                     }
-                    if (emails.other_user) {
+                    if (emails.other_user !== undefined && emails.other_user !== null) {
                         user_email.push(emails.other_user);
-                        projects_ids.push(parseInt(project.project_id)); // Les IDs des projets auxquels l'utilisateur est membre
+                        projects_ids.push(parseInt(project.project_id));
+                    }
+
+                    if (user_email.includes(userEmail)) {
+                        user_projects_ids.push(parseInt(project.project_id)); // Les IDs des projets auxquels l'utilisateur est membre
                     }
                 });
 
                 // Vérifier si l'utilisateur est membre du projet
-                if (user_email.includes(userEmail) && projects_ids.length > 0) {
+                if (user_email.includes(userEmail) && user_projects_ids.length > 0) {
                     document.getElementById('loading').style.display = 'block';
-                    // Récupérer les projets de l'utilisateur
-                    fetch('https://lab.padem.org/wp-json/mo/v1/getProjectData',
+                    // Récupérer les rapports qui font partie du projet
+                    fetch('https://lab.padem.org/wp-json/mo/v1/getWorkingTable',
                         {
                             method: 'GET',
                             headers: {
@@ -75,40 +106,18 @@
                         })
                         .then(response => response.json())
                         .then(data => {
-                            data.forEach(_project => {
-                                // Récupérer les projets de l'utilisateur
-                                if (projects_ids.includes(parseInt(_project.project_id))) {
-                                    user_projects_ids.push(parseInt(_project.project_id));
+                            // Récupérer l'ID du projet
+                            data.forEach(working_table => {
+                                // Vérifier si le rapport fait partie du projet (dans la table de travail)
+                                if (user_projects_ids.includes(parseInt(working_table.project_id))) {
+                                    all_reports_ids.push(parseInt(working_table.report_id));
                                 }
                             });
-
-                            console.log('projects_ids: ', projects_ids);
-                            console.log('user_projects_ids: ', user_projects_ids);
-
-                            // Récupérer les rapports qui font partie du projet
-                            fetch('https://lab.padem.org/wp-json/mo/v1/getWorkingTable',
-                                {
-                                    method: 'GET',
-                                    headers: {
-                                        'Content-Type': 'application/json'
-                                    }
-                                })
-                                .then(response => response.json())
-                                .then(data => {
-                                    // Récupérer l'ID du projet
-                                    data.forEach(working_table => {
-                                        // Vérifier si le rapport fait partie du projet (dans la table de travail)
-                                        if (user_projects_ids.includes(parseInt(working_table.project_id))) {
-                                            all_reports_ids.push(parseInt(working_table.report_id));
-                                        }
-                                    });
-                                    console.log('all_reports_ids: ', all_reports_ids);
-                                })
-                                .catch(error => {
-                                    console.error('Error:', error);
-                                });
-                        }
-                        )
+                            console.log('all_reports_ids: ', all_reports_ids);
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
                 };
 
 
@@ -126,58 +135,60 @@
                         })
                         .then(response => response.json())
                         .then(data => {
-                            data.forEach(_project => {
+                            data.forEach((_project, index) => {
                                 // Récupérer les noms des projets de l'utilisateur
-                                if (projects_ids.includes(parseInt(_project.project_id))) {
-                                    user_projects_names.push({ project_name: _project.project_title, project_id: parseInt(_project.project_id) });
+                                if (user_projects_ids.includes(parseInt(_project.project_id))) {
+                                    var project_name = _project.project_title;
+
+                                    //var condition = user_projects_ids.includes(_project.project_id);
+                                    var isOneReport = false;
+                                    // Afficher le nom du projet au dessus des rapports de ce projet
+                                    var li = document.createElement('li');
+                                    li.innerHTML = `
+                                            <li class="list-group" style="margin-top: 15px; margin-bottom: 3px; display: flex; align-items: left; justify-content: space-between;">
+                                                <div type="button" class="mb-1" style="color: #29A6A7; background-color: none; font-size: 15px; border-radius: 15px; margin: 10px; width: fit-content;" id="${project_name}_${index}">
+                                                    <img src="https://lab.padem.org/wp-content/uploads/arrow-left.png" style="width: 15px; height: 15px; margin-right: 5px; transform: rotate(0deg);" id="img_${project_name}_${index}" />
+                                                    ${project_name}  -  <span style="color: gray; font-size: 12px;" id="number_of_reports_${project_name}_${index}"></span>
+                                                </div>
+                                                <span style="flex-grow: 1; height: 1px; background-color: lightgray; margin-left: 10px;"></span>
+                                            </li>
+                                            <!-- La liste des types de rapports -->
+                                            <ul class="list-group" id="reportTypeDisplay${project_name}_${index}" style="list-style: none;">
+                                                <!-- Les types de rapports seront affichés ici -->  
+                                            </ul>
+                                            <!-- Les rapports seront affichés ici -->
+                                            <ul class="list-group" id="_reportsList_${project_name}_${index}" style="list-style: none;">
+                                                <!-- Les rapports seront affichés ici -->
+                                            </ul>
+                                        `;
+                                    document.getElementById('_reportsList_').appendChild(li);
+
+                                    var report_list = document.getElementById('_reportsList_' + project_name + '_' + index);
+                                    report_list.style.display = 'none';
+                                    report_list.innerHTML = '';
+
+                                    // Ajouter un événement de clic sur le nom du projet
+                                    document.getElementById(project_name + '_' + index).addEventListener('click', () => {
+                                        if (document.getElementById('_reportsList_' + project_name + '_' + index).style.display === 'block') {
+                                            document.getElementById('_reportsList_' + project_name + '_' + index).style.display = 'none';
+                                            document.getElementById('img_' + project_name + '_' + index).style.transform = 'rotate(0deg)';
+                                            document.getElementById('img_' + project_name + '_' + index).style.animation = 'rotate 0.5s';
+                                            document.getElementById('reportTypeDisplay' + project_name + '_' + index).style.display = 'none';
+                                        } else {
+                                            document.getElementById('_reportsList_' + project_name + '_' + index).style.display = 'block';
+                                            document.getElementById('img_' + project_name + '_' + index).style.transform = 'rotate(90deg)';
+                                            document.getElementById('img_' + project_name + '_' + index).style.animation = 'rotate 0.5s';
+                                            document.getElementById('reportTypeDisplay' + project_name + '_' + index).style.display = 'block';
+                                        }
+                                    });
+                                    //getReport_Types(project_name, index); // Récupérer les types de rapport existants
+                                    getReports(userEmail, project_name, index, all_reports_ids); // Récupérer et afficher les rapports
                                 }
                             });
                         })
                         .catch(error => {
                             console.error('Error:', error);
                         });
-
-                    console.log('user_projects_names: ', user_projects_names);
-
-                    user_projects_names.forEach(_project => {
-                        //var condition = user_projects_ids.includes(_project.project_id);
-                        if (true) {
-                            var isOneReport = false;
-
-                            var project_name = _project.project_name;
-
-                            // Afficher le nom du projet au dessus des rapports de ce projet
-                            var li = document.createElement('li');
-                            li.innerHTML = `
-                                    <li class="list-group" style="margin-top: 15px; margin-bottom: 3px; display: flex; justify-content: space-between;">
-                                        <button type="button" class="mb-1" style="color: white; background-color: #29A6A7; font-size: 13px; border-radius: 15px; margin: 3px; width: fit-content;" id="${project_name}_">${project_name}</button>
-                                        <hr>
-                                    </li>
-                                    <!-- Les rapports seront affichés ici -->
-                                    <ul class="list-group" id="_reportsList_${project_name}_" style="list-style: none;">
-                                        <!-- Les rapports seront affichés ici -->
-                                    </ul>
-                                `;
-                            document.getElementById('_reportsList_').appendChild(li);
-
-                            var report_list = document.getElementById('_reportsList_' + project_name + '_');
-                            report_list.style.display = 'none';
-                            report_list.innerHTML = '';
-
-                            // Ajouter un événement de clic sur le nom du projet
-                            document.getElementById(project_name + '_').addEventListener('click', function () {
-                                if (document.getElementById('_reportsList_' + project_name + '_').style.display === 'block') {
-                                    document.getElementById('_reportsList_' + project_name + '_').style.display = 'none';
-                                } else {
-                                    document.getElementById('_reportsList_' + project_name + '_').style.display = 'block';
-                                }
-                            });
-                            getReports(userEmail, project_name, all_reports_ids); // Récupérer et afficher les rapports
-
-                            console.log('project_name: ', project_name);
-                        }
-                    });
-
                     document.getElementById('loading').style.display = 'none';
                 }
                 //#endregion
@@ -190,9 +201,11 @@
     }
 
     //#region Récupérer et afficher les rapports
-    function getReports(userEmail, project_name, all_reports_ids) {
+    function getReports(userEmail, project_name, index, all_reports_ids) {
         var isOneReport = false;
         var isShowed = true;
+        var numberOfReports = 0;
+        document.getElementById('loading').style.display = 'block';
         fetch('https://lab.padem.org/wp-json/mo/v1/getReports',
             {
                 method: 'GET',
@@ -205,46 +218,48 @@
                 // Récupérer l'ID du projet
                 data.forEach(report => {
                     // Afficher les rapports qui font partie du projet
-                    if (all_reports_ids.includes(report.report_id)) {
+                    if (true) {
 
                         isOneReport = true;// Il y a au moins un rapport pour ce projet
+
+                        numberOfReports++;
 
                         if (report.rapports_avancement !== null && report.rapports_avancement !== undefined) {
                             try {
                                 var li = document.createElement('li');
                                 var _report = JSON.parse(report.rapports_avancement);
                                 li.innerHTML = `
-                                    <li class="list-group">
-                                            <div class="d-flex w-100 justify-content-between">
-                                                <h5 class="mb-1" style="color: #29A6A7;">${_report.rapport_name}</h5>
-                                                <small>Status du rapport</small>
+                                    <li class="list-group" style="background-color: #f8f9fa; margin-top: 15px; margin-bottom: 3px; border-radius: 15px; padding: 10px;">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <h5 class="mb-1" style="color: #29A6A7;">${_report.rapport_name}</h5>
+                                            <small>Status du rapport</small>
+                                        </div>
+                                        <p class="mb-1">${_report.created_date}</p>
+                                        <button type="button" class="btn btn-primary" data-toggle="collapse" id="btn_report_${report.report_id}_${project_name}_${index}" data-target="#details_${report.report_id}_${project_name}_${index}" style="width: fit-content; color: white;">Détails</button>
+                                        <div style="margin-top: 15px;"></div>
+                                        <div id="details_${report.report_id}_${project_name}_${index}" style="display: none;">
+                                            <div class="card card-body">
+                                                <textarea rows="8" placeholder="Description" style="border-radius: 15px; width: fit-content;" disabled style="width: fit-content;">Commentaires: ${_report.rapport_content}</textarea>
+                                                <br>
+                                                <div style="color: #29A6A7;">Fichiers à télécharger: ${_report.rapport_files}</div>
                                             </div>
-                                            <p class="mb-1">${_report.created_date}</p>
-                                            <button type="button" class="btn btn-primary" data-toggle="collapse" id="btn_report_${report.report_id}" data-target="#details_${report.report_id}" style="width: fit-content; color: white;">Détails</button>
-                                            <div style="margin-top: 15px;"></div>
-                                            <div id="details_${report.report_id}" style="display: none;">
-                                                <div class="card card-body">
-                                                    <textarea rows="8" placeholder="Description" style="border-radius: 15px; width: fit-content;" disabled style="width: fit-content;">Commentaires: ${_report.rapport_content}</textarea>
-                                                    <br>
-                                                    <div style="color: #29A6A7;">Fichiers à télécharger: ${_report.rapport_files}</div>
-                                                </div>
-                                            </div>
-                                        </li>
+                                        </div>
+                                    </li>
                                 `;
                             } catch (error) {
                                 console.error('Error: (Afficher les rapports qui font partie du projet) ', error);
                             }
-                            document.getElementById('_reportsList_' + project_name + '_').appendChild(li);
-                            document.getElementById(`btn_report_${report.report_id}`).addEventListener('click', function () {
-                                if (document.getElementById(`details_${report.report_id}`).style.display === 'none') {
-                                    document.getElementById(`details_${report.report_id}`).style.display = 'block';
-                                    document.getElementById(`btn_report_${report.report_id}`).innerText = 'Masquer les détails';
+                            document.getElementById('_reportsList_' + project_name + '_' + index).appendChild(li);
+
+                            document.getElementById(`btn_report_${report.report_id}_${project_name}_${index}`).addEventListener('click', () => {
+                                if (document.getElementById(`details_${report.report_id}_${project_name}_${index}`).style.display === 'none') {
+                                    document.getElementById(`details_${report.report_id}_${project_name}_${index}`).style.display = 'block';
+                                    document.getElementById(`btn_report_${report.report_id}_${project_name}_${index}`).innerText = 'Masquer les détails';
                                 } else {
-                                    document.getElementById(`details_${report.report_id}`).style.display = 'none';
-                                    document.getElementById(`btn_report_${report.report_id}`).innerText = 'Détails';
+                                    document.getElementById(`details_${report.report_id}_${project_name}_${index}`).style.display = 'none';
+                                    document.getElementById(`btn_report_${report.report_id}_${project_name}_${index}`).innerText = 'Détails';
                                 }
                             });
-
                         }
                     }
                     isShowed = false;
@@ -253,18 +268,65 @@
                     try {
                         var li = document.createElement('li');
                         li.innerHTML = `<li class="list-group" style="color: gray; font-size: 12px;">Aucun rapport trouvé pour ce projet</li>`;
-                        document.getElementById('_reportsList_' + project_name + '_').appendChild(li);
+                        document.getElementById('_reportsList_' + project_name + '_' + index).appendChild(li);
                         document.getElementById('loading').style.display = 'none';
                     } catch (error) {
                         console.error('Error: (Aucun rapport trouvé pour ce projet) ', error);
                         document.getElementById('loading').style.display = 'none';
                     }
+                } else {
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('number_of_reports_' + project_name + '_' + index).innerHTML = numberOfReports;
                 }
                 document.getElementById('loading').style.display = 'none';
+                document.getElementById('number_of_reports_' + project_name + '_' + index).innerHTML = numberOfReports;
+                console.log('numberOfReports: ', numberOfReports);
             })
             .catch(error => {
                 console.error('Error:', error);
+                document.getElementById('loading').style.display = 'none';
             });
+    }
+    //#endregion
+
+    //#region Fonction pour récupérer les types de rapport existants
+    function getReport_Types(project_name, index) {
+        fetch('https://lab.padem.org/wp-json/mo/v1/getReportType',
+            {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => {
+                if (!response.ok) {
+                    console.log('Erreur réseau lors de la demande à l\'API');
+                }
+                return response.json();
+            })
+            .then(reportTypes => {
+                var reportTypeInput = document.getElementById("reportTypeDisplay" + project_name + '_' + index);
+                reportTypes.forEach(function (reportType) {
+                    var li = document.createElement('li');
+                    li.innerHTML = `
+                        <li class="list-group" style="margin-top: 15px; margin-bottom: 3px; display: flex; align-items: left; justify-content: space-between;">
+                            <img src="https://lab.padem.org/wp-content/uploads/arrow-left.png" style="width: 15px; height: 15px; margin-right: 5px; transform: rotate(0deg);" id="img_${reportType.report_type_id}_${project_name}_${index}" />
+                            <label type="button" style="color: gray; font-size: 12px; margin: 5px; cursor: pointer;" id="reportType_${reportType.report_type_id}_">${reportType.report_type_name}</label>
+                        </li>
+                    `;
+                    reportTypeInput.appendChild(li);
+
+                    // Ajouter un événement de clic sur le type de rapport
+                    document.getElementById('reportType_' + reportType.report_type_id + '_').addEventListener('click', function () {
+                        if (document.getElementById('img_' + reportType.report_type_id + '_' + project_name + '_' + index).style.transform === 'rotate(0deg)') {
+                            document.getElementById('img_' + reportType.report_type_id + '_' + project_name + '_' + index).style.transform = 'rotate(-90deg)';
+                        } else {
+                            document.getElementById('img_' + reportType.report_type_id + '_' + project_name + '_' + index).style.transform = 'rotate(0deg)';
+                        }
+                    });
+                });
+            })
+            .catch(error => console.error('Erreur:', error));
     }
     //#endregion
 </script>

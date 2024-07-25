@@ -14,10 +14,15 @@
 <div style="color: gray;">
     <ul id="reportTypeNames_repportView"
         style="list-style: none; justify-content: space-between; background: none; background-color: none;">
+        <div style="display: flex; justify-content: flex-start;">
+
+            <li style="margin: 10px; padding: 10px; border-radius: 15px; border-width: 1px; background-color: white; border-color: gray; color: #29A6A7;"
+                class="box-clicable" id="reportTypeNames_repportView_all_reports">Tous les rapports</li>
+        </div>
         <!-- Les types de rapport seront affichés ici -->
     </ul>
-
 </div>
+
 
 
 <body>
@@ -25,11 +30,9 @@
     <div class="container" style=" display: flex; justify-content: left;">
         <div class="row">
             <div class="col-md-12">
-                <button type="button" id="cancelButton"
-                    style="width: min-content; display: block; justify-content: left;"
-                    onclick="showAndHideReportTypeForm();">
-                    <img src="https://lab.padem.org/wp-content/uploads/filtreSquared.png" alt="add"
-                        id="add_filtreSquared" title="Ajouter un type de rapport" style="width: 30px; height: 30px;" />
+                <button type="button" id="cancel_Button_filtreSquared"
+                    style="width: min-content; display: block; justify-content: left;">
+                    Nouveau filtre de rapport
                 </button>
             </div>
         </div>
@@ -42,6 +45,7 @@
                 <label for="reportType_Name">Nom du type de rapport: <span style="color: red;">*</span></label>
                 <input type="text" class="form-control" id="reportType_Name" placeholder="Nom du type de rapport">
             </div>
+            <div style="margin: 15px;"></div>
             <div class="form-group" style="width: 100%;">
                 <label for="reportType_Description">Description du type de rapport: <span
                         style="color: red;">*</span></label>
@@ -49,9 +53,86 @@
                     placeholder="Description du type de rapport"></textarea>
             </div>
             <div style="margin: 15px;"></div>
+            <!-- Ajouter plusieurs pastilles de couleur et un sélecteur de couleur pour permettre à l'utilisateur de choisir(en cliquant dessus) une couleur d'accentuation pour le type de rapport de projet -->
+            <div class="form-group" style="width: 100%;">
+                <div style="display: flex; justify-content: space-between;">
+                    <!-- Bleu --> <!-- Rouge --> <!-- Vert --> <!-- Jaune --> <!-- Orange --> <!-- Violet -->
+                    <!-- Rose --> <!-- Marron --> <!-- Gris --> <!-- Noir --> <!-- Blanc -->
+                    <label for="reportType_Color">Couleurs prédéfinies: </label>
+                    <div style="display: flex; flex-direction: column;">
+                        <button type="button" class="btn btn-primary" id="reportType_Color_bleu"
+                            style="background-color: #29A6A7; width: 50px; height: 30px; border-radius: 20%; border: 1px solid gray;"></button>
+                        Bleu
+                    </div>
+                    <div style="display: flex; flex-direction: column;">
+                        <button type="button" class="btn btn-primary" id="reportType_Color_rouge"
+                            style="background-color: #FF0000; width: 50px; height: 30px; border-radius: 20%; border: 1px solid gray;"></button>
+                        Rouge
+                    </div>
+                    <div style="display: flex; flex-direction: column;">
+                        <button type="button" class="btn btn-primary" id="reportType_Color_vert"
+                            style="background-color: #008000; width: 50px; height: 30px; border-radius: 20%; border: 1px solid gray;"></button>
+                        Vert
+                    </div>
+                    <div style="display: flex; flex-direction: column;">
+                        <button type="button" class="btn btn-primary" id="reportType_Color_jaune"
+                            style="background-color: #FFFF00; width: 50px; height: 30px; border-radius: 20%; border: 1px solid gray;"></button>
+                        Jaune
+                    </div>
+                    <div style="display: flex; flex-direction: column;">
+                        <button type="button" class="btn btn-primary" id="reportType_Color_orange"
+                            style="background-color: #FFA500; width: 50px; height: 30px; border-radius: 20%; border: 1px solid gray;"></button>
+                        Orange
+                    </div>
+                    <div style="display: flex; flex-direction: column;">
+                        <button type="button" class="btn btn-primary" id="reportType_Color_violet"
+                            style="background-color: #800080; width: 50px; height: 30px; border-radius: 20%; border: 1px solid gray;"></button>
+                        Violet
+                    </div>
+                    <div style="display: flex; flex-direction: column;">
+                        <button type="button" class="btn btn-primary" id="reportType_Color_rose"
+                            style="background-color: #FFC0CB; width: 50px; height: 30px; border-radius: 20%; border: 1px solid gray;"></button>
+                        Rose
+                    </div>
+                    <div style="display: flex; flex-direction: column;">
+                        <button type="button" class="btn btn-primary" id="reportType_Color_marron"
+                            style="background-color: #800000; width: 50px; height: 30px; border-radius: 20%; border: 1px solid gray;"></button>
+                        Marron
+                    </div>
+                    <div style="display: flex; flex-direction: column;">
+                        <button type="button" class="btn btn-primary" id="reportType_Color_gris"
+                            style="background-color: #808080; width: 50px; height: 30px; border-radius: 20%; border: none;"></button>
+                        Gris
+                    </div>
+                    <div style="display: flex; flex-direction: column;">
+                        <button type="button" class="btn btn-primary" id="reportType_Color_noir"
+                            style="background-color: #000000; width: 50px; height: 30px; border-radius: 20%; border: 1px solid gray;"></button>
+                        Noir
+                    </div>
+                    <div style="display: flex; flex-direction: column;">
+                        <button type="button" class="btn btn-primary" id="reportType_Color_blanc"
+                            style="background-color: #FFFFFF; width: 50px; height: 30px; border-radius: 20%; border: 1px solid gray;"></button>
+                        Blanc
+                    </div>
+
+                </div>
+                <div style="margin: 15px;"></div>
+                <div class="form-group" style="width: 20%; display: flex; justify-content: space-between;">
+                    <label for="reportType_Color">Autres couleurs: </label>
+                    <div style="margin: 15px;"></div>
+                    <input type="color" class="form-control" id="reportType_Color" placeholder="Couleur d'accentuation">
+                </div>
+            </div>
+
+            <div style="margin: 15px;"></div>
             <div class="form-group">
                 <button type="button" class="btn btn-primary" id="add_reportType"
-                    style="width: fit-content;">Enregistrer</button>
+                    style="width: fit-content; display: block;">Enregistrer</button>
+            </div>
+            <div class="form-group">
+                <button type="button" class="btn btn-primary" id="add_reportType_modifications"
+                    style="width: fit-content; display: none;" hidden={true}>
+                    Enregistrer les modifications</button>
             </div>
         </form>
     </div>
@@ -74,7 +155,65 @@
             createReportType();
         });
 
-        function getReportsWithProjectName(){
+        //#region Ajouter les couleurs d'accentuation pour le type de rapport
+        document.getElementById('reportType_Color_bleu').addEventListener('click', function () {
+            document.getElementById('reportType_Color_bleu').style.borderColor = 'black';
+            document.getElementById('reportType_Color').value = '#29A6A7';
+        });
+
+        document.getElementById('reportType_Color_rouge').addEventListener('click', function () {
+            document.getElementById('reportType_Color_rouge').style.borderColor = 'black';
+            document.getElementById('reportType_Color').value = '#FF0000';
+        });
+
+        document.getElementById('reportType_Color_vert').addEventListener('click', function () {
+            document.getElementById('reportType_Color_vert').style.borderColor = 'black';
+            document.getElementById('reportType_Color').value = '#008000';
+        });
+
+        document.getElementById('reportType_Color_jaune').addEventListener('click', function () {
+            document.getElementById('reportType_Color_jaune').style.borderColor = 'black';
+            document.getElementById('reportType_Color').value = '#FFFF00';
+        });
+
+        document.getElementById('reportType_Color_orange').addEventListener('click', function () {
+            document.getElementById('reportType_Color_orange').style.borderColor = 'black';
+            document.getElementById('reportType_Color').value = '#FFA500';
+        });
+
+        document.getElementById('reportType_Color_violet').addEventListener('click', function () {
+            document.getElementById('reportType_Color_violet').style.borderColor = 'black';
+            document.getElementById('reportType_Color').value = '#800080';
+        });
+
+        document.getElementById('reportType_Color_rose').addEventListener('click', function () {
+            document.getElementById('reportType_Color_rose').style.borderColor = 'black';
+            document.getElementById('reportType_Color').value = '#FFC0CB';
+        });
+
+        document.getElementById('reportType_Color_marron').addEventListener('click', function () {
+            document.getElementById('reportType_Color_marron').style.borderColor = 'black';
+            document.getElementById('reportType_Color').value = '#800000';
+        });
+
+        document.getElementById('reportType_Color_gris').addEventListener('click', function () {
+            document.getElementById('reportType_Color_gris').style.borderColor = 'black';
+            document.getElementById('reportType_Color').value = '#808080';
+        });
+
+        document.getElementById('reportType_Color_noir').addEventListener('click', function () {
+            document.getElementById('reportType_Color_noir').style.borderColor = 'black';
+            document.getElementById('reportType_Color').value = '#000000';
+        });
+
+        document.getElementById('reportType_Color_blanc').addEventListener('click', function () {
+            document.getElementById('reportType_Color_blanc').style.borderColor = 'black';
+            document.getElementById('reportType_Color').value = '#FFFFFF';
+        });
+        //#endregion
+
+        // Fonction pour récupérer les rapports avec le nom du projet correspondant
+        function getReportsWithProjectName() {
             fetch('https://lab.padem.org/wp-json/mo/v1/getReports', {
                 method: 'GET',
                 headers: {
@@ -119,6 +258,7 @@
         function createReportType() {
             var projectName = document.getElementById('reportType_Name').value;
             var projectDescription = document.getElementById('reportType_Description').value;
+            var reportTypeColor = document.getElementById('reportType_Color').value;
 
             if (projectName === '' || projectDescription === '') {
                 alert("Veuillez remplir tous les champs.");
@@ -132,7 +272,8 @@
                 },
                 body: JSON.stringify({
                     'report_type_name': projectName,
-                    'report_type_description': projectDescription
+                    'report_type_description': projectDescription,
+                    'report_type_color': reportTypeColor
                 })
             })
                 .then(response => response.json())
@@ -201,15 +342,23 @@
                         li.style = 'border-width: 0px;';
                         li.style = 'background-color: none;';
                         li.style = 'background: none;';
+                        var color = reportType.report_type_color || 'gray';
+                        console.log('reportType.report_type_color: ', reportType.report_type_color);
                         li.innerHTML = `
                             <div class="card">
                                 <div class="card-body" style="background-color: #f8f9fa; border-radius: 15px;">
-                                    <h5 class="card-title" style="color: gray;">${reportType.report_type_name}</h5>
+                                    <div style="display: flex; justify-content: flex-start;">
+                                        <div style="background-color: ${color}; border-radius: 50%; width: 20px; height: 20px;" id="reportype_color_${reportType.report_type_id}_"></div>
+                                        <h5 class="card-title" style="color: gray; margin-left: 10px; margin-top: 0px;">${reportType.report_type_name}</h5>
+                                    </div>
                                     <p class="card-text" style="color: gray;">Description: ${reportType.report_type_description}</p>
                                 </div>
                                 <div class="card-footer">
                                     <p class="card-text" style="color: gray;">${textContent}</p>
-                                    <button type="button" style="width: fit-content; background-Color: none;" id="deleteReportType_${reportType.report_type_id}" disable><img src="https://lab.padem.org/wp-content/uploads/bin.png" alt="delete" title="Supprimer" style="width: 20px; height: 20px; background-Color: none;"/></button>
+                                        <div style="display: flex; justify-content: end;">
+                                        <button type="button" style="width: fit-content; background-Color: none;" id="deleteReportType_${reportType.report_type_id}" disable><img src="https://lab.padem.org/wp-content/uploads/bin.png" alt="delete" title="Supprimer" style="width: 20px; height: 20px; background-Color: none;"/></button>
+                                        <button type="button" style="width: fit-content; margin-left: 15px; background-Color: none;" id="editReportType_${reportType.report_type_id}" disable><img src="https://lab.padem.org/wp-content/uploads/edit.png" alt="edit" title="Modifier" style="width: 20px; height: 20px; background-Color: none;"/></button>
+                                    </div>
                                 </div>
                             </div>
                             <br>
@@ -224,10 +373,12 @@
 
                         document.getElementById('reportTypeNames_repportView').appendChild(li_reportTypeNames_repportView);
 
+
                         var reportTypeNames_repportView = document.getElementById(`reportTypeNames_repportView_${reportType.report_type_id}`);
 
                         var all_reports_ = document.getElementById('reportTypeNames_repportView_all_reports');
 
+                        // Changer la couleur de fond de l'onglet correspondant au type de rapport sélectionné
                         reportTypeNames_repportView.addEventListener('click', function () {
                             // Changer la couleur de fond de l'onglet sélectionné
                             if (reportTypeNames_repportView.style.borderColor === 'white') {
@@ -250,6 +401,7 @@
                             });
                         });
 
+                        // Changer la couleur de fond de l'onglet "Tous les rapports"
                         all_reports_.addEventListener('click', function () {
                             // Changer la couleur de fond de l'onglet "Tous les rapports"
                             if (all_reports_.style.borderColor === 'white') {
@@ -312,6 +464,56 @@
                                 }
                             });
                         });
+
+                        // Modifier un type de rapport
+                        document.getElementById(`editReportType_${reportType.report_type_id}`).addEventListener('click', function () {
+                            // Afficher le formulaire de modification
+                            showAndHideReportTypeForm();
+
+                            // Récupérer les informations du type de rapport à modifier
+                            document.getElementById('reportType_Name').value = reportType.report_type_name;
+                            document.getElementById('reportType_Description').value = reportType.report_type_description;
+                            document.getElementById('reportType_Color').value = reportType.report_type_color;
+
+                            // Afficher le bouton "Enregistrer les modifications"
+                            displaySaveModifications();
+
+                            window.location.href = '#add-reportType-filter';
+                        });
+    
+                        // Modifier un type de rapport
+                        document.getElementById('add_reportType_modifications').addEventListener('click', () => {
+                            var projectName = document.getElementById('reportType_Name').value;
+                            var projectDescription = document.getElementById('reportType_Description').value;
+                            var reportTypeColor = document.getElementById('reportType_Color').value;
+
+                            if (projectName === '' || projectDescription === '') {
+                                alert("Veuillez remplir tous les champs.");
+                                return;
+                            }
+
+                            fetch('https://lab.padem.org/wp-json/mo/v1/updateReportType', {
+                                method: 'PUT',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    'column_param1': reportType.report_type_id,
+                                    'report_type_name': projectName,
+                                    'report_type_description': projectDescription,
+                                    'report_type_color': reportTypeColor
+                                })
+                            })
+                                .then(response => response.json())
+                                .then(data => {
+                                    console.log('Success:', data);
+                                    location.reload();
+                                })
+                                .catch((error) => {
+                                    console.error('Error:', error);
+                                });
+                        });
+
                     });
                     if (data.length === 0) {
                         reportTypesList.innerHTML = '<h5 style="color: gray;">Aucun type de rapport disponible pour le moment.</h5>';
@@ -320,29 +522,34 @@
                 })
         }
 
-        function cancelForm() {
-            document.getElementById('projectName').value = '';
-            document.getElementById('projectDescription').value = '';
-        }
-
         function showAndHideReportTypeForm() {
             var projectForm = document.getElementById('report_type');
-            var element = document.getElementById('add_filtreSquared');
+            var element = document.getElementById('_add_filtreSquared_10');
             if (projectForm.style.display === 'none') {
                 projectForm.style.display = 'block';
                 element.src = 'https://lab.padem.org/wp-content/uploads/close.png';
             } else {
                 projectForm.style.display = 'none';
-                element.src = 'https://lab.padem.org/wp-content/uploads/filtreSquared.png';
+                element.src = 'https://lab.padem.org/wp-content/uploads/plus.png';
             }
         }
 
         function showAndHideCancelButton() {
-            var cancelButton = document.getElementById('cancelButton');
+            var cancelButton = document.getElementById('cancel_Button_filtreSquared');
             if (cancelButton.style.display === 'none') {
                 cancelButton.style.display = 'block';
             } else {
                 cancelButton.style.display = 'none';
+            }
+        }
+
+        function displaySaveModifications() {
+            if (document.getElementById('add_reportType').style.display === 'block') {
+                document.getElementById('add_reportType').style.display = 'none';
+                document.getElementById('add_report_modifications').style.display = 'block';
+            } else {
+                document.getElementById('add_reportType').style.display = 'block';
+                document.getElementById('add_report_modifications').style.display = 'none';
             }
         }
 
