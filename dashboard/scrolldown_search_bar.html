@@ -1,0 +1,39 @@
+
+<head>
+    <style>
+        .search-bar {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <button onclick="toggleSearchBar()">Rechercher</button>
+    <div id="searchBar" class="search-bar">
+        <input type="text" placeholder="Rechercher...">
+        <select>
+            <option value="option1">Option 1</option>
+            <option value="option2">Option 2</option>
+            <option value="option3">Option 3</option>
+        </select>
+        <button>Rechercher</button>
+    </div>
+
+    <script>
+        // Fonction pour afficher ou cacher la barre de recherche
+        function toggleSearchBar() {
+            var searchBar = document.getElementById("searchBar");
+            if (searchBar.style.display === "none") {
+                searchBar.style.display = "block";
+            } else {
+                searchBar.style.display = "none";
+            }
+        }
+
+        // Fonction pour effectuer la recherche
+        function search() {
+            var input = document.querySelector("#searchBar input").value;
+            var select = document.querySelector("#searchBar select").value;
+            alert("Recherche: " + input + " - Option: " + select);
+        }
+    </script>
+</body>
