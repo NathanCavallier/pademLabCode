@@ -176,6 +176,7 @@
         function saveFormData() {
             // Afficher le spinner de chargement
             document.getElementById('loading').style.display = 'block';
+            
             // Récupérer les informations du formulaire
             var dataInfosPreliminaires = {
                 project_id: 0,
@@ -185,13 +186,13 @@
                 end_date: "",
                 updated_date: "",
                 project_location: "",
-                project_status: "En cours",
+                project_status: "",
                 padem_responsible: "",
                 padem_responsible_email: "",
                 project_referent: "",
                 project_referent_email: "",
                 project_description: JSON.stringify(""),
-                background_image_link: "https://lab.padem.org/wp-content/uploads/default_background-white.png",
+                background_image_link: "",
                 folders: "",
             };
 
