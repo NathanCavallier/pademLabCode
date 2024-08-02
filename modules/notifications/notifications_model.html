@@ -1,119 +1,44 @@
-<style>
-    .notification-container {
-        position: relative;
-        display: inline-block;
-    }
-
-    .dropbtn {
-        display: flex;
-        align-items: center;
-        background-color: #f1f1f1;
-        border: none;
-        cursor: pointer;
-        padding: 10px;
-    }
-
-    #notificationCount {
-        background-color: red;
-        color: white;
-        border-radius: 50%;
-        padding: 5px;
-        margin-left: 10px;
-    }
-
-    .dropdown-content {
-        display: none;
-        position: absolute;
-        background-color: #f9f9f9;
-        min-width: 200px;
-        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-        z-index: 1;
-    }
-
-    .notification {
-        padding: 10px;
-        border: 1px solid #ccc;
-        margin-bottom: 10px;
-    }
-
-    .notification .title {
-        font-weight: bold;
-    }
-
-    .notification .message {
-        margin-top: 5px;
-    }
-</style>
-
-<div class="notification-container">
-    <button onclick="toggleDropdown()" class="dropbtn">
-        <img src="https://lab.padem.org/wp-content/uploads/notif_gray.png" id="no_notifs" alt="Notifications">
-        <span id="notificationCount">3</span>
-    </button>
-    <div id="myDropdown" class="dropdown-content">
-        <div id="notificationList">
-            <!-- Liste des notifications -->
-        </div>
-    </div>
-</div>
-
 <script>
-    // Mettez à jour le nombre de notifications non lues lorsque la page est chargée
-    window.onload = updateUnreadNotificationCount;
+    class GestionnaireNotifications {
+        constructor() {
+            this.notifications = [];
+        }
 
-    // Actualiser le nombre de notifications non lues toutes les 5 secondes
-    setInterval(updateUnreadNotificationCount, 5000);
+        ajouterNotification(titre, message) {
+            // Ajoute une nouvelle notification à la liste.
+            const nouvelleNotification = {
+                titre: titre,
+                message: message,
+                lue: false
+            };
+            this.notifications.push(nouvelleNotification);
+        }
 
-    // Close the dropdown if the user clicks outside of it
-    window.onclick = function (event) {
-        if (!event.target.matches('.dropbtn')) {
-            var dropdowns = document.getElementsByClassName("dropdown-content");
-            var i;
-            for (i = 0; i < dropdowns.length; i++) {
-                var openDropdown = dropdowns[i];
-                if (openDropdown.classList.contains('show')) {
-                    openDropdown.classList.remove('show');
-                }
+        marquerCommeLue(index) {
+            // Marque une notification spécifique comme lue.
+            if (index >= 0 && index < this.notifications.length) {
+                this.notifications[index].lue = true;
             }
         }
-    }
 
-    // Mettez également à jour le nombre de notifications non lues chaque fois que le menu déroulant est ouvert
-    function toggleDropdown() {
-        document.getElementById("myDropdown").classList.toggle("show");
-        updateUnreadNotificationCount();
-    }
+        supprimerNotification(index) {
+            // Supprime une notification spécifique de la liste.
+            if (index >= 0 && index < this.notifications.length) {
+                this.notifications.splice(index, 1);
+            }
+        }
 
-    // Fonction pour ajouter une notification à la liste
-    function updateUnreadNotificationCount() {
-        fetch('https://example.com/api/unreadCount')
-            .then(response => response.json())
-            .then(data => {
-                var unreadCount = document.getElementById('notificationCount');
-                unreadCount.textContent = data.unreadCount;
-                data.unreadCount > 0 ? unreadCount.style.display = 'block' : unreadCount.style.display = 'none';
-                if (data.unreadCount > 0) {
-                    document.getElementById('notificationCount').style.color = 'red';
-                    document.getElementById('no_notifs').src = 'https://lab.padem.org/wp-content/uploads/Notifs.png';
-                    document.getElementById('notificationList').innerHTML = '';
-                    for (let i = 0; i < data.unreadCount; i++) {
-                        var notification = document.createElement("div");
-                        notification.className = "notification";
+        obtenirNotifications(seulementNonLues = false) {
+            // Retourne toutes les notifications ou seulement celles non lues.
+            if (seulementNonLues) {
+                return this.notifications.filter(notif => !notif.lue);
+            }
+            return this.notifications;
+        }
 
-                        var titleElement = document.createElement("div");
-                        titleElement.className = "title";
-                        titleElement.textContent = "Nouvelle notification";
-
-                        var messageElement = document.createElement("div");
-                        messageElement.className = "message";
-                        messageElement.textContent = "Vous avez un nouveau message.";
-
-                        notification.appendChild(titleElement);
-                        notification.appendChild(messageElement);
-
-                        document.getElementById('notificationList').appendChild(notification);
-                    }
-                }
-            });
+        nombreNotificationsNonLues() {
+            // Retourne le nombre de notifications non lues.
+            return this.notifications.filter(notif => !notif.lue).length;
+        }
     }
 </script>

@@ -1,53 +1,164 @@
-<head>
-    <title>Notifications</title>
+<body>
+    <script>
+        // Fonction pour afficher la liste des notifications
+        function afficherListeNotifications() {
+            const listeNotifications = document.getElementById('liste-notifications');
+            listeNotifications.style.display = 'block';
+
+            // Récupérer les notifications depuis le gestionnaire
+            const gestionnaire = new GestionnaireNotifications();
+            const notifications = gestionnaire.obtenirNotifications();
+
+            // Vider la liste actuelle
+            listeNotifications.innerHTML = '';
+
+            if (notifications.length > 0) {
+                // Ajouter chaque notification à la liste
+                notifications.forEach((notif, index) => {
+                    const element = document.createElement('div');
+                    element.classList.add('notification-item');
+                    element.innerHTML = `
+                    <h4>${notif.titre}</h4>
+                    <p>${notif.message}</p>
+                    <button onclick="marquerCommeLue(${index})">Marquer comme lue</button>
+                `;
+                    listeNotifications.appendChild(element);
+                });
+            } else {
+                listeNotifications.innerHTML = '<p>Aucune notification disponible</p>';
+            }
+        }
+
+        // Fonction pour masquer la liste des notifications
+        function masquerListeNotifications() {
+            const listeNotifications = document.getElementById('liste-notifications');
+            listeNotifications.style.display = 'none';
+        }
+
+        // Fonction pour marquer une notification comme lue
+        function marquerCommeLue(index) {
+            const gestionnaire = new GestionnaireNotifications();
+            gestionnaire.marquerCommeLue(index);
+            afficherListeNotifications(); // Rafraîchir la liste
+            mettreAJourCompteur(); // Mettre à jour le compteur
+        }
+
+        // Fonction pour mettre à jour le compteur de notifications
+        function mettreAJourCompteur() {
+            const gestionnaire = new GestionnaireNotifications();
+            const compteur = document.getElementById('compteur-notifications');
+            compteur.textContent = gestionnaire.nombreNotificationsNonLues();
+        }
+
+        // Ajouter les écouteurs d'événements une fois que le DOM est chargé
+        document.addEventListener('DOMContentLoaded', () => {
+            const iconeCloche = document.getElementById('icone-cloche');
+            iconeCloche.addEventListener('mouseenter', afficherListeNotifications);
+            iconeCloche.addEventListener('mouseleave', masquerListeNotifications);
+
+            // Initialiser le compteur
+            mettreAJourCompteur();
+        });
+    </script>
+
     <style>
-        /* Styles pour les notifications */
-        .notification {
-            padding: 10px;
+        #icone-cloche {
+            position: relative;
+            cursor: pointer;
+        }
+
+        #compteur-notifications {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: red;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 5px;
+            font-size: 12px;
+        }
+
+        #liste-notifications {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: white;
             border: 1px solid #ccc;
+            padding: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .notification-item {
             margin-bottom: 10px;
-        }
-        .notification .title {
-            font-weight: bold;
-        }
-        .notification .message {
-            margin-top: 5px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
         }
     </style>
-</head>
-<body>
-    <h1>Notifications</h1>
 
-    <div id="notificationList">
-        <!-- Liste des notifications -->
+    <div id="icone-cloche">
+        <img src="https://lab.padem.org/wp-content/uploads/NoNotifs.png" alt="Notifications">
+        <span id="compteur-notifications">0</span>
+        <div id="liste-notifications">
+        <!-- Génération des notifications -->
+        <script>
+
+            class GestionnaireNotifications {
+                constructor() {
+                    this.notifications = [];
+                }
+
+                ajouterNotification(titre, message) {
+                    this.notifications.push({ titre, message });
+                }
+            }   
+
+            // Créer une instance du gestionnaire de notifications
+            const gestionnaireNotifs = new GestionnaireNotifications();
+
+            // Ajouter quelques notifications d'exemple
+            gestionnaireNotifs.ajouterNotification("Nouveau projet", "Un nouveau projet a été créé : Projet XYZ");
+            gestionnaireNotifs.ajouterNotification("Tâche assignée", "Vous avez été assigné à la tâche : Révision du rapport");
+            gestionnaireNotifs.ajouterNotification("Rappel", "Réunion d'équipe demain à 10h");
+
+            // Fonction pour afficher les notifications
+            function afficherNotifications() {
+                const listeNotifs = document.getElementById('liste-notifications');
+                listeNotifs.innerHTML = ''; // Vider la liste existante
+
+                const notifs = gestionnaireNotifs.obtenirNotifications();
+                notifs.forEach((notif, index) => {
+                    const notifElement = document.createElement('div');
+                    notifElement.className = 'notification-item';
+                    notifElement.innerHTML = `
+                        <h4>${notif.titre}</h4>
+                        <p>${notif.message}</p>
+                        <button onclick="marquerCommeLue(${index})">Marquer comme lue</button>
+                    `;
+                    listeNotifs.appendChild(notifElement);
+                });
+            }
+
+            // Fonction pour marquer une notification comme lue
+            function marquerCommeLue(index) {
+                gestionnaireNotifs.marquerCommeLue(index);
+                afficherNotifications();
+                mettreAJourCompteur();
+            }
+
+            // Mettre à jour l'affichage initial des notifications
+            afficherNotifications();
+
+            // Mettre à jour la fonction mettreAJourCompteur
+            function mettreAJourCompteur() {
+                const compteur = document.getElementById('compteur-notifications');
+                const nombreNonLues = gestionnaireNotifs.nombreNotificationsNonLues();
+                compteur.textContent = nombreNonLues;
+                compteur.style.display = nombreNonLues > 0 ? 'block' : 'none';
+            }
+        </script>
+        </div>
     </div>
-
-    <script>
-        // Fonction pour ajouter une notification à la liste
-        function addNotification(title, message) {
-            var notificationList = document.getElementById("notificationList");
-
-            var notification = document.createElement("div");
-            notification.className = "notification";
-
-            var titleElement = document.createElement("div");
-            titleElement.className = "title";
-            titleElement.textContent = title;
-
-            var messageElement = document.createElement("div");
-            messageElement.className = "message";
-            messageElement.textContent = message;
-
-            notification.appendChild(titleElement);
-            notification.appendChild(messageElement);
-
-            notificationList.appendChild(notification);
-        }
-
-        // Exemple d'utilisation de la fonction addNotification
-        addNotification("Nouvelle notification", "Vous avez un nouveau message.");
-
-        // Ajoutez ici votre code pour gérer les notifications des activités des utilisateurs
-
-    </script>
 </body>
