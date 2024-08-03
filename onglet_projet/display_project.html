@@ -12,8 +12,8 @@
         <!-- Bouton afficher tous les projets -->
         <button type="button" class="box-clicable" id="allProjects"
             style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px; border: none; margin: 5px; padding: 5px;">
-            <!-- icone plus -->
-            <img src="https://img.icons8.com/ios/50/000000/plus-math.png"
+            <!-- icone liste -->
+            <img src="https://img.icons8.com/ios/50/000000/list.png"
                 style="width: 20px; height: 20px; margin-right: 5px;" alt="">
             Tous les Projets
         </button>
@@ -45,16 +45,21 @@
         <input type="text" class="form-control" placeholder="Rechercher un projet" aria-label="Rechercher un projet"
             aria-describedby="button-addon2" id="search_projects">
         <div class="input-group-append">
-            <button class="btn btn-outline-secondary" type="button" id="button-addon2">Rechercher</button>
+            <button class="btn btn-outline-secondary" type="button" id="button-addon2">
+                <!-- icone loupe (couleur grise) -->
+                <img src="https://img.icons8.com/ios/50/000000/search--v1.png" style="width: 20px; height: 20px;"
+                    alt="">
+                Rechercher</button>
         </div>
     </div>
 </div>
 
 
 <body>
-    
+
     <!--#region Formulaire de création de projet -->
-    <div class="container" id="new_project_form">
+    <br style="color: #000; font-size: 20px; font-weight: bold; text-align: center;" />
+    <div class="container" id="new_project_form" style="display: none;" class="main-group-scroll">
         <form id="formProject">
             <div class="form-group">
                 <label for="projectName">Nom du Projet</label>
@@ -93,10 +98,9 @@
     </div>
     <!--#endregion -->
 
-
     <!--#region Tableau des projets -->
-    <div class="container" id="all_projects_table">
-        <table class="table table-striped">
+    <div class="container" id="all_projects_table" class="main-group-scroll">
+        <table>
             <thead style="font-size: 12px; font-weight: lighter; color: gray;">
                 <tr>
                     <th scope="col" id="project_tite">Titre <img src="https://img.icons8.com/ios/50/000000/sort.png"
@@ -120,20 +124,21 @@
     <!--#endregion -->
 
     <!-- Mes projets -->
-    <div class="container" id="my_projects_table">
-        <table class="table table-striped">
+    <div class="container" id="my_projects_table" style="display: none;" class="main-group-scroll">
+        <table>
             <thead style="font-size: 12px; font-weight: lighter; color: gray;">
                 <tr>
-                    <th scope="col" id="project_tite">Titre <img src="https://img.icons8.com/ios/50/000000/sort.png"
+                    <th scope="col" id="my_project_tite">Titre <img src="https://img.icons8.com/ios/50/000000/sort.png"
                             style="width: 15px; height: 15px;" alt=""></th>
-                    <th scope="col" id="country_name">Pays <img src="https://img.icons8.com/ios/50/000000/sort.png"
+                    <th scope="col" id="my_country_name">Pays <img src="https://img.icons8.com/ios/50/000000/sort.png"
                             style="width: 15px; height: 15px;" alt=""></th>
-                    <th scope="col" id="association_name">Association <img
+                    <th scope="col" id="my_association_name">Association <img
                             src="https://img.icons8.com/ios/50/000000/sort.png" style="width: 15px; height: 15px;"
                             alt=""></th>
-                    <th scope="col" id="theme_name">Thématique <img src="https://img.icons8.com/ios/50/000000/sort.png"
-                            style="width: 15px; height: 15px;" alt=""></th>
-                    <th scope="col" id="status_name">Statut <img src="https://img.icons8.com/ios/50/000000/sort.png"
+                    <th scope="col" id="my_theme_name">Thématique <img
+                            src="https://img.icons8.com/ios/50/000000/sort.png" style="width: 15px; height: 15px;"
+                            alt=""></th>
+                    <th scope="col" id="my_status_name">Statut <img src="https://img.icons8.com/ios/50/000000/sort.png"
                             style="width: 15px; height: 15px;" alt=""></th>
                     <th scope="col">Actions</th>
                 </tr>
@@ -145,21 +150,25 @@
     <!--#endregion -->
 
     <!-- Archives -->
-    <div class="container" id="archives_projects_table">
-        <table class="table table-striped">
+    <div class="container" id="archives_projects_table" style="display: none;" class="main-group-scroll">
+        <table>
             <thead style="font-size: 12px; font-weight: lighter; color: gray;">
                 <tr>
-                    <th scope="col" id="project_tite">Titre <img src="https://img.icons8.com/ios/50/000000/sort.png"
-                            style="width: 15px; height: 15px;" alt=""></th>
-                    <th scope="col" id="country_name">Pays <img src="https://img.icons8.com/ios/50/000000/sort.png"
-                            style="width: 15px; height: 15px;" alt=""></th>
-                    <th scope="col" id="association_name">Association <img
+                    <th scope="col" id="archives_project_tite">Titre <img
                             src="https://img.icons8.com/ios/50/000000/sort.png" style="width: 15px; height: 15px;"
                             alt=""></th>
-                    <th scope="col" id="theme_name">Thématique <img src="https://img.icons8.com/ios/50/000000/sort.png"
-                            style="width: 15px; height: 15px;" alt=""></th>
-                    <th scope="col" id="status_name">Statut <img src="https://img.icons8.com/ios/50/000000/sort.png"
-                            style="width: 15px; height: 15px;" alt=""></th>
+                    <th scope="col" id="archives_country_name">Pays <img
+                            src="https://img.icons8.com/ios/50/000000/sort.png" style="width: 15px; height: 15px;"
+                            alt=""></th>
+                    <th scope="col" id="archives_association_name">Association <img
+                            src="https://img.icons8.com/ios/50/000000/sort.png" style="width: 15px; height: 15px;"
+                            alt=""></th>
+                    <th scope="col" id="archives_theme_name">Thématique <img
+                            src="https://img.icons8.com/ios/50/000000/sort.png" style="width: 15px; height: 15px;"
+                            alt=""></th>
+                    <th scope="col" id="archives_status_name">Statut <img
+                            src="https://img.icons8.com/ios/50/000000/sort.png" style="width: 15px; height: 15px;"
+                            alt=""></th>
                     <th scope="col">Actions</th>
                 </tr>
             </thead>
@@ -219,6 +228,8 @@
             document.getElementById('archives_projects_table').style.display = 'none';
             document.getElementById('new_project_form').style.display = 'none';
 
+            document.getElementById('allProjects').style.color = '#29A6A7';
+
             //#region Vérifier si l'utilisateur connecté est un administrateur, un membre privilégié ou un abonné(subscriber)
             if (userRole.includes('administrator')) {
                 // Afficher le bouton Créer un Projet
@@ -254,29 +265,106 @@
             getProjects();
         });
 
-        //#region ajouter écouteur d'événement pour le bouton Créer un Projet
-        document.getElementById('createProject').addEventListener('click', function (e) {
+        //#region écouteur d'événement pour les filtres
+        document.getElementById('project_tite').addEventListener('click', function (e) {
             e.preventDefault();
 
-            //#region changer ma couleur de fond du bouton Créer, et la couleur du texte
-            document.getElementById('createProject').style.backgroundColor = '#29A6A7';
-            document.getElementById('createProject').style.color = 'white';
+            // Afficher un menu déroulant pour les filtres
+
+        });
+
+        document.getElementById('country_name').addEventListener('click', function (e) {
+            e.preventDefault();
+
+
+        });
+
+        document.getElementById('association_name').addEventListener('click', function (e) {
+            e.preventDefault();
+            projects.sort((a, b) => a.association.localeCompare(b.association));
+            displayProjects(projects);
+        });
+
+        document.getElementById('theme_name').addEventListener('click', function (e) {
+            e.preventDefault();
+            projects.sort((a, b) => a.theme.localeCompare(b.theme));
+            displayProjects(projects);
+        });
+
+        document.getElementById('status_name').addEventListener('click', function (e) {
+            e.preventDefault();
+            projects.sort((a, b) => a.status.localeCompare(b.status));
+            displayProjects(projects);
+        });
+        //#endregion
+
+
+        //#region ajouter écouteur d'événement pour le bouton Tous les Projets
+        document.getElementById('allProjects').addEventListener('click', function (e) {
+            e.preventDefault();
+
+            //#region changer ma couleur de fond du bouton Tous les Projets, et la couleur du texte
+            document.getElementById('allProjects').style.border = '#29A6A7';
+            document.getElementById('allProjects').style.color = '#29A6A7';
+            //#endregion
+
+            //#region changer ma couleur de fond du bouton Créer un Projet, et la couleur du texte
+            document.getElementById('createProject').style.border = 'gray';
+            document.getElementById('createProject').style.color = 'gray';
             //#endregion
 
             //#region changer ma couleur de fond du bouton Mes projets, et la couleur du texte
-            document.getElementById('myProjects').style.backgroundColor = 'white';
+            document.getElementById('myProjects').style.border = 'gray';
             document.getElementById('myProjects').style.color = 'gray';
             //#endregion
 
             //#region changer ma couleur de fond du bouton Archives, et la couleur du texte
-            document.getElementById('archives_projects').style.backgroundColor = 'white';
+            document.getElementById('archives_projects').style.border = 'gray';
             document.getElementById('archives_projects').style.color = 'gray';
             //#endregion
 
+            // Afficher le tableau des projets
+            document.getElementById('all_projects_table').style.display = 'block';
+            // Masquer tout les autres éléments
+            document.getElementById('my_projects_table').style.display = 'none';
+            document.getElementById('archives_projects_table').style.display = 'none';
+            document.getElementById('new_project_form').style.display = 'none';
+
+        });
+
+        //#region ajouter écouteur d'événement pour le bouton Créer un Projet
+        document.getElementById('createProject').addEventListener('click', function (e) {
+            e.preventDefault();
+
+            //#region changer ma couleur de fond du bouton Tous les Projets, et la couleur du texte
+            document.getElementById('allProjects').style.border = 'gray';
+            document.getElementById('allProjects').style.color = 'gray';
+            //#endregion
+
+            //#region changer ma couleur de fond du bouton Créer, et la couleur du texte
+            document.getElementById('createProject').style.border = '#29A6A7';
+            document.getElementById('createProject').style.color = '#29A6A7';
+            //#endregion
+
+            //#region changer ma couleur de fond du bouton Mes projets, et la couleur du texte
+            document.getElementById('myProjects').style.border = 'gray';
+            document.getElementById('myProjects').style.color = 'gray';
+            //#endregion
+
+            //#region changer ma couleur de fond du bouton Archives, et la couleur du texte
+            document.getElementById('archives_projects').style.border = 'gray';
+            document.getElementById('archives_projects').style.color = 'gray';
+            //#endregion
 
             // Afficher le formulaire de création de projet
             document.getElementById('display_projects').style.display = 'none';
-            document.getElementById('formProject').style.display = 'block';
+
+            // Afficher le formulaire de création de projet
+            document.getElementById('new_project_form').style.display = 'block';
+            // Masquer tout les autres éléments
+            document.getElementById('all_projects_table').style.display = 'none';
+            document.getElementById('my_projects_table').style.display = 'none';
+            document.getElementById('archives_projects_table').style.display = 'none';
 
         });
         //#endregion
@@ -285,23 +373,32 @@
         document.getElementById('myProjects').addEventListener('click', function (e) {
             e.preventDefault();
 
+            //#region changer ma couleur de fond du bouton Tous les Projets, et la couleur du texte
+            document.getElementById('allProjects').style.border = 'gray';
+            document.getElementById('allProjects').style.color = 'gray';
+            //#endregion
+
             //#region changer ma couleur de fond du bouton Mes projets, et la couleur du texte
-            document.getElementById('myProjects').style.backgroundColor = '#29A6A7';
-            document.getElementById('myProjects').style.color = 'white';
+            document.getElementById('myProjects').style.border = '#29A6A7';
+            document.getElementById('myProjects').style.color = '#29A6A7';
             //#endregion
 
             //#region changer ma couleur de fond du bouton Créer un Projet, et la couleur du texte
-            document.getElementById('createProject').style.backgroundColor = 'white';
+            document.getElementById('createProject').style.border = 'gray';
             document.getElementById('createProject').style.color = 'gray';
             //#endregion
 
             //#region changer ma couleur de fond du bouton Archives, et la couleur du texte
-            document.getElementById('archives_projects').style.backgroundColor = 'white';
+            document.getElementById('archives_projects').style.border = 'gray';
             document.getElementById('archives_projects').style.color = 'gray';
             //#endregion
 
             // Afficher les projets de l'utilisateur connecté
-            displayMyProjects();
+            document.getElementById('my_projects_table').style.display = 'block';
+            // Masquer tout les autres éléments
+            document.getElementById('all_projects_table').style.display = 'none';
+            document.getElementById('archives_projects_table').style.display = 'none';
+            document.getElementById('new_project_form').style.display = 'none';
         });
         //#endregion
 
@@ -309,23 +406,32 @@
         document.getElementById('archives_projects').addEventListener('click', function (e) {
             e.preventDefault();
 
+            //#region changer ma couleur de fond du bouton Tous les Projets, et la couleur du texte
+            document.getElementById('allProjects').style.border = 'gray';
+            document.getElementById('allProjects').style.color = 'gray';
+            //#endregion
+
             //#region changer ma couleur de fond du bouton Archives, et la couleur du texte
-            document.getElementById('archives_projects').style.backgroundColor = '#29A6A7';
-            document.getElementById('archives_projects').style.color = 'white';
+            document.getElementById('archives_projects').style.border = '#29A6A7';
+            document.getElementById('archives_projects').style.color = '#29A6A7';
             //#endregion
 
             //#region changer ma couleur de fond du bouton Créer un Projet, et la couleur du texte
-            document.getElementById('createProject').style.backgroundColor = 'white';
+            document.getElementById('createProject').style.border = 'gray';
             document.getElementById('createProject').style.color = 'gray';
             //#endregion
 
             //#region changer ma couleur de fond du bouton Mes projets, et la couleur du texte
-            document.getElementById('myProjects').style.backgroundColor = 'white';
+            document.getElementById('myProjects').style.border = 'gray';
             document.getElementById('myProjects').style.color = 'gray';
             //#endregion
 
             // Afficher les archives des projets
-            displayArchivesProjects();
+            document.getElementById('archives_projects_table').style.display = 'block';
+            // Masquer tout les autres éléments
+            document.getElementById('all_projects_table').style.display = 'none';
+            document.getElementById('my_projects_table').style.display = 'none';
+            document.getElementById('new_project_form').style.display = 'none';
         });
         //#endregion
 
@@ -357,7 +463,6 @@
         //#endregion
 
 
-
         //#region Affichage des projets (Chaque projet est une ligne du tableau avec des bordures et des angles arrondis)
         function displayProjects(projects) {
             let displayProjects = document.getElementById('display_projects');
@@ -365,17 +470,23 @@
             projects.forEach(project => {
                 let tr = document.createElement('tr');
                 tr.style.border = '1px solid lightgray';
-                tr.style.borderRadius = '15px';
+                tr.style.borderRadius = '25px';
                 tr.style.margin = '5px';
+                tr.style.padding = '5px';
+                tr.className = 'box-clicable';
+                tr.id = project.project_id;
+                tr.addEventListener('click', function () {
+                    displayProject(project.project_id);
+                });
                 tr.innerHTML = `
-                    <td style="color: blue;">${project.name}</td>
-                    <td>${project.country}</td>
-                    <td>${project.association}</td>
-                    <td>${project.theme}</td>
-                    <td style="color: ${project.status === 'En cours' ? 'green' : project.status === 'Terminé' ? 'red' : 'gray'};">${project.status}</td>
+                    <td style="color: blue;">${project.project_title}</td>
+                    <td>${project.project_location}</td>
+                    <td>${project.pr}</td>
+                    <td>${project.project_type}</td>
+                    <td style="color: ${project.project_status === 'En cours' ? 'green' : project.project_status === 'Terminé' ? 'red' : 'gray'};">${project.project_status}</td>
                     <td>
-                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalProject" id="editProject" onclick="editProject(${project.id})">Modifier</button>
-                        <button type="button" class="btn btn-danger" id="deleteProject" onclick="deleteProject(${project.id})">Supprimer</button>
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalProject" id="editProject" onclick="editProject(${project.project_id})">Modifier</button>
+                        <button type="button" class="btn btn-danger" id="deleteProject" onclick="deleteProject(${project.project_id})">Supprimer</button>
                     </td>
                 `;
                 displayProjects.appendChild(tr);
@@ -384,16 +495,250 @@
 
         // Barre de recherche
 
-        // Création d'un projet
-
         // Mes projets
-        function displayMyProjects(projects) {
+        function getUserProjects() {
+            fetch('https://lab.padem.org/wp-json/mo/v1/getProjectData')
+                .then(response => response.json())
+                .then(data => {
+                    projects = data;
+                    displayMyProjects();
+                })
+                .catch(error => console.error('Erreur récupération des projets:', error));
+        }
+        function displayMyProjects() {
             let myProjects = projects.filter(project => project.manager === userId || project.members.includes(userId));
             displayProjects(myProjects);
         }
 
         // Archives
+        function displayArchivesProjects() {
+            let archivesProjects = projects.filter(project => project.status === 'Archivé');
+            displayProjects(archivesProjects);
+        }
 
+        //#region Afficher le projet correspondant à l'ID
+        function displayProject(projectId) {
+            let project = projects.find(project => project.project_id === projectId);
+            let displayProject = document.getElementById('all_projects_table');
+            displayProject.innerHTML = '';
+            displayProject.innerHTML = `
+                <article class="project">
+                    <div style="display: flex; justify-content: space-between;">
+                        <button type="button" class="btn btn-primary" id="backToProjects" onclick="getProjects()">Tous les Projets</button>
+                        <div style="display: flex; justify-content: flex-end;">
+                            <button type="button" class="btn btn-primary" id="previousProject" onclick="displayProject(${project.project_id - 1})"> <img src="https://img.icons8.com/ios/50/000000/previous.png" style="width: 20px; height: 20px;" alt=""> Précédent</button>
+                            <button type="button" class="btn btn-primary" id="nextProject" onclick="displayProject(${project.project_id + 1})"> <img src="https://img.icons8.com/ios/50/000000/next.png" style="width: 20px; height: 20px;" alt=""> Suivant</button>
+                        </div>
+                    </div>
+                    <br>
+                    
+                    <h1>${project.project_title}</h1>
+                    <p>${project.project_location}</p>
+                    <p>${project.project_description}</p>
+                    <p>${project.project_referent}</p>
+                    <p>${project.project_status}</p>
+                    <p>${project.project_type}</p>
+                    <p>${project.start_date}</p><p>${project.end_date}</p>
+                    <p>${project.updated_date}</p>
+
+                    <!-- Afficher la liste des membres et des associations du projet -->
+                    <ul id="projectMembers" style="display: none;">
+                    </ul>
+                    <ul id="projectAssociations" style="display: none;">
+                    </ul>
+
+                    <!-- Afficher la liste des rapports du projet -->
+                    <ul id="projectReports" style="display: block;">
+                    </ul>
+
+                    <!-- Afficher la liste des documents du projet -->
+                    <ul id="projectDocuments style="display: none;"">
+                    </ul>
+
+                    <!-- Ajouter les autres informations du projet -->
+                    <button type="button" class="btn btn-primary" id="add_assocition_to_project" onclick="addAssociationToProject(${project.project_id})"> <
+                    <button type="button" class="btn btn-primary" id="add_member_to_project" onclick="addMemberToProject(${project.project_id})">Ajouter un Membre</button>
+                    <button type="button" class="btn btn-primary" id="add_document_to_project" onclick="addDocumentToProject(${project.project_id})">Ajouter un Document</button>
+
+                    <!-- Ajouter les actions possibles sur le projet (membres privilégiés et administrateurs) -->
+                    <button type="button" class="btn btn-primary" id="add_report_to_project" onclick="addReportToProject(${project.project_id})">Ajouter un Rapport</button>
+
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalProject" id="editProject" onclick="editProject(${project.project_id})">Modifier</button>
+                    <button type="button" class="btn btn-danger" id="archiveProject" onclick="archiveProject(${project.project_id})">Archiver</button>
+                </article>
+            `;
+
+            // Afficher les membres du projet
+            let projectMembers = document.getElementById('projectMembers');
+            projectMembers.innerHTML = '';
+            project.members.forEach(member => {
+                let p = document.createElement('p');
+                p.innerHTML = member;
+                projectMembers.appendChild(p);
+            });
+
+            // Afficher les associations du projet
+            let projectAssociations = document.getElementById('projectAssociations');
+            projectAssociations.innerHTML = '';
+            project.associations.forEach(association => {
+                let p = document.createElement('p');
+                p.innerHTML = association;
+                projectAssociations.appendChild(p);
+            });
+
+            // Afficher les rapports du projet
+            let projectReports = document.getElementById('projectReports');
+            projectReports.innerHTML = '';
+            fetch(`https://lab.padem.org/wp-json/mo/v1/getProjectReports`)
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(report => {
+                        if (report.project_id === projectId) {
+                            let li_report = document.createElement('li');
+                            li_report.style.border = '1px solid lightgray';
+                            li_report.style.borderRadius = '25px';
+                            li_report.style.margin = '5px';
+                            li_report.style.padding = '5px';
+                            li_report.className = 'box-clicable';
+                            li_report.id = report.report_id;
+                            li_report.addEventListener('click', function () {
+                                displayReport(report.report_id);
+                            });
+                            projectReports.appendChild(li_report);
+                            li_report.innerHTML = `
+                                <p>${report.report_title}</p>
+                                <p>${report.report_date}</p>
+                                <p>${report.report_type}</p>
+                                <p>${report.report_status}</p>
+                            `;
+                        }
+                    });
+                })
+                .catch(error => console.error('Erreur récupération des rapports:', error));
+        }
+        //#endregion
+
+        //#region Afficher le rapport correspondant à l'ID
+        function displayReport(reportId) {
+            let report = reports.find(report => report.report_id === reportId);
+            let displayReport = document.getElementById('all_projects_table');
+            displayReport.innerHTML = '';
+            displayReport.innerHTML = `
+                <article class="report">
+                    <div style="display: flex; justify-content: space-between;">
+                        <button type="button" class="btn btn-primary" id="backToProjects" onclick="getProjects()">Tous les Projets</button>
+                        <div style="display: flex; justify-content: flex-end;">
+                            <button type="button" class="btn btn-primary" id="previousReport" onclick="displayReport(${report.report_id - 1})"> <img src="https://img.icons8.com/ios/50/000000/previous.png" style="width: 20px; height: 20px;" alt=""> Précédent</button>
+                            <button type="button" class="btn btn-primary" id="nextReport" onclick="displayReport(${report.report_id + 1})"> <img src="https://img.icons8.com/ios/50/000000/next.png" style="width: 20px; height: 20px;" alt=""> Suivant</button>
+                        </div>
+                    </div>
+                    <br>
+                    
+                    <h1>${report.report_title}</h1>
+                    <p>${report.report_date}</p>
+                    <p>${report.report_type}</p>
+                    <p>${report.report_status}</p>
+                    <p>${report.report_description}</p>
+                    <p>${report.report_referent}</p>
+                    <p>${report.report_referent_email}</p>
+                    <p>${report.report_manager}</p>
+                    <p>${report.report_manager_email}</p>
+                    <p>${report.report_project}</p>
+                    <p>${report.report_association}</p>
+                    <p>${report.report_location}</p>
+                    <p>${report.report_status}</p>
+                    <p>${report.report_type}</p>
+                    <p>${report.report_start_date}</p>
+                    <p>${report.report_end_date}</p>
+                    <p>${report.report_updated_date}</p>
+
+                    <!-- Afficher la liste des documents du rapport -->
+                    <ul id="reportDocuments_${reportId}" style="display: block;">
+                    </ul>
+
+                    <!-- Ajouter les autres informations du rapport -->
+                    <button type="button" class="btn btn-primary" id="add_document_to_report" onclick="addDocumentToReport(${report.report_id})">Ajouter un Document</button>
+
+                    <!-- Ajouter les actions possibles sur le rapport (membres privilégiés et administrateurs) -->
+                    <button type="button" class="btn btn-primary" id="add_assocition_to_report" onclick="addAssociationToReport(${report.report_id})">Ajouter une Association</button>
+                    <button type="button" class="btn btn-primary" id="add_member_to_report" onclick="addMemberToReport(${report.report_id})">Ajouter un Membre</button>
+                    <button type="button" class="btn btn-primary" id="editReport" onclick="editReport(${report.report_id})">Modifier</button>
+                    <button type="button" class="btn btn-danger" id="archiveReport" onclick="archiveReport(${report.report_id})">Archiver</button>
+                </article>
+            `;
+
+            //#region Ajouter des écouteurs d'événements pour les boutons
+            document.getElementById('add_document_to_report').addEventListener('click', function (e) {
+                e.preventDefault();
+                addDocumentToReport(report.report_id);
+            });
+            document.getElementById('add_assocition_to_report').addEventListener('click', function (e) {
+                e.preventDefault();
+                addAssociationToReport(report.report_id);
+            });
+            document.getElementById('add_member_to_report').addEventListener('click', function (e) {
+                e.preventDefault();
+                addMemberToReport(report.report_id);
+            });
+            document.getElementById('editReport').addEventListener('click', function (e) {
+                e.preventDefault();
+                editReport(report.report_id);
+            });
+            document.getElementById('archiveReport').addEventListener('click', function (e) {
+                e.preventDefault();
+                archiveReport(report.report_id);
+            });
+            //#endregion
+
+            //#region Afficher les documents du rapport
+            let reportDocuments = document.getElementById(`reportDocuments_${reportId}`);
+            reportDocuments.innerHTML = '';
+            fetch(`https://lab.padem.org/wp-json/mo/v1/getReportDocuments`)
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(document => {
+                        if (document.report_id === reportId) {
+                            let li_document = document.createElement('li');
+                            li_document.style.border = '1px solid lightgray';
+                            li_document.style.borderRadius = '25px';
+                            li_document.style.margin = '5px';
+                            li_document.style.padding = '5px';
+                            li_document.className = 'box-clicable';
+                            li_document.id = document.document_id;
+                            li_document.addEventListener('click', function () {
+                                displayDocument(document.document_id);
+                            });
+                            reportDocuments.appendChild(li_document);
+                            li_document.innerHTML = `
+                                <p>${document.document_title}</p>
+                                <p>${document.document_date}</p>
+                                <p>${document.document_type}</p>
+                                
+                                <button type="button" class="btn btn-primary" id="downloadDocument" onclick="downloadDocument(${document.document_id})"> <img src="https://img.icons8.com/ios/50/000000/download.png" style="width: 20px; height: 20px;" alt=""> Télécharger</button>
+                                <button type="button" class="btn btn-primary" id="editDocument" onclick="editDocument(${document.document_id})">Modifier</button>
+                                <button type="button" class="btn btn-danger" id="deleteDocument" onclick="deleteDocument(${document.document_id})">Supprimer</button>
+                            `;
+
+                            //#region Ajouter des écouteurs d'événements pour les boutons
+                            document.getElementById('downloadDocument').addEventListener('click', function (e) {
+                                e.preventDefault();
+                                downloadDocument(document.document_id);
+                            });
+                            document.getElementById('editDocument').addEventListener('click', function (e) {
+                                e.preventDefault();
+                                editDocument(document.document_id);
+                            });
+                            document.getElementById('deleteDocument').addEventListener('click', function (e) {
+                                e.preventDefault();
+                                deleteDocument(document.document_id);
+                            });
+                            //#endregion
+                        }
+                    });
+                })
+                .catch(error => console.error('Erreur récupération des documents:', error));
+            //#endregion
+        }
 
     </script>
 </body>
