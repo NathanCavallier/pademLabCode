@@ -56,44 +56,109 @@
 
 
 <body>
-
     <!--#region Formulaire de création de projet -->
     <br style="color: #000; font-size: 20px; font-weight: bold; text-align: center;" />
     <div class="container" id="new_project_form" style="display: none;" class="main-group-scroll">
-        <form id="formProject">
-            <div class="form-group">
-                <label for="projectName">Nom du Projet</label>
-                <input type="text" class="form-control" id="projectName" name="projectName" required>
+        <form id="projectForm" class="container" style="border-radius: 15px; background-color: white;">
+            <div class="row">
+                <div class="col-md-12">
+                    <p>Remplissez les champs suivants:</p>
+                    <hr class="gray-border">
+                </div>
             </div>
-            <div class="form-group">
-                <label for="projectDescription">Description du Projet</label>
-                <textarea class="form-control" id="projectDescription" name="projectDescription" rows="3"
-                    required></textarea>
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="projectTitle">Titre du projet: <span style="color: red;">*</span></label>
+                    <input type="text" id="projectTitle" name="projectTitle" class="form-control" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="projectType">Type de projet: <span style="color: red;">*</span></label>
+                    <input type="text" id="projectType" name="projectType" class="form-control" required>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="projectDeadline">Date de fin du Projet</label>
-                <input type="date" class="form-control" id="projectDeadline" name="projectDeadline" required>
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="projectDate">Date de début prévisionnelle: <span style="color: red;">*</span></label>
+                    <input type="date" id="projectDate" name="projectDate" class="form-control" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="projectEndDate2">Date de fin prévisionnelle: <span style="color: red;">*</span></label>
+                    <input type="date" id="projectEndDate2" name="projectEndDate2" class="form-control" required>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="projectStatus">Statut du Projet</label>
-                <select class="form-control" id="projectStatus" name="projectStatus" required>
-                    <option value="En cours">En cours</option>
-                    <option value="En attente">En attente</option>
-                    <option value="Terminé">Terminé</option>
-                </select>
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="projectLocation">Pays de réalisation du projet: <span
+                            style="color: red;">*</span></label>
+                    <input type="text" id="projectLocation" name="projectLocation" class="form-control" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="pademResponsible">Responsable Padem:</label>
+                    <input type="text" id="pademResponsible" name="pademResponsible" class="form-control">
+                </div>
             </div>
-            <div class="form-group">
-                <label for="projectManager">Chef de Projet</label>
-                <select class="form-control" id="projectManager" name="projectManager" required>
-                    <option value="0">Sélectionner un Chef de Projet</option>
-                </select>
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="pademResponsibleEmail">Email du responsable Padem:</label>
+                    <input type="email" id="pademResponsibleEmail" name="pademResponsibleEmail" class="form-control">
+                </div>
+                <div class="col-md-6">
+                    <label for="projectReferent">Référent du projet: <span style="color: red;">*</span></label>
+                    <input type="text" id="projectReferent" name="projectReferent" class="form-control" required>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="projectMembers">Membres du Projet</label>
-                <select class="form-control" id="projectMembers" name="projectMembers" multiple required>
-                </select>
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="projectReferentEmail">Email du référent du projet: <span
+                            style="color: red;">*</span></label>
+                    <input type="email" id="projectReferentEmail" name="projectReferentEmail" class="form-control"
+                        required>
+                </div>
+                <div class="col-md-6">
+                    <label for="projectDescription">Description du projet: <span style="color: red;">*</span></label>
+                    <textarea id="projectDescription" name="projectDescription" rows="4" cols="50"
+                        class="form-control"></textarea>
+                </div>
             </div>
-            <button type="submit" class="btn btn-primary">Créer</button>
+            <div class="row">
+                <div class="col-md-12" id="add_trames">
+                    <!-- Saisir les noms des documents models que vous comptez joindre ci-dessous à ce projet: -->
+                    <label for="projectDocuments">Saisir le nom de la trame à joindre au projet: <span
+                            style="color: red;">*</span></label>
+                    <textarea type="text" id="projectDocuments" name="projectDocuments" class="form-control" rows="4"
+                        required></textarea>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <hr class="gray-border">
+                </div>
+            </div>
+            <!--
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="projectCover">Ajoutez une image de couverture pour le projet:</label>
+                    <input type="file" id="projectCover" name="projectCover" accept="image/*" class="form-control-file">
+                </div>
+            </div>-->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="action-buttons" style="display: flex; justify-content: flex-end;">
+                        <button type="button" onclick="cancelProject()" class="btn btn-secondary"
+                            style="width: fit-content;">
+                            Annuler
+                            <img src="https://lab.padem.org/wp-content/uploads/Annuler.png" alt="cancel"
+                                style="width: 35px; height: 35px;">
+                        </button>
+                        <button type="button" onclick="saveFormData()" class="btn btn-primary"
+                            style="color: white; width: fit-content;">
+                            Enregistrer
+                            <img src="https://lab.padem.org/wp-content/uploads/save_black.png" alt="save"
+                                style="width: 35px; height: 35px;">
+                        </button>
+                    </div>
+                </div>
+            </div>
         </form>
     </div>
     <!--#endregion -->
@@ -114,7 +179,6 @@
                             style="width: 15px; height: 15px;" alt=""></th>
                     <th scope="col" id="status_name">Statut <img src="https://img.icons8.com/ios/50/000000/sort.png"
                             style="width: 15px; height: 15px;" alt=""></th>
-                    <th scope="col">Actions</th>
                 </tr>
             </thead>
             <tbody id="display_projects">
@@ -178,13 +242,12 @@
     </div>
     <!--#endregion -->
 
-
     <script>
         //#region Initialisation des variables
-        let projects = [];
-        let users = [];
-        let projectManagers = [];
-        let projectMembers = [];
+        var projects = [];
+        var users = [];
+        var projectManagers = [];
+        var projectMembers = [];
 
         // Récupérer les données de l'utilisateur connecté
         var userEmail = current_user_data.email;
@@ -192,12 +255,12 @@
         var userId = current_user_data.ID;
 
         // Variables des filtres
-        let status_list = ['En cours', 'En attente', 'Terminé'];
-        let country_list = [];
-        let association_list = [];
-        let theme_list = [];
+        var status_list = ['En cours', 'En attente', 'Terminé'];
+        var country_list = [];
+        var association_list = [];
+        var theme_list = [];
 
-        // Model de projet
+        //#region Model de projet
         var project_model = {
             id: 0,
             project_id: 0,
@@ -216,6 +279,8 @@
             background_image_link: "",
             folders: "",
         };
+        //#endregion
+
         //#endregion
 
         // Chargement de la page
@@ -298,7 +363,6 @@
         });
         //#endregion
 
-
         //#region ajouter écouteur d'événement pour le bouton Tous les Projets
         document.getElementById('allProjects').addEventListener('click', function (e) {
             e.preventDefault();
@@ -330,7 +394,11 @@
             document.getElementById('archives_projects_table').style.display = 'none';
             document.getElementById('new_project_form').style.display = 'none';
 
+            // Afficher les projets
+            displayProjects(projects);
+
         });
+        //#endregion
 
         //#region ajouter écouteur d'événement pour le bouton Créer un Projet
         document.getElementById('createProject').addEventListener('click', function (e) {
@@ -355,9 +423,6 @@
             document.getElementById('archives_projects').style.border = 'gray';
             document.getElementById('archives_projects').style.color = 'gray';
             //#endregion
-
-            // Afficher le formulaire de création de projet
-            document.getElementById('display_projects').style.display = 'none';
 
             // Afficher le formulaire de création de projet
             document.getElementById('new_project_form').style.display = 'block';
@@ -469,29 +534,32 @@
             displayProjects.innerHTML = '';
             projects.forEach(project => {
                 let tr = document.createElement('tr');
+                let td = document.createElement('td');
                 tr.style.border = '1px solid lightgray';
                 tr.style.borderRadius = '25px';
+                tr.style.backgroundColor = 'white';
                 tr.style.margin = '5px';
                 tr.style.padding = '5px';
-                tr.className = 'box-clicable';
+                tr.style.height = '50px';
+                tr.style.cursor = 'pointer';
+                tr.style.display = 'flex';
+                tr.style.justifyContent = 'space-between';
                 tr.id = project.project_id;
                 tr.addEventListener('click', function () {
                     displayProject(project.project_id);
                 });
                 tr.innerHTML = `
-                    <td style="color: blue;">${project.project_title}</td>
+                    <td style="color: #29A6A7; margin-left: 5px;">${project.project_title}</td>
                     <td>${project.project_location}</td>
-                    <td>${project.pr}</td>
+                    <td>${project.association}</td>
                     <td>${project.project_type}</td>
-                    <td style="color: ${project.project_status === 'En cours' ? 'green' : project.project_status === 'Terminé' ? 'red' : 'gray'};">${project.project_status}</td>
-                    <td>
-                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalProject" id="editProject" onclick="editProject(${project.project_id})">Modifier</button>
-                        <button type="button" class="btn btn-danger" id="deleteProject" onclick="deleteProject(${project.project_id})">Supprimer</button>
-                    </td>
+                    <td style="background-color: ${project.project_status === 'En cours' ? 'lightgreen' : project.project_status === 'Terminé' ? 'lightcoral' : 'lightgray'}; border-radius: 10px; margin: 5px; padding: 5px; width: fit-content;">
+                        <p style="color: ${project.project_status === 'En cours' ? 'green' : project.project_status === 'Terminé' ? 'red' : 'gray'};">${project.project_status}</p>
                 `;
                 displayProjects.appendChild(tr);
             });
         }
+        //#endregion
 
         // Barre de recherche
 
@@ -516,59 +584,771 @@
             displayProjects(archivesProjects);
         }
 
+        //#region Get months' names
+        function getMonthName(month) {
+            let monthName = '';
+            switch (month) {
+                case 0:
+                    monthName = 'Janvier';
+                    break;
+                case 1:
+                    monthName = 'Février';
+                    break;
+                case 2:
+                    monthName = 'Mars';
+                    break;
+                case 3:
+                    monthName = 'Avril';
+                    break;
+                case 4:
+                    monthName = 'Mai';
+                    break;
+                case 5:
+                    monthName = 'Juin';
+                    break;
+                case 6:
+                    monthName = 'Juillet';
+                    break;
+                case 7:
+                    monthName = 'Août';
+                    break;
+                case 8:
+                    monthName = 'Septembre';
+                    break;
+                case 9:
+                    monthName = 'Octobre';
+                    break;
+                case 10:
+                    monthName = 'Novembre';
+                    break;
+                case 11:
+                    monthName = 'Décembre';
+                    break;
+                default:
+                    monthName = 'Non renseigné';
+                    break;
+            }
+            return monthName;
+        }
+        //#endregion
+
+        //#region Get days' names
+        function getDayName(day) {
+            let dayName = '';
+            switch (day) {
+                case 0:
+                    dayName = 'Dimanche';
+                    break;
+                case 1:
+                    dayName = 'Lundi';
+                    break;
+                case 2:
+                    dayName = 'Mardi';
+                    break;
+                case 3:
+                    dayName = 'Mercredi';
+                    break;
+                case 4:
+                    dayName = 'Jeudi';
+                    break;
+                case 5:
+                    dayName = 'Vendredi';
+                    break;
+                case 6:
+                    dayName = 'Samedi';
+                    break;
+                default:
+                    dayName = 'Non renseigné';
+                    break;
+            }
+            return dayName;
+        }
+        //#endregion
+
         //#region Afficher le projet correspondant à l'ID
         function displayProject(projectId) {
-            let project = projects.find(project => project.project_id === projectId);
-            let displayProject = document.getElementById('all_projects_table');
-            displayProject.innerHTML = '';
+            var project = projects.find(project => project.project_id === projectId);
+            var displayProject = document.getElementById('all_projects_table');
+
+            //#region Formater les dates
+            var formated_updated_date = new Date(project.updated_date).toLocaleDateString('fr-FR'); // Formater la date
+            var formated_start_date = new Date(project.start_date).toLocaleDateString('fr-FR');
+            var formated_end_date = new Date(project.end_date).toLocaleDateString('fr-FR');
+
+            var _updated_date = formated_updated_date.split('/'); // Récupérer la date
+            var _start_date = formated_start_date.split('/');
+            var _end_date = formated_end_date.split('/');
+
+            var month_updated_date = getMonthName(parseInt(_updated_date[1])); // Récupérer le mois
+            var month_start_date = getMonthName(parseInt(_start_date[1]));
+            var month_end_date = getMonthName(parseInt(_end_date[1]));
+
+            var day_updated_date = getDayName(new Date(project.updated_date).getDay()); // Récupérer le jour de la semaine
+            var day_start_date = getDayName(new Date(project.start_date).getDay());
+            var day_end_date = getDayName(new Date(project.end_date).getDay());
+
+            var final_updated_date = day_updated_date + ' ' + _updated_date[0] + ' ' + month_updated_date + ' ' + _updated_date[2]; // Date finale
+            var final_start_date = day_start_date + ' ' + _start_date[0] + ' ' + month_start_date + ' ' + _start_date[2];
+            var final_end_date = day_end_date + ' ' + _end_date[0] + ' ' + month_end_date + ' ' + _end_date[2];
+            //#endregion
+
+            //#region Progression du projet (En cours, En attente, Terminé)
+            var today = new Date();
+            var start_date = new Date(project.start_date);
+            var end_date = new Date(project.end_date);
+            var progression = '';
+            if (today < start_date) {
+                progression = 'En attente';
+            }
+            else if (today >= start_date && today <= end_date) {
+                progression = 'En cours';
+            }
+            else {
+                progression = 'Terminé';
+            }
+            //#endregion
+
             displayProject.innerHTML = `
-                <article class="project">
-                    <div style="display: flex; justify-content: space-between;">
-                        <button type="button" class="btn btn-primary" id="backToProjects" onclick="getProjects()">Tous les Projets</button>
-                        <div style="display: flex; justify-content: flex-end;">
-                            <button type="button" class="btn btn-primary" id="previousProject" onclick="displayProject(${project.project_id - 1})"> <img src="https://img.icons8.com/ios/50/000000/previous.png" style="width: 20px; height: 20px;" alt=""> Précédent</button>
-                            <button type="button" class="btn btn-primary" id="nextProject" onclick="displayProject(${project.project_id + 1})"> <img src="https://img.icons8.com/ios/50/000000/next.png" style="width: 20px; height: 20px;" alt=""> Suivant</button>
+                <!-- Afficher "Retour aux projets>>Nom du projet" -->
+                <div style="display: flex; justify-content: flex-start; margin: 10px;">
+                    <p type="button" id="backToProjects">Tous les Projets</p>
+                     > 
+                    <p style="color: #29A6A7;">${project.project_title ? project.project_title : 'Non renseigné'}</p>
+                </div>
+                <!-- Afficher le projet -->
+                <div class="card-header" style="margin: 5px; padding: 5px; width: 100%;">
+                    <div style="color: gray; font-size: 12px;>
+                        <div style="display: flex; justify-content: space-between;">
+                            <h4 style="color: #29A6A7;">${project.project_title ? project.project_title : 'Non renseigné'}</h4>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin: 5px; padding: 5px; width: 100%; font-size: 12px; color: gray;">
+                            <div style="display: flex; justify-content: space-between; margin: 5px; padding: 5px; width: fit-content; font-size: 12px; color: gray;">
+                                <div>Bailleur: </div>  <p style="color: black;">${project.funder ? project.funder : 'Non renseigné'}</p>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin: 5px; padding: 5px; width: fit-content;">
+                                Association: <p style="color: black;">${project.association ? project.association : 'Non renseigné'}</p>
+                            </div>
+                            <div style="margin: 3px; padding: 3px;"></div>
+                            <div style="display: flex; justify-content: space-between; margin: 5px; padding: 5px; width: 100%; font-size: 12px; color: gray;">
+                                Lieu: <p style="color: black; margin-left: 5px;">${project.project_location ? project.project_location : 'Non renseigné'}</p>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin: 5px; padding: 5px; width: fit-content; font-size: 12px; color: gray;">
+                                Thématique: <p style="color: black; margin-left: 5px;">${project.project_type ? project.project_type : 'Non renseigné'}</p>
+                            </div>
+                            <div style="margin: 3px; padding: 3px;"></div>
+                            <div style="display: flex; justify-content: space-between; margin: 5px; padding: 5px; width: fit-content; font-size: 12px; color: gray;">
+                                Referent: <p style="color: black; margin-left: 5px;">${project.project_referent ? project.project_referent : 'Non renseigné'}</p>
+                            </div>
                         </div>
                     </div>
-                    <br>
-                    
-                    <h1>${project.project_title}</h1>
-                    <p>${project.project_location}</p>
-                    <p>${project.project_description}</p>
-                    <p>${project.project_referent}</p>
-                    <p>${project.project_status}</p>
-                    <p>${project.project_type}</p>
-                    <p>${project.start_date}</p><p>${project.end_date}</p>
-                    <p>${project.updated_date}</p>
+                    <div style="display: flex; justify-content: flex-start; margin: 5px; padding: 5px; color: gray; font-size: 12px;">
+                        <div style="margin: 10px; padding: 10px;"></div>
+                        <div style="display: flex; justify-content: space-between; margin: 5px; padding: 5px; width: fit-content;">
+                            Date de début: <p style="color: black; margin-left: 5px;">${final_start_date ? final_start_date : 'Non renseigné'}</p>
+                        </div>
+                        <div style="margin: 3px; padding: 3px;"></div>
+                        <div style="display: flex; justify-content: space-between; margin: 5px; padding: 5px; width: fit-content;">
+                            Date de fin: <p style="color: black; margin-left: 5px;">${final_end_date ? final_end_date : 'Non renseigné'}</p>
+                        </div>
+                        <div style="margin: 3px; padding: 3px;"></div>
+                        <div style="display: flex; justify-content: space-between; margin: 5px; padding: 5px; width: fit-content;">
+                            Dernière mise à jour: <p style="color: black; margin-left: 5px;">${final_updated_date ? final_updated_date : 'Non renseigné'}</p>
+                        </div>
+                        <div style="border-radius: 10px; margin: 5px; padding: 5px; width: fit-content; border-color: ${progression === 'En cours' ? 'lightgreen' : progression === 'Terminé' ? 'lightcoral' : 'lightgray'};">
+                            <p style="color: ${progression === 'En cours' ? 'green' : progression === 'Terminé' ? 'red' : 'gray'}; font-size: 12px; margin: 5px; padding: 5px; margin-bottom: -3px;">${progression}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body" style="margin: 5px; padding: 5px; width: 100%; height: fit-content; border-radius: 25px; background-color: lightgray;">
+                    <!-- Boutons d'actions -->
+                    <button type="button" id="add_association_to_project" onclick="addAssociationToProject(${project.project_id})" style="background-color: white; border-radius: 25px;"> <!-- icone groupe --> <img src="https://img.icons8.com/?size=100&id=23266&format=png&color=29A6A7" style="width: 20px; height: 20px;" alt=""></button>
+                    <button type="button" id="add_member_to_project" onclick="addMemberToProject(${project.project_id})" style="background-color: white; border-radius: 25px;"> <!-- icone personne --> <img src="https://img.icons8.com/?size=100&id=3&format=png&color=29A6A7" style="width: 20px; height: 20px;" alt=""></button>
+                    <button type="button" id="add_document_to_project" onclick="addDocumentToProject(${project.project_id})" style="background-color: white; border-radius: 25px;"> <!-- icone ajouter document --> <img src="https://img.icons8.com/?size=100&id=57052&format=png&color=29A6A7" style="width: 20px; height: 20px;" alt=""></button>
+                    <button type="button" id="add_report_to_project" onclick="addReportToProject(${project.project_id})" style="background-color: white; border-radius: 25px;"> <!-- icone soumettre rapport --> <img src="https://img.icons8.com/?size=100&id=5271&format=png&color=29A6A7" style="width: 20px; height: 20px;" alt=""></button>
+                    <!-- Boutons d'édition -->
+                    <button type="button" id="editProject" onclick="editProject(${project.project_id})" style="background-color: white; border-radius: 25px;"> <!-- icone crayon --> <img src="https://img.icons8.com/?size=100&id=6697&format=png&color=29A6A7" style="width: 20px; height: 20px;" alt=""></button>
+                    <button type="button" id="archiveProject" onclick="archiveProject(${project.project_id})" style="background-color: white; border-radius: 25px;"> <!-- icone archive --> <img src="https://img.icons8.com/?size=100&id=12634&format=png&color=FA5252" style="width: 20px; height: 20px;" alt=""></button>
+                </div>
+                <article class="card" style="margin: 5px;">
+                    <div class="card-body" style="margin: 5px; padding: 5px;" min-height: 300px; width: 100%;>
+                        <!-- Menu initial -->
+                        <div id="first_menu_${project.project_id}" style="display: block;">
+                            <div style="margin: 5px; display: flex; justify-content: flex-end;">
+                                <button id="project_reports_${project.project_id}" style="width: fit-content; color: gray; background-color: #98D0D0; align-self: center; border-radius: 15px; border: none; margin: 5px; padding: 5px;" class="box-clicable">Rapports</button>
+                                <button id="project_documents_${project.project_id}" style="width: fit-content; color: lightgray; background-color: white; align-self: center; border-radius: 15px; border: none; margin: 5px; padding: 5px;" class="box-clicable">Documents</button>
+                                <button id="project_associations_${project.project_id}" style="width: fit-content; color: lightgray; background-color: white; align-self: center; border-radius: 15px; border: none; margin: 5px; padding: 5px;" class="box-clicable">Associations</button>                               
+                                <button id="project_members_${project.project_id}" style="width: fit-content; color: lightgray; background-color: white; align-self: center; border-radius: 15px; border: none; margin: 5px; padding: 5px;" class="box-clicable">Membres</button>
+                            </div>
+                            <div>
+                                <div class="container" id="projectReports_${project.project_id}" style="display: block;">
+                                    <table style="width: 100%; border-collapse: collapse; min-height: 300px;">
+                                        <thead style="font-size: 12px; font-weight: lighter; color: gray;">
+                                            <tr>
+                                                <th scope="col" id="project_tite_${project.project_id}">Titre <img src="https://img.icons8.com/ios/50/000000/sort.png"
+                                                        style="width: 15px; height: 15px;" alt=""></th>
+                                                <th scope="col" id="country_name_${project.project_id}">Auteur <img src="https://img.icons8.com/ios/50/000000/sort.png"
+                                                        style="width: 15px; height: 15px;" alt=""></th>
+                                                <th scope="col" id="association_name_${project.project_id}">Association <img
+                                                        src="https://img.icons8.com/ios/50/000000/sort.png" style="width: 15px; height: 15px;"
+                                                        alt=""></th>
+                                                <th scope="col" id="theme_name_${project.project_id}">Type de rapport <img src="https://img.icons8.com/ios/50/000000/sort.png"
+                                                        style="width: 15px; height: 15px;" alt=""></th>
+                                                <th scope="col" id="status_name_${project.project_id}">Statut <img src="https://img.icons8.com/ios/50/000000/sort.png"
+                                                        style="width: 15px; height: 15px;" alt=""></th>
+                                                <th scope="col">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="display_project_reports_${project.project_id}" class="main-group-scroll" style="min-height: 200px;">
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="container" id="projectAssociations_${project.project_id}" style="display: none;">
+                                    <table style="width: 100%; border-collapse: collapse; min-height: 300px;">
+                                        <thead style="font-size: 12px; font-weight: lighter; color: gray;">
+                                            <tr>
+                                                <th scope="col" id="project_name_${project.project_id}">Nom <img src="https://img.icons8.com/ios/50/000000/sort.png"
+                                                        style="width: 15px; height: 15px;" alt=""></th>
+                                                <th scope="col" id="country_name_${project.project_id}">Pays <img src="https://img.icons8.com/ios/50/000000/sort.png"
+                                                        style="width: 15px; height: 15px;" alt=""></th>
+                                                <th scope="col" id="association_name_${project.project_id}">Association <img
+                                                        src="https://img.icons8.com/ios/50/000000/sort.png" style="width: 15px; height: 15px;"
+                                                        alt=""></th>
+                                                <th scope="col" id="theme_name_${project.project_id}">Thématique <img src="https://img.icons8.com/ios/50/000000/sort.png"
+                                                        style="width: 15px; height: 15px;" alt=""></th>
+                                                <th scope="col" id="status_name_${project.project_id}">Statut <img src="https://img.icons8.com/ios/50/000000/sort.png"
+                                                        style="width: 15px; height: 15px;" alt=""></th>
+                                                <th scope="col">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="display_project_associations_${project.project_id}" class="main-group-scroll" style="min-height: 200px;">
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="container" id="projectMembers_${project.project_id}" style="display: none;">
+                                    <table style="width: 100%; border-collapse: collapse; min-height: 300px;">
+                                        <thead style="font-size: 12px; font-weight: lighter; color: gray;">
+                                            <tr>
+                                                <th scope="col" id="project_tite_${project.project_id}_members">Titre <img src="https://img.icons8.com/ios/50/000000/sort.png"
+                                                        style="width: 15px; height: 15px;" alt=""></th>
+                                                <th scope="col" id="country_name_${project.project_id}_members">Pays <img src="https://img.icons8.com/ios/50/000000/sort.png"
+                                                        style="width: 15px; height: 15px;" alt=""></th>
+                                                <th scope="col" id="association_name_${project.project_id}_members">Association <img
+                                                        src="https://img.icons8.com/ios/50/000000/sort.png" style="width: 15px; height: 15px;"
+                                                        alt=""></th>
+                                                <th scope="col" id="theme_name_${project.project_id}_members">Thématique <img src="https://img.icons8.com/ios/50/000000/sort.png"
+                                                        style="width: 15px; height: 15px;" alt=""></th>
+                                                <th scope="col" id="status_name_${project.project_id}_members">Statut <img src="https://img.icons8.com/ios/50/000000/sort.png"
+                                                        style="width: 15px; height: 15px;" alt=""></th>
+                                                <th scope="col">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="display_project_members_${project.project_id}" class="main-group-scroll" style="min-height: 200px;">
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="container" id="projectDocuments_${project.project_id}" style="display: none;">
+                                    <table style="width: 100%; border-collapse: collapse; min-height: 300px;">
+                                        <thead style="font-size: 12px; font-weight: lighter; color: gray;">
+                                            <tr>
+                                                <th scope="col" id="doc_title_${project.project_id}">Titre <img src="https://img.icons8.com/ios/50/000000/sort.png"
+                                                        style="width: 15px; height: 15px;" alt=""></th>
+                                                <th scope="col" id="doc_name">Pays <img src="https://img.icons8.com/ios/50/000000/sort.png"
+                                                        style="width: 15px; height: 15px;" alt=""></th>
+                                                <th scope="col" id="doc_association_name">Association <img
+                                                        src="https://img.icons8.com/ios/50/000000/sort.png" style="width: 15px; height: 15px;"
+                                                        alt=""></th>
+                                                <th scope="col" id="doc_theme_name">Thématique <img src="https://img.icons8.com/ios/50/000000/sort.png"
+                                                        style="width: 15px; height: 15px;" alt=""></th>
+                                                <th scope="col" id="doc_status_name">Statut <img src="https://img.icons8.com/ios/50/000000/sort.png"
+                                                        style="width: 15px; height: 15px;" alt=""></th>
+                                                <th scope="col">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="display_project_documents_${project.project_id}" class="main-group-scroll" style="min-height: 200px;">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
 
-                    <!-- Afficher la liste des membres et des associations du projet -->
-                    <ul id="projectMembers" style="display: none;">
-                    </ul>
-                    <ul id="projectAssociations" style="display: none;">
-                    </ul>
+                        <!-- Ajouter une association existante au projet -->
+                        <div id="_menu_add_association_${project.project_id}" style="display: none;">
+                            <form id="add_association_to_project_form_${project.project_id}" class="form-group">
+                                <div class="form-group">
+                                    <label for="association_${project.project_id}">Association</label>
+                                    <select class="form-control" id="association_${project.project_id}" name="association">
+                                        <option value="">Sélectionner une association</option>
 
-                    <!-- Afficher la liste des rapports du projet -->
-                    <ul id="projectReports" style="display: block;">
-                    </ul>
+                                    </select>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Ajouter</button>
+                            </form>
+                        </div>
 
-                    <!-- Afficher la liste des documents du projet -->
-                    <ul id="projectDocuments style="display: none;"">
-                    </ul>
+                        <!-- Ajouter un membre au projet -->
+                        <div id="_menu_add_member_${project.project_id}" style="display: none;">
+                            <form id="add_member_to_project_form_${project.project_id}" class="form-group">
+                                <div class="form-group">
+                                    <label for="member_${project.project_id}">Membre</label>
+                                    <select class="form-control" id="member" name="member_${project.project_id}">
+                                        <option value="">Sélectionner un membre</option>
 
-                    <!-- Ajouter les autres informations du projet -->
-                    <button type="button" class="btn btn-primary" id="add_assocition_to_project" onclick="addAssociationToProject(${project.project_id})"> <
-                    <button type="button" class="btn btn-primary" id="add_member_to_project" onclick="addMemberToProject(${project.project_id})">Ajouter un Membre</button>
-                    <button type="button" class="btn btn-primary" id="add_document_to_project" onclick="addDocumentToProject(${project.project_id})">Ajouter un Document</button>
+                                    </select>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Ajouter</button>
+                            </form>
+                        </div>  
 
-                    <!-- Ajouter les actions possibles sur le projet (membres privilégiés et administrateurs) -->
-                    <button type="button" class="btn btn-primary" id="add_report_to_project" onclick="addReportToProject(${project.project_id})">Ajouter un Rapport</button>
+                        <!-- Ajouter un document au projet (Formulaire & upload) -->
+                        <div id="_menu_add_document_${project.project_id}" style="display: none;">
+                            <form id="add_document_to_project_form_${project.project_id}" class="form-group">
+                                <div class="form-group">
+                                    <label for="document_title_${project.project_id}">Titre</label>
+                                    <input type="text" class="form-control" id="document_title_${project.project_id}" name="document_title">
+                                </div>
+                                <div class="form-group">
+                                    <label for="document_file_${project.project_id}">Fichier</label>
+                                    <input type="file" class="form-control" id="document_file_${project.project_id}" name="document_file">
+                                    <small id="fileHelp" class="form-text text-muted">Veuillez sélectionner un fichier PDF.</small>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Ajouter</button>
+                            </form>
+                        </div>
 
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalProject" id="editProject" onclick="editProject(${project.project_id})">Modifier</button>
-                    <button type="button" class="btn btn-danger" id="archiveProject" onclick="archiveProject(${project.project_id})">Archiver</button>
+                        <!-- Ajouter un nouveau rapport au projet -->
+                        <div id="_menu_add_report_${project.project_id}" style="display: none;">
+                            <form id="add_report_to_project_form_${project.project_id}" class="form-group">
+                                <div class="form-group">
+                                    <label for="report_title_${project.project_id}">Titre</label>
+                                    <input type="text" class="form-control" id="report_title_${project.project_id}" name="report_title">
+                                </div>
+                                <!-- type de rapport -->
+                                <div class="form-group">
+                                    <label for="report_type_${project.project_id}">Type</label>
+                                    <select class="form-control" id="report_type_${project.project_id}" name="report_type">
+                                        <option value="">Sélectionner un type de rapport</option>
+                                        <option value="Rapport d'activité">Rapport d'activité</option>
+                                        <option value="Rapport financier">Rapport financier</option>
+                                        <option value="Rapport de mission">Rapport de mission</option>
+                                        <option value="Rapport de suivi">Rapport de suivi</option>
+                                    </select>
+                                </div>
+                                <!-- Date du rapport -->
+                                <div class="form-group">
+                                    <label for="report_date_${project.project_id}">Date</label>
+                                    <input type="date" class="form-control" id="report_date_${project.project_id}" name="report_date">
+                                </div>
+                                <div class="form-group">
+                                    <label for="report_description">Description</label>
+                                    <textarea class="form-control" id="report_description" name="report_description" rows="8"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="report_file_${project.project_id}">Fichier</label>
+                                    <input type="file" class="form-control" id="report_file_${project.project_id}" name="report_file">
+                                    <small id="fileHelp_${project.project_id}" class="form-text text-muted">Veuillez sélectionner un fichier PDF.</small>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Ajouter</button>
+                            </form>
+                        </div>
+                    </div>
                 </article>
             `;
 
-            // Afficher les membres du projet
+            //#region Ajouter des écouteurs d'événements pour les boutons (Rapports, Documents, Associations, Membres)
+            document.getElementById(`project_reports_${project.project_id}`).addEventListener('click', function () {
+                // Afficher les rapports du projet & masquer les autres éléments
+                document.getElementById('projectReports_' + project.project_id).style.display = 'block';
+                document.getElementById('projectAssociations_' + project.project_id).style.display = 'none';
+                document.getElementById('projectMembers_' + project.project_id).style.display = 'none';
+                document.getElementById('projectDocuments_' + project.project_id).style.display = 'none';
+
+                // Changement de couleur des boutons
+                document.getElementById(`project_reports_${project.project_id}`).style.backgroundColor = '#98D0D0';
+                document.getElementById(`project_reports_${project.project_id}`).style.color = 'gray';
+                document.getElementById(`project_documents_${project.project_id}`).style.backgroundColor = 'white';
+                document.getElementById(`project_documents_${project.project_id}`).style.color = 'lightgray';
+                document.getElementById(`project_associations_${project.project_id}`).style.backgroundColor = 'white';
+                document.getElementById(`project_associations_${project.project_id}`).style.color = 'lightgray';
+                document.getElementById(`project_members_${project.project_id}`).style.backgroundColor = 'white';
+                document.getElementById(`project_members_${project.project_id}`).style.color = 'lightgray';
+            });
+            document.getElementById(`project_documents_${project.project_id}`).addEventListener('click', function () {
+                // Afficher les documents du projet & masquer les autres éléments
+                document.getElementById('projectReports_' + project.project_id).style.display = 'none';
+                document.getElementById('projectAssociations_' + project.project_id).style.display = 'none';
+                document.getElementById('projectMembers_' + project.project_id).style.display = 'none';
+                document.getElementById('projectDocuments_' + project.project_id).style.display = 'block';
+
+                // Changement de couleur des boutons
+                document.getElementById(`project_reports_${project.project_id}`).style.backgroundColor = 'white';
+                document.getElementById(`project_reports_${project.project_id}`).style.color = 'lightgray';
+                document.getElementById(`project_documents_${project.project_id}`).style.backgroundColor = '#98D0D0';
+                document.getElementById(`project_documents_${project.project_id}`).style.color = 'gray';
+                document.getElementById(`project_associations_${project.project_id}`).style.backgroundColor = 'white';
+                document.getElementById(`project_associations_${project.project_id}`).style.color = 'lightgray';
+                document.getElementById(`project_members_${project.project_id}`).style.backgroundColor = 'white';
+                document.getElementById(`project_members_${project.project_id}`).style.color = 'lightgray';
+            });
+            document.getElementById(`project_associations_${project.project_id}`).addEventListener('click', function () {
+                // Afficher les associations du projet & masquer les autres éléments
+                document.getElementById('projectReports_' + project.project_id).style.display = 'none';
+                document.getElementById('projectAssociations_' + project.project_id).style.display = 'block';
+                document.getElementById('projectMembers_' + project.project_id).style.display = 'none';
+                document.getElementById('projectDocuments_' + project.project_id).style.display = 'none';
+
+                // Changement de couleur des boutons
+                document.getElementById(`project_reports_${project.project_id}`).style.backgroundColor = 'white';
+                document.getElementById(`project_reports_${project.project_id}`).style.color = 'lightgray';
+                document.getElementById(`project_documents_${project.project_id}`).style.backgroundColor = 'white';
+                document.getElementById(`project_documents_${project.project_id}`).style.color = 'lightgray';
+                document.getElementById(`project_associations_${project.project_id}`).style.backgroundColor = '#98D0D0';
+                document.getElementById(`project_associations_${project.project_id}`).style.color = 'gray';
+                document.getElementById(`project_members_${project.project_id}`).style.backgroundColor = 'white';
+                document.getElementById(`project_members_${project.project_id}`).style.color = 'lightgray';
+            });
+            document.getElementById(`project_members_${project.project_id}`).addEventListener('click', function () {
+                // Afficher les membres du projet & masquer les autres éléments
+                document.getElementById('projectReports_' + project.project_id).style.display = 'none';
+                document.getElementById('projectAssociations_' + project.project_id).style.display = 'none';
+                document.getElementById('projectMembers_' + project.project_id).style.display = 'block';
+                document.getElementById('projectDocuments_' + project.project_id).style.display = 'none';
+
+                // Changement de couleur des boutons
+                document.getElementById(`project_reports_${project.project_id}`).style.backgroundColor = 'white';
+                document.getElementById(`project_reports_${project.project_id}`).style.color = 'lightgray';
+                document.getElementById(`project_documents_${project.project_id}`).style.backgroundColor = 'white';
+                document.getElementById(`project_documents_${project.project_id}`).style.color = 'lightgray';
+                document.getElementById(`project_associations_${project.project_id}`).style.backgroundColor = 'white';
+                document.getElementById(`project_associations_${project.project_id}`).style.color = 'lightgray';
+                document.getElementById(`project_members_${project.project_id}`).style.backgroundColor = '#98D0D0';
+                document.getElementById(`project_members_${project.project_id}`).style.color = 'gray';
+            });
+            //#endregion
+
+            //#region Ajouter des écouteurs d'événements pour les boutons (entré/sortie de la souris) pour afficher le nom du bouton
+            document.getElementById('add_association_to_project').addEventListener('mouseover', function () {
+                document.getElementById('add_association_to_project').innerHTML = 'Ajouter une Association';
+                document.getElementById('add_association_to_project').style.color = 'white';
+                document.getElementById('add_association_to_project').style.fontSize = '12px';
+                document.getElementById('add_association_to_project').style.backgroundColor = '#29A6A7';
+            });
+            document.getElementById('add_association_to_project').addEventListener('mouseout', function () {
+                document.getElementById('add_association_to_project').innerHTML = '<img src="https://img.icons8.com/?size=100&id=23266&format=png&color=29A6A7" style="width: 20px; height: 20px;" alt="">';
+                document.getElementById('add_association_to_project').style.backgroundColor = 'white';
+            });
+
+            document.getElementById('add_member_to_project').addEventListener('mouseover', function () {
+                document.getElementById('add_member_to_project').innerHTML = 'Ajouter un Membre';
+                document.getElementById('add_member_to_project').style.color = 'white';
+                document.getElementById('add_member_to_project').style.fontSize = '12px';
+                document.getElementById('add_member_to_project').style.backgroundColor = '#29A6A7';
+            });
+            document.getElementById('add_member_to_project').addEventListener('mouseout', function () {
+                document.getElementById('add_member_to_project').innerHTML = '<img src="https://img.icons8.com/?size=100&id=3&format=png&color=29A6A7" style="width: 20px; height: 20px;" alt="">';
+                document.getElementById('add_member_to_project').style.backgroundColor = 'white';
+            });
+
+            document.getElementById('add_document_to_project').addEventListener('mouseover', function () {
+                document.getElementById('add_document_to_project').innerHTML = 'Ajouter un Document';
+                document.getElementById('add_document_to_project').style.color = 'white';
+                document.getElementById('add_document_to_project').style.fontSize = '12px';
+                document.getElementById('add_document_to_project').style.backgroundColor = '#29A6A7';
+            });
+            document.getElementById('add_document_to_project').addEventListener('mouseout', function () {
+                document.getElementById('add_document_to_project').innerHTML = '<img src="https://img.icons8.com/?size=100&id=57052&format=png&color=29A6A7" style="width: 20px; height: 20px;" alt="">';
+                document.getElementById('add_document_to_project').style.backgroundColor = 'white';
+            });
+
+            document.getElementById('add_report_to_project').addEventListener('mouseover', function () {
+                document.getElementById('add_report_to_project').innerHTML = 'Ajouter un Rapport';
+                document.getElementById('add_report_to_project').style.color = 'white';
+                document.getElementById('add_report_to_project').style.fontSize = '12px';
+                document.getElementById('add_report_to_project').style.backgroundColor = '#29A6A7';
+            });
+            document.getElementById('add_report_to_project').addEventListener('mouseout', function () {
+                document.getElementById('add_report_to_project').innerHTML = '<img src="https://img.icons8.com/?size=100&id=5271&format=png&color=29A6A7" style="width: 20px; height: 20px;" alt="">';
+                document.getElementById('add_report_to_project').style.backgroundColor = 'white';
+            });
+
+            document.getElementById('editProject').addEventListener('mouseover', function () {
+                document.getElementById('editProject').innerHTML = 'Modifier le Projet';
+                document.getElementById('editProject').style.color = 'white';
+                document.getElementById('editProject').style.fontSize = '12px';
+                document.getElementById('editProject').style.backgroundColor = '#29A6A7';
+            });
+            document.getElementById('editProject').addEventListener('mouseout', function () {
+                document.getElementById('editProject').innerHTML = '<img src="https://img.icons8.com/?size=100&id=6697&format=png&color=29A6A7" style="width: 20px; height: 20px;" alt="">';
+                document.getElementById('editProject').style.backgroundColor = 'white';
+            });
+
+            document.getElementById('archiveProject').addEventListener('mouseover', function () {
+                document.getElementById('archiveProject').innerHTML = 'Archiver le Projet';
+                document.getElementById('archiveProject').style.color = 'white';
+                document.getElementById('archiveProject').style.fontSize = '12px';
+                document.getElementById('archiveProject').style.backgroundColor = 'red';
+            });
+            document.getElementById('archiveProject').addEventListener('mouseout', function () {
+                document.getElementById('archiveProject').innerHTML = '<img src="https://img.icons8.com/?size=100&id=12634&format=png&color=FA5252" style="width: 20px; height: 20px;" alt="">';
+                document.getElementById('archiveProject').style.backgroundColor = 'white';
+            });
+            //#endregion
+
+            //#region Ajouter des écouteurs d'événements "click" pour les boutons (Ajouter une association, un membre, un document, un rapport, éditer, archiver)
+            document.getElementById('add_association_to_project').addEventListener('click', function (e) {
+                e.preventDefault();
+                document.getElementById('add_association_to_project').style.backgroundColor = '#29A6A7';
+                document.getElementById('add_association_to_project').style.color = 'white';
+                document.getElementById('add_association_to_project').innerHTML = 'Annuler';
+
+                if (document.getElementById('first_menu_' + project.project_id).style.display === 'block') {
+                    document.getElementById('first_menu_' + project.project_id).style.display = 'none';
+                    document.getElementById('_menu_add_association_' + project.project_id).style.display = 'block';
+                    document.getElementById('_menu_add_member_' + project.project_id).style.display = 'none';
+                    document.getElementById('_menu_add_document_' + project.project_id).style.display = 'none';
+                    document.getElementById('_menu_add_report_' + project.project_id).style.display = 'none';
+                } 
+                else if (document.getElementById('_menu_add_member_' + project.project_id).style.display === 'block') {
+                    document.getElementById('_menu_add_member_' + project.project_id).style.display = 'none';
+                    document.getElementById('_menu_add_association_' + project.project_id).style.display = 'block';
+                    document.getElementById('_menu_add_document_' + project.project_id).style.display = 'none';
+                    document.getElementById('_menu_add_report_' + project.project_id).style.display = 'none';
+                } 
+                else if (document.getElementById('_menu_add_document_' + project.project_id).style.display === 'block') {
+                    document.getElementById('_menu_add_document_' + project.project_id).style.display = 'none';
+                    document.getElementById('_menu_add_association_' + project.project_id).style.display = 'block';
+                    document.getElementById('_menu_add_report_' + project.project_id).style.display = 'none';
+                } 
+                else if (document.getElementById('_menu_add_report_' + project.project_id).style.display === 'block') {
+                    document.getElementById('_menu_add_report_' + project.project_id).style.display = 'none';
+                    document.getElementById('_menu_add_association_' + project.project_id).style.display = 'block';
+                }
+                else {
+                    document.getElementById('first_menu_' + project.project_id).style.display = 'block';
+                    document.getElementById('_menu_add_association_' + project.project_id).style.display = 'none';
+                }
+            });
+            document.getElementById('add_member_to_project').addEventListener('click', function (e) {
+                e.preventDefault();
+                document.getElementById('add_member_to_project').style.backgroundColor = '#29A6A7';
+                document.getElementById('add_member_to_project').style.color = 'white';
+                document.getElementById('add_member_to_project').innerHTML = 'Annuler';
+
+                if (document.getElementById('first_menu_' + project.project_id).style.display === 'block') {
+                    document.getElementById('first_menu_' + project.project_id).style.display = 'none';
+                    document.getElementById('_menu_add_association_' + project.project_id).style.display = 'none';
+                    document.getElementById('_menu_add_member_' + project.project_id).style.display = 'block';
+                    document.getElementById('_menu_add_document_' + project.project_id).style.display = 'none';
+                    document.getElementById('_menu_add_report_' + project.project_id).style.display = 'none';
+                } 
+                else if (document.getElementById('_menu_add_association_' + project.project_id).style.display === 'block') {
+                    document.getElementById('_menu_add_member_' + project.project_id).style.display = 'block';
+                    document.getElementById('_menu_add_association_' + project.project_id).style.display = 'none';
+                    document.getElementById('_menu_add_document_' + project.project_id).style.display = 'none';
+                    document.getElementById('_menu_add_report_' + project.project_id).style.display = 'none';
+                } 
+                else if (document.getElementById('_menu_add_document_' + project.project_id).style.display === 'block') {
+                    document.getElementById('_menu_add_document_' + project.project_id).style.display = 'none';
+                    document.getElementById('_menu_add_member_' + project.project_id).style.display = 'block';
+                    document.getElementById('_menu_add_report_' + project.project_id).style.display = 'none';
+                }
+                else if(document.getElementById('_menu_add_association_' + project.project_id).style.display === 'block') {
+                    document.getElementById('_menu_add_association_' + project.project_id).style.display = 'none';
+                    document.getElementById('_menu_add_member_' + project.project_id).style.display = 'block';
+                    document.getElementById('_menu_add_report_' + project.project_id).style.display = 'none';
+                } 
+                else if (document.getElementById('_menu_add_report_' + project.project_id).style.display === 'block') {
+                    document.getElementById('_menu_add_report_' + project.project_id).style.display = 'none';
+                    document.getElementById('_menu_add_member_' + project.project_id).style.display = 'block';
+                } 
+                else {
+                    document.getElementById('first_menu_' + project.project_id).style.display = 'block';
+                    document.getElementById('_menu_add_member_' + project.project_id).style.display = 'none';
+                }
+            });
+            document.getElementById('add_document_to_project').addEventListener('click', function (e) {
+                e.preventDefault();
+                document.getElementById('add_document_to_project').style.backgroundColor = '#29A6A7';
+                document.getElementById('add_document_to_project').style.color = 'white';
+                document.getElementById('add_document_to_project').innerHTML = 'Annuler';
+
+                if (document.getElementById('first_menu_' + project.project_id).style.display === 'block') {
+                    document.getElementById('first_menu_' + project.project_id).style.display = 'none';
+                    document.getElementById('_menu_add_association_' + project.project_id).style.display = 'none';
+                    document.getElementById('_menu_add_member_' + project.project_id).style.display = 'none';
+                    document.getElementById('_menu_add_document_' + project.project_id).style.display = 'block';
+                    document.getElementById('_menu_add_report_' + project.project_id).style.display = 'none';
+                } 
+                else if (document.getElementById('_menu_add_member_' + project.project_id).style.display === 'block') {
+                    document.getElementById('_menu_add_member_' + project.project_id).style.display = 'none';
+                    document.getElementById('_menu_add_association_' + project.project_id).style.display = 'none';
+                } 
+                else if (document.getElementById('_menu_add_document_' + project.project_id).style.display === 'block') {
+                    document.getElementById('_menu_add_document_' + project.project_id).style.display = 'none';
+                    document.getElementById('_menu_add_association_' + project.project_id).style.display = 'block';
+                } 
+                else if (document.getElementById('_menu_add_association_' + project.project_id).style.display === 'block') {
+                    document.getElementById('_menu_add_report_' + project.project_id).style.display = 'none';
+                    document.getElementById('_menu_add_association_' + project.project_id).style.display = 'none';
+                } 
+                else {
+                    document.getElementById('first_menu_' + project.project_id).style.display = 'block';
+                    document.getElementById('_menu_add_association_' + project.project_id).style.display = 'none';
+                }
+            });
+            document.getElementById('add_report_to_project').addEventListener('click', function (e) {
+                e.preventDefault();
+                document.getElementById('add_report_to_project').style.backgroundColor = '#29A6A7';
+
+                if (document.getElementById('first_menu_' + project.project_id).style.display === 'block') {
+                    document.getElementById('first_menu_' + project.project_id).style.display = 'none';
+                    document.getElementById('_menu_add_association_' + project.project_id).style.display = 'block';
+                } 
+                else if (document.getElementById('_menu_add_member_' + project.project_id).style.display === 'block') {
+                    document.getElementById('_menu_add_member_' + project.project_id).style.display = 'none';
+                    document.getElementById('_menu_add_association_' + project.project_id).style.display = 'block';
+                } 
+                else if (document.getElementById('_menu_add_document_' + project.project_id).style.display === 'block') {
+                    document.getElementById('_menu_add_document_' + project.project_id).style.display = 'none';
+                    document.getElementById('_menu_add_association_' + project.project_id).style.display = 'block';
+                } 
+                else if (document.getElementById('_menu_add_report_' + project.project_id).style.display === 'block') {
+                    document.getElementById('_menu_add_report_' + project.project_id).style.display = 'none';
+                    document.getElementById('_menu_add_association_' + project.project_id).style.display = 'block';
+                } 
+                else {
+                    document.getElementById('first_menu_' + project.project_id).style.display = 'block';
+                    document.getElementById('_menu_add_association_' + project.project_id).style.display = 'none';
+                }
+            });
+            document.getElementById('editProject').addEventListener('click', function (e) {
+                e.preventDefault();
+                document.getElementById('editProject').style.backgroundColor = '#29A6A7';
+
+                if (document.getElementById('first_menu_' + project.project_id).style.display === 'block') {
+                    document.getElementById('first_menu_' + project.project_id).style.display = 'none';
+                    document.getElementById('_menu_add_association_' + project.project_id).style.display = 'block';
+                } 
+                else if (document.getElementById('_menu_add_member_' + project.project_id).style.display === 'block') {
+                    document.getElementById('_menu_add_member_' + project.project_id).style.display = 'none';
+                    document.getElementById('_menu_add_association_' + project.project_id).style.display = 'block';
+                } 
+                else if (document.getElementById('_menu_add_document_' + project.project_id).style.display === 'block') {
+                    document.getElementById('_menu_add_document_' + project.project_id).style.display = 'none';
+                    document.getElementById('_menu_add_association_' + project.project_id).style.display = 'block';
+                } 
+                else if (document.getElementById('_menu_add_report_' + project.project_id).style.display === 'block') {
+                    document.getElementById('_menu_add_report_' + project.project_id).style.display = 'none';
+                    document.getElementById('_menu_add_association_' + project.project_id).style.display = 'block';
+                } 
+                else {
+                    document.getElementById('first_menu_' + project.project_id).style.display = 'block';
+                    document.getElementById('_menu_add_association_' + project.project_id).style.display = 'none';
+                }
+            });
+            document.getElementById('archiveProject').addEventListener('click', function (e) {
+                e.preventDefault();
+
+                // Afficher une boîte de dialogue Swall pour confirmer l'archivage du projet (ou non)
+                Swal.fire({
+                    title: 'Êtes-vous sûr de vouloir archiver ce projet ?',
+                    text: "Vous ne pourrez pas revenir en arrière !",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#29A6A7',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Oui, archiver !',
+                    cancelButtonText: 'Annuler'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        archiveProject(project.project_id);
+                        window.location.href = 'https://lab.padem.org/projets/';
+                    }
+                });
+            });
+            //#endregion
+
+            //#region Ajouter des écouteurs d'événements pour les boutons (Ajouter une association, un membre, un document, un rapport)
+            document.getElementById(`add_association_to_project_form_${project.project_id}`).addEventListener('submit', function (e) {
+                e.preventDefault();
+                addAssociationToProject(project.project_id);
+            });
+            document.getElementById(`add_member_to_project_form_${project.project_id}`).addEventListener('submit', function (e) {
+                e.preventDefault();
+                addMemberToProject(project.project_id);
+            });
+            document.getElementById(`add_document_to_project_form_${project.project_id}`).addEventListener('submit', function (e) {
+                e.preventDefault();
+                addDocumentToProject(project.project_id);
+            });
+            document.getElementById(`add_report_to_project_form_${project.project_id}`).addEventListener('submit', function (e) {
+                e.preventDefault();
+                addReportToProject(project.project_id);
+            });
+            //#endregion
+
+            //#region Ajouter des écouteurs d'événements pour les boutons
+            document.getElementById('backToProjects').addEventListener('click', function (e) {
+                e.preventDefault();
+                getProjects();
+            });
+            document.getElementById('add_association_to_project').addEventListener('click', function (e) {
+                e.preventDefault();
+                addAssociationToProject(project.project_id);
+            });
+            document.getElementById('add_member_to_project').addEventListener('click', function (e) {
+                e.preventDefault();
+                addMemberToProject(project.project_id);
+            });
+            document.getElementById('add_document_to_project').addEventListener('click', function (e) {
+                e.preventDefault();
+                addDocumentToProject(project.project_id);
+            });
+            document.getElementById('add_report_to_project').addEventListener('click', function (e) {
+                e.preventDefault();
+                addReportToProject(project.project_id);
+            });
+            document.getElementById('editProject').addEventListener('click', function (e) {
+                e.preventDefault();
+                editProject(project.project_id);
+            });
+            document.getElementById('archiveProject').addEventListener('click', function (e) {
+                e.preventDefault();
+                archiveProject(project.project_id);
+            });
+            //#endregion
+
+            //#region Afficher les documents du projet
+            let projectDocuments = document.getElementById('projectDocuments');
+            projectDocuments.innerHTML = '';
+            fetch(`https://lab.padem.org/wp-json/mo/v1/getProjectDocuments`)
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(document => {
+                        if (document.project_id === projectId) {
+                            let li_document = document.createElement('li');
+                            li_document.style.border = '1px solid lightgray';
+                            li_document.style.borderRadius = '25px';
+                            li_document.style.margin = '5px';
+                            li_document.style.padding = '5px';
+                            li_document.className = 'box-clicable';
+                            li_document.id = document.document_id;
+                            li_document.addEventListener('click', function () {
+                                displayDocument(document.document_id);
+                            });
+                            projectDocuments.appendChild(li_document);
+                            li_document.innerHTML = `
+                                <p>${document.document_title}</p>
+                                <p>${document.document_date}</p>
+                                <p>${document.document_type}</p>
+                                <p>${document.document_status}</p>
+                            `;
+                        }
+                    });
+                })
+                .catch(error => console.error('Erreur récupération des documents:', error));
+            //#endregion
+
+            //#region Afficher les membres du projet
             let projectMembers = document.getElementById('projectMembers');
             projectMembers.innerHTML = '';
             project.members.forEach(member => {
@@ -576,18 +1356,20 @@
                 p.innerHTML = member;
                 projectMembers.appendChild(p);
             });
+            //#endregion
 
-            // Afficher les associations du projet
-            let projectAssociations = document.getElementById('projectAssociations');
+            //#region Afficher les associations du projet
+            let projectAssociations = document.getElementById('display_project_associations' + project.project_id);
             projectAssociations.innerHTML = '';
             project.associations.forEach(association => {
                 let p = document.createElement('p');
                 p.innerHTML = association;
                 projectAssociations.appendChild(p);
             });
+            //#endregion
 
-            // Afficher les rapports du projet
-            let projectReports = document.getElementById('projectReports');
+            //#region Afficher les rapports du projet
+            let projectReports = document.getElementById('display_project_reports_' + project.project_id);
             projectReports.innerHTML = '';
             fetch(`https://lab.padem.org/wp-json/mo/v1/getProjectReports`)
                 .then(response => response.json())
@@ -615,6 +1397,7 @@
                     });
                 })
                 .catch(error => console.error('Erreur récupération des rapports:', error));
+            //#endregion
         }
         //#endregion
 
@@ -739,6 +1522,7 @@
                 .catch(error => console.error('Erreur récupération des documents:', error));
             //#endregion
         }
+        //#endregion
 
     </script>
 </body>
