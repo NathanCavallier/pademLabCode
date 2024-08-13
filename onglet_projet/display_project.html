@@ -1,7 +1,7 @@
 <!-- Description: Page d'affichage des projets -->
 <div style="display: flex; justify-content: space-between; margin: 10px;">
     <button type="button" class="box-clicable" id="createProject"
-        style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px; border: none; margin: 5px; padding: 5px;">
+        style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px; border: 1px solid lightgray; margin: 5px; padding: 5px;">
         <!-- icone plus -->
         <img src="https://img.icons8.com/ios/50/000000/plus-math.png"
             style="width: 20px; height: 20px; margin-right: 5px;" alt="">
@@ -11,7 +11,7 @@
     <div style="display: flex; justify-content: flex-end; margin: 10px;">
         <!-- Bouton afficher tous les projets -->
         <button type="button" class="box-clicable" id="allProjects"
-            style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px; border: none; margin: 5px; padding: 5px;">
+            style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px; border: 1px solid lightgray; margin: 5px; padding: 5px;">
             <!-- icone liste -->
             <img src="https://img.icons8.com/ios/50/000000/list.png"
                 style="width: 20px; height: 20px; margin-right: 5px;" alt="">
@@ -20,7 +20,7 @@
 
         <!-- Bouton Mes projets -->
         <button type="button" class="box-clicable" id="myProjects"
-            style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px; border: none; margin: 5px; padding: 5px;">
+            style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px; border: 1px solid lightgray; margin: 5px; padding: 5px;">
             <!-- icone profil -->
             <img src="https://img.icons8.com/ios/50/000000/user.png"
                 style="width: 20px; height: 20px; margin-right: 5px;" alt="">
@@ -29,7 +29,7 @@
 
         <!-- Bouton Archives -->
         <button type="button" class="box-clicable" id="archives_projects"
-            style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px; border: none; margin: 5px; padding: 5px;">
+            style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px; border: 1px solid lightgray; margin: 5px; padding: 5px;">
             <!-- icone archive -->
             <img src="https://img.icons8.com/ios/50/000000/archive-folder.png"
                 style="width: 20px; height: 20px; margin-right: 5px;" alt="">
@@ -163,29 +163,37 @@
     </div>
     <!--#endregion -->
 
-    <!--#region Tableau des projets -->
-    <div class="container" id="all_projects_table" class="main-group-scroll">
-        <table>
-            <thead style="font-size: 12px; font-weight: lighter; color: gray;">
-                <tr>
-                    <th scope="col" id="project_tite">Titre <img src="https://img.icons8.com/ios/50/000000/sort.png"
-                            style="width: 15px; height: 15px;" alt=""></th>
-                    <th scope="col" id="country_name">Pays <img src="https://img.icons8.com/ios/50/000000/sort.png"
-                            style="width: 15px; height: 15px;" alt=""></th>
-                    <th scope="col" id="association_name">Association <img
-                            src="https://img.icons8.com/ios/50/000000/sort.png" style="width: 15px; height: 15px;"
-                            alt=""></th>
-                    <th scope="col" id="theme_name">Thématique <img src="https://img.icons8.com/ios/50/000000/sort.png"
-                            style="width: 15px; height: 15px;" alt=""></th>
-                    <th scope="col" id="status_name">Statut <img src="https://img.icons8.com/ios/50/000000/sort.png"
-                            style="width: 15px; height: 15px;" alt=""></th>
-                </tr>
-            </thead>
-            <tbody id="display_projects">
-            </tbody>
-        </table>
+    <div id="all_projects_details_container" style="display: block;">
+        <!--#region Tableau des projets -->
+        <div id="all_projects_table" class="main-group-scroll">
+            <table>
+                <thead style="font-size: 12px; font-weight: lighter; color: gray;">
+                    <tr>
+                        <th scope="col" id="project_tite">Titre <img src="https://img.icons8.com/ios/50/000000/sort.png"
+                                style="width: 15px; height: 15px;" alt=""></th>
+                        <th scope="col" id="country_name">Pays <img src="https://img.icons8.com/ios/50/000000/sort.png"
+                                style="width: 15px; height: 15px;" alt=""></th>
+                        <th scope="col" id="association_name">Association <img
+                                src="https://img.icons8.com/ios/50/000000/sort.png" style="width: 15px; height: 15px;"
+                                alt=""></th>
+                        <th scope="col" id="theme_name">Thématique <img src="https://img.icons8.com/ios/50/000000/sort.png"
+                                style="width: 15px; height: 15px;" alt=""></th>
+                        <th scope="col" id="status_name">Statut <img src="https://img.icons8.com/ios/50/000000/sort.png"
+                                style="width: 15px; height: 15px;" alt=""></th>
+                    </tr>
+                </thead>
+                <tbody id="display_projects">
+                </tbody>
+            </table>
+        </div>
+        <!--#endregion -->
+
+        <!--#region Afficher les détails du projet sélectionné -->
+        <div class="container" id="project_details" style="display: none;" class="main-group-scroll">
+            
+        </div>
+        <!--#endregion -->
     </div>
-    <!--#endregion -->
 
     <!-- Mes projets -->
     <div class="container" id="my_projects_table" style="display: none;" class="main-group-scroll">
@@ -388,15 +396,11 @@
             //#endregion
 
             // Afficher le tableau des projets
-            document.getElementById('all_projects_table').style.display = 'block';
+            document.getElementById('all_projects_details_container').style.display = 'block';
             // Masquer tout les autres éléments
             document.getElementById('my_projects_table').style.display = 'none';
             document.getElementById('archives_projects_table').style.display = 'none';
             document.getElementById('new_project_form').style.display = 'none';
-
-            // Afficher les projets
-            displayProjects(projects);
-
         });
         //#endregion
 
@@ -427,10 +431,9 @@
             // Afficher le formulaire de création de projet
             document.getElementById('new_project_form').style.display = 'block';
             // Masquer tout les autres éléments
-            document.getElementById('all_projects_table').style.display = 'none';
+            document.getElementById('all_projects_details_container').style.display = 'none';
             document.getElementById('my_projects_table').style.display = 'none';
             document.getElementById('archives_projects_table').style.display = 'none';
-
         });
         //#endregion
 
@@ -461,7 +464,7 @@
             // Afficher les projets de l'utilisateur connecté
             document.getElementById('my_projects_table').style.display = 'block';
             // Masquer tout les autres éléments
-            document.getElementById('all_projects_table').style.display = 'none';
+            document.getElementById('all_projects_details_container').style.display = 'none';
             document.getElementById('archives_projects_table').style.display = 'none';
             document.getElementById('new_project_form').style.display = 'none';
         });
@@ -494,11 +497,12 @@
             // Afficher les archives des projets
             document.getElementById('archives_projects_table').style.display = 'block';
             // Masquer tout les autres éléments
-            document.getElementById('all_projects_table').style.display = 'none';
+            document.getElementById('all_projects_details_container').style.display = 'none';
             document.getElementById('my_projects_table').style.display = 'none';
             document.getElementById('new_project_form').style.display = 'none';
         });
         //#endregion
+
 
         //#region Récupération des utilisateurs
         function getUsers() {
@@ -517,24 +521,32 @@
 
         //#region Récupération des projets
         function getProjects() {
+            // Afficher l'animation de chargement
+            document.getElementById('loading').style.display = 'block';
             fetch('https://lab.padem.org/wp-json/mo/v1/getProjectData')
                 .then(response => response.json())
                 .then(data => {
                     projects = data;
                     displayProjects(projects);
+                    // Masquer l'animation de chargement
+                    document.getElementById('loading').style.display = 'none';
                 })
-                .catch(error => console.error('Erreur récupération des projets:', error));
+                .catch(error => { 
+                    console.error('Erreur récupération des projets:', error)
+                    // Masquer l'animation de chargement
+                    document.getElementById('loading').style.display = 'none';
+                });
         }
         //#endregion
 
-
         //#region Affichage des projets (Chaque projet est une ligne du tableau avec des bordures et des angles arrondis)
         function displayProjects(projects) {
-            let displayProjects = document.getElementById('display_projects');
+            var displayProjects = document.getElementById('display_projects');
             displayProjects.innerHTML = '';
             projects.forEach(project => {
                 let tr = document.createElement('tr');
                 let td = document.createElement('td');
+                tr.className = 'card';
                 tr.style.border = '1px solid lightgray';
                 tr.style.borderRadius = '25px';
                 tr.style.backgroundColor = 'white';
@@ -545,15 +557,17 @@
                 tr.style.display = 'flex';
                 tr.style.justifyContent = 'space-between';
                 tr.id = project.project_id;
-                tr.addEventListener('click', function () {
+                tr.addEventListener('click', function () { // Afficher les détails du projet
+                    document.getElementById('all_projects_table').style.display = 'none';
+                    document.getElementById('project_details').style.display = 'block';
                     displayProject(project.project_id);
                 });
                 tr.innerHTML = `
-                    <td style="color: #29A6A7; margin-left: 5px;">${project.project_title}</td>
-                    <td>${project.project_location}</td>
-                    <td>${project.association}</td>
-                    <td>${project.project_type}</td>
-                    <td style="background-color: ${project.project_status === 'En cours' ? 'lightgreen' : project.project_status === 'Terminé' ? 'lightcoral' : 'lightgray'}; border-radius: 10px; margin: 5px; padding: 5px; width: fit-content;">
+                    <td class="card-body" style="color: #29A6A7; margin-left: 5px;">${project.project_title}</td>
+                    <td class="card-body">${project.project_location}</td>
+                    <td class="card-body">${project.association}</td>
+                    <td class="card-body">${project.project_type}</td>
+                    <td class="card-body" style="background-color: ${project.project_status === 'En cours' ? 'lightgreen' : project.project_status === 'Terminé' ? 'lightcoral' : 'lightgray'}; border-radius: 10px; margin: 5px; padding: 5px; width: fit-content;">
                         <p style="color: ${project.project_status === 'En cours' ? 'green' : project.project_status === 'Terminé' ? 'red' : 'gray'};">${project.project_status}</p>
                 `;
                 displayProjects.appendChild(tr);
@@ -578,11 +592,12 @@
             displayProjects(myProjects);
         }
 
-        // Archives
+        //#region Archives
         function displayArchivesProjects() {
             let archivesProjects = projects.filter(project => project.status === 'Archivé');
             displayProjects(archivesProjects);
         }
+        //#endregion
 
         //#region Get months' names
         function getMonthName(month) {
@@ -665,10 +680,286 @@
         }
         //#endregion
 
+        //#region Fonction pour ajouter un projet
+        function newProject() {
+            var projectTitle = document.getElementById('projectTitle').value;
+            var projectType = document.getElementById('projectType').value;
+            var projectDate = document.getElementById('projectDate').value;
+            var projectEndDate2 = document.getElementById('projectEndDate2').value;
+            var projectLocation = document.getElementById('projectLocation').value;
+            var pademResponsible = document.getElementById('pademResponsible').value;
+            var pademResponsibleEmail = document.getElementById('pademResponsibleEmail').value;
+            var projectReferent = document.getElementById('projectReferent').value;
+            var projectReferentEmail = document.getElementById('projectReferentEmail').value;
+            var projectDescription = document.getElementById('projectDescription').value;
+            var projectDocuments = document.getElementById('projectDocuments').value;
+
+            var project = {
+                project_title: projectTitle,
+                project_type: projectType,
+                start_date: projectDate,
+                end_date: projectEndDate2,
+                updated_date: new Date(),
+                project_location: projectLocation,
+                project_status: 'En attente',
+                padem_responsible: pademResponsible,
+                padem_responsible_email: pademResponsibleEmail,
+                project_referent: projectReferent,
+                project_referent_email: projectReferentEmail,
+                project_description: projectDescription,
+                background_image_link: '',
+                folders: projectDocuments,
+            };
+
+            fetch('https://lab.padem.org/wp-json/mo/v1/addProject', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(project),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Success:', data);
+                    getProjects();
+                    document.getElementById('new_project_form').style.display = 'none';
+                    document.getElementById('all_projects_details_container').style.display = 'block';
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        }
+        //#endregion
+
+        //#region Liste des fonctions pour les actions sur les projets
+        // Fonction pour ajouter une association à un projet
+        function addAssociationToProject(projectId) {
+            var project = projects.find(project => project.project_id === projectId);
+            var associations = project.association;
+            var association = prompt('Saisir le nom de l\'association à ajouter au projet:');
+            if (association !== null) {
+                associations.push(association);
+                fetch('https://lab.padem.org/wp-json/mo/v1/updateProject', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ project_id: projectId, association: associations }),
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Success:', data);
+                        getProjects();
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                    });
+            }
+        }
+        // Fonction pour ajouter un membre à un projet
+        function addMemberToProject(projectId) {
+            var project = projects.find(project => project.project_id === projectId);
+            var members = project.members;
+            var member = prompt('Saisir le nom du membre à ajouter au projet:');
+            if (member !== null) {
+                members.push(member);
+                fetch('https://lab.padem.org/wp-json/mo/v1/updateProject', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ project_id: projectId, members: members }),
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Success:', data);
+                        getProjects();
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                    });
+            }
+        }
+        // Fonction pour ajouter un document à un projet
+        function addDocumentToProject(projectId) {
+            var project = projects.find(project => project.project_id === projectId);
+            var documents = project.documents;
+            var document = prompt('Saisir le nom du document à ajouter au projet:');
+            if (document !== null) {
+                documents.push(document);
+                fetch('https://lab.padem.org/wp-json/mo/v1/updateProject', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ project_id: projectId, documents: documents }),
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Success:', data);
+                        getProjects();
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                    });
+            }
+        }
+        // Fonction pour ajouter un rapport à un projet
+        function addReportToProject(projectId) {
+            var project = projects.find(project => project.project_id === projectId);
+            var reports = project.reports;
+            var report = prompt('Saisir le nom du rapport à ajouter au projet:');
+            if (report !== null) {
+                reports.push(report);
+                fetch('https://lab.padem.org/wp-json/mo/v1/updateProject', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ project_id: projectId, reports: reports }),
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Success:', data);
+                        getProjects();
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                    });
+            }
+        }
+        // Fonction pour éditer un projet
+        function editProject(projectId) {
+            var project = projects.find(project => project.project_id === projectId);
+            var projectTitle = prompt('Saisir le nouveau titre du projet:', project.project_title);
+            var projectType = prompt('Saisir le nouveau type du projet:', project.project_type);
+            var projectDate = prompt('Saisir la nouvelle date de début du projet:', project.start_date);
+            var projectEndDate2 = prompt('Saisir la nouvelle date de fin du projet:', project.end_date);
+            var projectLocation = prompt('Saisir la nouvelle localisation du projet:', project.project_location);
+            var pademResponsible = prompt('Saisir le nouveau responsable du projet:', project.padem_responsible);
+            var pademResponsibleEmail = prompt('Saisir le nouvel email du responsable du projet:', project.padem_responsible_email);
+            var projectReferent = prompt('Saisir le nouveau référent du projet:', project.project_referent);
+            var projectReferentEmail = prompt('Saisir le nouvel email du référent du projet:', project.project_referent_email);
+            var projectDescription = prompt('Saisir la nouvelle description du projet:', project.project_description);
+            var projectDocuments = prompt('Saisir les nouveaux documents du projet:', project.folders);
+
+            var updatedProject = {
+                project_title: projectTitle,
+                project_type: projectType,
+                start_date: projectDate,
+                end_date: projectEndDate2,
+                updated_date: new Date(),
+                project_location: projectLocation,
+                project_status: project.project_status,
+                padem_responsible: pademResponsible,
+                padem_responsible_email: pademResponsibleEmail,
+                project_referent: projectReferent,
+                project_referent_email: projectReferentEmail,
+                project_description: projectDescription,
+                background_image_link: project.background_image_link,
+                folders: projectDocuments,
+            };
+
+            fetch('https://lab.padem.org/wp-json/mo/v1/updateProject', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ project_id: projectId, project: updatedProject }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Success:', data);
+                    getProjects();
+                    document.getElementById('all_projects_table').style.display = 'block';
+                    document.getElementById('project_details').style.display = 'none';
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        }
+        // Fonction pour archiver un projet
+        function archiveProject(projectId) {
+            var project = projects.find(project => project.project_id === projectId);
+
+            //#region Mettre à jour le projet
+            fetch('https://lab.padem.org/wp-json/mo/v1/updateProject', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    project_id: projectId,
+                    project_title: project.project_title,
+                    project_type: project.project_type,
+                    start_date: project.start_date,
+                    end_date: project.end_date,
+                    is_archive: true, // Archiver le projet
+                    updated_date: new Date(),
+                    project_location: project.project_location,
+                    project_status: 'Archivé',
+                    padem_responsible: project.padem_responsible,
+                    padem_responsible_email: project.padem_responsible_email,
+                    project_referent: project.project_referent,
+                    project_referent_email: project.project_referent_email,
+                    project_description: project.project_description,
+                    background_image_link: project.background_image_link,
+                    users: project.users,
+                    reports: project.reports,
+                    folders: project.folders,
+                    divers: project.divers,
+                }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Success:', data);
+
+                    //#region Supprimer le projet de la liste des projets
+                    fetch('https://lab.padem.org/wp-json/mo/v1/removeProjectData', {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ column_param1: project.id }),
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log('Success:', data);
+                            getProjects();
+                            document.getElementById('all_projects_table').style.display = 'block';
+                            document.getElementById('project_details').style.display = 'none';
+                        })
+                        .catch((error) => {
+                            console.error('Error:', error);
+                        });
+                    //#endregion
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+            //#endregion
+
+            //#region Envoyer un email à l'ensemble des membres du projet pour les informer de l'archivage du projet
+            var projectMembers = project.users;
+            var subject = 'Padem Lab Notifications: ' + 'Archivage du projet ' + project.project_title;
+            var message = 'Bonjour, \n\nLe projet ' + project.project_title + ' a été archivé. \n\nCordialement, \n\nL\'équipe PADEM';
+            
+            // Envoyer un email à chaque membre du projet
+            project.users.forEach(user => {
+                var userEmail = users.find(u => u.ID === user).user_email;
+                
+                sendMailNotification(userEmail, subject, message);
+            });
+        }
+        //#endregion
+        //#endregion
+
         //#region Afficher le projet correspondant à l'ID
         function displayProject(projectId) {
             var project = projects.find(project => project.project_id === projectId);
-            var displayProject = document.getElementById('all_projects_table');
+            var displayProject = document.getElementById('project_details');
+            // Vider le contenu
+            displayProject.innerHTML = '';
 
             //#region Formater les dates
             var formated_updated_date = new Date(project.updated_date).toLocaleDateString('fr-FR'); // Formater la date
@@ -709,77 +1000,182 @@
             //#endregion
 
             displayProject.innerHTML = `
-                <!-- Afficher "Retour aux projets>>Nom du projet" -->
-                <div style="display: flex; justify-content: flex-start; margin: 10px;">
-                    <p type="button" id="backToProjects">Tous les Projets</p>
-                     > 
-                    <p style="color: #29A6A7;">${project.project_title ? project.project_title : 'Non renseigné'}</p>
-                </div>
                 <!-- Afficher le projet -->
-                <div class="card-header" style="margin: 5px; padding: 5px; width: 100%;">
-                    <div style="color: gray; font-size: 12px;>
-                        <div style="display: flex; justify-content: space-between;">
-                            <h4 style="color: #29A6A7;">${project.project_title ? project.project_title : 'Non renseigné'}</h4>
-                        </div>
-                        <div style="display: flex; justify-content: space-between; margin: 5px; padding: 5px; width: 100%; font-size: 12px; color: gray;">
-                            <div style="display: flex; justify-content: space-between; margin: 5px; padding: 5px; width: fit-content; font-size: 12px; color: gray;">
-                                <div>Bailleur: </div>  <p style="color: black;">${project.funder ? project.funder : 'Non renseigné'}</p>
-                            </div>
-                            <div style="display: flex; justify-content: space-between; margin: 5px; padding: 5px; width: fit-content;">
-                                Association: <p style="color: black;">${project.association ? project.association : 'Non renseigné'}</p>
-                            </div>
-                            <div style="margin: 3px; padding: 3px;"></div>
-                            <div style="display: flex; justify-content: space-between; margin: 5px; padding: 5px; width: 100%; font-size: 12px; color: gray;">
-                                Lieu: <p style="color: black; margin-left: 5px;">${project.project_location ? project.project_location : 'Non renseigné'}</p>
-                            </div>
-                            <div style="display: flex; justify-content: space-between; margin: 5px; padding: 5px; width: fit-content; font-size: 12px; color: gray;">
-                                Thématique: <p style="color: black; margin-left: 5px;">${project.project_type ? project.project_type : 'Non renseigné'}</p>
-                            </div>
-                            <div style="margin: 3px; padding: 3px;"></div>
-                            <div style="display: flex; justify-content: space-between; margin: 5px; padding: 5px; width: fit-content; font-size: 12px; color: gray;">
-                                Referent: <p style="color: black; margin-left: 5px;">${project.project_referent ? project.project_referent : 'Non renseigné'}</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div style="display: flex; justify-content: flex-start; margin: 5px; padding: 5px; color: gray; font-size: 12px;">
-                        <div style="margin: 10px; padding: 10px;"></div>
-                        <div style="display: flex; justify-content: space-between; margin: 5px; padding: 5px; width: fit-content;">
-                            Date de début: <p style="color: black; margin-left: 5px;">${final_start_date ? final_start_date : 'Non renseigné'}</p>
-                        </div>
-                        <div style="margin: 3px; padding: 3px;"></div>
-                        <div style="display: flex; justify-content: space-between; margin: 5px; padding: 5px; width: fit-content;">
-                            Date de fin: <p style="color: black; margin-left: 5px;">${final_end_date ? final_end_date : 'Non renseigné'}</p>
-                        </div>
-                        <div style="margin: 3px; padding: 3px;"></div>
-                        <div style="display: flex; justify-content: space-between; margin: 5px; padding: 5px; width: fit-content;">
-                            Dernière mise à jour: <p style="color: black; margin-left: 5px;">${final_updated_date ? final_updated_date : 'Non renseigné'}</p>
-                        </div>
-                        <div style="border-radius: 10px; margin: 5px; padding: 5px; width: fit-content; border-color: ${progression === 'En cours' ? 'lightgreen' : progression === 'Terminé' ? 'lightcoral' : 'lightgray'};">
-                            <p style="color: ${progression === 'En cours' ? 'green' : progression === 'Terminé' ? 'red' : 'gray'}; font-size: 12px; margin: 5px; padding: 5px; margin-bottom: -3px;">${progression}</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-body" style="margin: 5px; padding: 5px; width: 100%; height: fit-content; border-radius: 25px; background-color: lightgray;">
+                <div class="card-body" style="display: flex; justify-content: space-between; margin: 5px; padding: 5px; width: 100%; height: fit-content; border-radius: 25px; background-color: transparent;">
                     <!-- Boutons d'actions -->
-                    <button type="button" id="add_association_to_project" onclick="addAssociationToProject(${project.project_id})" style="background-color: white; border-radius: 25px;"> <!-- icone groupe --> <img src="https://img.icons8.com/?size=100&id=23266&format=png&color=29A6A7" style="width: 20px; height: 20px;" alt=""></button>
-                    <button type="button" id="add_member_to_project" onclick="addMemberToProject(${project.project_id})" style="background-color: white; border-radius: 25px;"> <!-- icone personne --> <img src="https://img.icons8.com/?size=100&id=3&format=png&color=29A6A7" style="width: 20px; height: 20px;" alt=""></button>
-                    <button type="button" id="add_document_to_project" onclick="addDocumentToProject(${project.project_id})" style="background-color: white; border-radius: 25px;"> <!-- icone ajouter document --> <img src="https://img.icons8.com/?size=100&id=57052&format=png&color=29A6A7" style="width: 20px; height: 20px;" alt=""></button>
-                    <button type="button" id="add_report_to_project" onclick="addReportToProject(${project.project_id})" style="background-color: white; border-radius: 25px;"> <!-- icone soumettre rapport --> <img src="https://img.icons8.com/?size=100&id=5271&format=png&color=29A6A7" style="width: 20px; height: 20px;" alt=""></button>
+                    <button type="button" id="add_association_to_project" style="background-color: white; border-radius: 25px;"> <!-- icone groupe --> <img src="https://img.icons8.com/?size=100&id=23266&format=png&color=29A6A7" style="width: 20px; height: 20px;" alt=""></button>
+                    <button type="button" id="add_member_to_project" style="background-color: white; border-radius: 25px;"> <!-- icone personne --> <img src="https://img.icons8.com/?size=100&id=3&format=png&color=29A6A7" style="width: 20px; height: 20px;" alt=""></button>
+                    <button type="button" id="add_document_to_project" style="background-color: white; border-radius: 25px;"> <!-- icone ajouter document --> <img src="https://img.icons8.com/?size=100&id=57052&format=png&color=29A6A7" style="width: 20px; height: 20px;" alt=""></button>
+                    <button type="button" id="add_report_to_project" style="background-color: white; border-radius: 25px;"> <!-- icone soumettre rapport --> <img src="https://img.icons8.com/?size=100&id=5271&format=png&color=29A6A7" style="width: 20px; height: 20px;" alt=""></button>
                     <!-- Boutons d'édition -->
-                    <button type="button" id="editProject" onclick="editProject(${project.project_id})" style="background-color: white; border-radius: 25px;"> <!-- icone crayon --> <img src="https://img.icons8.com/?size=100&id=6697&format=png&color=29A6A7" style="width: 20px; height: 20px;" alt=""></button>
+                    <button type="button" id="editProject" style="background-color: white; border-radius: 25px;"> <!-- icone crayon --> <img src="https://img.icons8.com/?size=100&id=6697&format=png&color=29A6A7" style="width: 20px; height: 20px;" alt=""></button>
                     <button type="button" id="archiveProject" onclick="archiveProject(${project.project_id})" style="background-color: white; border-radius: 25px;"> <!-- icone archive --> <img src="https://img.icons8.com/?size=100&id=12634&format=png&color=FA5252" style="width: 20px; height: 20px;" alt=""></button>
                 </div>
-                <article class="card" style="margin: 5px;">
-                    <div class="card-body" style="margin: 5px; padding: 5px;" min-height: 300px; width: 100%;>
+                <article class="card" style="margin: 5px; padding: 5px; border-radius: 25px;">
+                    <!-- Informations du projet -->
+                    <div style="display: flex; justify-content: space-between; margin: 5px; padding: 5px;">
+                        <h4 style="color: #29A6A7; margin-top: 5px;">${project.project_title ? project.project_title : '---'}</h4>
+                        <button type="button" id="back_To_All_Projects" style="background-color: #29A6A7; border-radius: 50px; width: fit-content; color: white; font-size: 12px;" title="Retour"> <!-- icone retour --> <img src="https://img.icons8.com/?size=100&id=3483&format=png&color=FFFFFF" style="width: 20px; height: 20px;" alt=""> Retour</button>
+                    </div>
+                    <div style="display: none;">
+                        <div style="display: flex; justify-content: flex-start; margin-bottom: -5px;">
+                            <button type="button" id="hide_show_details" style="width: fit-content; color: lightgray; font-size: 12px;" title=""> <img src="https://img.icons8.com/?size=100&id=986&format=png&color=9F9F9F" id="hide_show_details_icon_"
+                                style="width: 20px; height: 20px;" alt="details">Masquer les détails du projet</button>
+                        </div>
+                        <hr style="border: 1px solid lightgray;">
+                    </div>
+                    <div style="display: block; margin: 5px; padding: 5px; border-radius: 25px; border: 1px solid lightgray;">
+                        <!-- Détails du projet -->
+                        <div id="project_details_container_">
+                            <div style="border-radius: 25px; background-color: white; display: flex; justify-content: space-between;" id="project_details_container">
+                                <div class="card-body" style="display: column; justify-content: flex-start;">
+                                    <div style="display: flex; justify-content: flex-start;">
+                                        <p style="color: gray;"> <!-- icone Bailleur de fonds --> <img src="https://img.icons8.com/?size=100&id=Iv2ecGx6KYqh&format=png&color=9F9F9F" style="width: 20px; height: 20px;" alt=""> Bailleur: </p>
+                                        <p style="color: black; margin-left: 5px;">${project.funder ? project.funder : '---'}</p>
+                                    </div>
+                                    <div style="display: flex; justify-content: flex-start;">
+                                        <p style="color: gray;"> <!-- icone Groupe --> <img src="https://img.icons8.com/?size=100&id=779&format=png&color=9F9F9F" style="width: 20px; height: 20px;" alt=""> Association: </p>
+                                        <p style="color: black; margin-left: 5px;">${project.association ? project.association : '---'}</p>
+                                    </div>
+                                    <div style="display: flex; justify-content: flex-start;">
+                                        <p style="color: gray;"> <!-- icone Thématique --> <img src="https://img.icons8.com/?size=100&id=22798&format=png&color=9F9F9F" style="width: 20px; height: 20px;" alt=""> Thématique: </p>
+                                        <p style="color: black; margin-left: 5px;">${project.project_type ? project.project_type : '---'}</p>
+                                    </div>
+                                    <div style="display: flex; justify-content: flex-start;">
+                                        <p style="color: gray;"> <!-- icone pays --> <img src="https://img.icons8.com/?size=100&id=17548&format=png&color=9F9F9F" style="width: 20px; height: 20px;" alt=""> Pays: </p>
+                                        <p style="color: black; margin-left: 5px;">${project.project_location ? project.project_location : '---'}</p>
+                                    </div>
+                                </div>
+                                <div class="card-body" style="display: column; justify-content: flex-start;">
+                                    <div style="display: flex; justify-content: flex-start;">
+                                        <p style="color: gray;"> <!-- icone Responsable --> <img src="https://img.icons8.com/?size=100&id=21996&format=png&color=9F9F9F" style="width: 20px; height: 20px;" alt=""> Référent: </p>
+                                        <p style="color: black; margin-left: 5px;">${project.project_referent ? project.project_referent : '---'}</p>
+                                    </div>
+                                    <div style="display: flex; justify-content: flex-start;">
+                                        <p style="color: gray;"> <!-- icone date de début --> <img src="https://img.icons8.com/?size=100&id=1072&format=png&color=9F9F9F" style="width: 20px; height: 20px;" alt=""> Date de début: </p>
+                                        <p style="color: black; margin-left: 5px;">${final_start_date ? final_start_date : '---'}</p>
+                                    </div>
+                                    <div style="display: flex; justify-content: flex-start;">
+                                        <p style="color: gray;"> <!-- icone date de fin --> <img src="https://img.icons8.com/?size=100&id=1070&format=png&color=9F9F9F" style="width: 20px; height: 20px;" alt=""> Date de fin: </p>
+                                        <p style="color: black; margin-left: 5px;">${final_end_date ? final_end_date : '---'}</p>
+                                    </div>
+                                    <div style="display: flex; justify-content: flex-start;">
+                                        <p style="color: gray;"> <!-- progress bar --> <img src="https://img.icons8.com/?size=100&id=39273&format=png&color=9F9F9F" style="width: 20px; height: 20px;" alt=""> Progression: </p>
+                                        <p style="color: ${progression === 'En cours' ? 'green' : progression === 'Terminé' ? 'red' : 'gray'}; width: fit-content; margin-left: 5px;">${progression}</p>
+                                    </div>
+                                </div>
+                                <!-- Bouton pour modifier les détails du projet -->
+                                <button type="button" id="update_all_project_details" style="width: fit-content; margin-bottom: 150px;" title="Modifier les détails du projet"> <img src="https://img.icons8.com/?size=100&id=6697&format=png&color=9F9F9F" id="update_all_project_details_icon"
+                                    style="width: 55px; height: 30px;" alt="Modifier les détails du projet"></button>
+                            </div>
+                            <!-- Description du projet -->
+                            <div id="project_description_container_main" style="display: block;">
+                                <div style="display: flex; justify-content: flex-start; margin-bottom: -3px;">
+                                    <button type="button" id="_project_description_" style="width: fit-content; color: gray; font-size: 12px;" title="">Voir la description du projet....</button>
+                                </div>
+                                <div id="project_description_container_" style="display: none;">
+                                    <div style="display: column; justify-content: flex-start; margin: 5px; padding: 5px;">
+                                        <p style="color: black; margin-left: 5px;">${project.project_description ? project.project_description : 'Aucune description disponible pour ce projet.'}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Formulaire pour modifier les détails du projet -->
+                        <div id="update_all_project_details_container_" style="display: none;">
+                            <div style="display: flex; justify-content: space-between; margin: 5px; padding: 5px;">
+                                <div class="card-body" style="display: column; justify-content: flex-start;">
+                                    <div style="display: flex; justify-content: flex-start;">
+                                        <p style="color: gray;"> <!-- icone Bailleur de fonds --> <img src="https://img.icons8.com/?size=100&id=Iv2ecGx6KYqh&format=png&color=9F9F9F" style="width: 20px; height: 20px;" alt=""> Bailleur: </p>
+                                        <input type="text" id="update_funder" value="${project.funder ? project.funder : '---'}" style="color: gray; margin-left: 5px; background-color: white; margin-top: -5px; border: 1px solid lightgray; border-radius: 25px;">
+                                    </div>
+                                    <div style="margin: 10px;"></div>
+                                    <div style="display: flex; justify-content: flex-start;">
+                                        <p style="color: gray;"> <!-- icone Groupe --> <img src="https://img.icons8.com/?size=100&id=779&format=png&color=9F9F9F" style="width: 20px; height: 20px;" alt=""> Association: </p>
+                                        <input type="text" id="update_association" value="${project.association ? project.association : '---'}" style="color: gray; margin-left: 5px; background-color: white; margin-top: -5px; border: 1px solid lightgray; border-radius: 25px;">
+                                    </div>
+                                    <div style="margin: 10px;"></div>
+                                    <div style="display: flex; justify-content: flex-start;">
+                                        <p style="color: gray;"> <!-- icone Thématique --> <img src="https://img.icons8.com/?size=100&id=22798&format=png&color=9F9F9F" style="width: 20px; height: 20px;" alt=""> Thématique: </p>
+                                        <input type="text" id="update_project_type" value="${project.project_type ? project.project_type : '---'}" style="color: gray; margin-left: 5px; background-color: white; margin-top: -5px; border: 1px solid lightgray; border-radius: 25px;">
+                                    </div>
+                                    <div style="margin: 10px;"></div>
+                                    <div style="display: flex; justify-content: flex-start;">
+                                        <p style="color: gray;"> <!-- icone pays --> <img src="https://img.icons8.com/?size=100&id=17548&format=png&color=9F9F9F" style="width: 20px; height: 20px;" alt=""> Pays: </p>
+                                        <input type="text" id="update_project_location" value="${project.project_location ? project.project_location : '---'}" style="color: gray; margin-left: 5px; background-color: white; margin-top: -5px; border: 1px solid lightgray; border-radius: 25px;">
+                                    </div>
+                                </div>
+                                <div class="card-body" style="display: column; justify-content: flex-start;">
+                                    <div style="display: flex; justify-content: flex-start;">
+                                        <p style="color: gray;"> <!-- icone Responsable --> <img src="https://img.icons8.com/?size=100&id=21996&format=png&color=9F9F9F" style="width: 20px; height: 20px;" alt=""> Référent: </p>
+                                        <input type="text" id="update_project_referent" value="${project.project_referent ? project.project_referent : '---'}" style="color: gray; margin-left: 5px; background-color: white; margin-top: -5px; border: 1px solid lightgray; border-radius: 25px;">
+                                    </div>
+                                    <div style="margin: 10px;"></div>
+                                    <div style="display: flex; justify-content: flex-start;">
+                                        <p style="color: gray;"> <!-- icone date de début --> <img src="https://img.icons8.com/?size=100&id=1072&format=png&color=9F9F9F" style="width: 20px; height: 20px;" alt=""> Date de début: </p>
+                                        <input type="date" id="update_start_date" value="${project.start_date ? project.start_date : '---'}" style="color: gray; margin-left: 5px; background-color: white; margin-top: -5px; border: 1px solid lightgray; border-radius: 25px;">
+                                    </div>
+                                    <div style="margin: 10px;"></div>
+                                    <div style="display: flex; justify-content: flex-start;">
+                                        <p style="color: gray;"> <!-- icone date de fin --> <img src="https://img.icons8.com/?size=100&id=1070&format=png&color=9F9F9F" style="width: 20px; height: 20px;" alt=""> Date de fin: </p>
+                                        <input type="date" id="update_end_date" value="${project.end_date ? project.end_date : '---'}" style="color: gray; margin-left: 5px; background-color: white; margin-top: -5px; border: 1px solid lightgray; border-radius: 25px;">
+                                    </div>
+                                    <div style="margin: 10px;"></div>
+                                    <div style="display: flex; justify-content: flex-start;">
+                                        <p style="color: gray;"> <!-- icone Responsable --> <img src="https://img.icons8.com/?size=100&id=77&format=png&color=9F9F9F" style="width: 20px; height: 20px;" alt=""> Description: </p>
+                                        <textarea id="update_project_description" style="color: gray; margin-left: 5px; width: fit-content; border: 1px solid lightgray; border-radius: 15px;" row="5">${project.project_description ? project.project_description : '---'}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="display: flex; justify-content: flex-end; margin: 5px; padding: 5px;">
+                                <button type="button" id="update_all_project_details_button" style="width: fit-content; background-color: #29A6A7; border-radius: 25px; color: white; font-size: 12px;" title="valider"> <!-- icone valider --> <img src="https://img.icons8.com/?size=100&id=11658&format=png&color=FFFFFF" style="width: 20px; height: 20px;" alt=""> Valider</button>
+                                <div style="margin: 5px;"></div>
+                                <button type="button" id="cancel_update_all_project_details" style="width: fit-content; background-color: red; border-radius: 25px; color: white; font-size: 12px;" title="annuler"> <!-- icone annuler --> <img src="https://img.icons8.com/?size=100&id=3062&format=png&color=FFFFFF" style="width: 20px; height: 20px;" alt=""> Annuler</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body" style="margin: 5px; padding: 5px; min-height: 300px; width: 100%;"">
                         <!-- Menu initial -->
                         <div id="first_menu_${project.project_id}" style="display: block;">
-                            <div style="margin: 5px; display: flex; justify-content: flex-end;">
-                                <button id="project_reports_${project.project_id}" style="width: fit-content; color: gray; background-color: #98D0D0; align-self: center; border-radius: 15px; border: none; margin: 5px; padding: 5px;" class="box-clicable">Rapports</button>
-                                <button id="project_documents_${project.project_id}" style="width: fit-content; color: lightgray; background-color: white; align-self: center; border-radius: 15px; border: none; margin: 5px; padding: 5px;" class="box-clicable">Documents</button>
-                                <button id="project_associations_${project.project_id}" style="width: fit-content; color: lightgray; background-color: white; align-self: center; border-radius: 15px; border: none; margin: 5px; padding: 5px;" class="box-clicable">Associations</button>                               
-                                <button id="project_members_${project.project_id}" style="width: fit-content; color: lightgray; background-color: white; align-self: center; border-radius: 15px; border: none; margin: 5px; padding: 5px;" class="box-clicable">Membres</button>
+                            <div style="margin: 5px; display: flex; justify-content: space-between;">
+                                <button type="button" id="_reports_requests_${project.project_id}" style="background-color: white; color: gray; border-radius: 15px; font-size: 13px;" class="box-clicable"> <!-- icone rapport --> <img src="https://img.icons8.com/?size=100&id=123478&format=png&color=9F9F9F" 
+                                    style="width: 20px; height: 20px;" alt=""> Demandes de rapports</button>
+                                <div style="margin: 5px; display: flex; justify-content: flex-end;">
+                                    <button id="_project_reports_${project.project_id}" style="width: fit-content; color: gray; background-color: #E7E7E7; align-self: center; border-radius: 15px; border: none; margin: 5px; padding: 5px; font-size: 13px;" class="box-clicable"> <img src="https://img.icons8.com/ios/50/9F9F9F/report-card.png"
+                                            style="width: 15px; height: 15px;" alt=""> Rapports</button>
+                                    <button id="_project_documents_${project.project_id}" style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px; border: none; margin: 5px; padding: 5px; font-size: 13px;" class="box-clicable"> <img src="https://img.icons8.com/ios/50/9F9F9F/document.png"
+                                            style="width: 15px; height: 15px;" alt=""> Documents</button>
+                                    <button id="_project_associations_${project.project_id}" style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px; border: none; margin: 5px; padding: 5px; font-size: 13px;" class="box-clicable"> <img src="https://img.icons8.com/?size=100&id=779&format=png&color=9F9F9F"
+                                            style="width: 15px; height: 15px;" alt=""> Associations</button>                             
+                                    <button id="_project_members_${project.project_id}" style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px; border: none; margin: 5px; padding: 5px; font-size: 13px;" class="box-clicable"> <img src="https://img.icons8.com/?size=100&id=21997&format=png&color=9F9F9F"
+                                            style="width: 15px; height: 15px;" alt=""> Membres</button>
+                                </div>
                             </div>
+                            <!-- Ligne de séparation -->
+                            <hr style="border: 1px solid lightgray;">
                             <div>
+                                <div class="container" id="reportsRequests_${project.project_id}" style="display: none;">
+                                    <table style="width: 100%; border-collapse: collapse; min-height: 300px;">
+                                        <thead style="font-size: 12px; font-weight: lighter; color: gray;">
+                                            <tr>
+                                                <th scope="col" id="project_tite_${project.project_id}_reports_requests">Titre <img src="https://img.icons8.com/ios/50/000000/sort.png"
+                                                        style="width: 15px; height: 15px;" alt=""></th>
+                                                <th scope="col" id="country_name_${project.project_id}_reports_requests">Pays <img src="https://img.icons8.com/ios/50/000000/sort.png"
+                                                        style="width: 15px; height: 15px;" alt=""></th>
+                                                <th scope="col" id="association_name_${project.project_id}_reports_requests">Association <img
+                                                        src="https://img.icons8.com/ios/50/000000/sort.png" style="width: 15px; height: 15px;"
+                                                        alt=""></th>
+                                                <th scope="col" id="theme_name_${project.project_id}_reports_requests">Thématique <img src="https://img.icons8.com/ios/50/000000/sort.png"
+                                                        style="width: 15px; height: 15px;" alt=""></th>
+                                                <th scope="col" id="status_name_${project.project_id}_reports_requests">Statut <img src="https://img.icons8.com/ios/50/000000/sort.png"
+                                                        style="width: 15px; height: 15px;" alt=""></th>
+                                                <th scope="col">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="display_reports_requests_${project.project_id}" class="main-group
+                                            -scroll" style="min-height: 200px;">
+                                        </tbody>
+                                    </table>
+                                </div>
                                 <div class="container" id="projectReports_${project.project_id}" style="display: block;">
                                     <table style="width: 100%; border-collapse: collapse; min-height: 300px;">
                                         <thead style="font-size: 12px; font-weight: lighter; color: gray;">
@@ -954,74 +1350,180 @@
                 </article>
             `;
 
-            //#region Ajouter des écouteurs d'événements pour les boutons (Rapports, Documents, Associations, Membres)
-            document.getElementById(`project_reports_${project.project_id}`).addEventListener('click', function () {
+            //#region Ajouter écouteur d'événement pour le bouton "Modifier les détails du projet"
+            document.getElementById('update_all_project_details').addEventListener('click', function () {
+                document.getElementById('update_all_project_details_container_').style.display = 'block';
+                document.getElementById('project_details_container_').style.display = 'none';
+            });
+
+            //#region Ajouter écouteur d'événement pour le bouton "Valider"
+            document.getElementById('update_all_project_details_button').addEventListener('click', function () {
+                var funder = document.getElementById('update_funder').value;
+                var association = document.getElementById('update_association').value;
+                var project_type = document.getElementById('update_project_type').value;
+                var project_location = document.getElementById('update_project_location').value;
+                var project_referent = document.getElementById('update_project_referent').value;
+                var start_date = document.getElementById('update_start_date').value;
+                var end_date = document.getElementById('update_end_date').value;
+                var project_description = document.getElementById('update_project_description').value;
+
+                // Vérifier si les champs sont vides
+                if (funder === '' || association === '' || project_type === '' || project_location === '' || project_referent === '' || start_date === '' || end_date === '' || project_description === '') {
+                    alert('Veuillez completer tous les champs.');
+                }
+                else {
+                    // Mettre à jour les détails du projet
+                    var project = {
+                        project_id: project_id,
+                        funder: funder,
+                        association: association,
+                        project_type: project_type,
+                        project_location: project_location,
+                        project_referent: project_referent,
+                        start_date: start_date,
+                        end_date: end_date,
+                        project_description: project_description
+                    };
+                    updateProjectDetails(project);
+                }
+            });
+            //#endregion
+
+            //#region Ajouter écouteur d'événement pour le bouton "Annuler"
+            document.getElementById('cancel_update_all_project_details').addEventListener('click', function () {
+                document.getElementById('update_all_project_details_container_').style.display = 'none';
+                document.getElementById('project_details_container_').style.display = 'block';
+            });
+            //#endregion
+            //#endregion
+
+            //#region Ajouter écouteur d'événement pour le bouton "Masquer la description du projet"
+            document.getElementById('_project_description_').addEventListener('click', function () {
+                var project_description_container = document.getElementById('project_description_container_');
+                if (project_description_container.style.display === 'block') {
+                    project_description_container.style.animation = 'hide 1s';
+                    project_description_container.style.display = 'none';
+                    document.getElementById('_project_description_').innerHTML = 'Voir la description du projet....';
+                }
+                else {
+                    project_description_container.style.animation = 'show 1s';
+                    project_description_container.style.display = 'block';
+                    document.getElementById('_project_description_').innerHTML = 'Masquer la description du projet';
+                }
+            });
+            //#endregion
+
+            //#region Ajouter écouteur d'événement pour le bouton "Masquer les détails du projet"
+            document.getElementById('hide_show_details').addEventListener('click', function () {
+                var project_details_container = document.getElementById('project_details_container_');
+                if (project_details_container.style.display === 'block') {
+                    project_details_container.style.animation = 'hide 1s';
+                    project_details_container.style.display = 'none';
+                    document.getElementById('hide_show_details').innerHTML = 'Afficher les détails du projet';
+                    document.getElementById('hide_show_details_icon_').src = 'https://img.icons8.com/?size=100&id=121539&format=png&color=9F9F9F';
+                }
+                else {
+                    project_details_container.style.animation = 'show 1s';
+                    project_details_container.style.display = 'block';
+                    document.getElementById('hide_show_details').innerHTML = 'Masquer les détails du projet';
+                    document.getElementById('hide_show_details_icon_').src = 'https://img.icons8.com/?size=100&id=986&format=png&color=9F9F9F';
+                }
+            });
+            //#endregion
+
+            //#region Ajouter écouteur d'événement pour le bouton Retour aux projets
+            document.getElementById('back_To_All_Projects').addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                // Masquer tout les autres éléments
+                document.getElementById('project_details').style.display = 'none';
+                // Afficher le tableau des projets
+                document.getElementById('all_projects_table').style.display = 'block';
+            });
+            //#endregion
+
+            //#region Ajouter écouteur d'événement pour le bouton "Retour aux projets"
+            document.getElementById('back_To_Projects').addEventListener('click', function (e) {
+                e.preventDefault();
+                backToProjects();
+            });
+            //#endregion
+
+            //#region Ajouter des écouteurs d'événements pour les boutons (Rapports, Documents, Associations, Membres, Demandes de rapports)
+            document.getElementById(`_reports_requests_${project.project_id}`).addEventListener('click', function () {
+                // Afficher les demandes de rapports & masquer les autres éléments
+                document.getElementById('reportsRequests_' + project.project_id).style.display = 'block';
+                document.getElementById('projectReports_' + project.project_id).style.display = 'none';
+                document.getElementById('projectAssociations_' + project.project_id).style.display = 'none';
+                document.getElementById('projectMembers_' + project.project_id).style.display = 'none';
+                document.getElementById('projectDocuments_' + project.project_id).style.display = 'none';
+
+                // Changement de couleur des boutons
+                document.getElementById(`_reports_requests_${project.project_id}`).style.backgroundColor = '#E7E7E7';
+                document.getElementById(`_project_reports_${project.project_id}`).style.backgroundColor = 'white';
+                document.getElementById(`_project_documents_${project.project_id}`).style.backgroundColor = 'white';
+                document.getElementById(`_project_associations_${project.project_id}`).style.backgroundColor = 'white';
+                document.getElementById(`_project_members_${project.project_id}`).style.backgroundColor = 'white';
+            });
+            document.getElementById(`_project_reports_${project.project_id}`).addEventListener('click', function () {
                 // Afficher les rapports du projet & masquer les autres éléments
+                document.getElementById('reportsRequests_' + project.project_id).style.display = 'none';
                 document.getElementById('projectReports_' + project.project_id).style.display = 'block';
                 document.getElementById('projectAssociations_' + project.project_id).style.display = 'none';
                 document.getElementById('projectMembers_' + project.project_id).style.display = 'none';
                 document.getElementById('projectDocuments_' + project.project_id).style.display = 'none';
 
                 // Changement de couleur des boutons
-                document.getElementById(`project_reports_${project.project_id}`).style.backgroundColor = '#98D0D0';
-                document.getElementById(`project_reports_${project.project_id}`).style.color = 'gray';
-                document.getElementById(`project_documents_${project.project_id}`).style.backgroundColor = 'white';
-                document.getElementById(`project_documents_${project.project_id}`).style.color = 'lightgray';
-                document.getElementById(`project_associations_${project.project_id}`).style.backgroundColor = 'white';
-                document.getElementById(`project_associations_${project.project_id}`).style.color = 'lightgray';
-                document.getElementById(`project_members_${project.project_id}`).style.backgroundColor = 'white';
-                document.getElementById(`project_members_${project.project_id}`).style.color = 'lightgray';
+                document.getElementById(`_reports_requests_${project.project_id}`).style.backgroundColor = 'white';
+                document.getElementById(`_project_reports_${project.project_id}`).style.backgroundColor = '#E7E7E7';
+                document.getElementById(`_project_documents_${project.project_id}`).style.backgroundColor = 'white';
+                document.getElementById(`_project_associations_${project.project_id}`).style.backgroundColor = 'white';
+                document.getElementById(`_project_members_${project.project_id}`).style.backgroundColor = 'white';
             });
-            document.getElementById(`project_documents_${project.project_id}`).addEventListener('click', function () {
+            document.getElementById(`_project_documents_${project.project_id}`).addEventListener('click', function () {
                 // Afficher les documents du projet & masquer les autres éléments
+                document.getElementById('reportsRequests_' + project.project_id).style.display = 'none';
                 document.getElementById('projectReports_' + project.project_id).style.display = 'none';
                 document.getElementById('projectAssociations_' + project.project_id).style.display = 'none';
                 document.getElementById('projectMembers_' + project.project_id).style.display = 'none';
                 document.getElementById('projectDocuments_' + project.project_id).style.display = 'block';
 
                 // Changement de couleur des boutons
-                document.getElementById(`project_reports_${project.project_id}`).style.backgroundColor = 'white';
-                document.getElementById(`project_reports_${project.project_id}`).style.color = 'lightgray';
-                document.getElementById(`project_documents_${project.project_id}`).style.backgroundColor = '#98D0D0';
-                document.getElementById(`project_documents_${project.project_id}`).style.color = 'gray';
-                document.getElementById(`project_associations_${project.project_id}`).style.backgroundColor = 'white';
-                document.getElementById(`project_associations_${project.project_id}`).style.color = 'lightgray';
-                document.getElementById(`project_members_${project.project_id}`).style.backgroundColor = 'white';
-                document.getElementById(`project_members_${project.project_id}`).style.color = 'lightgray';
+                document.getElementById(`_reports_requests_${project.project_id}`).style.backgroundColor = 'white';
+                document.getElementById(`_project_reports_${project.project_id}`).style.backgroundColor = 'white';
+                document.getElementById(`_project_documents_${project.project_id}`).style.backgroundColor = '#E7E7E7';
+                document.getElementById(`_project_associations_${project.project_id}`).style.backgroundColor = 'white';
+                document.getElementById(`_project_members_${project.project_id}`).style.backgroundColor = 'white';
             });
-            document.getElementById(`project_associations_${project.project_id}`).addEventListener('click', function () {
+            document.getElementById(`_project_associations_${project.project_id}`).addEventListener('click', function () {
                 // Afficher les associations du projet & masquer les autres éléments
+                document.getElementById('reportsRequests_' + project.project_id).style.display = 'none';
                 document.getElementById('projectReports_' + project.project_id).style.display = 'none';
                 document.getElementById('projectAssociations_' + project.project_id).style.display = 'block';
                 document.getElementById('projectMembers_' + project.project_id).style.display = 'none';
                 document.getElementById('projectDocuments_' + project.project_id).style.display = 'none';
 
                 // Changement de couleur des boutons
-                document.getElementById(`project_reports_${project.project_id}`).style.backgroundColor = 'white';
-                document.getElementById(`project_reports_${project.project_id}`).style.color = 'lightgray';
-                document.getElementById(`project_documents_${project.project_id}`).style.backgroundColor = 'white';
-                document.getElementById(`project_documents_${project.project_id}`).style.color = 'lightgray';
-                document.getElementById(`project_associations_${project.project_id}`).style.backgroundColor = '#98D0D0';
-                document.getElementById(`project_associations_${project.project_id}`).style.color = 'gray';
-                document.getElementById(`project_members_${project.project_id}`).style.backgroundColor = 'white';
-                document.getElementById(`project_members_${project.project_id}`).style.color = 'lightgray';
+                document.getElementById(`_reports_requests_${project.project_id}`).style.backgroundColor = 'white';
+                document.getElementById(`_project_reports_${project.project_id}`).style.backgroundColor = 'white';
+                document.getElementById(`_project_documents_${project.project_id}`).style.backgroundColor = 'white';
+                document.getElementById(`_project_associations_${project.project_id}`).style.backgroundColor = '#E7E7E7';
+                document.getElementById(`_project_members_${project.project_id}`).style.backgroundColor = 'white';
             });
-            document.getElementById(`project_members_${project.project_id}`).addEventListener('click', function () {
+            document.getElementById(`_project_members_${project.project_id}`).addEventListener('click', function () {
                 // Afficher les membres du projet & masquer les autres éléments
+                document.getElementById('reportsRequests_' + project.project_id).style.display = 'none';
                 document.getElementById('projectReports_' + project.project_id).style.display = 'none';
                 document.getElementById('projectAssociations_' + project.project_id).style.display = 'none';
                 document.getElementById('projectMembers_' + project.project_id).style.display = 'block';
                 document.getElementById('projectDocuments_' + project.project_id).style.display = 'none';
 
                 // Changement de couleur des boutons
-                document.getElementById(`project_reports_${project.project_id}`).style.backgroundColor = 'white';
-                document.getElementById(`project_reports_${project.project_id}`).style.color = 'lightgray';
-                document.getElementById(`project_documents_${project.project_id}`).style.backgroundColor = 'white';
-                document.getElementById(`project_documents_${project.project_id}`).style.color = 'lightgray';
-                document.getElementById(`project_associations_${project.project_id}`).style.backgroundColor = 'white';
-                document.getElementById(`project_associations_${project.project_id}`).style.color = 'lightgray';
-                document.getElementById(`project_members_${project.project_id}`).style.backgroundColor = '#98D0D0';
-                document.getElementById(`project_members_${project.project_id}`).style.color = 'gray';
+                document.getElementById(`_reports_requests_${project.project_id}`).style.backgroundColor = 'white';
+                document.getElementById(`_project_reports_${project.project_id}`).style.backgroundColor = 'white';
+                document.getElementById(`_project_documents_${project.project_id}`).style.backgroundColor = 'white';
+                document.getElementById(`_project_associations_${project.project_id}`).style.backgroundColor = 'white';
+                document.getElementById(`_project_members_${project.project_id}`).style.backgroundColor = '#E7E7E7';
             });
             //#endregion
 
@@ -1287,10 +1789,6 @@
             //#endregion
 
             //#region Ajouter des écouteurs d'événements pour les boutons
-            document.getElementById('backToProjects').addEventListener('click', function (e) {
-                e.preventDefault();
-                getProjects();
-            });
             document.getElementById('add_association_to_project').addEventListener('click', function (e) {
                 e.preventDefault();
                 addAssociationToProject(project.project_id);
@@ -1524,5 +2022,71 @@
         }
         //#endregion
 
+        //#region Fonction pour envoyer des mails de notification via le serveur SMTP de Padem
+        function sendMailNotification(member, subject, message) {
+            const nodemailer = require('nodemailer');
+
+            // Créer un transporteur SMTP réutilisable à l'aide de l'objet transporteur par défaut
+            let transporter = nodemailer.createTransport({
+                host: 'ssl0.ovh.net',
+                port: 465,
+                secure: true,
+                auth: {
+                    user: 'nathan.imogo@padem.org',
+                    pass: 'NathIm82!',
+                },
+                tls: {
+                    rejectUnauthorized: false
+                },
+            });
+
+            // Options de l'e-mail
+            let mailOptions = {
+                from: '<nathan.imogo@padem.org>',
+                to: member,
+                subject: subject,
+                text: message,
+            };
+
+            // Envoyer l'e-mail
+            transporter.sendMail(mailOptions, (error, info) => {
+                if (error) {
+                    console.log('Erreur envoi de l\'e-mail:', error);
+                } else {
+                    console.log('E-mail envoyé:', info.response);
+                }
+            });
+        }
+        //#endregion
+
+        //#region Fonction envoyer des notifications de diverses actions (ajout, modification, suppression, archivage)
+        function sendNotification(action, member, project, report, document) {
+            let subject = '';
+            let message = '';
+
+            switch (action) {
+                case 'add':
+                    subject = 'Ajout d\'un élément';
+                    message = `Bonjour, un élément a été ajouté au projet ${project}.\n\nCordialement,`;
+                    break;
+                case 'edit':
+                    subject = 'Modification d\'un élément';
+                    message = `Bonjour, un élément a été modifié dans le projet ${project}.\n\nCordialement,`;
+                    break;
+                case 'delete':
+                    subject = 'Suppression d\'un élément';
+                    message = `Bonjour, un élément a été supprimé du projet ${project}.\n\nCordialement,`;
+                    break;
+                case 'archive':
+                    subject = 'Archivage d\'un élément';
+                    message = `Bonjour, un élément a été archivé dans le projet ${project}.\n\nCordialement,`;
+                    break;
+                default:
+                    break;
+            }
+
+            sendMailNotification(member, subject, message);
+        }
+        //#endregion
     </script>
 </body>
