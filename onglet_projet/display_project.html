@@ -39,6 +39,1176 @@
 </div>
 
 
+<!--#region Onglet Rapports -->
+<!-- Description: Page d'affichage des rapports -->
+ <div style="display: flex; justify-content: space-between; margin: 10px;">
+    <button type="button" class="box-clicable" id="create_Report"
+        style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px; border: 1px solid lightgray; margin: 5px; padding: 5px;">
+        <!-- icone plus -->
+        <img src="https://img.icons8.com/ios/50/9F9F9F/plus-math.png"
+            style="width: 20px; height: 20px; margin-right: 5px;" alt="">
+        Nouveau Rapport
+    </button>
+
+    <div style="display: flex; justify-content: flex-end; margin: 10px;">
+        <!-- Bouton afficher tous les rapports -->
+        <button type="button" class="box-clicable" id="all_Reports"
+            style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px; border: 1px solid lightgray; margin: 5px; padding: 5px;">
+            <!-- icone liste -->
+            <img src="https://img.icons8.com/ios/50/9F9F9F/list.png"
+                style="width: 20px; height: 20px; margin-right: 5px;" alt="">
+            Tous les Rapports
+        </button>
+
+        <!-- Bouton Mes rapports -->
+        <button type="button" class="box-clicable" id="my_Reports"
+            style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px; border: 1px solid lightgray; margin: 5px; padding: 5px;">
+            <!-- icone profil -->
+            <img src="https://img.icons8.com/ios/50/9F9F9F/user.png"
+                style="width: 20px; height: 20px; margin-right: 5px;" alt="">
+            Mes rapports
+        </button>
+
+        <!-- Bouton Archives -->
+        <button type="button" class="box-clicable" id="archives_Reports"
+            style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px; border: 1px solid lightgray; margin: 5px; padding:5px;">
+            <!-- icone archive -->
+            <img src="https://img.icons8.com/ios/50/9F9F9F/archive-folder.png"
+                style="width: 20px; height: 20px; margin-right: 5px;" alt="">
+            Archives</button>
+    </div>
+</div>
+
+<body>
+    <!--#region Nouveau Rapport -->
+    <div class="card" id="new_report_form" style="display: none;">
+        <form id="reportForm" class="card-body" style="border-radius: 15px; background-color: white;">
+            <div class="row">
+                <div class="col-md-12">
+                    <p>Remplissez les champs suivants:</p>
+                    <hr class="gray-border">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="onglet_reportTitle">Titre du rapport: <span style="color: red;">*</span></label>
+                    <input type="text" id="onglet_reportTitle" name="onglet_reportTitle" class="form-control" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="onglet_reportType">Type de rapport: <span style="color: red;">*</span></label>
+                    <input type="text" id="onglet_reportType" name="onglet_reportType" class="form-control" required>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="onglet_reportDate">Date de début prévisionnelle: <span style="color: red;">*</span></label>
+                    <input type="date" id="onglet_reportDate" name="onglet_reportDate" class="form-control" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="onglet_reportEndDate">Date de fin prévisionnelle: <span style="color: red;">*</span></label>
+                    <input type="date" id="onglet_reportEndDate" name="onglet_reportEndDate" class="form-control" required>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="onglet_reportLocation">Pays de réalisation du rapport: <span style="color: red;">*</span></label>
+                    <input type="text" id="onglet_reportLocation" name="onglet_reportLocation" class="form-control" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="onglet_reportReferent">Référent du rapport: <span style="color: red;">*</span></label>
+                    <input type="text" id="onglet_reportReferent" name="onglet_reportReferent" class="form-control" required>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="onglet_reportReferentEmail">Email du référent du rapport: <span style="color: red;">*</span></label>
+                    <input type="email" id="onglet_reportReferentEmail" name="onglet_reportReferentEmail" class="form-control" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="onglet_reportDescription">Description du rapport: <span style="color: red;">*</span></label>
+                    <textarea id="onglet_reportDescription" name="onglet_reportDescription" rows="4" cols="50" class="form-control"
+                        required></textarea>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12" id="add_trames">
+                    <!-- Saisir les noms des documents models que vous comptez joindre ci-dessous à ce rapport: -->
+                    <label for="onglet_reportDocuments">Saisir le nom de la trame à joindre au rapport: <span
+                            style="color: red;">*</span></label>
+                    <textarea type="text" id="onglet_reportDocuments" name="onglet_reportDocuments" class="form-control" rows="4"
+                        required></textarea>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <hr class="gray-border">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="action-buttons" style="display: flex; justify-content: flex-end;">
+                        <button type="button" class="btn btn-secondary"
+                            style="width: fit-content;">
+                            Annuler
+                            <img src="https://lab.padem.org/wp-content/uploads/Annuler.png" alt="cancel"
+                                style="width: 35px; height: 35px;">
+                        </button>
+                        <button type="button" class="btn btn-primary"
+                            style="color: white; width: fit-content;">
+                            Enregistrer
+                            <img src="https://lab.padem.org/wp-content/uploads/save_black.png" alt="save"
+                                style="width: 35px; height: 35px;">
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <!--#endregion -->
+    <!--#region Tout les rapports -->
+    <div class="container" id="all_reports_table" style="display: block;">
+        <table>
+            <thead style="font-size: 12px; font-weight: lighter; color: gray;">
+                <tr>
+                    <th scope="col" id="onglet_report_tite">Titre <img src="https://img.icons8.com/ios/50/9F9F9F/sort.png"
+                            style="width: 15px; height: 15px;" alt=""></th>
+                    <th scope="col" id="onglet_report_country_name">Projet <img
+                            src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 15px; height: 15px;"
+                            alt=""></th>
+                    <th scope="col" id="onglet_report_association_name">Auteur <img
+                            src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 15px; height: 15px;"
+                            alt=""></th>
+                    <th scope="col" id="onglet_report_theme_name">Type de rapport <img
+                            src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 15px; height: 15px;"
+                            alt=""></th>
+                    <th scope="col" id="onglet_report_status_name">Statut <img
+                            src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 15px; height: 15px;"
+                            alt=""></th>
+                </tr>
+            </thead>
+            <tbody id="onglet_display_reports" class="main-group-scroll" style="height: 500px;">
+            </tbody>
+        </table>
+    </div>
+    <!--#endregion -->
+    <!--#region Mes rapports -->
+    <div class="container" id="onglet_my_reports_table" style="display: none;">
+        <table>
+            <thead style="font-size: 12px; font-weight: lighter; color: gray;">
+                <tr>
+                    <th scope="col" id="onglet_my_report_tite">Titre <img src="https://img.icons8.com/ios/50/9F9F9F/sort.png"
+                            style="width: 15px; height: 15px;" alt=""></th>
+                    <th scope="col" id="onglet_my_report_country_name">Projet <img
+                            src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 15px; height: 15px;"
+                            alt=""></th>
+                    <th scope="col" id="onglet_my_report_association_name">Auteur <img
+                            src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 15px; height: 15px;"
+                            alt=""></th>
+                    <th scope="col" id="onglet_my_report_theme_name">Type de rapport <img
+                            src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 15px; height: 15px;"
+                            alt=""></th>
+                    <th scope="col" id="onglet_my_report_status_name">Statut <img
+                            src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 15px; height: 15px;"
+                            alt=""></th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="onglet_display_my_reports" class="main-group-scroll" style="height: 500px;">
+            </tbody>
+        </table>
+    </div>
+    <!--#endregion -->
+    <!--#region Archives -->
+    <div class="container" id="onglet_archives_reports_table" style="display: none;">
+        <table>
+            <thead style="font-size: 12px; font-weight: lighter; color: gray;">
+                <tr>
+                    <th scope="col" id="onglet_archives_report_tite">Titre <img
+                            src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 15px; height: 15px;"
+                            alt=""></th>
+                    <th scope="col" id="onglet_archives_report_country_name">Projet <img
+                            src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 15px; height: 15px;"
+                            alt=""></th>
+                    <th scope="col" id="onglet_archives_report_association_name">Auteur <img
+                            src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 15px; height: 15px;"
+                            alt=""></th>
+                    <th scope="col" id="onglet_archives_report_theme_name">Type de rapport <img
+                            src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 15px; height: 15px;"
+                            alt=""></th>
+                    <th scope="col" id="onglet_archives_report_status_name">Statut <img
+                            src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 15px; height: 15px;"
+                            alt=""></th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="onglet_display_archives_reports" class="main-group-scroll" style="height: 500px;">
+            </tbody>
+        </table>
+    </div>
+    <!--#endregion -->
+
+    <script>
+
+        // Chargement de la page
+        document.addEventListener('DOMContentLoaded', function (e) {
+            e.preventDefault();
+
+            // Afficher le tableau des rapports
+            document.getElementById('all_reports_table').style.display = 'block';
+            // Masquer le formulaire de création de rapport
+            document.getElementById('new_report_form').style.display = 'none';
+            // Masquer le tableau de mes rapports
+            document.getElementById('onglet_my_reports_table').style.display = 'none';
+            // Masquer le tableau des archives
+            document.getElementById('onglet_archives_reports_table').style.display = 'none';
+
+            document.getElementById('all_Reports').style.color = '#29A6A7';
+        });
+
+        //#region Afficher le formulaire de création de rapport
+        document.getElementById('create_Report').addEventListener('click', function (e) {
+            e.preventDefault();
+
+            // Afficher le formulaire de création de rapport
+            document.getElementById('new_report_form').style.display = 'block';
+            // Masquer le tableau des rapports
+            document.getElementById('all_reports_table').style.display = 'none';
+            // Masquer le tableau de mes rapports
+            document.getElementById('onglet_my_reports_table').style.display = 'none';
+            // Masquer le tableau des archives
+            document.getElementById('onglet_archives_reports_table').style.display = 'none';
+
+            // Changer la couleur du bouton
+            document.getElementById('create_Report').style.color = '#29A6A7';
+            document.getElementById('all_Reports').style.color = 'gray';
+            document.getElementById('my_Reports').style.color = 'gray';
+            document.getElementById('archives_Reports').style.color = 'gray';
+        });
+        //#endregion
+
+        //#region Afficher tous les rapports
+        document.getElementById('all_Reports').addEventListener('click', function (e) {
+            e.preventDefault();
+
+            // Afficher le tableau des rapports
+            document.getElementById('all_reports_table').style.display = 'block';
+            // Masquer le formulaire de création de rapport
+            document.getElementById('new_report_form').style.display = 'none';
+            // Masquer le tableau de mes rapports
+            document.getElementById('onglet_my_reports_table').style.display = 'none';
+            // Masquer le tableau des archives
+            document.getElementById('onglet_archives_reports_table').style.display = 'none';
+
+            // Changer la couleur du bouton
+            document.getElementById('create_Report').style.color = 'gray';
+            document.getElementById('all_Reports').style.color = '#29A6A7';
+            document.getElementById('my_Reports').style.color = 'gray';
+            document.getElementById('archives_Reports').style.color = 'gray';
+        });
+        //#endregion
+
+        //#region Afficher mes rapports
+        document.getElementById('my_Reports').addEventListener('click', function (e) {
+            e.preventDefault();
+
+            // Afficher le tableau de mes rapports
+            document.getElementById('onglet_my_reports_table').style.display = 'block';
+            // Masquer le formulaire de création de rapport
+            document.getElementById('new_report_form').style.display = 'none';
+            // Masquer le tableau des rapports
+            document.getElementById('all_reports_table').style.display = 'none';
+            // Masquer le tableau des archives
+            document.getElementById('onglet_archives_reports_table').style.display = 'none';
+
+            // Changer la couleur du bouton
+            document.getElementById('create_Report').style.color = 'gray';
+            document.getElementById('all_Reports').style.color = 'gray';
+            document.getElementById('my_Reports').style.color = '#29A6A7';
+            document.getElementById('archives_Reports').style.color = 'gray';
+        });
+        //#endregion
+
+        //#region Afficher les archives
+        document.getElementById('archives_Reports').addEventListener('click', function (e) {
+            e.preventDefault();
+
+            // Afficher le tableau des archives
+            document.getElementById('onglet_archives_reports_table').style.display = 'block';
+            // Masquer le formulaire de création de rapport
+            document.getElementById('new_report_form').style.display = 'none';
+            // Masquer le tableau des rapports
+            document.getElementById('all_reports_table').style.display = 'none';
+            // Masquer le tableau de mes rapports
+            document.getElementById('onglet_my_reports_table').style.display = 'none';
+
+            // Changer la couleur du bouton
+            document.getElementById('create_Report').style.color = 'gray';
+            document.getElementById('all_Reports').style.color = 'gray';
+            document.getElementById('my_Reports').style.color = 'gray';
+            document.getElementById('archives_Reports').style.color = '#29A6A7';
+        });
+        //#endregion
+    </script>
+</body>
+<!--#endregion -->
+
+
+<!--#region Onglet Demandes de rapports -->
+<!-- Description: Page d'affichage des demandes de rapports -->
+<div style="display: flex; justify-content: space-between; margin: 10px;">
+    <button type="button" class="box-clicable" id="onglet_report_requests_create_Report_Request"
+        style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px; border: 1px solid lightgray; margin: 5px; padding: 5px;">
+        <!-- icone plus -->
+        <img src="https://img.icons8.com/ios/50/9F9F9F/plus-math.png"
+            style="width: 20px; height: 20px; margin-right: 5px;" alt="">
+        Nouvelle Demande
+    </button>
+
+    <div style="display: flex; justify-content: flex-end; margin: 10px;">
+        <!-- Bouton afficher toutes les demandes -->
+        <button type="button" class="box-clicable" id="onglet_report_requests_all_Requests"
+            style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px; border: 1px solid lightgray; margin: 5px; padding: 5px;">
+            <!-- icone liste -->
+            <img src="https://img.icons8.com/ios/50/9F9F9F/list.png"
+                style="width: 20px; height: 20px; margin-right: 5px;" alt="">
+            Toutes les Demandes
+        </button>
+
+        <!-- Bouton Mes demandes -->
+        <button type="button" class="box-clicable" id="onglet_report_requests_my_Requests"
+            style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px; border: 1px solid lightgray; margin: 5px; padding: 5px;">
+            <!-- icone profil -->
+            <img src="https://img.icons8.com/ios/50/9F9F9F/user.png"
+                style="width: 20px; height: 20px; margin-right: 5px;" alt="">
+            Mes demandes
+        </button>
+
+        <!-- Bouton Archives -->
+        <button type="button" class="box-clicable" id="onglet_report_requests_archives_Requests"
+            style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px; border: 1px solid lightgray; margin: 5px; padding:5px;">
+            <!-- icone archive -->
+            <img src="https://img.icons8.com/ios/50/9F9F9F/archive-folder.png"
+                style="width: 20px; height: 20px; margin-right: 5px;" alt="">
+            Archives</button>
+    </div>
+</div>
+
+<body>
+    <!--#region Nouvelle Demande -->
+    <div class="container" id="new_request_form" style="display: none;">
+        <form id="onglet_ReportRequest_request_Form" class="card" style="border-radius: 15px; background-color: white; margin: 5px; padding: 5px;" method="post" enctype="multipart/form-data">
+            <div class="row">
+            </div>
+            <div class="card-body" style="border-radius: 15px; padding: 10px; margin: 10px;">
+                <div class="row">
+                    <div class="col-md-6">
+                        <label for="onglet_ReportRequest_project" style="color: gray;"> <img src="https://img.icons8.com/?size=100&id=h88n73Ss5iTI&format=png&color=9F9F9F"
+                                style="width: 20px; height: 20px; margin-right: 5px;" alt=""> Sélectionner le Projet correspondant: <span style="color: red;">*</span></label>
+                        <select id="onglet_ReportRequest_project" name="onglet_ReportRequest_project" class="form-control" style="border-radius: 20px;" required>
+                            <option value="">Sélectionner le Projet</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="onglet_ReportRequest_requestType" style="color: gray;"> <img src="https://img.icons8.com/?size=100&id=364&format=png&color=9F9F9F"
+                                style="width: 20px; height: 20px; margin-right: 5px;" alt=""> Type de rapport attendu: <span style="color: red;">*</span></label>
+                        <input type="text" id="onglet_ReportRequest_requestType" name="onglet_ReportRequest_requestType" class="form-control" style="border-radius: 20px;" required>
+                    </div>
+                </div>
+                <div style="margin: 5px; padding: 5px;"></div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <label for="onglet_required_submit_date" style="color: gray;"> <img src="https://img.icons8.com/?size=100&id=1074&format=png&color=9F9F9F"
+                                style="width: 20px; height: 20px; margin-right: 5px;" alt=""> Date attendue de soumission du rapport: <span style="color: red;">*</span></label>
+                        <input type="date" id="onglet_required_submit_date" name="onglet_required_submit_date" class="form-control" style="border-radius: 20px;" required>
+                    </div>
+                </div>
+                <div style="margin: 5px; padding: 5px;"></div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <label for="onglet_ReportRequest_requestDescription" style="color: gray;"> <img src="https://img.icons8.com/?size=100&id=77&format=png&color=9F9F9F"
+                                style="width: 20px; height: 20px; margin-right: 5px;" alt=""> Description de la demande: </label>
+                        <textarea id="onglet_ReportRequest_requestDescription" name="onglet_ReportRequest_requestDescription" rows="6" cols="50" class="form-control" style="border-radius: 20px;"></textarea>
+                    </div>
+                </div>
+                <div style="margin: 5px; padding: 5px;"></div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <label for="onglet_ReportRequest_requestDocuments" style="color: gray;"> <img src="https://img.icons8.com/?size=100&id=4716&format=png&color=9F9F9F"
+                                style="width: 20px; height: 20px; margin-right: 5px;" alt="">Sélectionner une ou plusieurs trames(documents models) à joindre à la demande: </label>
+                        <input type="file" id="onglet_ReportRequest_requestDocuments" name="file" class="form-control" style="border-radius: 20px;" multiple>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="action-buttons" style="display: flex; justify-content: flex-end;">
+                    <button type="button" class="btn btn-secondary"
+                        style="width: fit-content;" id="onglet_ReportRequest_cancel">
+                        Annuler
+                        <img src="https://lab.padem.org/wp-content/uploads/Annuler.png" alt="Annuler"
+                            style="width: 25px; height: 25px;">
+                    </button>
+                    <button type="button" class="btn btn-primary"
+                        style="color: white; width: fit-content;" id="onglet_ReportRequest_send">
+                        Envoyer
+                        <img src="https://img.icons8.com/?size=100&id=12628&format=png&color=FFFFFF" alt="Envoyer"
+                            style="width: 25px; height: 25px;">
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <!--#endregion -->
+
+    <!--#region Toutes les demandes -->
+    <div class="container" id="all_requests_table_and_details" style="display: block;">
+        <!--#region Toutes les demandes -->
+        <div class="container" id="all_requests_table" style="display: block;">
+            <table id="onglet_display_requests">
+                <thead style="font-size: 12px; font-weight: lighter; color: gray;" class="thead-light">
+                    <tr>
+                        <th scope="col" id="onglet_request_title" style="margin: 2px;">Titre <img src="https://img.icons8.com/ios/50/9F9F9F/sort.png"
+                                style="width: 15px; height: 15px;" alt=""></th>
+                        <th scope="col" id="onglet_request_country_name">
+                            Projet <img
+                                src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 15px; height: 15px;"
+                                alt=""></th>
+                        <th scope="col" id="onglet_request_association_name">
+                            Auteur <img
+                                src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 15px; height: 15px;"
+                                alt=""></th>
+                        <th scope="col" id="onglet_request_date"> Date limite de soumission <img src="https://img.icons8.com/ios/50/9F9F9F/sort.png"
+                                style="width: 15px; height: 15px;" alt="">
+                        </th>
+                        <th scope="col" id="onglet_request_status">
+                            Status <img src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 15px; height: 15px;" alt="">
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="main-group-scroll" style="height: 500px;">
+                </tbody>
+            </table>
+        </div>
+        <!--#endregion -->
+
+        <!--#region Afficher les détails avec le formulaire de demande de rapport correspondant -->
+        <div class="card" id="onglet_request_details" style="display: none;">
+            <div class="card-header" style="border-radius: 25px; background-color: white; margin: 5px; padding: 5px; border: 1px solid lightgray;">
+                <h5 style="color: gray;">Détails de la demande</h5>
+            </div>
+            <form id="onglet_request_details_form" class="card-body" style="border-radius: 25px; background-color: white; margin: 5px; padding: 5px; border: 1px solid lightgray;">
+                <div class="row">
+                    <div class="col-md-6">
+                        <label for="onglet_request_details_title">Titre de la demande: </label>
+                        <input type="text" id="onglet_request_details_title" name="onglet_request_details_title" class="form-control" readonly>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="onglet_request_details_project">Projet correspondant: </label>
+                        <input type="text" id="onglet_request_details_project" name="onglet_request_details_project" class="form-control" readonly>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label for="onglet_request_details_association">Auteur de la demande: </label>
+                        <input type="text" id="onglet_request_details_association" name="onglet_request_details_association" class="form-control" readonly>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="onglet_request_details_date">Date limite de soumission: </label>
+                        <input type="text" id="onglet_request_details_date" name="onglet_request_details_date" class="form-control" readonly>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <label for="onglet_request_details_description">Description de la demande: </label>
+                        <textarea id="onglet_request_details_description" name="onglet_request_details_description" rows="6" cols="50" class="form-control" readonly></textarea>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <label for="onglet_request_details_documents">Trames(documents models) à joindre à la demande: </label>
+                        <textarea id="onglet_request_details_documents" name="onglet_request_details_documents" rows="6" cols="50" class="form-control" readonly></textarea>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <label for="onglet_request_details_status">Status de la demande: </label>
+                        <input type="text" id="onglet_request_details_status" name="onglet_request_details_status" class="form-control" readonly>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="action-buttons" style="display: flex; justify-content: flex-end;">
+                            <button type="button" class="btn btn-secondary"
+                                style="color: white; width: fit-content; border-radius: 20px;" id="onglet_request_cancel">
+                                Annuler
+                                <img src="https://lab.padem.org/wp-content/uploads/Annuler.png" alt="Annuler"
+                                    style="width: 25px; height: 25px;">
+                            </button>
+                            <button type="button" class="btn btn-primary"
+                                style="width: fit-content; border-radius: 20px;" id="onglet_request_send">
+                                Envoyer le rapport
+                                <img src="https://img.icons8.com/ios/50/FFFFFF/send-file.png" alt="Envoyer le rapport"
+                                    style="width: 25px; height: 25px;">
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!--#endregion -->
+    </div>
+    <!--#endregion -->
+
+    <!--#region Mes demandes -->
+    <div class="container" id="onglet_my_requests_table" style="display: none;">
+        <table>
+            <thead style="font-size: 12px; font-weight: lighter; color: gray;">
+                <tr>
+                    <th scope="col" id="onglet_my_request_tite">Titre <img src="https://img.icons8.com/ios/50/9F9F9F/sort.png"
+                            style="width: 15px; height: 15px;" alt=""></th>
+                    <th scope="col" id="onglet_my_request_country_name">Projet <img
+                            src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 15px; height: 15px;"
+                            alt=""></th>
+                    <th scope="col" id="onglet_my_request_association_name">Auteur <img
+                            src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 15px; height: 15px;"
+                            alt=""></th>
+                    <th scope="col" id="onglet_my_request_theme_name">Type de demande <img
+                            src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 15px; height: 15px;"
+                            alt=""></th>
+                    <th scope="col" id="onglet_my_request_status_name">Status <img
+                            src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 15px; height: 15px;"
+                            alt=""></th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="onglet_display_my_requests" class="main-group-scroll" style="height: 500px;">
+            </tbody>
+        </table>
+    </div> 
+    <!--#endregion -->
+
+    <!--#region Archives -->
+    <div class="container" id="onglet_archives_requests_table" style="display: none;">
+        <table>
+            <thead style="font-size: 12px; font-weight: lighter; color: gray;">
+                <tr>
+                    <th scope="col" id="onglet_archives_request_tite">Titre <img
+                            src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 15px; height: 15px;"
+                            alt=""></th>
+                    <th scope="col" id="onglet_archives_request_country_name">Projet <img
+                            src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 15px; height: 15px;"
+                            alt=""></th>
+                    <th scope="col" id="onglet_archives_request_association_name">Auteur <img
+                            src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 15px; height: 15px;"
+                            alt=""></th>
+                    <th scope="col" id="onglet_archives_request_theme_name">Type de demande <img
+                            src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 15px; height: 15px;"
+                            alt=""></th>
+                    <th scope="col" id="onglet_archives_request_status_name">Status <img
+                            src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 15px; height: 15px;"
+                            alt=""></th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="onglet_display_archives_requests" class="main-group-scroll" style="height: 500px;">
+            </tbody>
+        </table>
+    </div>
+    <!--#endregion -->
+
+    <script>
+        //initialisation des variables
+        var projects_list = [];
+        var users_list = [];
+
+        // Chargement de la page
+        document.addEventListener('DOMContentLoaded', function (e) {
+            e.preventDefault();
+
+            // Afficher le tableau des demandes
+            document.getElementById('all_requests_table').style.display = 'block';
+            // Masquer le formulaire de création de demande
+            document.getElementById('new_request_form').style.display = 'none';
+            // Masquer le tableau de mes demandes
+            document.getElementById('onglet_my_requests_table').style.display = 'none';
+            // Masquer le tableau des archives
+            document.getElementById('onglet_archives_requests_table').style.display = 'none';
+
+            document.getElementById('onglet_report_requests_all_Requests').style.color = '#29A6A7';
+
+            // Récupérer la liste des noms des projets
+            getProjectsNames();
+
+            // Afficher les demandes
+            displayRequests();
+        });
+
+        //#region Récupérer la liste des noms des projets
+        function getProjectsNames() {
+            // Récupérer la liste des noms des projets
+            fetch('https://lab.padem.org/wp-json/mo/v1/getProjectData')
+                .then(response => response.json())
+                .then(data => {
+                    // console.log(data);
+                    let projects = data;
+                    projects_list = data; // Enregistrer la liste des projets
+                    let select = document.getElementById('onglet_ReportRequest_project');
+                    for (let i = 0; i < projects.length; i++) {
+                        let option = document.createElement('option');
+                        option.value = projects[i].project_id;
+                        option.text = projects[i].project_title;
+                        select.appendChild(option);
+                    }
+                })
+                .catch(error => console.error(error));
+        }
+        //#endregion
+
+        //#region Récupérer le nom d'un utilisateur grace à son adresse email
+        function getUserNameByEmail(email) {
+            // Récupérer le nom de l'utilisateur
+            fetch('https://lab.padem.org/wp-json/mo/v1/getAllMembers')
+                .then(response => response.json())
+                .then(data => {
+                    users_list = data;
+                    let user_name = users_list.find(user => user.user_email == email);
+                    return user_name.display_name;
+                })
+                .catch(error => console.error(error));
+        }
+        //#endregion
+
+        //#region Récupérer le nom d'un projet grace à son id
+        function getProjectNameById(project_id) {
+            // Récupérer le nom du projet
+            console.log('projects_list: ', projects_list);
+            let project_ = projects_list.find(project => project.project_id == project_id);
+            console.log('project_name: ', project_);
+            console.log('project_.project_title: ', project_.project_title);
+            return project_.project_title;
+        }
+        //#endregion
+
+        //#region Afficher les demandes
+        function displayRequests() {
+            var project_name = '';
+            var user_name = '';
+            var all_users_names = [];
+            var all_projects_names = [];
+
+            //#region Récupérer les utilisateurs
+            fetch('https://lab.padem.org/wp-json/mo/v1/getAllMembers')
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(user => {
+                        all_users_names.push({
+                            user_email: user.user_email,
+                            user_name: user.display_name
+                        });
+                    });
+                })
+                .catch(error => console.error(error));
+            //#endregion
+
+            //#region Récupérer les projets
+            fetch('https://lab.padem.org/wp-json/mo/v1/getProjectData')
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(project => {
+                        all_projects_names.push({
+                            project_id: project.project_id,
+                            project_name: project.project_title
+                        });
+                    });
+                })
+                .catch(error => console.error(error));
+            //#endregion
+
+            //#region Fonctions pour récupérer le jour de la semaine et le mois
+            function getDayOfWeek(date) {
+                var dayOfWeek = new Date(date).getDay();
+                return isNaN(dayOfWeek) ? null : ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'][dayOfWeek];
+            }
+            function getMonthName(date) {
+                var month = new Date(date).getMonth();
+                return isNaN(month) ? null : ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'][month];
+            }
+            //#endregion
+
+            // Récupérer les demandes
+            fetch('https://lab.padem.org/wp-json/mo/v1/getReportRequest')
+                .then(response => response.json())
+                .then(data => {
+                    // console.log(data);
+                    var requests = data;
+                    const tbody = document.querySelector('#onglet_display_requests tbody');
+                    tbody.innerHTML = '';
+                    if (requests.length > 0) {
+                        requests.forEach(request => {
+                            var tr = document.createElement('tr');
+                            tr.style.border = '1px solid lightgray';
+                            tr.style.borderRadius = '25px';
+                            tr.style.backgroundColor = 'white';
+                            tr.style.display = 'flex';
+                            tr.style.justifyContent = 'flex-start';
+                            tr.style.margin = '6px';
+                            tr.style.padding = '15px';
+                            tr.style.cursor = 'pointer';
+                            tr.style.paddingRight = '35px';
+                            tr.id = request.Project_Report_Request_id;
+                            tr.addEventListener('click', function (e) {
+                                e.preventDefault();
+                                // Afficher les détails de la demande
+                                document.getElementById('onglet_request_details').style.display = 'block';
+                                // Masquer le tableau des demandes
+                                document.getElementById('all_requests_table').style.display = 'none';
+                                displayRequestDetails(request.Project_Report_Request_id);
+                            });
+                            // Changement de couleur de la ligne au survol
+                            tr.addEventListener('mouseover', function (e) {
+                                tr.style.border = '1px solid #6CE8E8';
+                            });
+                            tr.addEventListener('mouseout', function (e) {
+                                tr.style.border = '1px solid lightgray';
+                            });
+                            // Récupérer le nom de l'utilisateur
+                            const user_email = request.author_email;
+                            const user = all_users_names.find(user => user.user_email === user_email);
+                            console.log('user: ', user);
+                            user_name = user.user_name ? user.user_name : '---';
+                            // Récupérer le nom du projet
+                            const projectId = request.project_id;
+                            const project = all_projects_names.find(project => project.project_id === projectId);
+                            console.log('project: ', project);
+                            project_name = project.project_name ? project.project_name : '---';
+                            //#region Formatage de la date
+                            let date = new Date(request.request_submit_date);
+                            let day = date.getDate();
+                            let month = date.getMonth() + 1;
+                            let year = date.getFullYear();
+                            let submit_date = `${getDayOfWeek(date)}, ${day} ${getMonthName(date)} ${year}`;
+                            //#endregion
+                            tr.innerHTML = `
+                                <th style="font-weight: lighter; color: black; display: flex; justify-content: flex-start;">${request.request_type}</th>
+                                <th style="font-weight: lighter; color: black; display: flex; justify-content: flex-start;">${project_name ? project_name : '---'}</th>
+                                <th style="font-weight: lighter; color: black; display: flex; justify-content: flex-start;">${user_name ? user_name : '---'}</th>
+                                <th style="font-weight: lighter; color: black; display: flex; justify-content: flex-start;">${submit_date}</th>
+                                <th style="color: ${request.report_request_state == 'En attente' ? 'orange' : request.report_request_state == 'Validée' ? 'green' : 'red'}; width: fit-content; border-radius: 10px; margin: 3px; padding: 3px; background-color: ${request.report_request_state == 'En attente' ? 'rgba(255, 165, 0, 0.1)' : request.report_request_state == 'Validée' ? 'rgba(0, 128, 0, 0.1)' : 'rgba(255, 0, 0, 0.1)'};">${request.report_request_state}</th>
+                            `;
+                            tbody.appendChild(tr);
+                        });
+                    } else {
+                        let tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td colspan="6" style="text-align: center; color: gray;"> <img src="https://img.icons8.com/?size=100&id=3574&format=png&color=9F9F9F" style="width: 20px; height: 20px;" alt="">
+                                Aucune demande de rapport pour le moment.</td>
+                        `;
+                        tbody.appendChild(tr);
+                    }
+                })
+                .catch(error => console.error(error));
+        }
+        //#endregion
+
+        //#region Afficher les détails d'une demande
+        function displayRequestDetails(request_id){
+            
+        }
+
+        //#region Afficher le formulaire de création de demande
+        document.getElementById('onglet_report_requests_create_Report_Request').addEventListener('click', function (e) {
+            e.preventDefault();
+
+            // Afficher le formulaire de création de demande
+            document.getElementById('new_request_form').style.display = 'block';
+            // Masquer le tableau des demandes
+            document.getElementById('all_requests_table_and_details').style.display = 'none';
+            // Masquer le tableau de mes demandes
+            document.getElementById('onglet_my_requests_table').style.display = 'none';
+            // Masquer le tableau des archives
+            document.getElementById('onglet_archives_requests_table').style.display = 'none';
+
+            // Changer la couleur du bouton
+            document.getElementById('onglet_report_requests_create_Report_Request').style.color = '#29A6A7';
+            document.getElementById('onglet_report_requests_all_Requests').style.color = 'gray';
+            document.getElementById('onglet_report_requests_my_Requests').style.color = 'gray';
+            document.getElementById('onglet_report_requests_archives_Requests').style.color = 'gray';
+        });
+        //#endregion
+
+        //#region Afficher toutes les demandes
+        document.getElementById('onglet_report_requests_all_Requests').addEventListener('click', function (e) {
+            e.preventDefault();
+
+            // Afficher le tableau des demandes
+            document.getElementById('all_requests_table_and_details').style.display = 'block';
+            // Masquer le formulaire de création de demande
+            document.getElementById('new_request_form').style.display = 'none';
+            // Masquer le tableau de mes demandes
+            document.getElementById('onglet_my_requests_table').style.display = 'none';
+            // Masquer le tableau des archives
+            document.getElementById('onglet_archives_requests_table').style.display = 'none';
+
+            // Changer la couleur du bouton
+            document.getElementById('onglet_report_requests_create_Report_Request').style.color = 'gray';
+            document.getElementById('onglet_report_requests_all_Requests').style.color = '#29A6A7';
+            document.getElementById('onglet_report_requests_my_Requests').style.color = 'gray';
+            document.getElementById('onglet_report_requests_archives_Requests').style.color = 'gray';
+        });
+        //#endregion
+
+        //#region Afficher mes demandes
+        document.getElementById('onglet_report_requests_my_Requests').addEventListener('click', function (e) {
+            e.preventDefault();
+
+            // Afficher le tableau de mes demandes
+            document.getElementById('onglet_my_requests_table').style.display = 'block';
+            // Masquer le formulaire de création de demande
+            document.getElementById('new_request_form').style.display = 'none';
+            // Masquer le tableau des demandes
+            document.getElementById('all_requests_table_and_details').style.display = 'none';
+            // Masquer le tableau des archives
+            document.getElementById('onglet_archives_requests_table').style.display = 'none';
+
+            // Changer la couleur du bouton
+            document.getElementById('onglet_report_requests_create_Report_Request').style.color = 'gray';
+            document.getElementById('onglet_report_requests_all_Requests').style.color = 'gray';
+            document.getElementById('onglet_report_requests_my_Requests').style.color = '#29A6A7';
+            document.getElementById('onglet_report_requests_archives_Requests').style.color = 'gray';
+        });
+        //#endregion
+
+        //#region Afficher les archives
+        document.getElementById('onglet_report_requests_archives_Requests').addEventListener('click', function (e) {
+            e.preventDefault();
+
+            // Afficher le tableau des archives
+            document.getElementById('onglet_archives_requests_table').style.display = 'block';
+            // Masquer le formulaire de création de demande
+            document.getElementById('new_request_form').style.display = 'none';
+            // Masquer le tableau des demandes
+            document.getElementById('all_requests_table_and_details').style.display = 'none';
+            // Masquer le tableau de mes demandes
+            document.getElementById('onglet_my_requests_table').style.display = 'none';
+
+            // Changer la couleur du bouton
+            document.getElementById('onglet_report_requests_create_Report_Request').style.color = 'gray';
+            document.getElementById('onglet_report_requests_all_Requests').style.color = 'gray';
+            document.getElementById('onglet_report_requests_my_Requests').style.color = 'gray';
+            document.getElementById('onglet_report_requests_archives_Requests').style.color = '#29A6A7';
+        });
+        //#endregion
+
+        //#region Annuler la création de demande
+        document.getElementById('onglet_ReportRequest_cancel').addEventListener('click', function (e) {
+            e.preventDefault();
+
+            // Masquer le formulaire de création de demande
+            document.getElementById('new_request_form').style.display = 'none';
+            // Afficher le tableau des demandes
+            document.getElementById('all_requests_table_and_details').style.display = 'block';
+            // Masquer le tableau de mes demandes
+            document.getElementById('onglet_my_requests_table').style.display = 'none';
+            // Masquer le tableau des archives
+            document.getElementById('onglet_archives_requests_table').style.display = 'none';
+
+            // Changer la couleur du bouton
+            document.getElementById('create_Report_Request').style.color = 'gray';
+            document.getElementById('all_Requests').style.color = '#29A6A7';
+            document.getElementById('my_Requests').style.color = 'gray';
+            document.getElementById('archives_Requests').style.color = 'gray';
+
+            // Vider les champs du formulaire
+            document.getElementById('onglet_ReportRequest_project').value = '';
+            document.getElementById('onglet_ReportRequest_requestType').value = '';
+            document.getElementById('onglet_required_submit_date').value = '';
+            document.getElementById('onglet_ReportRequest_requestDescription').value = '';
+            document.getElementById('onglet_ReportRequest_requestDocuments').value = '';
+        });
+        //#endregion
+
+        //#region Envoyer la demande
+        document.getElementById('onglet_ReportRequest_send').addEventListener('click', function (e) {
+            e.preventDefault();
+
+            // Récupérer les valeurs des champs
+            let requestProject = document.getElementById('onglet_ReportRequest_project').value;
+            let requestType = document.getElementById('onglet_ReportRequest_requestType').value;
+            let required_submit_date = document.getElementById('onglet_required_submit_date').value;
+            let requestDescription = document.getElementById('onglet_ReportRequest_requestDescription').value;
+
+            //#region Récupérer les fichiers
+            let requestDocuments = document.getElementById('onglet_ReportRequest_requestDocuments');
+            let form_data = new FormData();
+            let documents_links = [] || ''; // Enregistrer les liens des fichiers
+
+            if(requestDocuments.files.length > 0) {
+                // Afficher l'avancement du chargement
+                document.getElementById('loading').style.display = 'block';
+                if (requestDocuments.files.length > 1) { // Si plusieurs fichiers
+                    for (let i = 0; i < requestDocuments.files.length; i++) {
+                        form_data.append('file_' + i, requestDocuments.files[i]);
+                        form_data.append('action', 'handle_file_upload');
+                    }
+                } else { // Si un seul fichier
+                    form_data.append('file', requestDocuments.files[0]);
+                    form_data.append('action', 'handle_file_upload');
+                }
+
+                // Envoi des fichiers
+                fetch(ajaxurl, {
+                    method: 'POST',
+                    body: form_data,
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Enregistrer les liens des fichiers
+                        if (requestDocuments.files.length === 1) {
+                            documents_links.push(data.data.url);
+                            console.log('Data:', data.data);
+                            console.log('Url:', data.data.url);
+                            console.log('Documents:', documents_links);
+                        } else {
+                            for (let i = 0; i < data.data.length; i++) {
+                                documents_links.push(data.data[i].url);
+                                console.log('Data:', data.data[i]);
+                                console.log('Url:', data.data[i].url);
+                                console.log('Documents:', documents_links);
+                            }
+                        }
+                    } else {
+                        console.log('Error:', data.data);
+                        // Masquer l'avancement du chargement
+                        document.getElementById('loading').style.display = 'none';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    // Masquer l'avancement du chargement
+                    document.getElementById('loading').style.display = 'none';
+                });
+            }
+            //#endregion
+
+            // Récupérer l'adresse email de l'utilisateur connecté
+            let userEmail = current_user_data.email;
+
+            // Vérifier si les champs sont vides
+            if (requestProject === '' || requestType === '' || required_submit_date === '') {
+                alert('Veuillez remplir tous les champs obligatoires');
+            }
+
+            fetch('https://lab.padem.org/wp-json/mo/v1/createReportRequest', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    project_id: requestProject,
+                    request_type: requestType,
+                    request_submit_date: required_submit_date,
+                    request_description: requestDescription,
+                    model_files: JSON.stringify(documents_links),
+                    author_email: userEmail,
+                    report_request_state: 'En attente',
+                }),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    console.log('Success:', data);
+                    //#region Vider les champs du formulaire
+                    document.getElementById('onglet_ReportRequest_project').value = '';
+                    document.getElementById('onglet_ReportRequest_requestType').value = '';
+                    document.getElementById('onglet_required_submit_date').value = '';
+                    document.getElementById('onglet_ReportRequest_requestDescription').value = '';
+                    document.getElementById('onglet_ReportRequest_requestDocuments').value = '';
+
+                    // Masquer le formulaire de création de demande
+                    document.getElementById('new_request_form').style.display = 'none';
+                    // Afficher le tableau des demandes
+                    document.getElementById('all_requests_table_and_details').style.display = 'block';
+                    // Masquer le tableau de mes demandes
+                    document.getElementById('onglet_my_requests_table').style.display = 'none';
+                    // Masquer le tableau des archives
+                    document.getElementById('onglet_archives_requests_table').style.display = 'none';
+
+                    // Changer la couleur du bouton
+                    document.getElementById('onglet_report_requests_create_Report_Request').style.color = 'gray';
+                    document.getElementById('onglet_report_requests_all_Requests').style.color = '#29A6A7';
+                    document.getElementById('onglet_report_requests_my_Requests').style.color = 'gray';
+                    document.getElementById('onglet_report_requests_archives_Requests').style.color = 'gray';
+                    //#endregion
+
+                    // Recharger les demandes
+                    displayRequests();
+
+                    // Masquer l'avancement du chargement
+                    document.getElementById('loading').style.display = 'none';
+
+                    // Afficher un message de succès
+                    alert('Demande envoyée avec succès !');
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    // Masquer l'avancement du chargement
+                    document.getElementById('loading').style.display = 'none';
+                });
+        });
+        //#endregion
+    </script>
+</body>
+<!--#endregion -->
+
+<!--#region Onglet Trames (Documents models) -->
+<!-- Barre  de recherche -->
+<div class="container">
+    <div class="input-group mb-3">
+        <input type="text" class="form-control" placeholder="Rechercher une trame" aria-label="Rechercher une trame"
+            aria-describedby="button-addon2" id="search_trames">
+        <div class="input-group-append">
+            <button class="btn btn-outline-secondary" type="button" id="button-addon2">
+                <!-- icone loupe (couleur grise) -->
+                <img src="https://img.icons8.com/ios/50/000000/search--v1.png" style="width: 20px; height: 20px;"
+                    alt="">
+                Rechercher</button>
+        </div>
+    </div>
+</div>
+
+<!--#region Tableau des trames -->
+<div class="container" id="onglet_trames_table" style="display: none;">
+    <table>
+        <thead style="font-size: 12px; font-weight: lighter; color: gray;">
+            <tr>
+                <th scope="col" id="onglet_trame_name">Nom <img
+                        src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 15px; height: 15px;" alt=""></th>
+                <th scope="col" id="onglet_trame_author">Auteur <img
+                        src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 15px; height: 15px;" alt=""></th>
+                <th scope="col" id="onglet_trame_date">Date de création <img
+                        src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 15px; height: 15px;" alt=""></th>
+                <th scope="col" id="onglet_trame_type">Type <img
+                        src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 15px; height: 15px;" alt=""></th> <!-- pdf, word, excel, powerpoint -->
+                <th scope="col">Actions</th> <!-- Voire, Modifier, Supprimer -->
+            </tr>
+        </thead>
+        <tbody id="onglet_display_trames" class="main-group-scroll" style="height: 500px;">
+        </tbody>
+    </table>
+</div>
+<!--#endregion -->
+
+<!--#region Formulaire de création de trame -->
+<div class="container" id="new_trame_form" style="display: none;">
+    <form id="trameForm" class="container" style="border-radius: 15px; background-color: white;">
+        <div class="row">
+            <div class="col-md-12">
+                <p>Remplissez les champs suivants:</p>
+                <hr class="gray-border">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <label for="trameName">Nom de la trame: <span style="color: red;">*</span></label>
+                <input type="text" id="trameName" name="trameName" class="form-control" required>
+            </div>
+            <div class="col-md-6">
+                <label for="trame_type">Type de trame: <span style="color: red;">*</span></label>
+                <input type="text" id="trame_type" name="trame_type" class="form-control" required>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <label for="trameDescription">Description de la trame: <span style="color: red;">*</span></label>
+                <textarea id="trameDescription" name="trameDescription" rows="4" cols="50" class="form-control" required></textarea>
+            </div>
+        </div>
+        <!-- Upload de fichiers -->
+        <div class="row">
+            <div class="col-md-12">
+                <label for="trameDocuments">Documents de la trame: <span style="color: red;">*</span></label>
+                <input type="file" id="trameDocuments" name="trameDocuments" class="form-control" required>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="action-buttons" style="display: flex; justify-content: flex-end;">
+                    <button type="button" class="btn btn-secondary"
+                        style="color: white; width: fit-content; border-radius: 20px;" id="onglet_trame_cancel">
+                        Annuler
+                        <img src="https://lab.padem.org/wp-content/uploads/Annuler.png" alt="Annuler"
+                            style="width: 25px; height: 25px;">
+                    </button>
+                    <button type="button" class="btn btn-primary"
+                        style="width: fit-content; border-radius: 20px;" id="onglet_trame_send">
+                        Envoyer
+                        <img src="https://img.icons8.com/ios/50/FFFFFF/send-file.png" alt="Envoyer"
+                            style="width: 25px; height: 25px;">
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<!--#endregion -->
+
+<!--#region Formulaire de modification de trame -->
+<div class="container" id="edit_trame_form" style="display: none;">
+    <form id="editTrameForm" class="container" style="border-radius: 15px; background-color: white;">
+        <div class="row">
+            <div class="col-md-12">
+                <p>Remplissez les champs suivants:</p>
+                <hr class="gray-border">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <label for="edit_trameName">Nom de la trame: <span style="color: red;">*</span></label>
+                <input type="text" id="edit_trameName" name="edit_trameName" class="form-control" required>
+            </div>
+            <div class="col-md-6">
+                <label for="edit_trame_type">Type de trame: <span style="color: red;">*</span></label>
+                <input type="text" id="edit_trame_type" name="edit_trame_type" class="form-control" required>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <label for="edit_trameDescription">Description de la trame: <span style="color: red;">*</span></label>
+                <textarea id="edit_trameDescription" name="edit_trameDescription" rows="4" cols="50" class="form-control"
+                    required></textarea>
+            </div>
+        </div>
+        <!-- Upload de fichiers -->
+        <div class="row">
+            <div class="col-md-12">
+                <label for="edit_trameDocuments">Documents de la trame: <span style="color: red;">*</span></label>
+                <input type="file" id="edit_trameDocuments" name="edit_trameDocuments" class="form-control" required>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="action-buttons" style="display: flex; justify-content: flex-end;">
+                    <button type="button" class="btn btn-secondary"
+                        style="color: white; width: fit-content; border-radius: 20px;" id="onglet_edit_trame_cancel">
+                        Annuler
+                        <img src="https://lab.padem.org/wp-content/uploads/Annuler.png" alt="Annuler"
+                            style="width: 25px; height: 25px;">
+                    </button>
+                    <button type="button" class="btn btn-primary"
+                        style="width: fit-content; border-radius: 20px;" id="onglet_edit_trame_send">
+                        Enregistrer
+                        <img src="https://img.icons8.com/ios/50/FFFFFF/save-close.png" alt="Enregistrer"
+                            style="width: 25px; height: 25px;">
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<!--#endregion -->
+
+
+
+<!--#region Onglet Projet -->
 <!-- Barre  de recherche -->
 <div class="container">
     <div class="input-group mb-3">
@@ -56,198 +1226,200 @@
 
 
 <body>
-    <!--#region Formulaire de création de projet -->
-    <br style="color: #000; font-size: 20px; font-weight: bold; text-align: center;" />
-    <div class="container" id="new_project_form" style="display: none;" class="main-group-scroll">
-        <form id="projectForm" class="container" style="border-radius: 15px; background-color: white;">
-            <div class="row">
-                <div class="col-md-12">
-                    <p>Remplissez les champs suivants:</p>
-                    <hr class="gray-border">
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <label for="projectTitle">Titre du projet: <span style="color: red;">*</span></label>
-                    <input type="text" id="projectTitle" name="projectTitle" class="form-control" required>
-                </div>
-                <div class="col-md-6">
-                    <label for="projectType">Type de projet: <span style="color: red;">*</span></label>
-                    <input type="text" id="projectType" name="projectType" class="form-control" required>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <label for="projectDate">Date de début prévisionnelle: <span style="color: red;">*</span></label>
-                    <input type="date" id="projectDate" name="projectDate" class="form-control" required>
-                </div>
-                <div class="col-md-6">
-                    <label for="projectEndDate2">Date de fin prévisionnelle: <span style="color: red;">*</span></label>
-                    <input type="date" id="projectEndDate2" name="projectEndDate2" class="form-control" required>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <label for="projectLocation">Pays de réalisation du projet: <span
-                            style="color: red;">*</span></label>
-                    <input type="text" id="projectLocation" name="projectLocation" class="form-control" required>
-                </div>
-                <div class="col-md-6">
-                    <label for="pademResponsible">Responsable Padem:</label>
-                    <input type="text" id="pademResponsible" name="pademResponsible" class="form-control">
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <label for="pademResponsibleEmail">Email du responsable Padem:</label>
-                    <input type="email" id="pademResponsibleEmail" name="pademResponsibleEmail" class="form-control">
-                </div>
-                <div class="col-md-6">
-                    <label for="projectReferent">Référent du projet: <span style="color: red;">*</span></label>
-                    <input type="text" id="projectReferent" name="projectReferent" class="form-control" required>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <label for="projectReferentEmail">Email du référent du projet: <span
-                            style="color: red;">*</span></label>
-                    <input type="email" id="projectReferentEmail" name="projectReferentEmail" class="form-control"
-                        required>
-                </div>
-                <div class="col-md-6">
-                    <label for="projectDescription">Description du projet: <span style="color: red;">*</span></label>
-                    <textarea id="projectDescription" name="projectDescription" rows="4" cols="50"
-                        class="form-control"></textarea>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12" id="add_trames">
-                    <!-- Saisir les noms des documents models que vous comptez joindre ci-dessous à ce projet: -->
-                    <label for="projectDocuments">Saisir le nom de la trame à joindre au projet: <span
-                            style="color: red;">*</span></label>
-                    <textarea type="text" id="projectDocuments" name="projectDocuments" class="form-control" rows="4"
-                        required></textarea>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <hr class="gray-border">
-                </div>
-            </div>
-            <!--
-            <div class="row">
-                <div class="col-md-6">
-                    <label for="projectCover">Ajoutez une image de couverture pour le projet:</label>
-                    <input type="file" id="projectCover" name="projectCover" accept="image/*" class="form-control-file">
-                </div>
-            </div>-->
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="action-buttons" style="display: flex; justify-content: flex-end;">
-                        <button type="button" onclick="cancelProject()" class="btn btn-secondary"
-                            style="width: fit-content;">
-                            Annuler
-                            <img src="https://lab.padem.org/wp-content/uploads/Annuler.png" alt="cancel"
-                                style="width: 35px; height: 35px;">
-                        </button>
-                        <button type="button" onclick="saveFormData()" class="btn btn-primary"
-                            style="color: white; width: fit-content;">
-                            Enregistrer
-                            <img src="https://lab.padem.org/wp-content/uploads/save_black.png" alt="save"
-                                style="width: 35px; height: 35px;">
-                        </button>
+
+    <!--#region Onglet Projet -->
+        <!--#region Formulaire de création de projet -->
+        <br style="color: #000; font-size: 20px; font-weight: bold; text-align: center;" />
+        <div class="container" id="new_project_form" style="display: none;" class="main-group-scroll">
+            <form id="projectForm" class="container" style="border-radius: 15px; background-color: white;">
+                <div class="row">
+                    <div class="col-md-12">
+                        <p>Remplissez les champs suivants:</p>
+                        <hr class="gray-border">
                     </div>
                 </div>
-            </div>
-        </form>
-    </div>
-    <!--#endregion -->
+                <div class="row">
+                    <div class="col-md-6">
+                        <label for="projectTitle">Titre du projet: <span style="color: red;">*</span></label>
+                        <input type="text" id="projectTitle" name="projectTitle" class="form-control" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="projectType">Type de projet: <span style="color: red;">*</span></label>
+                        <input type="text" id="projectType" name="projectType" class="form-control" required>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label for="projectDate">Date de début prévisionnelle: <span style="color: red;">*</span></label>
+                        <input type="date" id="projectDate" name="projectDate" class="form-control" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="projectEndDate2">Date de fin prévisionnelle: <span style="color: red;">*</span></label>
+                        <input type="date" id="projectEndDate2" name="projectEndDate2" class="form-control" required>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label for="projectLocation">Pays de réalisation du projet: <span
+                                style="color: red;">*</span></label>
+                        <input type="text" id="projectLocation" name="projectLocation" class="form-control" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="pademResponsible">Responsable Padem:</label>
+                        <input type="text" id="pademResponsible" name="pademResponsible" class="form-control">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label for="pademResponsibleEmail">Email du responsable Padem:</label>
+                        <input type="email" id="pademResponsibleEmail" name="pademResponsibleEmail" class="form-control">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="projectReferent">Référent du projet: <span style="color: red;">*</span></label>
+                        <input type="text" id="projectReferent" name="projectReferent" class="form-control" required>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label for="projectReferentEmail">Email du référent du projet: <span
+                                style="color: red;">*</span></label>
+                        <input type="email" id="projectReferentEmail" name="projectReferentEmail" class="form-control"
+                            required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="projectDescription">Description du projet: <span style="color: red;">*</span></label>
+                        <textarea id="projectDescription" name="projectDescription" rows="4" cols="50"
+                            class="form-control"></textarea>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12" id="add_trames">
+                        <!-- Saisir les noms des documents models que vous comptez joindre ci-dessous à ce projet: -->
+                        <label for="projectDocuments">Saisir le nom de la trame à joindre au projet: <span
+                                style="color: red;">*</span></label>
+                        <textarea type="text" id="projectDocuments" name="projectDocuments" class="form-control" rows="4"
+                            required></textarea>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <hr class="gray-border">
+                    </div>
+                </div>
+                <!--
+                <div class="row">
+                    <div class="col-md-6">
+                        <label for="projectCover">Ajoutez une image de couverture pour le projet:</label>
+                        <input type="file" id="projectCover" name="projectCover" accept="image/*" class="form-control-file">
+                    </div>
+                </div>-->
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="action-buttons" style="display: flex; justify-content: flex-end;">
+                            <button type="button" onclick="cancelProject()" class="btn btn-secondary"
+                                style="width: fit-content;">
+                                Annuler
+                                <img src="https://lab.padem.org/wp-content/uploads/Annuler.png" alt="cancel"
+                                    style="width: 35px; height: 35px;">
+                            </button>
+                            <button type="button" onclick="saveFormData()" class="btn btn-primary"
+                                style="color: white; width: fit-content;">
+                                Enregistrer
+                                <img src="https://lab.padem.org/wp-content/uploads/save_black.png" alt="save"
+                                    style="width: 35px; height: 35px;">
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!--#endregion -->
 
-    <div id="all_projects_details_container" style="display: block;">
-        <!--#region Tableau des projets -->
-        <div id="all_projects_table" class="main-group-scroll">
+        <div id="all_projects_details_container" style="display: block;">
+            <!--#region Tableau des projets -->
+            <div id="all_projects_table" class="main-group-scroll">
+                <table>
+                    <thead style="font-size: 12px; font-weight: lighter; color: gray;">
+                        <tr>
+                            <th scope="col" id="project_tite">Titre <img src="https://img.icons8.com/ios/50/000000/sort.png"
+                                    style="width: 15px; height: 15px;" alt=""></th>
+                            <th scope="col" id="country_name">Pays <img src="https://img.icons8.com/ios/50/000000/sort.png"
+                                    style="width: 15px; height: 15px;" alt=""></th>
+                            <th scope="col" id="association_name">Association <img
+                                    src="https://img.icons8.com/ios/50/000000/sort.png" style="width: 15px; height: 15px;"
+                                    alt=""></th>
+                            <th scope="col" id="theme_name">Thématique <img src="https://img.icons8.com/ios/50/000000/sort.png"
+                                    style="width: 15px; height: 15px;" alt=""></th>
+                            <th scope="col" id="status_name">Statut <img src="https://img.icons8.com/ios/50/000000/sort.png"
+                                    style="width: 15px; height: 15px;" alt=""></th>
+                        </tr>
+                    </thead>
+                    <tbody id="display_projects" class="main-group-scroll" style="height: 500px;">
+                    </tbody>
+                </table>
+            </div>
+            <!--#endregion -->
+
+            <!--#region Afficher les détails du projet sélectionné -->
+            <div class="container" id="project_details" style="display: none;" class="main-group-scroll">
+            </div>
+            <!--#endregion -->
+        </div>
+
+        <!--#region Mes projets -->
+        <div class="container" id="my_projects_table" style="display: none;" class="main-group-scroll">
             <table>
                 <thead style="font-size: 12px; font-weight: lighter; color: gray;">
                     <tr>
-                        <th scope="col" id="project_tite">Titre <img src="https://img.icons8.com/ios/50/000000/sort.png"
+                        <th scope="col" id="my_project_tite">Titre <img src="https://img.icons8.com/ios/50/000000/sort.png"
                                 style="width: 15px; height: 15px;" alt=""></th>
-                        <th scope="col" id="country_name">Pays <img src="https://img.icons8.com/ios/50/000000/sort.png"
+                        <th scope="col" id="my_country_name">Pays <img src="https://img.icons8.com/ios/50/000000/sort.png"
                                 style="width: 15px; height: 15px;" alt=""></th>
-                        <th scope="col" id="association_name">Association <img
+                        <th scope="col" id="my_association_name">Association <img
                                 src="https://img.icons8.com/ios/50/000000/sort.png" style="width: 15px; height: 15px;"
                                 alt=""></th>
-                        <th scope="col" id="theme_name">Thématique <img src="https://img.icons8.com/ios/50/000000/sort.png"
+                        <th scope="col" id="my_theme_name">Thématique <img
+                                src="https://img.icons8.com/ios/50/000000/sort.png" style="width: 15px; height: 15px;"
+                                alt=""></th>
+                        <th scope="col" id="my_status_name">Statut <img src="https://img.icons8.com/ios/50/000000/sort.png"
                                 style="width: 15px; height: 15px;" alt=""></th>
-                        <th scope="col" id="status_name">Statut <img src="https://img.icons8.com/ios/50/000000/sort.png"
-                                style="width: 15px; height: 15px;" alt=""></th>
+                        <th scope="col">Actions</th>
                     </tr>
                 </thead>
-                <tbody id="display_projects">
+                <tbody id="display_my_projects">
                 </tbody>
             </table>
         </div>
         <!--#endregion -->
 
-        <!--#region Afficher les détails du projet sélectionné -->
-        <div class="container" id="project_details" style="display: none;" class="main-group-scroll">
-            
+        <!--#region Archives -->
+        <div class="container" id="archives_projects_table" style="display: none;" class="main-group-scroll">
+            <table>
+                <thead style="font-size: 12px; font-weight: lighter; color: gray;">
+                    <tr>
+                        <th scope="col" id="archives_project_tite">Titre <img
+                                src="https://img.icons8.com/ios/50/000000/sort.png" style="width: 15px; height: 15px;"
+                                alt=""></th>
+                        <th scope="col" id="archives_country_name">Pays <img
+                                src="https://img.icons8.com/ios/50/000000/sort.png" style="width: 15px; height: 15px;"
+                                alt=""></th>
+                        <th scope="col" id="archives_association_name">Association <img
+                                src="https://img.icons8.com/ios/50/000000/sort.png" style="width: 15px; height: 15px;"
+                                alt=""></th>
+                        <th scope="col" id="archives_theme_name">Thématique <img
+                                src="https://img.icons8.com/ios/50/000000/sort.png" style="width: 15px; height: 15px;"
+                                alt=""></th>
+                        <th scope="col" id="archives_status_name">Statut <img
+                                src="https://img.icons8.com/ios/50/000000/sort.png" style="width: 15px; height: 15px;"
+                                alt=""></th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="display_archives_projects">
+                </tbody>
+            </table>
         </div>
         <!--#endregion -->
-    </div>
-
-    <!-- Mes projets -->
-    <div class="container" id="my_projects_table" style="display: none;" class="main-group-scroll">
-        <table>
-            <thead style="font-size: 12px; font-weight: lighter; color: gray;">
-                <tr>
-                    <th scope="col" id="my_project_tite">Titre <img src="https://img.icons8.com/ios/50/000000/sort.png"
-                            style="width: 15px; height: 15px;" alt=""></th>
-                    <th scope="col" id="my_country_name">Pays <img src="https://img.icons8.com/ios/50/000000/sort.png"
-                            style="width: 15px; height: 15px;" alt=""></th>
-                    <th scope="col" id="my_association_name">Association <img
-                            src="https://img.icons8.com/ios/50/000000/sort.png" style="width: 15px; height: 15px;"
-                            alt=""></th>
-                    <th scope="col" id="my_theme_name">Thématique <img
-                            src="https://img.icons8.com/ios/50/000000/sort.png" style="width: 15px; height: 15px;"
-                            alt=""></th>
-                    <th scope="col" id="my_status_name">Statut <img src="https://img.icons8.com/ios/50/000000/sort.png"
-                            style="width: 15px; height: 15px;" alt=""></th>
-                    <th scope="col">Actions</th>
-                </tr>
-            </thead>
-            <tbody id="display_my_projects">
-            </tbody>
-        </table>
-    </div>
-    <!--#endregion -->
-
-    <!-- Archives -->
-    <div class="container" id="archives_projects_table" style="display: none;" class="main-group-scroll">
-        <table>
-            <thead style="font-size: 12px; font-weight: lighter; color: gray;">
-                <tr>
-                    <th scope="col" id="archives_project_tite">Titre <img
-                            src="https://img.icons8.com/ios/50/000000/sort.png" style="width: 15px; height: 15px;"
-                            alt=""></th>
-                    <th scope="col" id="archives_country_name">Pays <img
-                            src="https://img.icons8.com/ios/50/000000/sort.png" style="width: 15px; height: 15px;"
-                            alt=""></th>
-                    <th scope="col" id="archives_association_name">Association <img
-                            src="https://img.icons8.com/ios/50/000000/sort.png" style="width: 15px; height: 15px;"
-                            alt=""></th>
-                    <th scope="col" id="archives_theme_name">Thématique <img
-                            src="https://img.icons8.com/ios/50/000000/sort.png" style="width: 15px; height: 15px;"
-                            alt=""></th>
-                    <th scope="col" id="archives_status_name">Statut <img
-                            src="https://img.icons8.com/ios/50/000000/sort.png" style="width: 15px; height: 15px;"
-                            alt=""></th>
-                    <th scope="col">Actions</th>
-                </tr>
-            </thead>
-            <tbody id="display_archives_projects">
-            </tbody>
-        </table>
-    </div>
     <!--#endregion -->
 
     <script>
@@ -545,30 +1717,32 @@
             displayProjects.innerHTML = '';
             projects.forEach(project => {
                 let tr = document.createElement('tr');
-                let td = document.createElement('td');
-                tr.className = 'card';
                 tr.style.border = '1px solid lightgray';
                 tr.style.borderRadius = '25px';
                 tr.style.backgroundColor = 'white';
-                tr.style.margin = '5px';
-                tr.style.padding = '5px';
-                tr.style.height = '50px';
+                tr.style.margin = '6px';
+                tr.style.padding = '15px';
                 tr.style.cursor = 'pointer';
-                tr.style.display = 'flex';
-                tr.style.justifyContent = 'space-between';
                 tr.id = project.project_id;
                 tr.addEventListener('click', function () { // Afficher les détails du projet
                     document.getElementById('all_projects_table').style.display = 'none';
                     document.getElementById('project_details').style.display = 'block';
                     displayProject(project.project_id);
                 });
+                tr.addEventListener('mouseover', function () {
+                    tr.style.border = '1px solid #6CE8E8';
+                });
+                tr.addEventListener('mouseout', function () {
+                    tr.style.border = '1px solid lightgray';
+                });
                 tr.innerHTML = `
-                    <td class="card-body" style="color: #29A6A7; margin-left: 5px;">${project.project_title}</td>
-                    <td class="card-body">${project.project_location}</td>
-                    <td class="card-body">${project.association}</td>
-                    <td class="card-body">${project.project_type}</td>
-                    <td class="card-body" style="background-color: ${project.project_status === 'En cours' ? 'lightgreen' : project.project_status === 'Terminé' ? 'lightcoral' : 'lightgray'}; border-radius: 10px; margin: 5px; padding: 5px; width: fit-content;">
-                        <p style="color: ${project.project_status === 'En cours' ? 'green' : project.project_status === 'Terminé' ? 'red' : 'gray'};">${project.project_status}</p>
+                    <th style="color: #29A6A7; margin-left: 5px;">${project.project_title}</th>
+                    <th style="font-weight: lighter; color: black; display: flex; justify-content: flex-start;">${project.project_location}</th>
+                    <th style="font-weight: lighter; color: black; display: flex; justify-content: flex-start;">${project.association}</th>
+                    <th style="font-weight: lighter; color: black; display: flex; justify-content: flex-start;">${project.project_type}</th>
+                    <th style="background-color: ${project.project_status === 'En cours' ? 'lightgreen' : project.project_status === 'Terminé' ? 'lightcoral' : 'lightgray'}; border-radius: 10px; margin: 5px; padding: 5px; width: fit-content;">
+                        <p style="color: ${project.project_status === 'En cours' ? 'green' : project.project_status === 'Terminé' ? 'red' : 'gray'};">${project.project_status ? project.project_status : '---'}</p>
+                    </th>
                 `;
                 displayProjects.appendChild(tr);
             });
@@ -2090,3 +3264,5 @@
         //#endregion
     </script>
 </body>
+<!--#endregion-->
+
