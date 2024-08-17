@@ -3,7 +3,7 @@
     <button type="button" class="box-clicable" id="createProject"
         style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px; border: 1px solid lightgray; margin: 5px; padding: 5px;">
         <!-- icone plus -->
-        <img src="https://img.icons8.com/ios/50/000000/plus-math.png"
+        <img src="https://img.icons8.com/ios/50/9F9F9F/plus-math.png"
             style="width: 20px; height: 20px; margin-right: 5px;" alt="">
         Nouveau Projet
     </button>
@@ -13,7 +13,7 @@
         <button type="button" class="box-clicable" id="allProjects"
             style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px; border: 1px solid lightgray; margin: 5px; padding: 5px;">
             <!-- icone liste -->
-            <img src="https://img.icons8.com/ios/50/000000/list.png"
+            <img src="https://img.icons8.com/ios/50/9F9F9F/list.png"
                 style="width: 20px; height: 20px; margin-right: 5px;" alt="">
             Tous les Projets
         </button>
@@ -22,7 +22,7 @@
         <button type="button" class="box-clicable" id="myProjects"
             style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px; border: 1px solid lightgray; margin: 5px; padding: 5px;">
             <!-- icone profil -->
-            <img src="https://img.icons8.com/ios/50/000000/user.png"
+            <img src="https://img.icons8.com/ios/50/9F9F9F/user.png"
                 style="width: 20px; height: 20px; margin-right: 5px;" alt="">
             Mes projets
         </button>
@@ -31,7 +31,7 @@
         <button type="button" class="box-clicable" id="archives_projects"
             style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px; border: 1px solid lightgray; margin: 5px; padding: 5px;">
             <!-- icone archive -->
-            <img src="https://img.icons8.com/ios/50/000000/archive-folder.png"
+            <img src="https://img.icons8.com/ios/50/9F9F9F/archive-folder.png"
                 style="width: 20px; height: 20px; margin-right: 5px;" alt="">
             Archives
         </button>
@@ -1060,150 +1060,557 @@
 <!--#endregion -->
 
 <!--#region Onglet Trames (Documents models) -->
-<!-- Barre  de recherche -->
-<div class="container">
-    <div class="input-group mb-3">
-        <input type="text" class="form-control" placeholder="Rechercher une trame" aria-label="Rechercher une trame"
-            aria-describedby="button-addon2" id="search_trames">
-        <div class="input-group-append">
-            <button class="btn btn-outline-secondary" type="button" id="button-addon2">
-                <!-- icone loupe (couleur grise) -->
-                <img src="https://img.icons8.com/ios/50/000000/search--v1.png" style="width: 20px; height: 20px;"
-                    alt="">
-                Rechercher</button>
+    <!--#region Entête de l'onglet -->
+    <!-- Boutons de navigation -->
+    <div class="container" style="display: flex; justify-content: space-between; margin: 5px;">
+        <!-- Barre  de recherche -->
+        <div style="display: flex; justify-content: flex-start; margin: 5px; width: fit-content;" id="search_trames_div">
+            <input type="text" class="form-control" placeholder="Rechercher..." aria-label="Rechercher..."
+                aria-describedby="button-addon2" id="search_trames" style="border-radius: 35px; width: 300px;">
+            <div style="width: 2px;"></div>
+            <div class="input-group-append" style="display: flex; justify-content: center;">
+                <button class="btn btn-outline-secondary" type="button" id="trame_search_button" style="border-radius: 50px; background-color: transparent; color: gray; width: 50px; border: none; padding: 5px;" title="Rechercher">
+                    <!-- icone loupe (couleur grise) -->
+                    <img src="https://img.icons8.com/ios/50/9F9F9F/search--v1.png" style="width: 25px; height: 20px;" alt="">
+            </div>
+        </div>
+        <div class="container" style="display: flex; justify-content: flex-end;">
+            <button type="button" class="btn btn-light" id="onglet_trames_create_trame" style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px; border: 1px solid lightgray; margin: 5px; padding: 5px;">
+                <img src="https://img.icons8.com/ios/50/9F9F9F/add-file.png" style="width: 20px; height: 20px;" alt=""> Nouveau document</button>
         </div>
     </div>
-</div>
+    <!--#endregion -->
 
-<!--#region Tableau des trames -->
-<div class="container" id="onglet_trames_table" style="display: none;">
-    <table>
-        <thead style="font-size: 12px; font-weight: lighter; color: gray;">
-            <tr>
-                <th scope="col" id="onglet_trame_name">Nom <img
-                        src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 15px; height: 15px;" alt=""></th>
-                <th scope="col" id="onglet_trame_author">Auteur <img
-                        src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 15px; height: 15px;" alt=""></th>
-                <th scope="col" id="onglet_trame_date">Date de création <img
-                        src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 15px; height: 15px;" alt=""></th>
-                <th scope="col" id="onglet_trame_type">Type <img
-                        src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 15px; height: 15px;" alt=""></th> <!-- pdf, word, excel, powerpoint -->
-                <th scope="col">Actions</th> <!-- Voire, Modifier, Supprimer -->
-            </tr>
-        </thead>
-        <tbody id="onglet_display_trames" class="main-group-scroll" style="height: 500px;">
-        </tbody>
-    </table>
-</div>
-<!--#endregion -->
-
-<!--#region Formulaire de création de trame -->
-<div class="container" id="new_trame_form" style="display: none;">
-    <form id="trameForm" class="container" style="border-radius: 15px; background-color: white;">
-        <div class="row">
-            <div class="col-md-12">
-                <p>Remplissez les champs suivants:</p>
-                <hr class="gray-border">
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6">
-                <label for="trameName">Nom de la trame: <span style="color: red;">*</span></label>
-                <input type="text" id="trameName" name="trameName" class="form-control" required>
-            </div>
-            <div class="col-md-6">
-                <label for="trame_type">Type de trame: <span style="color: red;">*</span></label>
-                <input type="text" id="trame_type" name="trame_type" class="form-control" required>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <label for="trameDescription">Description de la trame: <span style="color: red;">*</span></label>
-                <textarea id="trameDescription" name="trameDescription" rows="4" cols="50" class="form-control" required></textarea>
-            </div>
-        </div>
-        <!-- Upload de fichiers -->
-        <div class="row">
-            <div class="col-md-12">
-                <label for="trameDocuments">Documents de la trame: <span style="color: red;">*</span></label>
-                <input type="file" id="trameDocuments" name="trameDocuments" class="form-control" required>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="action-buttons" style="display: flex; justify-content: flex-end;">
-                    <button type="button" class="btn btn-secondary"
-                        style="color: white; width: fit-content; border-radius: 20px;" id="onglet_trame_cancel">
-                        Annuler
-                        <img src="https://lab.padem.org/wp-content/uploads/Annuler.png" alt="Annuler"
-                            style="width: 25px; height: 25px;">
+    <body>
+        <!--#region Formulaire de création de trame -->
+        <div class="container" id="new_trame_form" style="display: none;">
+            <form id="trameForm" class="card" style="border-radius: 25px; background-color: white; padding: 20px;" method="post" enctype="multipart/form-data">
+                <!--#region Upload de fichiers un ou plusieurs fichiers (pdf, word, excel, powerpoint) un à la fois avec un bouton d'ajout et un bouton de suppression -->
+                <div style="display: column; justify-content: space-between; border: 1px solid lightgray; border-radius: 25px; padding: 10px; height: 300px;" id="trame_files_container" class="card-body main-group-scroll">
+                    <div class="col-md-12">
+                        <label for="number_of_files" style="color: gray;">Combien de fichiers souhaitez-vous ajouter ?</label>
+                        <div style="height: 10px;"></div>
+                        <div style="display: flex; justify-content: flex-start;">
+                            <button type="button" class="btn btn-light" id="add_file_button" style="width: fit-content; color: gray; background-color: white; align-self: center; margin: 5px; padding: 5px;">
+                                <img src="https://img.icons8.com/?size=100&id=1504&format=png&color=9F9F9F" style="width: 35px; height: 35px;" alt=""></button>
+                            <input type="number" id="number_of_files" name="number_of_files" class="form-control" style="width: 5%; border-radius: 20px; border: 1px solid lightgray; padding: 5px;">
+                            <button type="button" class="btn btn-light" id="remove_file_button" style="width: fit-content; color: gray; background-color: white; align-self: center; margin: 5px; padding: 5px;">
+                                <img src="https://img.icons8.com/?size=100&id=1504&format=png&color=9F9F9F" style="width: 35px; height: 35px;" alt=""></button>
+                        </div>
+                    </div>
+                    <div style="height: 10px;"></div>
+                    <div id="trame_files_list">
+                        <div class="col-md-12" id="trame_file_1_">
+                            <label for="trame_file_1" style="color: gray;">Document 1</label>
+                            <input type="file" id="trame_file_1" name="trame_file_1" class="form-control" style="width: 100%; border-radius: 20px; border: 1px solid lightgray; padding: 5px;">
+                            <div style="height: 10px;"></div>
+                        </div>
+                    </div>
+                </div>
+                <!--#endregion Upload de fichiers -->
+                <div class="action-buttons col-md-12" style="display: flex; justify-content: flex-end;">
+                    <button type="button" class="btn btn-secondary" style="color: white; width: fit-content; border-radius: 20px;" id="onglet_trame_cancel">
+                        Annuler <img src="https://lab.padem.org/wp-content/uploads/Annuler.png" alt="Annuler" style="width: 25px; height: 25px;">
                     </button>
-                    <button type="button" class="btn btn-primary"
-                        style="width: fit-content; border-radius: 20px;" id="onglet_trame_send">
-                        Envoyer
-                        <img src="https://img.icons8.com/ios/50/FFFFFF/send-file.png" alt="Envoyer"
-                            style="width: 25px; height: 25px;">
+                    <button type="button" class="btn btn-primary" style="width: fit-content; border-radius: 20px; color: white;" id="onglet_trame_send">
+                        Enregistrer <img src="https://img.icons8.com/ios/50/FFFFFF/save.png" alt="Enregistrer" style="width: 25px; height: 25px;">
                     </button>
                 </div>
-            </div>
+            </form>
         </div>
-    </form>
-</div>
-<!--#endregion -->
+        <!--#endregion -->
+        <!--#region Tableau des trames -->
+        <div class="container" id="onglet_trames_table" style="display: block;">
+            <table>
+                <thead style="font-size: 12px; font-weight: lighter; color: gray;">
+                    <tr>
+                        <th scope="col" id="onglet_trame_name">Nom <img
+                                src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 15px; height: 15px;" alt=""></th>
+                        <th scope="col" id="onglet_trame_author">Auteur <img
+                                src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 15px; height: 15px;" alt=""></th>
+                        <th scope="col" id="onglet_trame_date">Date de création <img
+                                src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 15px; height: 15px;" alt=""></th>
+                        <th scope="col" id="onglet_trame_type">Type <img
+                                src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 15px; height: 15px;" alt=""></th> <!-- pdf, word, excel, powerpoint -->
+                        <th scope="col">Actions</th> <!-- Voire, Modifier, Supprimer -->
+                    </tr>
+                </thead>
+                <tbody id="onglet_display_trames" class="main-group-scroll" style="height: 500px;">
+                </tbody>
+            </table>
+        </div>
+        <!--#endregion -->
 
-<!--#region Formulaire de modification de trame -->
-<div class="container" id="edit_trame_form" style="display: none;">
-    <form id="editTrameForm" class="container" style="border-radius: 15px; background-color: white;">
-        <div class="row">
-            <div class="col-md-12">
-                <p>Remplissez les champs suivants:</p>
-                <hr class="gray-border">
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6">
-                <label for="edit_trameName">Nom de la trame: <span style="color: red;">*</span></label>
-                <input type="text" id="edit_trameName" name="edit_trameName" class="form-control" required>
-            </div>
-            <div class="col-md-6">
-                <label for="edit_trame_type">Type de trame: <span style="color: red;">*</span></label>
-                <input type="text" id="edit_trame_type" name="edit_trame_type" class="form-control" required>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <label for="edit_trameDescription">Description de la trame: <span style="color: red;">*</span></label>
-                <textarea id="edit_trameDescription" name="edit_trameDescription" rows="4" cols="50" class="form-control"
-                    required></textarea>
-            </div>
-        </div>
-        <!-- Upload de fichiers -->
-        <div class="row">
-            <div class="col-md-12">
-                <label for="edit_trameDocuments">Documents de la trame: <span style="color: red;">*</span></label>
-                <input type="file" id="edit_trameDocuments" name="edit_trameDocuments" class="form-control" required>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="action-buttons" style="display: flex; justify-content: flex-end;">
-                    <button type="button" class="btn btn-secondary"
-                        style="color: white; width: fit-content; border-radius: 20px;" id="onglet_edit_trame_cancel">
-                        Annuler
-                        <img src="https://lab.padem.org/wp-content/uploads/Annuler.png" alt="Annuler"
-                            style="width: 25px; height: 25px;">
-                    </button>
-                    <button type="button" class="btn btn-primary"
-                        style="width: fit-content; border-radius: 20px;" id="onglet_edit_trame_send">
-                        Enregistrer
-                        <img src="https://img.icons8.com/ios/50/FFFFFF/save-close.png" alt="Enregistrer"
-                            style="width: 25px; height: 25px;">
-                    </button>
-                </div>
-            </div>
-        </div>
-    </form>
-</div>
+
+        <script>
+            // Initialisation des variables
+            var all_trames = [];
+            
+            // Chargement initial da la page
+            document.addEventListener('DOMContentLoaded', function () {
+                // Récupérer les trames
+                displayTrames();
+            });
+
+            // Ajouter un évènement qui permet d'ajouter un input de fichier
+            document.getElementById('add_file_button').addEventListener('click', function (e) {
+                e.preventDefault();
+                // Récupérer le nombre de fichiers
+                let number_of_files = document.getElementById('number_of_files').value;
+                number_of_files++;
+                document.getElementById('number_of_files').value = number_of_files;
+                // Récupérer le container des fichiers
+                let trame_files_list = document.getElementById('trame_files_list');
+                let div = document.createElement('div');
+                div.className = 'col-md-12';
+                div.id = 'trame_file_' + number_of_files + '_';
+                div.innerHTML = `
+                    <label for="trame_file_${number_of_files}" style="color: gray;">Document ${number_of_files}</label>
+                    <input type="file" id="trame_file_${number_of_files}" name="trame_file_${number_of_files}" class="form-control" style="width: 100%;">
+                    <div style="height: 10px;"></div>
+                `;
+                trame_files_list.appendChild(div);
+            });
+
+            // Ajouter un évènement qui permet de supprimer un input de fichier
+            document.getElementById('remove_file_button').addEventListener('click', function (e) {
+                e.preventDefault();
+                // Récupérer le nombre de fichiers
+                let number_of_files = document.getElementById('number_of_files').value;
+                if (number_of_files > 1) {
+                    // Supprimer le dernier input de fichier
+                    let trame_files_list = document.getElementById('trame_files_list');
+                    let div = document.getElementById('trame_file_' + number_of_files + '_');
+                    trame_files_list.removeChild(div);
+                    number_of_files--;
+                    document.getElementById('number_of_files').value = number_of_files;
+                }
+            });
+
+            // Afficher toutes les trames
+            function displayTrames() {
+                // Récupérer les trames
+                fetch('https://lab.padem.org/wp-json/mo/v1/getProjectFile',
+                    {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        let trames = data;
+                        all_trames = trames;
+                        const tbody = document.querySelector('#onglet_display_trames');
+                        tbody.innerHTML = '';
+                        if (trames.length > 0) {
+                            trames.forEach(trame => {
+                                if (trame.is_trame) { // Vérifier si c'est une trame
+                                    var tr = document.createElement('tr');
+                                    tr.style.border = '1px solid lightgray';
+                                    tr.style.borderRadius = '25px';
+                                    tr.style.backgroundColor = 'white';
+                                    tr.style.display = 'flex';
+                                    tr.style.justifyContent = 'flex-start';
+                                    tr.style.margin = '6px';
+                                    tr.style.padding = '15px';
+                                    tr.style.cursor = 'pointer';
+                                    tr.style.paddingRight = '35px';
+                                    tr.id = trame.trame_id;
+                                    tr.addEventListener('click', function (e) {
+                                        e.preventDefault();
+                                        // ouvrir un apperçu du document
+                                        displayFilePreview(trame.file_link);
+                                    });
+                                    // Changement de couleur de la ligne au survol
+                                    tr.addEventListener('mouseover', function (e) {
+                                        tr.style.border = '1px solid #6CE8E8';
+                                    });
+                                    tr.addEventListener('mouseout', function (e) {
+                                        tr.style.border = '1px solid lightgray';
+                                    });
+                                    tr.innerHTML = `
+                                        <th style="font-weight: lighter; color: black; display: flex; justify-content: flex-start;"> 
+                                            <p id="trame_name_displayed" style="color: black;">${trame.file_name}</p>
+                                            <input type="text" id="trame_name_input" style="display: none; width: 100%;">
+                                            <!-- icone éditer --> <img src="https://img.icons8.com/ios/50/29A6A7/edit.png" style="width: 20px; height: 20px; display: none;" id="edit_trame_${trame.id}" alt="">
+                                        </th>
+                                        <th style="font-weight: lighter; color: black; display: flex; justify-content: flex-start;">${trame.author_email}</th>
+                                        <th style="font-weight: lighter; color: black; display: flex; justify-content: flex-start;">${trame.created_at}</th>
+                                        <th style="font-weight: lighter; color: black; display: flex; justify-content: flex-start;">${trame.file_type}</th>
+                                        <!-- Bouton pour télécharger le document et bouton pour supprimer le document -->
+                                        <th style="color: #29A6A7; width: 100%; border-radius: 10px; margin: 3px; padding: 3px; display: flex; justify-content: space-between;">
+                                            <a href="${trame.file_link}" download="${trame.file_name}" style="color: #29A6A7; text-decoration: none;"> <img src="https://img.icons8.com/ios/50/29A6A7/download.png" style="width: 20px; height: 20px;" id="download_trame_${trame.id}" alt=""></a>
+                                                <!-- icone corbeille (couleur rouge) --> <img src="https://img.icons8.com/ios/50/FF0000/trash.png" style="width: 20px; height: 20px;" id="delete_trame_${trame.id}" alt="">
+                                    `;
+                                    tbody.appendChild(tr);
+
+                                    // Ajouter un évènement qui fait apparaitre l'icone "éditer" au survole de la souris
+                                    
+
+                                    // Ajouter un évènement pour éditer le nom de la trame
+                                    document.getElementById(`trame_name_displayed`).addEventListener('click', function (e) {
+                                        e.preventDefault();
+                                        document.getElementById(`trame_name_displayed`).style.display = 'none';
+                                        document.getElementById(`trame_name_input`).style.display = 'block';
+                                        document.getElementById(`trame_name_input`).value = trame.file_name;
+                                    });
+
+                                    // Ajouter un évènement pour télécharger le document
+                                    document.getElementById(`download_trame_${trame.id}`).addEventListener('click', function (e) {
+                                        e.preventDefault();
+                                        // Télécharger le document
+                                        window.open(trame.file_link, '_blank');
+                                    });
+
+                                    // Ajouter un évènement pour supprimer le document
+                                    document.getElementById(`delete_trame_${trame.id}`).addEventListener('click', function (e) {
+                                        e.preventDefault();
+                                        // Supprimer le document
+                                        fetch('https://lab.padem.org/wp-json/mo/v1/deleteProjectFiles', {
+                                            method: 'DELETE',
+                                            headers: {
+                                                'Content-Type': 'application/json',
+                                            },
+                                            body: JSON.stringify({
+                                                column_param1: trame.id,
+                                            }),
+                                        })
+                                            .then((response) => response.json())
+                                            .then((data) => {
+                                                console.log('Success:', data);
+
+                                                // Recharger les trames
+                                                displayTrames();
+                                            })
+                                            .catch((error) => {
+                                                console.error('Error:', error);
+                                            });
+
+                                        // Supprimer le document
+
+                                    });
+                                }
+                            });
+                        } else {
+                            let tr = document.createElement('tr');
+                            tr.innerHTML = `
+                                <td colspan="6" style="text-align: center; color: gray;"> <img src="https://img.icons8.com/?size=100&id=3574&format=png&color=9F9F9F" style="width: 20px; height: 20px;" alt="">
+                                    Aucun document trouvé.</td>
+                            `;
+                            tbody.appendChild(tr);
+                        }
+                    })
+            }
+
+            // Fonction pour afficher les détails d'une trame
+            function displayTrameDetails(trame_id) {
+                // Récupérer la trame
+                const trame = all_trames.find(trame => trame.trame_id === trame_id);
+                console.log('Trame:', trame);
+                // Afficher les détails de la trame
+                document.getElementById('trame_name').innerHTML = trame.trame_name;
+                document.getElementById('trame_author').innerHTML = trame.trame_author;
+                document.getElementById('trame_date').innerHTML = trame.trame_date;
+                document.getElementById('trame_type').innerHTML = trame.trame_type;
+                document.getElementById('trame_description').innerHTML = trame.trame_description;
+                document.getElementById('trame_documents').innerHTML = trame.trame_documents;
+            }
+
+            // Ajouter un évènement qui permet de filtrer les trames au fur et à mesure de la saisie
+            document.getElementById('search_trames').addEventListener('keyup', function (e) {
+                e.preventDefault();
+
+                // Récupérer la valeur du champ de recherche
+                let search_trames = document.getElementById('search_trames').value;
+
+                // Récupérer les trames
+                fetch('https://lab.padem.org/wp-json/mo/v1/getTrames')
+                    .then(response => response.json())
+                    .then(data => {
+                        let trames = data;
+                        const tbody = document.querySelector('#onglet_display_trames');
+                        tbody.innerHTML = '';
+                        if (trames.length > 0) {
+                            trames.forEach(trame => {
+                                if (trame.trame_name.toLowerCase().includes(search_trames.toLowerCase())) { // Si la trame correspond à la recherche
+                                    var tr = document.createElement('tr');
+                                    tr.style.border = '1px solid lightgray';
+                                    tr.style.borderRadius = '25px';
+                                    tr.style.backgroundColor = 'white';
+                                    tr.style.display = 'flex';
+                                    tr.style.justifyContent = 'flex-start';
+                                    tr.style.margin = '6px';
+                                    tr.style.padding = '15px';
+                                    tr.style.cursor = 'pointer';
+                                    tr.style.paddingRight = '35px';
+                                    tr.id = trame.trame_id;
+                                    tr.addEventListener('click', function (e) {
+                                        e.preventDefault();
+                                        // Afficher les détails de la trame
+                                        document.getElementById('onglet_trame_details').style.display = 'block';
+                                        // Masquer le tableau des trames
+                                        document.getElementById('onglet_trames_table').style.display = 'none';
+                                        displayTrameDetails(trame.trame_id);
+                                    });
+                                    // Changement de couleur de la ligne au survol
+                                    tr.addEventListener('mouseover', function (e) {
+                                        tr.style.border = '1px solid #6CE8E8';
+                                    });
+                                    tr.addEventListener('mouseout', function (e) {
+                                        tr.style.border = '1px solid lightgray';
+                                    });
+                                    tr.innerHTML = `
+                                        <th style="font-weight: lighter; color: black; display: flex; justify-content: flex-start;">${trame.trame_name}</th>
+                                        <th style="font-weight: lighter; color: black; display: flex; justify-content: flex-start;">${trame.trame_author}</th>
+                                        <th style="font-weight: lighter; color: black; display: flex; justify-content: flex-start;">${trame.trame_date}</th>
+                                        <th style="font-weight: lighter; color: black; display: flex; justify-content: flex-start;">${trame.trame_type}</th>
+                                        <th style="color: #29A6A7; width: fit-content; border-radius: 10px; margin: 3px; padding: 3px; background-color: rgba(41, 166, 167, 0.1);">Voire</th>
+                                    `;
+                                    tbody.appendChild(tr);
+                                }
+                            });
+                        } else {
+                            let tr = document.createElement('tr');
+                            tr.innerHTML = `
+                                <td colspan="6" style="text-align: center; color: gray;"> <img src="https://img.icons8.com/?size=100&id=3574&format=png&color=9F9F9F" style="width: 20px; height: 20px;" alt="">
+                                    Aucun document trouvé.</td>
+                            `;
+                            tbody.appendChild(tr);
+                        }
+                    })
+                    .catch(error => console.error(error));
+            });
+
+            // Rechercher une trame
+            document.getElementById('trame_search_button').addEventListener('keyup', function (e) {
+                e.preventDefault();
+
+                // Récupérer la valeur du champ de recherche
+                let search_trames = document.getElementById('search_trames').value;
+
+                // Récupérer les trames
+                fetch('https://lab.padem.org/wp-json/mo/v1/getTrames')
+                    .then(response => response.json())
+                    .then(data => {
+                        let trames = data;
+                        const tbody = document.querySelector('#onglet_display_trames');
+                        tbody.innerHTML = '';
+                        if (trames.length > 0) {
+                            trames.forEach(trame => {
+                                if (trame.trame_name.toLowerCase().includes(search_trames.toLowerCase())) { // Si la trame correspond à la recherche
+                                    var tr = document.createElement('tr');
+                                    tr.style.border = '1px solid lightgray';
+                                    tr.style.borderRadius = '25px';
+                                    tr.style.backgroundColor = 'white';
+                                    tr.style.display = 'flex';
+                                    tr.style.justifyContent = 'flex-start';
+                                    tr.style.margin = '6px';
+                                    tr.style.padding = '15px';
+                                    tr.style.cursor = 'pointer';
+                                    tr.style.paddingRight = '35px';
+                                    tr.id = trame.trame_id;
+                                    tr.addEventListener('click', function (e) {
+                                        e.preventDefault();
+                                        // Afficher les détails de la trame
+                                        document.getElementById('onglet_trame_details').style.display = 'block';
+                                        // Masquer le tableau des trames
+                                        document.getElementById('onglet_trames_table').style.display = 'none';
+                                        displayTrameDetails(trame.trame_id);
+                                    });
+                                    // Changement de couleur de la ligne au survol
+                                    tr.addEventListener('mouseover', function (e) {
+                                        tr.style.border = '1px solid #6CE8E8';
+                                    });
+                                    tr.addEventListener('mouseout', function (e) {
+                                        tr.style.border = '1px solid lightgray';
+                                    });
+                                    tr.innerHTML = `
+                                        <th style="font-weight: lighter; color: black; display: flex; justify-content: flex-start;">${trame.trame_name}</th>
+                                        <th style="font-weight: lighter; color: black; display: flex; justify-content: flex-start;">${trame.trame_author}</th>
+                                        <th style="font-weight: lighter; color: black; display: flex; justify-content: flex-start;">${trame.trame_date}</th>
+                                        <th style="font-weight: lighter; color: black; display: flex; justify-content: flex-start;">${trame.trame_type}</th>
+                                        <th style="color: #29A6A7; width: fit-content; border-radius: 10px; margin: 3px; padding: 3px; background-color: rgba(41, 166, 167, 0.1);">Voire</th>
+                                    `;
+                                    tbody.appendChild(tr);
+                                }
+                            });
+                        } else {
+                            let tr = document.createElement('tr');
+                            tr.innerHTML = `
+                                <td colspan="6" style="text-align: center; color: gray;"> <img src="https://img.icons8.com/?size=100&id=3574&format=png&color=9F9F9F" style="width: 20px; height: 20px;" alt="">
+                                    Aucun document trouvé.</td>
+                            `;
+                            tbody.appendChild(tr);
+                        }
+                    })
+                    .catch(error => console.error(error));
+            });
+
+            // Afficher le formulaire de création de trame
+            document.getElementById('onglet_trames_create_trame').addEventListener('click', function (e) {
+                e.preventDefault();
+
+                // Afficher le formulaire de création de trame
+                if (document.getElementById('new_trame_form').style.display === 'block') {
+                    document.getElementById('new_trame_form').style.display = 'none';
+                    document.getElementById('onglet_trames_create_trame').innerHTML = '<img src="https://img.icons8.com/ios/50/9F9F9F/add-file.png" style="width: 20px; height: 20px;" alt=""> Nouveau document';
+                    document.getElementById('onglet_trames_create_trame').style.color = 'gray';
+
+                    // Vider les champs du formulaire
+                    document.getElementById('number_of_files').value = 1;
+                    document.getElementById('trame_file_1').value = '';
+                    document.getElementById('trame_files_list').innerHTML = `
+                        <div class="col-md-12" id="trame_file_1_">
+                            <label for="trame_file_1" style="color: gray;">Document 1</label>
+                            <input type="file" id="trame_file_1" name="trame_file_1" class="form-control" style="width: 100%;">
+                            <div style="height: 10px;"></div>
+                        </div>
+                    `;
+                } else {
+                    document.getElementById('new_trame_form').style.display = 'block';
+                    document.getElementById('onglet_trames_create_trame').innerHTML = '<img src="https://img.icons8.com/?size=100&id=6483&format=png&color=29A6A7" style="width: 20px; height: 20px;" alt=""> Terminer';
+                    document.getElementById('onglet_trames_create_trame').style.color = '#29A6A7';
+                    document.getElementById('new_trame_form').style.margin = '10px';
+                    document.getElementById('new_trame_form').style.padding = '10px';
+                }
+            });
+
+            // Annuler la création de trame
+            document.getElementById('onglet_trame_cancel').addEventListener('click', function (e) {
+                e.preventDefault();
+
+                // Masquer le formulaire de création de trame
+                document.getElementById('new_trame_form').style.display = 'none';
+
+                // Changer la couleur du bouton
+                document.getElementById('onglet_trames_create_trame').style.color = 'gray';
+                document.getElementById('onglet_trames_create_trame').innerHTML = 'Nouveau document';
+
+                // Vider les champs du formulaire
+                document.getElementById('number_of_files').value = 1;
+                document.getElementById('trame_file_1').value = '';
+                document.getElementById('trame_files_list').innerHTML = `
+                    <div class="col-md-12" id="trame_file_1_">
+                        <label for="trame_file_1" style="color: gray;">Document 1</label>
+                        <input type="file" id="trame_file_1" name="trame_file_1" class="form-control" style="width: 100%;">
+                        <div style="height: 10px;"></div>
+                    </div>
+                `;
+            });
+
+            // Envoyer la trame
+            document.getElementById('onglet_trame_send').addEventListener('click', function (e) {
+                e.preventDefault();
+                // Variables
+                let files_names = [];
+                let files_types = [];
+                let files_sizes = [];
+                let files_links = [];
+                let files = [];
+                // Récupérer le premier fichier
+                let trame_file_1 = document.getElementById('trame_file_1').files[0];
+                files.push(trame_file_1);
+                files_names.push(trame_file_1.name);
+                files_types.push(trame_file_1.type);
+                files_sizes.push(trame_file_1.size);
+
+                // Récupérer tout les autres fichiers
+                if (document.getElementById('number_of_files').value > 1) { // Si plusieurs fichiers
+                    for (let i = 1; i <= document.getElementById('number_of_files').value; i++) {
+                        let file = document.getElementById('trame_file_' + i).files[0];
+                        files.push(file);
+                        files_names.push(file.name);
+                        files_types.push(file.type);
+                        files_sizes.push(file.size);
+                    }
+                }
+
+                // Afficher l'avancement du chargement
+                document.getElementById('loading').style.display = 'block';
+
+                files.forEach((file, index) => { // Pour chaque fichier à envoyer
+                    let file_link = '';
+                    // Créer un objet FormData
+                    let formData = new FormData();
+                    formData.append('file', file);
+                    formData.append('action', 'handle_file_upload');
+                    sendFile(formData);
+                    async function sendFile (form_data) { // Envoi des fichiers
+                        fetch(ajaxurl, {
+                            method: 'POST',
+                            body: form_data,
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    file_link = data.data.url;
+                                } else {
+                                    console.log('Error:', data.data);
+                                    // Masquer l'avancement du chargement
+                                    document.getElementById('loading').style.display = 'none';
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                // Masquer l'avancement du chargement
+                                document.getElementById('loading').style.display = 'none';
+                            });
+                    }
+    
+                    // Récupérer l'adresse email de l'utilisateur connecté
+                    let userEmail = current_user_data.email;
+    
+                    // Vérifier si les champs sont vides
+                    if (files.length === 0) {
+                        alert('Veuillez ajouter au moins un fichier');
+                        return;
+                    }
+    
+                    // Envoyer les données de la trame
+                    sendTrameData();
+                    async function sendTrameData() {  // Envoi des données de la trame
+                        fetch('https://lab.padem.org/wp-json/mo/v1/createProjectFile', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                file_name: files_names[index],
+                                file_type: files_types[index],
+                                file_link: file_link,
+                                author_email: userEmail,
+                                is_trame: true,
+                            }),
+                        })
+                            .then((response) => response.json())
+                            .then((data) => {
+                                // Masquer l'avancement du chargement
+                                document.getElementById('loading').style.display = 'none';
+                                // Recharger les trames
+                                displayTrames();
+                                
+                                // Vider les champs du formulaire
+                                document.getElementById('number_of_files').value = 1;
+                                document.getElementById('trame_file_1').value = '';
+                                document.getElementById('trame_files_list').innerHTML = `
+                                    <div class="col-md-12" id="trame_file_1_">
+                                        <label for="trame_file_1" style="color: gray;">Document 1</label>
+                                        <input type="file" id="trame_file_1" name="trame_file_1" class="form-control" style="width: 100%; border-radius: 20px; border: 1px solid lightgray; padding: 5px;">
+                                        <div style="height: 10px;"></div>
+                                    </div>
+                                `;
+                            })
+                            .catch((error) => {
+                                console.error('Error:', error);
+                                // Masquer l'avancement du chargement
+                                document.getElementById('loading').style.display = 'none';
+                            });
+                    }
+                });
+            });
+        </script>
+    </body>
 <!--#endregion -->
 
 
