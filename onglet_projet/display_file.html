@@ -1,0 +1,69 @@
+<!-- Afficher un aperçu de l'image -->
+<th
+    style="font-weight: lighter; color: black; display: ${is_image[index] ? 'flex' : 'none'}; justify-content: flex-start;">
+    <div style="width: 100%; height: 50px; border-radius: 50%; background-color: white; display: flex; justify-content: space-between; cursor: pointer;"
+        id="trame_preview_image_${trame.id}">
+        ${trame.file_link ? `<img src="${trame.file_link}"
+            style="width: 50px; height: 50px; border-radius: 50%; background-color: white;" alt="">` : `<img
+            src="https://img.icons8.com/ios/50/FFA500/image.png"
+            style="width: 50px; height: 50px; border-radius: 50%; background-color: white;" alt="">`}
+        <p class="long-file-name" style="color: black; margin-top: 10px;">${trame.file_name ? trame.file_name : '---'}
+        </p>
+    </div>
+</th>
+<th
+    style="font-weight: lighter; color: black; display: ${is_image[index] ? 'none' : 'flex'}; justify-content: flex-start;">
+    <div id="trame_name_displayed_${trame.id}" style="display: flex; justify-content: space-between;">
+        ${trame.file_link ? `<iframe src="${trame.file_link}"
+            style="width: 50px; height: 50px; border-radius: 50%; background-color: white;"></iframe>` : `<img
+            src="${fileIcon}" style="width: 50px; height: 50px; border-radius: 50%; background-color: white;" alt="">`}
+        <p class="long-file-name" style="color: black; margin-top: 10px;">${trame.file_name ? trame.file_name : '---'}
+        </p>
+    </div>
+    <div style="display: none;">
+        <input type="text" id="trame_name_input_${trame.id}"
+            style="display: none; width: 100px; border-radius: 20px; border: 1px solid lightgray; padding: 5px;">
+        <img src="https://img.icons8.com/?size=100&id=11658&format=png&color=29A6A7"
+            style="width: 30px; height: 30px; display: none; align-self: center; margin: 5px; padding: 5px;"
+            id="save_trame_edit_${trame.id}" alt="">
+        <img src="https://img.icons8.com/?size=100&id=3062&format=png&color=9F9F9F"
+            style="width: 30px; height: 30px; display: none; align-self: center; margin: 5px; padding: 5px;"
+            id="cancel_edit_trame_${trame.id}" alt="">
+        <!-- icone éditer --> <img src="https://img.icons8.com/ios/50/29A6A7/edit.png"
+            style="width: 20px; height: 20px; display: none;" id="edit_trame_${trame.id}" alt="">
+    </div>
+</th>
+<th
+    style="font-weight: lighter; color: black; display: flex; justify-content: space-between; margin-left: 15px; margin-right: 15px; margin-top: 10px;">
+    ${trame.author_email}</th>
+<th style="font-weight: lighter; color: black; display: flex; justify-content: space-between; margin-left: 15px; margin-right: 15px"
+    margin-top: 10px;>${created_at}</th>
+<th style="font-weight: lighter; color: black; display: flex; justify-content: space-between; margin-left: 15px; margin-right: 15px"
+    margin-top: 10px;>${fileSize}</th>
+<!-- Bouton pour télécharger le document et bouton pour supprimer le document -->
+<th
+    style="color: #29A6A7; width: 100%; border-radius: 10px; display: flex; justify-content: flex-end; margin-left: 15px; margin-right: 3px;">
+    <!-- Afficher l'animation de chargement -->
+    <div id="loading_delete_${trame.id}" style="display: none; background: none;">
+        <img src="https://lab.padem.org/wp-content/uploads/Spin@1x-1.0s-200px-200px.gif"
+            style="width: 30px; height: 30px" alt="Suppression...">
+    </div>
+    <a href="${trame.file_link}" id="download_trame_${trame.id}" download="${trame.file_name}"
+        style="text-decoration: none; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; background-color: #29A7A749; align-self: center;">
+        <img src="https://img.icons8.com/ios/50/29A6A7/download.png" style="width: 20px; height: 20px; cursor: pointer;"
+            alt="Télécharger">
+    </a>
+    <div style="width: 20px;"></div>
+    <div style="width: 50px; height: 50px; border-radius: 50%; cursor: pointer; background-color: #FF201941; align-self: center;"
+        id="delete_trame_${trame.id}">
+        <img src="https://img.icons8.com/ios/50/FF0000/trash.png" style="width: 20px; height: 20px; cursor: pointer;"
+            alt="Supprimer">
+    </div>
+</th>
+
+<!-- télécharger un fichier -->
+ <a href="${trame.file_link}" id="download_trame_${trame.id}" download="${trame.file_name}"
+        style="text-decoration: none; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; background-color: #29A7A749; align-self: center;">
+        <img src="https://img.icons8.com/ios/50/29A6A7/download.png" style="width: 20px; height: 20px; cursor: pointer;"
+            alt="Télécharger">
+    </a>

@@ -1137,7 +1137,7 @@
                         <th scope="col">Actions</th> <!-- Voire, Modifier, Supprimer -->
                     </tr>
                 </thead>
-                <tbody id="onglet_display_trames" style="height: 500px;" class="main-group-scroll">
+                <tbody id="onglet_display_trames" class="main-group-scroll" style="height: 500px;">
                 </tbody>
             </table>
         </div>
@@ -1230,10 +1230,11 @@
                         all_trames = data; // Enregistrer la liste des trames
                         const tbody = document.querySelector('#onglet_display_trames');
                         tbody.innerHTML = '';
+                        var is_image = new Array(trames.length).fill(false); // Tableau pour vérifier si le fichier est une image
 
                         if (trames.length > 0) { // Si des trames existent
                             // Afficher les trames
-                            trames.forEach(trame => {
+                            trames.forEach((trame, index) => {
 
                                 if (trame.is_trame) { // Vériier si c'est une trame
 
@@ -1262,7 +1263,6 @@
                 
                                     //#region Afficher une icone à côté du nom du fichier selon son type
                                     var fileIcon = '';
-                                    var is_image = false;
                                     if (trame.file_type) {
                                         if ((trame.file_type).includes('pdf')) {
                                             fileIcon = 'https://img.icons8.com/ios/50/FF0000/pdf.png';
@@ -1274,7 +1274,7 @@
                                             fileIcon = 'https://img.icons8.com/ios/50/FFA500/ms-powerpoint.png';
                                         } else if ((trame.file_type).includes('image')) {
                                             fileIcon = 'https://img.icons8.com/ios/50/FFA500/image.png';
-                                            is_image = true;
+                                            is_image[index] = true;
                                         } else if((trame.file_type).includes('audio')) {
                                             fileIcon = 'https://img.icons8.com/ios/50/FFA500/audio.png';
                                         } else if((trame.file_type).includes('video')) {
@@ -1292,7 +1292,7 @@
                                     let day = date.getDate();
                                     let month = date.getMonth() + 1;
                                     let year = date.getFullYear();
-                                    let created_at = `${getDayName(date.getDay())}, ${day} ${getMonthName(month)} ${year}`;
+                                    let created_at = `${day} ${getMonthName(month)} ${year}`;
                                     //#endregion
 
                                     //#region Créer une ligne pour chaque trame
@@ -1300,11 +1300,11 @@
                                     tr.style.border = '1px solid lightgray';
                                     tr.style.borderRadius = '25px';
                                     tr.style.backgroundColor = 'white';
-                                    tr.style.display = 'flex';
-                                    tr.style.justifyContent = 'flex-start';
-                                    tr.style.margin = '6px';
-                                    tr.style.padding = '15px';
-                                    tr.style.paddingRight = '35px';
+                                    tr.title = trame.file_name;
+                                    tr.style.margin = '5px';
+                                    tr.style.padding = '8px';
+                                    tr.style.paddingRight = '10px';
+                                    tr.style.marginBottom = '0px';
                                     tr.id = parseInt(trame.id);
                                     tr.addEventListener('click', function (e) {
                                         e.preventDefault();
@@ -1319,38 +1319,69 @@
                                         tr.style.border = '1px solid lightgray';
                                     });
                                     tr.innerHTML = `
-                                        <!-- Afficher un apperçu du document dans un petit cercle sur la gauche -->
-                                        <th style="font-weight: lighter; color: black; display: ${is_image ? 'flex' : 'none'}; justify-content: flex-start;">
-                                            <div style="width: 50px; height: 50px; border-radius: 50%; background-color: white; display: flex; justify-content: center; align-items: center; cursor: pointer;" id="trame_preview_image_${trame.id}">
-                                                <img src="${trame.file_link}" style="width: 40px; height: 40px; border-radius: 50%;" alt="">
+                                        <!-- Afficher un aperçu de l'image -->
+                                        <th style="font-weight: lighter; color: black; display: ${is_image[index] ? 'flex' : 'none'}; justify-content: flex-start;">
+                                            <div style="width: 100%; height: 50px; border-radius: 50%; background-color: white; display: flex; justify-content: flex-start; cursor: pointer;" id="trame_preview_image_${trame.id}">
+                                                ${trame.file_link ? `<img src="${trame.file_link}" style="border: 1px solid lightgray; width: 50px; height: 50px; border-radius: 50%; background-color: white;" alt="">` : `<img src="https://img.icons8.com/ios/50/FFA500/image.png" style="border: 1px solid lightgray; width: 50px; height: 50px; border-radius: 50%; background-color: white;" alt="">`}
+                                                <div style="width: 6px;"></div>
+                                                <p class="long-file-name" style="color: black; margin-top: 15px; width: 150px;">${trame.file_name ? trame.file_name : '---'}</p>
                                             </div>
-                                            <p style="color: black;"> ${trame.file_name}</p>
                                         </th>
-                                        <th style="font-weight: lighter; color: black; display: ${is_image ? 'none' : 'flex'}; justify-content: flex-start;"> 
-                                            <p id="trame_name_displayed_${trame.id}" style="color: black;"> <iframe src="${trame.file_link}" style="width: 50px; height: 50px; border-radius: 50%; background-color: white;"></iframe> ${trame.file_name}</p>
-                                            <input type="text" id="trame_name_input_${trame.id}" style="display: none; width: 100px; border-radius: 20px; border: 1px solid lightgray; padding: 5px;">
-                                                <img src="https://img.icons8.com/?size=100&id=11658&format=png&color=29A6A7" style="width: 30px; height: 30px; display: none; align-self: center; margin: 5px; padding: 5px;" id="save_trame_edit_${trame.id}" alt="">
-                                                <img src="https://img.icons8.com/?size=100&id=3062&format=png&color=9F9F9F" style="width: 30px; height: 30px; display: none; align-self: center; margin: 5px; padding: 5px;" id="cancel_edit_trame_${trame.id}" alt="">
-                                            <!-- icone éditer --> <img src="https://img.icons8.com/ios/50/29A6A7/edit.png" style="width: 20px; height: 20px; display: none;" id="edit_trame_${trame.id}" alt="">
+                                        <th style="font-weight: lighter; color: black; display: ${is_image[index] ? 'none' : 'flex'}; justify-content: flex-start;"> 
+                                            <div id="trame_name_displayed_${trame.id}" style="display: flex; justify-content: space-between;"> 
+                                                ${trame.file_link ? `<iframe src="${trame.file_link}" style="border: 1px solid lightgray; width: 50px; height: 50px; border-radius: 50%; background-color: white;"></iframe>` : `<img src="${fileIcon}" style="border: 1px solid lightgray; width: 50px; height: 50px; border-radius: 50%; background-color: white;" alt="">`}
+                                                <div style="width: 6px;"></div>
+                                                <p class="long-file-name" style="color: black; margin-top: 15px;">${trame.file_name ? trame.file_name : '---'}</p>
+                                            </div>
+                                            <div style="display: none;">
+                                                <input type="text" id="trame_name_input_${trame.id}" style="display: none; width: 100px; border-radius: 20px; border: 1px solid lightgray; padding: 5px;">
+                                                    <img src="https://img.icons8.com/?size=100&id=11658&format=png&color=29A6A7" style="width: 30px; height: 30px; display: none; align-self: center; margin: 5px; padding: 5px;" id="save_trame_edit_${trame.id}" alt="">
+                                                    <img src="https://img.icons8.com/?size=100&id=3062&format=png&color=9F9F9F" style="width: 30px; height: 30px; display: none; align-self: center; margin: 5px; padding: 5px;" id="cancel_edit_trame_${trame.id}" alt="">
+                                                <!-- icone éditer --> <img src="https://img.icons8.com/ios/50/29A6A7/edit.png" style="width: 20px; height: 20px; display: none;" id="edit_trame_${trame.id}" alt="">
+                                            </div>
                                         </th>
-                                        <th style="font-weight: lighter; color: black; display: flex; justify-content: space-between; margin-left: 15px; margin-right: 15px">${trame.author_email}</th>
-                                        <th style="font-weight: lighter; color: black; display: flex; justify-content: space-between; margin-left: 15px; margin-right: 15px">${created_at}</th>
-                                        <th style="font-weight: lighter; color: black; display: flex; justify-content: space-between; margin-left: 15px; margin-right: 15px">${fileSize}</th>
+                                        <th style="font-weight: lighter; color: black; display: flex; justify-content: space-between; margin-left: 15px; margin-right: 15px; margin-top: 15px;"><div style="width: 20px;"></div>${trame.author_email}</th>
+                                        <th style="font-weight: lighter; color: black; display: flex; justify-content: space-between; margin-left: 15px; margin-right: 15px; margin-top: 15px;"><div style="width: 20px;"></div>${created_at}</th>
+                                        <th style="font-weight: lighter; color: black; display: flex; justify-content: space-between; margin-left: 15px; margin-right: 15px; margin-top: 15px;"><div style="width: 20px;"></div>${fileSize}</th>
                                         <!-- Bouton pour télécharger le document et bouton pour supprimer le document -->
-                                        <th style="color: #29A6A7; width: 100%; border-radius: 10px; margin: 3px; padding: 3px; display: flex; justify-content: flex-end; margin-left: 15px; margin-right: 15px">
+                                        <th style="color: #29A6A7; width: 100%; display: flex; justify-content: flex-end; margin-left: 15px; margin-right: 3px;">
                                             <!-- Afficher l'animation de chargement -->
                                             <div id="loading_delete_${trame.id}" style="display: none; background: none;">
-                                                <img src="https://lab.padem.org/wp-content/uploads/Spin@1x-1.0s-200px-200px.gif" style="width: 20px; height: 20px" alt="Suppression...">
+                                                <img src="https://lab.padem.org/wp-content/uploads/Spin@1x-1.0s-200px-200px.gif" style="width: 30px; height: 30px" alt="Suppression...">
                                             </div>
-                                            <a href="${trame.file_link}" download="${trame.file_name}" style="color: #29A6A7; text-decoration: none;"> 
-                                                <img src="https://img.icons8.com/ios/50/29A6A7/download.png" style="width: 20px; height: 20px; border-radius: 40%;" id="download_trame_${trame.id}" alt="Télécharger">
+                                            <a href="${trame.file_link}" id="download_trame_${trame.id}" download="${trame.file_name}" style="display: flex; justify-content: space-between; text-decoration: none; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; background-color: #29A7A749; align-self: center;" title="Télécharger">
+                                                <img src="https://img.icons8.com/ios/50/29A6A7/download.png" style="margin-left: 15px; width: 20px; height: 20px; cursor: pointer; align-self: center;" alt="Télécharger">
                                             </a>
                                             <div style="width: 20px;"></div>
-                                            <img src="https://img.icons8.com/ios/50/FF0000/trash.png" style="width: 20px; height: 20px; border-radius: 40%;" id="delete_trame_${trame.id}" alt="Supprimer">
+                                            <div style="display: flex; justify-content: space-between; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; background-color: #FF201941; align-self: center;" id="delete_trame_${trame.id}" title="Supprimer">
+                                                <img src="https://img.icons8.com/ios/50/FF0000/trash.png" style="margin-left: 15px; width: 20px; height: 20px; cursor: pointer; align-self: center;" alt="Supprimer">
+                                            </div>
+                                            <div style="display: flex; justify-content: space-between; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; background-color: #76767641; align-self: center;" id="display_menu_${trame.id}" title="Supprimer">
+                                                <img src="https://img.icons8.com/?size=100&id=21622&format=png&color=9F9F9F" style="margin-left: 15px; width: 20px; height: 20px; cursor: pointer; align-self: center;" alt="Menu">
+                                            </div>
+                                            <div id="file_menu_${trame.id}" style="display: none; position: absolute; background-color: white; border-radius: 20px; padding: 5px; margin-top: 10px; margin-right: 10px;">
+                                                <div style="display: flex; justify-content: flex-end;">
+                                                    <img src="https://img.icons8.com/ios/50/29A6A7/visible.png" style="width: 20px; height: 20px; cursor: pointer;" id="display_file_${trame.id}" alt="Afficher">
+                                                    <img src="https://img.icons8.com/ios/50/29A6A7/edit.png" style="width: 20px; height: 20px; cursor: pointer;" id="edit_file_${trame.id}" alt="Editer">
+                                                    <img src="https://img.icons8.com/ios/50/FF0000/trash.png" style="width: 20px; height: 20px; cursor: pointer;" id="delete_file_${trame.id}" alt="Supprimer">
+                                                </div>
+                                            </div>
                                         </th>
                                     `;
                                     tbody.appendChild(tr);
                                     //#endregion
+
+                                    // Ajouter un évènement pour afficher le menu de la trame (Afficher, Modifier, Supprimer)
+                                    document.getElementById(`display_menu_${trame.id}`).addEventListener('click', function (e) {
+                                        e.preventDefault();
+                                        // Afficher le menu de la trame
+                                        var menu = document.getElementById(`file_menu_${trame.id}`);
+                                        if (menu.style.display === 'none') {
+                                            menu.style.display = 'flex';
+                                        } else {
+                                            menu.style.display = 'none';
+                                        }
+                                    });
 
                                     // Ajouter un évènement pour prévisualiser une image
                                     document.getElementById(`trame_preview_image_${trame.id}`).addEventListener('click', function (e) {
@@ -1364,63 +1395,39 @@
                                         overlay.style.display = 'flex';
                                     });
 
-                                    // Ajouter un évènement pour prévisualiser un document
-                                    document.getElementById(`trame_preview_${trame.id}`).addEventListener('click', function (e) {
-                                        e.preventDefault();
-                                        // Ouvrir un apperçu du document en overlay
-                                        var overlay = document.getElementById('overlay');
-                                        var previewFrame = document.getElementById('previewFrame');
-                                        // Définir l'URL du document dans l'iframe
-                                        previewFrame.src = trame.file_link;
-                                        // Afficher l'overlay
-                                        overlay.style.display = 'flex';
-                                    });
-
-                
-                                    // Fonction pour afficher un apperçu du document
-                                    function displayFilePreview() {
-                                        // Ouvrir un apperçu du document en overlay
-                                        var overlay = document.getElementById('overlay');
-                                        var previewFrame = document.getElementById('previewFrame');
-                                        // Définir l'URL du document dans l'iframe
-                                        previewFrame.src = trame.file_link;
-                                        // Afficher l'overlay
-                                        overlay.style.display = 'flex';
-                                    }
-                
-                                    // Ajouter un évènement qui fait apparaitre l'icone "éditer" au survole de la souris (mousenter)
-                                    document.getElementById(`trame_name_displayed_${trame.id}`).addEventListener('mouseenter', function (e) {
-                                        document.getElementById(`edit_trame_${trame.id}`).style.display = 'block';
-                                    });
-                
-                                    // Ajouter un évènement qui fait disparaitre l'icone "éditer" au survole de la souris (mouseout)
-                                    document.getElementById(`trame_name_displayed_${trame.id}`).addEventListener('mouseout', function (e) {
-                                        document.getElementById(`edit_trame_${trame.id}`).style.display = 'none';
-                                    });
-                
-                                    // Ajouter un évènement pour éditer le nom de la trame
+                                    // Fonction pour afficher un apperçu du document en cliquant sur une la miniature de l'image
                                     document.getElementById(`trame_name_displayed_${trame.id}`).addEventListener('click', function (e) {
                                         e.preventDefault();
-                                        document.getElementById(`trame_name_displayed_${trame.id}`).style.display = 'none';
-                                        document.getElementById(`edit_trame_${trame.id}`).style.display = 'none';
-                                        document.getElementById(`trame_name_input_${trame.id}`).style.display = 'block';
-                                        document.getElementById(`save_trame_edit_${trame.id}`).style.display = 'block';
-                                        document.getElementById(`cancel_edit_trame_${trame.id}`).style.display = 'block';
-                                        document.getElementById(`trame_name_input_${trame.id}`).value = trame.file_name;
+                                        // Ouvrir un apperçu du document en overlay
+                                        var overlay = document.getElementById('overlay');
+                                        var previewFrame = document.getElementById('previewFrame');
+                                        // Définir l'URL du document dans l'iframe
+                                        previewFrame.src = trame.file_link;
+                                        // Afficher l'overlay
+                                        overlay.style.display = 'flex';
                                     });
-                
-                                    // Ajouter un évènement pour annuler l'édition du nom de la trame
-                                    document.getElementById(`cancel_edit_trame_${trame.id}`).addEventListener('click', function (e) {
-                                        e.preventDefault();
-                                        document.getElementById(`trame_name_displayed_${trame.id}`).style.display = 'block';
-                                        document.getElementById(`edit_trame_${trame.id}`).style.display = 'none';
-                                        document.getElementById(`trame_name_input_${trame.id}`).style.display = 'none';
-                                        document.getElementById(`save_trame_edit_${trame.id}`).style.display = 'none';
-                                        document.getElementById(`cancel_edit_trame_${trame.id}`).style.display = 'none';
 
-                                        // Masquer l'animation de chargement
-                                        document.getElementById(`loading_delete_${trame.id}`).style.display = 'none';
+                                    // Fonction pour afficher un apperçu de l'image en cliquant sur une la miniature de l'image
+                                    document.getElementById(`trame_preview_image_${trame.id}`).addEventListener('click', function (e) {
+                                        e.preventDefault();
+                                        // Ouvrir un apperçu du document en overlay
+                                        var overlay = document.getElementById('overlay');
+                                        var previewFrame = document.getElementById('previewFrame');
+                                        // Définir l'URL du document dans l'iframe
+                                        previewFrame.src = trame.file_link;
+                                        // Afficher l'overlay
+                                        overlay.style.display = 'flex';
                                     });
+
+                                    // Fonction pour télécharger un fichier à partir de son lien (URL)
+                                    function downloadFile(url) {
+                                        var a = document.createElement('a');
+                                        a.href = url;
+                                        a.download = url.split('/').pop();
+                                        document.body.appendChild(a);
+                                        a.click();
+                                        document.body.removeChild(a);
+                                    }
                 
                                     // Ajouter un évènement pour sauvegarder le nom de la trame
                                     document.getElementById(`save_trame_edit_${trame.id}`).addEventListener('click', function (e) {
@@ -1517,28 +1524,28 @@
                                     // Ajouter un évènement pour télécharger le document
                                     document.getElementById(`download_trame_${trame.id}`).addEventListener('click', function (e) {
                                         e.preventDefault();
-                                        // Télécharger le document sans ouvrir une nouvelle fenêtre
-                                        window.location.href = trame.file_link;
+                                        // Télécharger directement le document sans ouvrir de nouvelle fenêtre
+                                        downloadFile(trame.file_link);
                                     });
                 
                                     // Évènement pour changer la couleur de fond de l'icone de suppression au survol
                                     document.getElementById(`delete_trame_${trame.id}`).addEventListener('mouseover', function (e) {
-                                        document.getElementById(`delete_trame_${trame.id}`).style.backgroundColor = '#FFB2AAC3';
+                                        document.getElementById(`delete_trame_${trame.id}`).style.backgroundBlendMode = 'multiply';
                                     });
 
                                     // Évènement pour changer la couleur de fond de l'icone de suppression à la sortie du survol
                                     document.getElementById(`delete_trame_${trame.id}`).addEventListener('mouseout', function (e) {
-                                        document.getElementById(`delete_trame_${trame.id}`).style.backgroundColor = 'transparent';
+                                        document.getElementById(`delete_trame_${trame.id}`).style.backgroundBlendMode = 'normal';
                                     });
 
                                     // Évènement pour changer la couleur de fond de l'icone de téléchargement au survol
                                     document.getElementById(`download_trame_${trame.id}`).addEventListener('mouseover', function (e) {
-                                        document.getElementById(`download_trame_${trame.id}`).style.backgroundColor = '#B2FFAAC3';
+                                        document.getElementById(`download_trame_${trame.id}`).style.backgroundBlendMode = 'multiply';
                                     });
 
                                     // Évènement pour changer la couleur de fond de l'icone de téléchargement à la sortie du survol
                                     document.getElementById(`download_trame_${trame.id}`).addEventListener('mouseout', function (e) {
-                                        document.getElementById(`download_trame_${trame.id}`).style.backgroundColor = 'transparent';
+                                        document.getElementById(`download_trame_${trame.id}`).style.backgroundBlendMode = 'normal';
                                     });
 
                                     // Ajouter un évènement pour supprimer le document
@@ -1793,7 +1800,7 @@
                                     'Content-Type': 'application/json',
                                 },
                                 body: JSON.stringify({
-                                    file_name: trame_file_name, 
+                                    file_name: ((data.data.url).split('/')).pop(), // Nom du fichier
                                     file_type: trame_file_type, 
                                     file_link: data.data.url, // Lien du fichier
                                     file_size: trame_file_size,
