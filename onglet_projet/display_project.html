@@ -773,12 +773,12 @@
                             // Récupérer le nom de l'utilisateur
                             const user_email = request.author_email;
                             const user = all_users_names.find(user => user.user_email === user_email);
-                            console.log('user: ', user);
                             user_name = user.user_name ? user.user_name : '---';
                             // Récupérer le nom du projet
                             const projectId = request.project_id;
-                            const project = all_projects_names.find(project => project.project_id === projectId);
-                            console.log('project: ', project);
+                            const project = all_projects_names.find(project => {    
+                                parseInt(project.project_id) === parseInt(projectId);
+                            });
                             project_name = project.project_name ? project.project_name : '---';
                             //#region Formatage de la date
                             let date = new Date(request.request_submit_date);
@@ -1086,22 +1086,24 @@
         <div class="container" id="new_trame_form" style="display: none;">
             <form id="trameForm" class="card" style="border-radius: 25px; background-color: white; padding: 20px;" method="post" enctype="multipart/form-data">
                 <!--#region Upload de fichiers un ou plusieurs fichiers (pdf, word, excel, powerpoint) un à la fois avec un bouton d'ajout et un bouton de suppression -->
-                <div style="display: column; justify-content: space-between; border: 1px solid lightgray; border-radius: 25px; padding: 10px; height: 300px;" id="trame_files_container" class="card-body main-group-scroll">
-                    <div class="col-md-12">
+                <div style="display: column; justify-content: space-between; padding: 10px;" id="trame_files_container" class="card-body">
+                    <div class="col-md-12" style="display: none;">
                         <label for="number_of_files" style="color: gray;">Combien de fichiers souhaitez-vous ajouter ?</label>
                         <div style="height: 10px;"></div>
                         <div style="display: flex; justify-content: flex-start;">
-                            <button type="button" class="btn btn-light" id="add_file_button" style="width: fit-content; color: gray; background-color: white; align-self: center; margin: 5px; padding: 5px;">
-                                <img src="https://img.icons8.com/?size=100&id=1504&format=png&color=9F9F9F" style="width: 35px; height: 35px;" alt=""></button>
-                            <input type="number" id="number_of_files" name="number_of_files" class="form-control" style="width: 5%; border-radius: 20px; border: 1px solid lightgray; padding: 5px;">
                             <button type="button" class="btn btn-light" id="remove_file_button" style="width: fit-content; color: gray; background-color: white; align-self: center; margin: 5px; padding: 5px;">
-                                <img src="https://img.icons8.com/?size=100&id=1504&format=png&color=9F9F9F" style="width: 35px; height: 35px;" alt=""></button>
+                                <img src="https://img.icons8.com/?size=100&id=1504&format=png&color=9F9F9F" style="width: 35px; height: 35px;" alt="">
+                            </button>
+                            <input type="number" id="number_of_files" name="number_of_files" class="form-control" style="width: 5%; border-radius: 20px; border: 1px solid lightgray; padding: 5px;">
+                            <button type="button" class="btn btn-light" id="add_file_button" style="width: fit-content; color: gray; background-color: white; align-self: center; margin: 5px; padding: 5px;">
+                                <img src="https://img.icons8.com/?size=100&id=1501&format=png&color=9F9F9F" style="width: 35px; height: 35px;" alt="">
+                            </button>
                         </div>
                     </div>
                     <div style="height: 10px;"></div>
                     <div id="trame_files_list">
                         <div class="col-md-12" id="trame_file_1_">
-                            <label for="trame_file_1" style="color: gray;">Document 1</label>
+                            <label for="trame_file_1" style="color: gray; display: none;">Document 1</label>
                             <input type="file" id="trame_file_1" name="trame_file_1" class="form-control" style="width: 100%; border-radius: 20px; border: 1px solid lightgray; padding: 5px;">
                             <div style="height: 10px;"></div>
                         </div>
@@ -1130,17 +1132,16 @@
                                 src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 15px; height: 15px;" alt=""></th>
                         <th scope="col" id="onglet_trame_date">Date de création <img
                                 src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 15px; height: 15px;" alt=""></th>
-                        <th scope="col" id="onglet_trame_type">Type <img
+                        <th scope="col" id="onglet_trame_size">Taille <img
                                 src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 15px; height: 15px;" alt=""></th> <!-- pdf, word, excel, powerpoint -->
                         <th scope="col">Actions</th> <!-- Voire, Modifier, Supprimer -->
                     </tr>
                 </thead>
-                <tbody id="onglet_display_trames" class="main-group-scroll" style="height: 500px;">
+                <tbody id="onglet_display_trames" style="height: 500px;" class="main-group-scroll">
                 </tbody>
             </table>
         </div>
         <!--#endregion -->
-
 
         <script>
             // Initialisation des variables
@@ -1187,8 +1188,33 @@
                 }
             });
 
-            // Afficher toutes les trames
+            // Fonction pour récupérer le lien d'un fichier
+            function getFileUrl(fileName) {
+                return new Promise((resolve, reject) => {
+                    jQuery.ajax({
+                        url: ajaxurl, // WordPress fournit cette variable automatiquement
+                        type: 'POST',
+                        data: {
+                            action: 'get_file_url',
+                            file_name: fileName
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                resolve(response.data);
+                            } else {
+                                reject(response.data);
+                            }
+                        },
+                        error: function(error) {
+                            reject('Erreur lors de la requête AJAX.');
+                        }
+                    });
+                });
+            }
+
+            // Récupérer et afficher toutes les trames
             function displayTrames() {
+
                 // Récupérer les trames
                 fetch('https://lab.padem.org/wp-json/mo/v1/getProjectFile',
                     {
@@ -1199,13 +1225,77 @@
                     })
                     .then(response => response.json())
                     .then(data => {
+                        // console.log(data);
                         let trames = data;
-                        all_trames = trames;
+                        all_trames = data; // Enregistrer la liste des trames
                         const tbody = document.querySelector('#onglet_display_trames');
                         tbody.innerHTML = '';
-                        if (trames.length > 0) {
+
+                        if (trames.length > 0) { // Si des trames existent
+                            // Afficher les trames
                             trames.forEach(trame => {
-                                if (trame.is_trame) { // Vérifier si c'est une trame
+
+                                if (trame.is_trame) { // Vériier si c'est une trame
+
+                                    //#region Formater la taille du fichier
+                                    var fileSize = '';
+                                    if (trame.file_size) { // Si la taille du fichier est définie
+
+                                        var unformattedFileSize = parseInt(trame.file_size); // Convertir la taille en entier
+
+                                        if (unformattedFileSize < 1024) {
+                                            fileSize = unformattedFileSize + ' octets';
+                                        } 
+                                        else if (unformattedFileSize < 1048576) {
+                                            fileSize = (unformattedFileSize / 1024).toFixed(2) + ' Ko';
+                                        } 
+                                        else if (unformattedFileSize < 1073741824) {
+                                            fileSize = (unformattedFileSize / 1048576).toFixed(2) + ' Mo';
+                                        } 
+                                        else {
+                                            fileSize = (unformattedFileSize / 1073741824).toFixed(2) + ' Go';
+                                        }
+                                    } else {
+                                        fileSize = '---';
+                                    }
+                                    //#endregion
+                
+                                    //#region Afficher une icone à côté du nom du fichier selon son type
+                                    var fileIcon = '';
+                                    var is_image = false;
+                                    if (trame.file_type) {
+                                        if ((trame.file_type).includes('pdf')) {
+                                            fileIcon = 'https://img.icons8.com/ios/50/FF0000/pdf.png';
+                                        } else if ((trame.file_type).includes('word')) {
+                                            fileIcon = 'https://img.icons8.com/ios/50/2E86C1/ms-word.png';
+                                        } else if ((trame.file_type).includes('excel')) {
+                                            fileIcon = 'https://img.icons8.com/ios/50/1ABC9C/ms-excel.png';
+                                        } else if ((trame.file_type).includes('powerpoint')) {
+                                            fileIcon = 'https://img.icons8.com/ios/50/FFA500/ms-powerpoint.png';
+                                        } else if ((trame.file_type).includes('image')) {
+                                            fileIcon = 'https://img.icons8.com/ios/50/FFA500/image.png';
+                                            is_image = true;
+                                        } else if((trame.file_type).includes('audio')) {
+                                            fileIcon = 'https://img.icons8.com/ios/50/FFA500/audio.png';
+                                        } else if((trame.file_type).includes('video')) {
+                                            fileIcon = 'https://img.icons8.com/ios/50/FFA500/video.png';
+                                        } else {
+                                            fileIcon = 'https://img.icons8.com/ios/50/9F9F9F/file.png';
+                                        }
+                                    } else {
+                                        fileIcon = 'https://img.icons8.com/ios/50/9F9F9F/file.png';
+                                    }
+                                    //#endregion
+                
+                                    //#region formatage de la date
+                                    let date = new Date(trame.created_at);
+                                    let day = date.getDate();
+                                    let month = date.getMonth() + 1;
+                                    let year = date.getFullYear();
+                                    let created_at = `${getDayName(date.getDay())}, ${day} ${getMonthName(month)} ${year}`;
+                                    //#endregion
+
+                                    //#region Créer une ligne pour chaque trame
                                     var tr = document.createElement('tr');
                                     tr.style.border = '1px solid lightgray';
                                     tr.style.borderRadius = '25px';
@@ -1214,13 +1304,12 @@
                                     tr.style.justifyContent = 'flex-start';
                                     tr.style.margin = '6px';
                                     tr.style.padding = '15px';
-                                    tr.style.cursor = 'pointer';
                                     tr.style.paddingRight = '35px';
-                                    tr.id = trame.trame_id;
+                                    tr.id = parseInt(trame.id);
                                     tr.addEventListener('click', function (e) {
                                         e.preventDefault();
-                                        // ouvrir un apperçu du document
-                                        displayFilePreview(trame.file_link);
+                                        // Afficher les détails de la trame
+                                        displayFilePreview();
                                     });
                                     // Changement de couleur de la ligne au survol
                                     tr.addEventListener('mouseover', function (e) {
@@ -1230,43 +1319,254 @@
                                         tr.style.border = '1px solid lightgray';
                                     });
                                     tr.innerHTML = `
-                                        <th style="font-weight: lighter; color: black; display: flex; justify-content: flex-start;"> 
-                                            <p id="trame_name_displayed" style="color: black;">${trame.file_name}</p>
-                                            <input type="text" id="trame_name_input" style="display: none; width: 100%;">
+                                        <!-- Afficher un apperçu du document dans un petit cercle sur la gauche -->
+                                        <th style="font-weight: lighter; color: black; display: ${is_image ? 'flex' : 'none'}; justify-content: flex-start;">
+                                            <div style="width: 50px; height: 50px; border-radius: 50%; background-color: white; display: flex; justify-content: center; align-items: center; cursor: pointer;" id="trame_preview_image_${trame.id}">
+                                                <img src="${trame.file_link}" style="width: 40px; height: 40px; border-radius: 50%;" alt="">
+                                            </div>
+                                            <p style="color: black;"> ${trame.file_name}</p>
+                                        </th>
+                                        <th style="font-weight: lighter; color: black; display: ${is_image ? 'none' : 'flex'}; justify-content: flex-start;"> 
+                                            <p id="trame_name_displayed_${trame.id}" style="color: black;"> <iframe src="${trame.file_link}" style="width: 50px; height: 50px; border-radius: 50%; background-color: white;"></iframe> ${trame.file_name}</p>
+                                            <input type="text" id="trame_name_input_${trame.id}" style="display: none; width: 100px; border-radius: 20px; border: 1px solid lightgray; padding: 5px;">
+                                                <img src="https://img.icons8.com/?size=100&id=11658&format=png&color=29A6A7" style="width: 30px; height: 30px; display: none; align-self: center; margin: 5px; padding: 5px;" id="save_trame_edit_${trame.id}" alt="">
+                                                <img src="https://img.icons8.com/?size=100&id=3062&format=png&color=9F9F9F" style="width: 30px; height: 30px; display: none; align-self: center; margin: 5px; padding: 5px;" id="cancel_edit_trame_${trame.id}" alt="">
                                             <!-- icone éditer --> <img src="https://img.icons8.com/ios/50/29A6A7/edit.png" style="width: 20px; height: 20px; display: none;" id="edit_trame_${trame.id}" alt="">
                                         </th>
-                                        <th style="font-weight: lighter; color: black; display: flex; justify-content: flex-start;">${trame.author_email}</th>
-                                        <th style="font-weight: lighter; color: black; display: flex; justify-content: flex-start;">${trame.created_at}</th>
-                                        <th style="font-weight: lighter; color: black; display: flex; justify-content: flex-start;">${trame.file_type}</th>
+                                        <th style="font-weight: lighter; color: black; display: flex; justify-content: space-between; margin-left: 15px; margin-right: 15px">${trame.author_email}</th>
+                                        <th style="font-weight: lighter; color: black; display: flex; justify-content: space-between; margin-left: 15px; margin-right: 15px">${created_at}</th>
+                                        <th style="font-weight: lighter; color: black; display: flex; justify-content: space-between; margin-left: 15px; margin-right: 15px">${fileSize}</th>
                                         <!-- Bouton pour télécharger le document et bouton pour supprimer le document -->
-                                        <th style="color: #29A6A7; width: 100%; border-radius: 10px; margin: 3px; padding: 3px; display: flex; justify-content: space-between;">
-                                            <a href="${trame.file_link}" download="${trame.file_name}" style="color: #29A6A7; text-decoration: none;"> <img src="https://img.icons8.com/ios/50/29A6A7/download.png" style="width: 20px; height: 20px;" id="download_trame_${trame.id}" alt=""></a>
-                                                <!-- icone corbeille (couleur rouge) --> <img src="https://img.icons8.com/ios/50/FF0000/trash.png" style="width: 20px; height: 20px;" id="delete_trame_${trame.id}" alt="">
+                                        <th style="color: #29A6A7; width: 100%; border-radius: 10px; margin: 3px; padding: 3px; display: flex; justify-content: flex-end; margin-left: 15px; margin-right: 15px">
+                                            <!-- Afficher l'animation de chargement -->
+                                            <div id="loading_delete_${trame.id}" style="display: none; background: none;">
+                                                <img src="https://lab.padem.org/wp-content/uploads/Spin@1x-1.0s-200px-200px.gif" style="width: 20px; height: 20px" alt="Suppression...">
+                                            </div>
+                                            <a href="${trame.file_link}" download="${trame.file_name}" style="color: #29A6A7; text-decoration: none;"> 
+                                                <img src="https://img.icons8.com/ios/50/29A6A7/download.png" style="width: 20px; height: 20px; border-radius: 40%;" id="download_trame_${trame.id}" alt="Télécharger">
+                                            </a>
+                                            <div style="width: 20px;"></div>
+                                            <img src="https://img.icons8.com/ios/50/FF0000/trash.png" style="width: 20px; height: 20px; border-radius: 40%;" id="delete_trame_${trame.id}" alt="Supprimer">
+                                        </th>
                                     `;
                                     tbody.appendChild(tr);
+                                    //#endregion
 
-                                    // Ajouter un évènement qui fait apparaitre l'icone "éditer" au survole de la souris
-                                    
-
-                                    // Ajouter un évènement pour éditer le nom de la trame
-                                    document.getElementById(`trame_name_displayed`).addEventListener('click', function (e) {
+                                    // Ajouter un évènement pour prévisualiser une image
+                                    document.getElementById(`trame_preview_image_${trame.id}`).addEventListener('click', function (e) {
                                         e.preventDefault();
-                                        document.getElementById(`trame_name_displayed`).style.display = 'none';
-                                        document.getElementById(`trame_name_input`).style.display = 'block';
-                                        document.getElementById(`trame_name_input`).value = trame.file_name;
+                                        // Ouvrir un apperçu du document en overlay
+                                        var overlay = document.getElementById('overlay');
+                                        var previewFrame = document.getElementById('previewFrame');
+                                        // Définir l'URL du document dans l'iframe
+                                        previewFrame.src = trame.file_link;
+                                        // Afficher l'overlay
+                                        overlay.style.display = 'flex';
                                     });
 
+                                    // Ajouter un évènement pour prévisualiser un document
+                                    document.getElementById(`trame_preview_${trame.id}`).addEventListener('click', function (e) {
+                                        e.preventDefault();
+                                        // Ouvrir un apperçu du document en overlay
+                                        var overlay = document.getElementById('overlay');
+                                        var previewFrame = document.getElementById('previewFrame');
+                                        // Définir l'URL du document dans l'iframe
+                                        previewFrame.src = trame.file_link;
+                                        // Afficher l'overlay
+                                        overlay.style.display = 'flex';
+                                    });
+
+                
+                                    // Fonction pour afficher un apperçu du document
+                                    function displayFilePreview() {
+                                        // Ouvrir un apperçu du document en overlay
+                                        var overlay = document.getElementById('overlay');
+                                        var previewFrame = document.getElementById('previewFrame');
+                                        // Définir l'URL du document dans l'iframe
+                                        previewFrame.src = trame.file_link;
+                                        // Afficher l'overlay
+                                        overlay.style.display = 'flex';
+                                    }
+                
+                                    // Ajouter un évènement qui fait apparaitre l'icone "éditer" au survole de la souris (mousenter)
+                                    document.getElementById(`trame_name_displayed_${trame.id}`).addEventListener('mouseenter', function (e) {
+                                        document.getElementById(`edit_trame_${trame.id}`).style.display = 'block';
+                                    });
+                
+                                    // Ajouter un évènement qui fait disparaitre l'icone "éditer" au survole de la souris (mouseout)
+                                    document.getElementById(`trame_name_displayed_${trame.id}`).addEventListener('mouseout', function (e) {
+                                        document.getElementById(`edit_trame_${trame.id}`).style.display = 'none';
+                                    });
+                
+                                    // Ajouter un évènement pour éditer le nom de la trame
+                                    document.getElementById(`trame_name_displayed_${trame.id}`).addEventListener('click', function (e) {
+                                        e.preventDefault();
+                                        document.getElementById(`trame_name_displayed_${trame.id}`).style.display = 'none';
+                                        document.getElementById(`edit_trame_${trame.id}`).style.display = 'none';
+                                        document.getElementById(`trame_name_input_${trame.id}`).style.display = 'block';
+                                        document.getElementById(`save_trame_edit_${trame.id}`).style.display = 'block';
+                                        document.getElementById(`cancel_edit_trame_${trame.id}`).style.display = 'block';
+                                        document.getElementById(`trame_name_input_${trame.id}`).value = trame.file_name;
+                                    });
+                
+                                    // Ajouter un évènement pour annuler l'édition du nom de la trame
+                                    document.getElementById(`cancel_edit_trame_${trame.id}`).addEventListener('click', function (e) {
+                                        e.preventDefault();
+                                        document.getElementById(`trame_name_displayed_${trame.id}`).style.display = 'block';
+                                        document.getElementById(`edit_trame_${trame.id}`).style.display = 'none';
+                                        document.getElementById(`trame_name_input_${trame.id}`).style.display = 'none';
+                                        document.getElementById(`save_trame_edit_${trame.id}`).style.display = 'none';
+                                        document.getElementById(`cancel_edit_trame_${trame.id}`).style.display = 'none';
+
+                                        // Masquer l'animation de chargement
+                                        document.getElementById(`loading_delete_${trame.id}`).style.display = 'none';
+                                    });
+                
+                                    // Ajouter un évènement pour sauvegarder le nom de la trame
+                                    document.getElementById(`save_trame_edit_${trame.id}`).addEventListener('click', function (e) {
+                                        e.preventDefault();
+
+                                        // Afficher l'animation de chargement
+                                        document.getElementById(`loading_delete_${trame.id}`).style.display = 'block';
+
+                                        // Récupérer la trame actuelle
+                                        var this_trame = trame;
+                                        // Récupérer le nouveau nom de la trame
+                                        let new_trame_name = document.getElementById(`trame_name_input_${trame.id}`).value;
+
+                                        // Mettre à jour le nom de la trame sur le serveur
+                                        fetch(ajaxurl, {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/x-www-form-urlencoded',
+                                            },
+                                            body: new URLSearchParams({
+                                                action: 'rename_file_callback',
+                                                current_filename: trame.file_name,
+                                                new_filename: new_trame_name,
+                                            }),
+                                        })
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            if (data.success) {
+                                                console.log('Success:', data);
+                                                //#region Mettre à jour le nom de la trame dans la base de données
+                                                fetch('https://lab.padem.org/wp-json/mo/v1/createProjectFile', {
+                                                    method: 'POST',
+                                                    headers: {
+                                                        'Content-Type': 'application/json',
+                                                    },
+                                                    body: JSON.stringify({
+                                                        file_name: new_trame_name,
+                                                        file_link: this_trame.file_link,
+                                                        file_type: this_trame.file_type,
+                                                        author_email: this_trame.author_email,
+                                                        is_trame: this_trame.is_trame,
+                                                        project_id: this_trame.project_id,
+                                                        report_id: this_trame.report_id,
+                                                        created_at: this_trame.created_at,
+                                                    }),
+                                                })
+                                                    .then((response) => response.json())
+                                                    .then((data) => {
+                                                        console.log('Success:', data);
+                                                        //#region Supprimer l'ancienne trame
+                                                        fetch('https://lab.padem.org/wp-json/mo/v1/deleteProjectFiles', {
+                                                            method: 'DELETE',
+                                                            headers: {
+                                                                'Content-Type': 'application/json',
+                                                            },
+                                                            body: JSON.stringify({
+                                                                column_param1: this_trame.id,
+                                                            }),
+                                                        })
+                                                            .then((response) => response.json())
+                                                            .then((data) => {
+                                                                console.log('Success:', data);
+                                                                // Masquer l'animation de chargement
+                                                                document.getElementById(`loading_delete_${trame.id}`).style.display = 'none';
+                                                                // Recharger les trames
+                                                                displayTrames();
+                                                            })
+                                                            .catch((error) => {
+                                                                console.error('Error:', error);
+                                                                // Masquer l'animation de chargement
+                                                                document.getElementById(`loading_delete_${trame.id}`).style.display = 'none';
+                                                            });
+                                                        //#endregion
+                                                    })
+                                                    .catch((error) => {
+                                                        console.error('Error:', error);
+                                                        // Masquer l'animation de chargement
+                                                        document.getElementById(`loading_delete_${trame.id}`).style.display = 'none';
+                                                    });
+                                                //#endregion
+                                            } else {
+                                                console.log('Error:', data.data);
+                                                // Masquer l'animation de chargement
+                                                document.getElementById(`loading_delete_${trame.id}`).style.display = 'none';
+                                            }
+                                        })
+                                        .catch(error => {
+                                            console.error('Erreur lors de la requête AJAX:', error);
+                                            // Masquer l'animation de chargement
+                                            document.getElementById(`loading_delete_${trame.id}`).style.display = 'none';
+                                        });
+                                    });
+                
                                     // Ajouter un évènement pour télécharger le document
                                     document.getElementById(`download_trame_${trame.id}`).addEventListener('click', function (e) {
                                         e.preventDefault();
-                                        // Télécharger le document
-                                        window.open(trame.file_link, '_blank');
+                                        // Télécharger le document sans ouvrir une nouvelle fenêtre
+                                        window.location.href = trame.file_link;
+                                    });
+                
+                                    // Évènement pour changer la couleur de fond de l'icone de suppression au survol
+                                    document.getElementById(`delete_trame_${trame.id}`).addEventListener('mouseover', function (e) {
+                                        document.getElementById(`delete_trame_${trame.id}`).style.backgroundColor = '#FFB2AAC3';
+                                    });
+
+                                    // Évènement pour changer la couleur de fond de l'icone de suppression à la sortie du survol
+                                    document.getElementById(`delete_trame_${trame.id}`).addEventListener('mouseout', function (e) {
+                                        document.getElementById(`delete_trame_${trame.id}`).style.backgroundColor = 'transparent';
+                                    });
+
+                                    // Évènement pour changer la couleur de fond de l'icone de téléchargement au survol
+                                    document.getElementById(`download_trame_${trame.id}`).addEventListener('mouseover', function (e) {
+                                        document.getElementById(`download_trame_${trame.id}`).style.backgroundColor = '#B2FFAAC3';
+                                    });
+
+                                    // Évènement pour changer la couleur de fond de l'icone de téléchargement à la sortie du survol
+                                    document.getElementById(`download_trame_${trame.id}`).addEventListener('mouseout', function (e) {
+                                        document.getElementById(`download_trame_${trame.id}`).style.backgroundColor = 'transparent';
                                     });
 
                                     // Ajouter un évènement pour supprimer le document
                                     document.getElementById(`delete_trame_${trame.id}`).addEventListener('click', function (e) {
                                         e.preventDefault();
-                                        // Supprimer le document
+
+                                        // Afficher l'animation de chargement
+                                        document.getElementById(`loading_delete_${trame.id}`).style.display = 'block';
+
+                                        // Supprimer le document du serveur
+                                        fetch(ajaxurl, {
+                                            method: 'POST',
+                                            body: new URLSearchParams({
+                                                action: 'delete_file_callback', 
+                                                file_url: trame.file_link, // Lien du fichier à supprimer
+                                            }),
+                                        })
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            if (data.success) {
+                                                console.log('Success:', data);
+                                            } else {
+                                                console.log('Error:', data.data);
+                                            }
+                                        })
+                                        .catch(error => console.error('Error:', error));
+
+                                        // Supprimer le document de la base de données
                                         fetch('https://lab.padem.org/wp-json/mo/v1/deleteProjectFiles', {
                                             method: 'DELETE',
                                             headers: {
@@ -1279,18 +1579,18 @@
                                             .then((response) => response.json())
                                             .then((data) => {
                                                 console.log('Success:', data);
-
+                                                // Masquer l'animation de chargement
+                                                document.getElementById(`loading_delete_${trame.id}`).style.display = 'none';
                                                 // Recharger les trames
                                                 displayTrames();
                                             })
                                             .catch((error) => {
                                                 console.error('Error:', error);
+                                                // Masquer l'animation de chargement
+                                                document.getElementById(`loading_delete_${trame.id}`).style.display = 'none';
                                             });
-
-                                        // Supprimer le document
-
                                     });
-                                }
+                                }    
                             });
                         } else {
                             let tr = document.createElement('tr');
@@ -1301,6 +1601,19 @@
                             tbody.appendChild(tr);
                         }
                     })
+                    .catch(error => console.error(error));
+            }
+
+            // Fonction pour masquer l'overlay
+            function closeOverlay() {
+                var overlay = document.getElementById('overlay');
+                var previewFrame = document.getElementById('previewFrame');
+
+                // Masquer l'overlay
+                overlay.style.display = 'none';
+
+                // Réinitialiser l'URL de l'iframe
+                previewFrame.src = '';
             }
 
             // Fonction pour afficher les détails d'une trame
@@ -1390,61 +1703,15 @@
                 let search_trames = document.getElementById('search_trames').value;
 
                 // Récupérer les trames
-                fetch('https://lab.padem.org/wp-json/mo/v1/getTrames')
-                    .then(response => response.json())
-                    .then(data => {
-                        let trames = data;
-                        const tbody = document.querySelector('#onglet_display_trames');
-                        tbody.innerHTML = '';
-                        if (trames.length > 0) {
-                            trames.forEach(trame => {
-                                if (trame.trame_name.toLowerCase().includes(search_trames.toLowerCase())) { // Si la trame correspond à la recherche
-                                    var tr = document.createElement('tr');
-                                    tr.style.border = '1px solid lightgray';
-                                    tr.style.borderRadius = '25px';
-                                    tr.style.backgroundColor = 'white';
-                                    tr.style.display = 'flex';
-                                    tr.style.justifyContent = 'flex-start';
-                                    tr.style.margin = '6px';
-                                    tr.style.padding = '15px';
-                                    tr.style.cursor = 'pointer';
-                                    tr.style.paddingRight = '35px';
-                                    tr.id = trame.trame_id;
-                                    tr.addEventListener('click', function (e) {
-                                        e.preventDefault();
-                                        // Afficher les détails de la trame
-                                        document.getElementById('onglet_trame_details').style.display = 'block';
-                                        // Masquer le tableau des trames
-                                        document.getElementById('onglet_trames_table').style.display = 'none';
-                                        displayTrameDetails(trame.trame_id);
-                                    });
-                                    // Changement de couleur de la ligne au survol
-                                    tr.addEventListener('mouseover', function (e) {
-                                        tr.style.border = '1px solid #6CE8E8';
-                                    });
-                                    tr.addEventListener('mouseout', function (e) {
-                                        tr.style.border = '1px solid lightgray';
-                                    });
-                                    tr.innerHTML = `
-                                        <th style="font-weight: lighter; color: black; display: flex; justify-content: flex-start;">${trame.trame_name}</th>
-                                        <th style="font-weight: lighter; color: black; display: flex; justify-content: flex-start;">${trame.trame_author}</th>
-                                        <th style="font-weight: lighter; color: black; display: flex; justify-content: flex-start;">${trame.trame_date}</th>
-                                        <th style="font-weight: lighter; color: black; display: flex; justify-content: flex-start;">${trame.trame_type}</th>
-                                        <th style="color: #29A6A7; width: fit-content; border-radius: 10px; margin: 3px; padding: 3px; background-color: rgba(41, 166, 167, 0.1);">Voire</th>
-                                    `;
-                                    tbody.appendChild(tr);
-                                }
-                            });
-                        } else {
-                            let tr = document.createElement('tr');
-                            tr.innerHTML = `
-                                <td colspan="6" style="text-align: center; color: gray;"> <img src="https://img.icons8.com/?size=100&id=3574&format=png&color=9F9F9F" style="width: 20px; height: 20px;" alt="">
-                                    Aucun document trouvé.</td>
-                            `;
-                            tbody.appendChild(tr);
-                        }
-                    })
-                    .catch(error => console.error(error));
+                all_trames.forEach(trame => {
+                    if (trame.file_name.toLowerCase().includes(search_trames.toLowerCase())) { // Si la trame correspond à la recherche
+                        // Afficher la trame
+                        document.getElementById(trame.trame_id).style.display = 'block';
+                    } else {
+                        // Masquer la trame
+                        document.getElementById(trame.trame_id).style.display = 'none';
+                    }
+                });
             });
 
             // Afficher le formulaire de création de trame
@@ -1458,15 +1725,7 @@
                     document.getElementById('onglet_trames_create_trame').style.color = 'gray';
 
                     // Vider les champs du formulaire
-                    document.getElementById('number_of_files').value = 1;
                     document.getElementById('trame_file_1').value = '';
-                    document.getElementById('trame_files_list').innerHTML = `
-                        <div class="col-md-12" id="trame_file_1_">
-                            <label for="trame_file_1" style="color: gray;">Document 1</label>
-                            <input type="file" id="trame_file_1" name="trame_file_1" class="form-control" style="width: 100%;">
-                            <div style="height: 10px;"></div>
-                        </div>
-                    `;
                 } else {
                     document.getElementById('new_trame_form').style.display = 'block';
                     document.getElementById('onglet_trames_create_trame').innerHTML = '<img src="https://img.icons8.com/?size=100&id=6483&format=png&color=29A6A7" style="width: 20px; height: 20px;" alt=""> Terminer';
@@ -1485,135 +1744,167 @@
 
                 // Changer la couleur du bouton
                 document.getElementById('onglet_trames_create_trame').style.color = 'gray';
-                document.getElementById('onglet_trames_create_trame').innerHTML = 'Nouveau document';
+                document.getElementById('onglet_trames_create_trame').innerHTML = ' <img src="https://img.icons8.com/ios/50/9F9F9F/add-file.png" style="width: 20px; height: 20px;" alt=""> Nouveau document';
 
                 // Vider les champs du formulaire
-                document.getElementById('number_of_files').value = 1;
                 document.getElementById('trame_file_1').value = '';
-                document.getElementById('trame_files_list').innerHTML = `
-                    <div class="col-md-12" id="trame_file_1_">
-                        <label for="trame_file_1" style="color: gray;">Document 1</label>
-                        <input type="file" id="trame_file_1" name="trame_file_1" class="form-control" style="width: 100%;">
-                        <div style="height: 10px;"></div>
-                    </div>
-                `;
             });
 
             // Envoyer la trame
             document.getElementById('onglet_trame_send').addEventListener('click', function (e) {
                 e.preventDefault();
-                // Variables
-                let files_names = [];
-                let files_types = [];
-                let files_sizes = [];
-                let files_links = [];
-                let files = [];
-                // Récupérer le premier fichier
-                let trame_file_1 = document.getElementById('trame_file_1').files[0];
-                files.push(trame_file_1);
-                files_names.push(trame_file_1.name);
-                files_types.push(trame_file_1.type);
-                files_sizes.push(trame_file_1.size);
 
-                // Récupérer tout les autres fichiers
-                if (document.getElementById('number_of_files').value > 1) { // Si plusieurs fichiers
-                    for (let i = 1; i <= document.getElementById('number_of_files').value; i++) {
-                        let file = document.getElementById('trame_file_' + i).files[0];
-                        files.push(file);
-                        files_names.push(file.name);
-                        files_types.push(file.type);
-                        files_sizes.push(file.size);
-                    }
+                // Récupérer le premier fichier
+                let trame_file = document.getElementById('trame_file_1').files[0];
+                let trame_file_name = trame_file.name;
+                let trame_file_type = trame_file.type;
+                let trame_file_size = trame_file.size;
+
+                // Récupérer l'adresse email de l'utilisateur connecté
+                let userEmail = current_user_data.email;
+
+                // Vérifier si les champs sont vides
+                if (trame_file.length === 0) {
+                    alert('Veuillez ajouter un fichier.');
+                    return;
                 }
 
                 // Afficher l'avancement du chargement
                 document.getElementById('loading').style.display = 'block';
 
-                files.forEach((file, index) => { // Pour chaque fichier à envoyer
-                    let file_link = '';
-                    // Créer un objet FormData
-                    let formData = new FormData();
-                    formData.append('file', file);
-                    formData.append('action', 'handle_file_upload');
-                    sendFile(formData);
-                    async function sendFile (form_data) { // Envoi des fichiers
-                        fetch(ajaxurl, {
-                            method: 'POST',
-                            body: form_data,
-                        })
-                            .then(response => response.json())
-                            .then(data => {
-                                if (data.success) {
-                                    file_link = data.data.url;
-                                } else {
-                                    console.log('Error:', data.data);
+                // Créer un objet FormData
+                let formData = new FormData();
+                formData.append('file', trame_file);
+                formData.append('action', 'handle_file_upload');
+
+                // Envoyer le fichier
+                fetch(ajaxurl, {
+                    method: 'POST',
+                    body: formData,
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            console.log('Success:', data.data);
+                            //#region Envoi des données de la trame
+                            fetch('https://lab.padem.org/wp-json/mo/v1/createProjectFile', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({
+                                    file_name: trame_file_name, 
+                                    file_type: trame_file_type, 
+                                    file_link: data.data.url, // Lien du fichier
+                                    file_size: trame_file_size,
+                                    author_email: userEmail,
+                                    is_trame: true,
+                                    created_at: new Date(Date.now()) // Date de création
+                                }),
+                            })
+                                .then((response) => response.json())
+                                .then((data) => {
                                     // Masquer l'avancement du chargement
                                     document.getElementById('loading').style.display = 'none';
-                                }
-                            })
-                            .catch(error => {
-                                console.error('Error:', error);
-                                // Masquer l'avancement du chargement
-                                document.getElementById('loading').style.display = 'none';
-                            });
-                    }
-    
-                    // Récupérer l'adresse email de l'utilisateur connecté
-                    let userEmail = current_user_data.email;
-    
-                    // Vérifier si les champs sont vides
-                    if (files.length === 0) {
-                        alert('Veuillez ajouter au moins un fichier');
-                        return;
-                    }
-    
-                    // Envoyer les données de la trame
-                    sendTrameData();
-                    async function sendTrameData() {  // Envoi des données de la trame
-                        fetch('https://lab.padem.org/wp-json/mo/v1/createProjectFile', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({
-                                file_name: files_names[index],
-                                file_type: files_types[index],
-                                file_link: file_link,
-                                author_email: userEmail,
-                                is_trame: true,
-                            }),
-                        })
-                            .then((response) => response.json())
-                            .then((data) => {
-                                // Masquer l'avancement du chargement
-                                document.getElementById('loading').style.display = 'none';
-                                // Recharger les trames
-                                displayTrames();
-                                
-                                // Vider les champs du formulaire
-                                document.getElementById('number_of_files').value = 1;
-                                document.getElementById('trame_file_1').value = '';
-                                document.getElementById('trame_files_list').innerHTML = `
-                                    <div class="col-md-12" id="trame_file_1_">
-                                        <label for="trame_file_1" style="color: gray;">Document 1</label>
-                                        <input type="file" id="trame_file_1" name="trame_file_1" class="form-control" style="width: 100%; border-radius: 20px; border: 1px solid lightgray; padding: 5px;">
-                                        <div style="height: 10px;"></div>
-                                    </div>
-                                `;
-                            })
-                            .catch((error) => {
-                                console.error('Error:', error);
-                                // Masquer l'avancement du chargement
-                                document.getElementById('loading').style.display = 'none';
-                            });
-                    }
-                });
+                                    // Recharger les trames
+                                    displayTrames();
+                                    
+                                    // Vider les champs du formulaire
+                                    document.getElementById('trame_file_1').value = '';
+                                })
+                                .catch((error) => {
+                                    console.error('Error:', error);
+                                    // Masquer l'avancement du chargement
+                                    document.getElementById('loading').style.display = 'none';
+                                });
+                            //#endregion
+                        } else {
+                            console.log('Error:', data.data);
+                            // Masquer l'avancement du chargement
+                            document.getElementById('loading').style.display = 'none';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        // Masquer l'avancement du chargement
+                        document.getElementById('loading').style.display = 'none';
+                    });
             });
         </script>
     </body>
 <!--#endregion -->
 
+<!--#region Onglet Fichiers -->
+<div class="container" style="display: flex; justify-content: space-between;">
+    <!-- Barre  de recherche -->
+    <div class="container">
+        <div class="input-group mb-3" style="width: 300px; margin: 10px; padding: 10px; border-radius: 20px; display: flex; justify-content: flex-start;">
+            <input type="text" class="form-control" placeholder="Rechercher un document" aria-label="Rechercher un document"
+                aria-describedby="button-addon2" id="search_trames">
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="button" id="_onglet_files_search_button_" style="border-radius: 20px; padding: 5px; margin: 5px; display: flex; justify-content: center; align-items: center;">
+                    <!-- icone loupe (couleur grise) -->
+                    <img src="https://img.icons8.com/ios/50/000000/search--v1.png" style="width: 20px; height: 20px;"
+                        alt="">
+                    Rechercher</button>
+            </div>
+        </div>
+    </div>
 
+    <!-- Bouton pour créer un nouveau document -->
+    <div class="container">
+        <button class="btn btn-outline-secondary" id="onglet_files_create_files" style="border-radius: 20px; padding: 5px; margin: 5px; display: flex; justify-content: center; align-items: center; border: 1px solid lightgray;">
+            <img src="https://img.icons8.com/ios/50/9F9F9F/add-file.png" style="width: 20px; height: 20px;" alt="">
+            Nouveau document</button>
+    </div>
+</div>
+
+<body>
+    <!-- Tableau des Fichiers -->
+    <div class="container" id="onglet_files_table" style="display: block;">
+        <table>
+            <thead style="font-size: 12px; font-weight: lighter; color: gray;">
+                <tr>
+                    <th scope="col" id="onglet_trame_name">Nom <img
+                            src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 15px; height: 15px;" alt=""></th>
+                    <th scope="col" id="onglet_trame_author">Auteur <img
+                            src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 15px; height: 15px;" alt=""></th>
+                    <th scope="col" id="onglet_trame_date">Date de création <img
+                            src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 15px; height: 15px;" alt=""></th>
+                    <th scope="col" id="onglet_trame_size">Taille <img
+                            src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 15px; height: 15px;" alt=""></th> <!-- pdf, word, excel, powerpoint -->
+                    <th scope="col">Actions</th> <!-- Voire, Modifier, Supprimer -->
+                </tr>
+            </thead>
+            <tbody id="onglet_display_all_files" style="height: 500px;" class="main-group-scroll">
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Formulaire de création de document -->
+    <div class="container" id="new_file_form" style="display: none;" class="main-group-scroll">
+        <form id="trameForm" class="card" style="border-radius: 15px; background-color: white;" method="post" enctype="multipart/form-data">
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="fichier_file_1" style="font-weight: lighter; color: gray;"> <img src="https://img.icons8.com/?size=100&id=11550&format=png&color=9F9F9F" style="width: 20px; height: 20px;" alt="">
+                        Ajouter un fichier: <span style="color: red;">*</span></label>
+                    <input type="file" id="fichier_file_1" name="fichier_file_1" class="form-control" required>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <button class="btn btn-outline-secondary" id="onglet_files_send" style="border-radius: 20px; padding: 5px; margin: 5px; display: flex; justify-content: center; align-items: center;">
+                        <img src="https://img.icons8.com/ios/50/29A6A7/send-letter.png" style="width: 20px; height: 20px;" alt="">
+                        Envoyer</button>
+                    <button class="btn btn-outline-secondary" id="onglet_files_cancel" style="border-radius: 20px; padding: 5px; margin: 5px; display: flex; justify-content: center; align-items: center;">
+                        <img src="https://img.icons8.com/ios/50/FF0000/cancel.png" style="width: 20px; height: 20px;" alt="">
+                        Annuler</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</body>
+<!--#endregion -->
 
 <!--#region Onglet Projet -->
 <!-- Barre  de recherche -->
@@ -1630,7 +1921,6 @@
         </div>
     </div>
 </div>
-
 
 <body>
 
