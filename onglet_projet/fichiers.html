@@ -1,0 +1,85 @@
+<th style="font-weight: lighter; color: black; display: ${(is_folder[index] && !is_image[index]) ? 'flex' : 'none'}; justify-content: flex-start;">
+    <div style="width: 100%; height: 50px; border-radius: 50%; background-color: white; display: flex; justify-content: flex-start; cursor: pointer;" id="trame_folder_${trame.id}">
+        <img src="${fileIcon}" style="border: 1px solid lightgray; width: 50px; height: 50px; border-radius: 50%; background-color: white;" alt="">
+        <div style="width: 6px;"></div>
+        <p class="long-file-name" style="color: #29A6A7; margin-top: 15px; width: 150px;">${trame.folder_name ? trame.folder_name : '---'}</p>
+    </div>
+</th>
+<!-- Afficher un aperçu de l'image -->
+<th style="font-weight: lighter; color: black; display: ${(is_image[index] && !is_folder[index]) ? 'flex' : 'none'}; justify-content: flex-start;">
+    <div style="width: 100%; height: 50px; border-radius: 50%; background-color: white; display: flex; justify-content: flex-start; cursor: pointer;" id="trame_preview_image_${trame.id}">
+        ${trame.file_link ? `<img src="${trame.file_link}" style="border: 1px solid lightgray; width: 50px; height: 50px; border-radius: 50%; background-color: white;" alt="">` : `<img src="https://img.icons8.com/ios/50/FFA500/image.png" style="border: 1px solid lightgray; width: 50px; height: 50px; border-radius: 50%; background-color: white;" alt="">`}
+        <div style="width: 6px;"></div>
+        <p class="long-file-name" style="color: black; margin-top: 15px; width: 150px;">${trame.file_name ? trame.file_name : '---'}</p>
+    </div>
+</th>
+<th style="font-weight: lighter; color: black; display: ${(is_image[index] && !is_folder[index]) ? 'none' : 'flex'}; justify-content: flex-start;"> 
+    <div id="trame_name_displayed_${trame.id}" style="display: flex; justify-content: space-between;"> 
+        ${trame.file_link ? `<iframe src="${trame.file_link}" style="border: 1px solid lightgray; width: 50px; height: 50px; border-radius: 50%; background-color: white;" title="file"></iframe>` : `<img src="${fileIcon}" style="border: 1px solid lightgray; width: 50px; height: 50px; border-radius: 50%; background-color: white;" alt="">`}
+        <div style="width: 6px;"></div>
+        <p class="long-file-name" style="color: black; margin-top: 15px;">${trame.file_name ? trame.file_name : '---'}</p>
+    </div>
+    <!-- Menu de l'action à effectuer sur le document (Renommer) -->
+    <div class="dropdown-menu" id="trame_menu_${trame.id}" style="display: none ; position: absolute; background-color: white; border-radius: 20px; padding: 5px; margin-top: 10px; margin-right: 10px; width: fit-content; align-self: center;">
+        <input type="text" id="trame_name_input_${trame.id}" style="display: none; width: 100px; border-radius: 20px; border: 1px solid lightgray; padding: 5px;">
+        <img src="https://img.icons8.com/?size=100&id=11658&format=png&color=29A6A7" style="width: 30px; height: 30px; align-self: center; margin: 5px; padding: 5px;" id="save_trame_edit_${trame.id}" alt="">
+        <img src="https://img.icons8.com/?size=100&id=3062&format=png&color=9F9F9F" style="width: 30px; height: 30px; align-self: center; margin: 5px; padding: 5px;" id="cancel_edit_trame_${trame.id}" alt="">
+    </div>
+</th>
+<th style="font-weight: lighter; color: black; display: flex; justify-content: space-between; margin-left: 15px; margin-right: 15px; margin-top: 15px;"><div style="width: 20px;"></div>${author_name}</th>
+<th style="font-weight: lighter; color: black; display: flex; justify-content: space-between; margin-left: 15px; margin-right: 15px; margin-top: 15px;"><div style="width: 20px;"></div>${created_at}</th>
+<th style="font-weight: lighter; color: black; display: flex; justify-content: space-between; margin-left: 15px; margin-right: 15px; margin-top: 15px;"><div style="width: 20px;"></div>${trame.file_type ? `<img src="${fileIcon}" style="width: 20px; height: 20px;" alt="">` : '---'}</th>
+<th style="font-weight: lighter; color: black; display: flex; justify-content: space-between; margin-left: 15px; margin-right: 15px; margin-top: 15px;"><div style="width: 20px;"></div>${fileSize}</th>
+<!-- Bouton pour télécharger le document et bouton pour supprimer le document -->
+<th style="color: #29A6A7; width: 100%; display: flex; justify-content: flex-end; margin-left: 15px; margin-right: 3px;">
+    <!-- Afficher l'animation de chargement -->
+    <div id="loading_delete_${trame.id}" style="display: none; background: none;">
+        <img src="https://lab.padem.org/wp-content/uploads/Spin@1x-1.0s-200px-200px.gif" style="width: 30px; height: 30px" alt="Suppression...">
+    </div>
+    <div style="display: none; justify-content: space-between; width: 50px; height: 50px; border-radius: 50%; background-color: #D6D6D641; align-self: center;" id="move_file_icon_${trame.id}" title="Déplacer">
+        <img src="https://img.icons8.com/?size=100&id=38978&format=png&color=9F9F9F" style="margin-left: 15px; width: 20px; height: 20px; cursor: pointer; align-self: center;" alt="Move">
+    </div>
+    <div style="width: 10px;"></div>
+    <a href="${trame.file_link}" id="download_trame_${trame.id}" download="${trame.file_name}" style="display: flex; justify-content: space-between; text-decoration: none; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; background-color: #D6D6D641; align-self: center;" title="Télécharger">
+        <img src="https://img.icons8.com/ios/50/29A6A7/download.png" style="margin-left: 15px; width: 20px; height: 20px; cursor: pointer; align-self: center;" alt="Télécharger">
+    </a>
+    <div style="width: 10px;"></div>
+    <div style="display: flex; justify-content: space-between; width: 50px; height: 50px; border-radius: 50%; background-color: #D6D6D641; align-self: center;" id="this_file_menu_icon_${trame.id}" title="Détails">
+        <img src="https://img.icons8.com/ios/50/9F9F9F/menu.png" style="margin-left: 15px; width: 20px; height: 20px; cursor: pointer; align-self: center;" alt="Détails" id="display_menu_${trame.id}">
+    </div>
+    <!-- Menu de l'action à effectuer sur le document -->
+    <div  class="dropdown-menu" id="file_menu_${trame.id}" style="display: none ; position: absolute; background-color: white; border-radius: 20px; padding: 5px; margin-top: 10px; margin-right: 10px; width: fit-content; align-self: center;">
+        <div style="display: flex; justify-content: space-between; width: fit-content; border-radius: 15px; cursor: pointer; align-self: center; margin-left: 20px; margin: 5px; padding: 5px;" id="display_file_${trame.id}" title="Afficher">
+            <img src="https://img.icons8.com/ios/50/9F9F9F/visible.png" style="width: 20px; height: 20px; cursor: pointer; margin-top: 10px;" alt="Afficher dans un nouvel onglet">
+            <div style="width: 10px;"></div>
+            <p style="color: gray; font-size: 12px; margin-top: 10px; font-weight: lighter;">Afficher</p>
+        </div>
+        <hr style="border: 1px solid lightgray; width: 100%; margin: 5px;">
+        <div style="display: flex; justify-content: space-between; width: fit-content; border-radius: 15px; cursor: pointer; align-self: center; margin-left: 20px; margin: 5px; padding: 5px;" id="edit_file_${trame.id}" title="Editer">
+            <img src="https://img.icons8.com/?size=100&id=6697&format=png&color=9F9F9F" style="width: 20px; height: 20px; cursor: pointer; margin-top: 10px;" alt="Editer">
+            <div style="width: 10px;"></div>
+            <p style="color: gray; font-size: 12px; margin-top: 10px; font-weight: lighter;">Renommer</p>
+        </div>
+        <hr style="border: 1px solid lightgray; width: 100%; margin: 5px;">
+        <div style="display: flex; justify-content: space-between; width: fit-content; border-radius: 15px; cursor: pointer; align-self: center; margin-left: 20px; margin: 5px; padding: 5px;" id="move_element_${trame.id}" title="Editer">
+            <img src="https://img.icons8.com/?size=100&id=6697&format=png&color=9F9F9F" style="width: 20px; height: 20px; cursor: pointer; margin-top: 10px;" alt="Editer">
+            <div style="width: 10px;"></div>
+            <p style="color: gray; font-size: 12px; margin-top: 10px; font-weight: lighter;">Déplacer</p>
+        </div>
+        <hr style="border: 1px solid lightgray; width: 100%; margin: 5px;">
+        <div style="display: flex; justify-content: space-between; width: fit-content; border-radius: 15px; cursor: pointer; align-self: center; margin-left: 20px; margin: 5px; padding: 5px;" id="delete_trame_${trame.id}" title="Supprimer">
+            <img src="https://img.icons8.com/ios/50/9F9F9F/trash.png" style="width: 20px; height: 20px; cursor: pointer; margin-top: 10px;" alt="Supprimer" id="delete_trame_icon_${trame.id}">
+            <div style="width: 10px;"></div>
+            <p style="color: gray; font-size: 12px; margin-top: 10px; font-weight: lighter;" id="delete_trame_text_${trame.id}">Supprimer</p>
+        </div>
+    </div>
+    <!-- Menu de l'action à effectuer sur le document ou le dossier (Déplacer dans un dossier) -->
+    <div class="dropdown-menu" id="move_menu_${trame.id}" style="display: none ; position: absolute; background-color: white; border-radius: 20px; padding: 5px; margin-top: 10px; margin-right: 10px; width: fit-content; align-self: center;">
+        <select class="form-control" id="move_trame_folder_${trame.id}" name="move_trame_folder_${trame.id}" style="width: 100%; border-radius: 20px; border: 1px solid lightgray; padding: 5px; font-size: 14px; color: gray;">
+            <option value="0">Choisir un dossier de destination</option>
+        </select>
+        <div style="height: 10px;"></div>
+        <img src="https://img.icons8.com/?size=100&id=11658&format=png&color=29A6A7" style="width: 30px; height: 30px; align-self: center; margin: 5px; padding: 5px;" id="save_move_trame_${trame.id}" alt="">
+        <img src="https://img.icons8.com/?size=100&id=3062&format=png&color=9F9F9F" style="width: 30px; height: 30px; align-self: center; margin: 5px; padding: 5px;" id="cancel_move_trame_${trame.id}" alt="">
+    </div>
+</th>
