@@ -1062,36 +1062,31 @@
 <!--#region Onglet Trames (Documents models) -->
     <!--#region Entête de l'onglet -->
     <!-- Boutons de navigation -->
-    <div class="container" style="display: flex; justify-content: space-between; margin: 5px;">
+    <div class="container" style="display: flex; justify-content: flex-end; margin: 5px;">
         <!-- Barre  de recherche -->
-        <div style="display: flex; justify-content: flex-start; margin: 5px; width: fit-content;" id="search_trames_div_files">
+         <!--
+        <div style="display: flex; justify-content: flex-start; margin: 5px; width: fit-content;" id="fichiers_search_trames_div_files">
             <input type="text" class="form-control" placeholder="Rechercher..." aria-label="Rechercher..."
-                aria-describedby="button-addon2" id="search_trames_" style="border-radius: 35px; width: 300px;">
+                aria-describedby="button-addon2" id="fichiers_search_trames_" style="border-radius: 35px; width: 300px;">
             <div style="width: 2px;"></div>
             <div class="input-group-append" style="display: flex; justify-content: center;">
-                <button class="btn btn-outline-secondary box-clicable" type="button" id="trame_search_button" style="border-radius: 50px; background-color: transparent; color: gray; width: 50px; border: none; padding: 5px;" title="Rechercher">
-                    <!-- icone loupe (couleur grise) -->
+                <button class="btn btn-outline-secondary box-clicable" type="button" id="fichiers_trame_search_button" style="border-radius: 50px; background-color: transparent; color: gray; width: 50px; border: none; padding: 5px;" title="Rechercher">
                     <img src="https://img.icons8.com/ios/50/9F9F9F/search--v1.png" style="width: 25px; height: 20px;" alt="">
             </div>
-        </div>
+        </div>-->
         <div class="container" style="display: flex; justify-content: flex-end;">
-            <button type="button" class="btn btn-light box-clicable" id="onglet_files_create_trame" style="width: fit-content; border-radius: 50%; color: gray; background-color: white; align-self: center; border: 1px solid lightgray; margin: 5px; padding: 5px;" title="Nouveau document">
-                <div style="width: 10px;"></div>
-                <img src="https://img.icons8.com/ios/50/9F9F9F/add-file.png" style="width: 30px; height: 30px; margin: 5px;" alt="Nouveau document" id="onglet_files_create_trame_img">
-                <div style="width: 10px;"></div>
+            <button type="button" class="btn btn-light box-clicable" id="fichiers_onglet_files_create_trame" style="width: fit-content; border-radius: 50%; color: gray; background-color: white; align-self: center; border: 1px solid lightgray; margin: 5px; padding: 5px;" title="Nouveau document">
+                <img src="https://img.icons8.com/ios/50/9F9F9F/add-file.png" style="width: 30px; height: 30px; margin: 5px;" alt="Nouveau document" id="fichiers_onglet_files_create_trame_img">
             </button>
-            <button type="button" class="btn btn-light box-clicable" id="onglet_files_create_folder_1" style="width: fit-content; border-radius: 50%; color: gray; background-color: white; align-self: center; border: 1px solid lightgray; margin: 5px; padding: 5px;" title="Nouveau dossier">
-                <div style="width: 10px;"></div>
-                <img src="https://img.icons8.com/?size=100&id=16745&format=png&color=9F9F9F" style="width: 30px; height: 30px; margin: 5px;" alt="Nouveau dossier" id="onglet_files_create_folder_img">
-                <div style="width: 10px;"></div>
+            <button type="button" class="btn btn-light box-clicable" id="fichiers_onglet_files_create_folder" style="width: fit-content; border-radius: 50%; color: gray; background-color: white; align-self: center; border: 1px solid lightgray; margin: 5px; padding: 5px;" title="Nouveau dossier">
+                <img src="https://img.icons8.com/?size=100&id=16745&format=png&color=9F9F9F" style="width: 30px; height: 30px; margin: 5px;" alt="Nouveau dossier" id="fichiers_onglet_files_create_folder_img">
             </button>
-            <button type="button" class="btn btn-light box-clicable" id="onglet_files_trames" style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px; border: 1px solid lightgray; margin: 5px; padding: 5px;">
-                <div style="width: 10px;"></div>
-                <img src="https://img.icons8.com/?size=100&id=42415&format=png&color=9F9F9F" style="width: 30px; height: 30px; margin: 2px;" alt="" id="onglet_files_trames_img">
-                Trames </button>
-            <button type="button" class="btn btn-light box-clicable" id="onglet_files_all_files" style="width: fit-content; color: #29A6A7; background-color: white; align-self: center; border-radius: 15px; border: 1px solid lightgray; margin: 5px; padding: 5px;">
-                <div style="width: 10px;"></div>
-                <img src="https://img.icons8.com/?size=100&id=20440&format=png&color=9F9F9F" style="width: 25px; height: 25px; margin: 5px;" alt="" id="onglet_files_all_files_img">
+            <button type="button" class="btn btn-light box-clicable" id="fichiers_onglet_files_trames" style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px; border: 1px solid lightgray; margin: 5px; padding: 5px;">
+                <img src="https://img.icons8.com/?size=100&id=42415&format=png&color=9F9F9F" style="width: 30px; height: 30px; margin: 2px;" alt="" id="fichiers_onglet_files_trames_img">
+                Trames 
+            </button>
+            <button type="button" class="btn btn-light box-clicable" id="fichiers_onglet_files_all_files" style="width: fit-content; color: #29A6A7; background-color: white; align-self: center; border-radius: 15px; border: 1px solid lightgray; margin: 5px; padding: 5px;">
+                <img src="https://img.icons8.com/?size=100&id=20440&format=png&color=9F9F9F" style="width: 25px; height: 25px; margin: 5px;" alt="" id="fichiers_onglet_files_all_files_img">
                 Tous les fichiers
             </button>
         </div>
@@ -1099,104 +1094,102 @@
     <!--#endregion -->
 
     <body>
-        <!--#region Formulaire de création de trame -->
-        <div class="container" id="_new_trame_form_" style="display: none;">
-            <form id="_trame_Form" class="card" style="border-radius: 25px; background-color: white; padding: 20px;" method="post" enctype="multipart/form-data">
-                <!--#region Upload de fichiers un ou plusieurs fichiers (pdf, word, excel, powerpoint) un à la fois avec un bouton d'ajout et un bouton de suppression -->
-                <div style="display: column; justify-content: space-between; padding: 10px;" id="trame_files_container" class="card-body">
+        <!--#region Formulaire de création de nouveaux fichiers -->
+        <div class="container" id="fichiers__new_trame_form_" style="display: none;">
+            <form id="fichiers__trame_Form" class="card" style="border-radius: 25px; background-color: white; padding: 20px;" enctype="multipart/form-data">
+                <div style="display: column; justify-content: space-between; padding: 10px;" id="fichiers_trame_files_container" class="card-body">
                     <div style="height: 10px;"></div>
-                    <div id="trame_files_list">
-                        <div class="col-md-12" id="trame_file_1_">
-                            <label for="trame_file_1" style="color: gray; display: none;">Document 1</label>
-                            <input type="file" id="trame_file_1" name="trame_file_1" class="form-control" style="width: 100%; border-radius: 20px; border: 1px solid lightgray; padding: 5px;">
+                    <div id="fichiers_trame_files_list">
+                        <div class="col-md-12">
+                            <label for="fichiers_trame_file_1" style="color: gray; display: none;">Document 1</label>
+                            <input type="file" id="fichiers_trame_file_1" name="fichiers_trame_file_1" class="form-control" style="width: 100%; border-radius: 20px; border: 1px solid lightgray; padding: 5px;">
                             <div style="height: 10px;"></div>
                         </div>
                     </div>
                     <div style="height: 10px;"></div>
-                    <!-- Choisir un dossier de destination -->
-                    <div class="col-md-12" id="trame_folder_dastination_">
-                        <select class="form-control" id="tame_folder_1" name="trame_folder_1" style="width: 100%; border-radius: 20px; border: 1px solid lightgray; padding: 5px; font-size: 14px; color: gray;">
+                    <div class="col-md-12">
+                        <select class="form-control" id="fichiers_trame_folder_1" name="fichiers_trame_folder_1" style="width: 100%; border-radius: 20px; border: 1px solid lightgray; padding: 5px; font-size: 14px; color: gray;">
                             <option value="0">Choisir un dossier de destination</option>
                         </select>
                         <div style="height: 10px;"></div>
                     </div>
                 </div>
-                <!--#endregion Upload de fichiers -->
                 <div class="action-buttons col-md-12" style="display: flex; justify-content: flex-end;">
-                    <button type="button" class="btn btn-secondary" style="color: white; width: fit-content; border-radius: 20px;" id="onglet_trame_cancel">
+                    <button type="button" class="btn btn-secondary" style="color: white; width: fit-content; border-radius: 20px;" id="fichiers_onglet_trame_cancel">
                         Annuler <img src="https://lab.padem.org/wp-content/uploads/Annuler.png" alt="Annuler" style="width: 25px; height: 25px;">
                     </button>
-                    <button type="button" class="btn btn-primary" style="width: fit-content; border-radius: 20px; color: white;" id="onglet_trame_send">
+                    <button type="button" class="btn btn-primary" style="width: fit-content; border-radius: 20px; color: white;" id="fichiers_onglet_trame_send">
                         Enregistrer <img src="https://img.icons8.com/ios/50/FFFFFF/save.png" alt="Enregistrer" style="width: 25px; height: 25px;">
                     </button>
                 </div>
             </form>
         </div>
         <!--#endregion -->
-        <!-- Formulaire de création de dossier -->
-        <div class="container" id="container_onglet_trame_create_folder" style="display: none; margin-bottom: 10px;">
-            <form id="new_trame_folder_Form" class="card" style="border-radius: 25px; background-color: white; padding: 20px;" method="post" enctype="multipart/form-data">    
-                <div style="display: column; justify-content: space-between; padding: 10px;" id="onglet_trame_folder_container" class="card-body">
+        <!--#region Formulaire de création de nouveaux dossiers -->
+        <!--
+        <div class="container" id="fichiers_container_onglet_trame_create_folder" style="display: none; margin-bottom: 10px;">
+            <form id="fichiers_new_trame_folder_Form" class="card" style="border-radius: 25px; background-color: white; padding: 20px;" method="post" enctype="multipart/form-data">    
+                <div style="display: column; justify-content: space-between; padding: 10px;" id="fichiers_onglet_trame_folder_container" class="card-body">
                     <div style="height: 10px;"></div>
-                    <!-- Saisir le nom du dossier -->
                     <div class="col-md-12">
-                        <label for="trame_new_folder" style="font-size: 14px; font-weight: lighter; color: gray;">
+                        <label for="fichiers_new_folder_name" style="font-size: 14px; font-weight: lighter; color: gray;">
                             <img src="https://img.icons8.com/ios/50/9F9F9F/folder-invoices.png" style="width: 20px; height: 20px;" alt="">
                             Nom du nouveau dossier <span style="color: red;">*</span>
                         </label>
-                        <input type="text" id="trame_new_folder_name" name="trame_new_folder_name" class="form-control" style="width: 100%; border-radius: 20px; border: 1px solid lightgray; padding: 5px;" required>
+                        <input type="text" id="fichiers_new_folder_name" name="fichiers_new_folder_name" class="form-control" style="width: 100%; border-radius: 20px; border: 1px solid lightgray; padding: 5px;" required>
                         <div style="height: 10px;"></div>
                     </div>
                     <div style="height: 10px;"></div>
                 </div>
                 <div class="action-buttons col-md-12" style="display: flex; justify-content: flex-end;">
-                    <button type="button" class="btn btn-secondary" style="color: white; width: fit-content; border-radius: 20px;" id="onglet_trame_folder_cancel">
+                    <button type="button" class="btn btn-secondary" style="color: white; width: fit-content; border-radius: 20px;" id="fichiers_onglet_trame_folder_cancel">
                         Annuler <img src="https://lab.padem.org/wp-content/uploads/Annuler.png" alt="Annuler" style="width: 25px; height: 25px;">
                     </button>
-                    <button type="button" class="btn btn-primary" style="width: fit-content; border-radius: 20px; color: white;" id="onglet_trame_folder_send">
+                    <button type="button" class="btn btn-primary" style="width: fit-content; border-radius: 20px; color: white;" id="fichiers_onglet_trame_folder_send">
                         Enregistrer <img src="https://img.icons8.com/ios/50/FFFFFF/save.png" alt="Enregistrer" style="width: 25px; height: 25px;">
                     </button>
                 </div>
             </form>
-        </div>
+        </div> -->
+        <!--#endregion -->
+
         <!--#region Tableau des trames -->
-        <div class="container" id="onglet_trames_table" style="display: none;">
+        <!--
+        <div class="container" id="fichiers_onglet_trames_table" style="display: none;">
             <table>
                 <thead style="font-size: 12px; font-weight: lighter; color: gray;">
                     <tr>
-                        <th scope="col" id="onglet_trame_name">Nom <img
+                        <th scope="col" id="fichiers_onglet_trame_name">Nom <img
                                 src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 15px; height: 15px;" alt=""></th>
-                        <th scope="col" id="onglet_trame_author">Auteur <img
+                        <th scope="col" id="fichiers_onglet_trame_author">Auteur <img
                                 src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 15px; height: 15px;" alt=""></th>
-                        <th scope="col" id="onglet_trame_date">Date de création <img
+                        <th scope="col" id="fichiers_onglet_trame_date">Date de création <img
                                 src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 15px; height: 15px;" alt=""></th>
-                        <th scope="col" id="onglet_trame_type">Type <img
+                        <th scope="col" id="fichiers_onglet_trame_type">Type <img
                                 src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 15px; height: 15px;" alt=""></th>
-                        <th scope="col" id="onglet_trame_size">Taille <img
-                                src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 15px; height: 15px;" alt=""></th> <!-- pdf, word, excel, powerpoint -->
-                        <th scope="col">Actions</th> <!-- Voire, Modifier, Supprimer -->
+                        <th scope="col" id="fichiers_onglet_trame_size">Taille <img
+                                src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 15px; height: 15px;" alt=""></th> 
+                        <th scope="col">Actions</th>
                     </tr>
                 </thead>
-                <tbody id="onglet_display_trames" class="main-group-scroll" style="height: 500px;">
+                <tbody id="fichiers_onglet_display_trames" class="main-group-scroll" style="height: 500px;">
                 </tbody>
             </table>
-        </div>
-        <!--#endregion -->
+        </div>-->
 
-        <!--#region Tableau de toutes les trames et dossiers -->
-        <div class="container" id="onglet_files_all_files_table" style="display: block;">
-            <table>
-                <thead  id="onglet_files_display_all_files" style="font-size: 12px; font-weight: lighter; color: gray;">
+        <div class="container" id="fichiers_onglet_files_all_files_table" style="display: block;">
+            <table id="fichiers_onglet_files_display_all_files">
+                <thead style="font-size: 12px; font-weight: lighter; color: gray;">
                     <tr>
-                        <th scope="col" id="onglet_all_files_name">Nom <img
+                        <th scope="col" id="fichiers_onglet_all_files_name">Nom <img
                                 src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 15px; height: 15px;" alt=""></th>
-                        <th scope="col" id="onglet_all_files_author">Auteur <img
+                        <th scope="col" id="fichiers_onglet_all_files_author">Auteur <img
                                 src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 15px; height: 15px;" alt=""></th>
-                        <th scope="col" id="onglet_all_files_date">Date de création <img
+                        <th scope="col" id="fichiers_onglet_all_files_date">Date<img
                                 src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 15px; height: 15px;" alt=""></th>
-                        <th scope="col" id="onglet_all_files_type">Type <img
+                        <th scope="col" id="fichiers_onglet_all_files_type">Type <img
                                 src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 15px; height: 15px;" alt=""></th>
-                        <th scope="col" id="onglet_all_files_size">Taille <img
+                        <th scope="col" id="fichiers_onglet_all_files_size">Taille <img
                                 src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 15px; height: 15px;" alt=""></th> <!-- pdf, word, excel, powerpoint -->
                         <th scope="col">Actions</th> <!-- Voire, Modifier, Supprimer -->
                     </tr>
@@ -1215,14 +1208,15 @@
             document.addEventListener('DOMContentLoaded', function (e) {
                 e.preventDefault();
                 var userEmail = current_user_data.email;
+
+                // Initailiser des états des boutons
+                document.getElementById('fichiers_onglet_files_all_files').style.color = '#29A6A7';
+                document.getElementById('fichiers_onglet_files_all_files_table').style.display = 'block';
+                document.getElementById('fichiers_onglet_files_trames').style.color = 'gray';
+                document.getElementById('fichiers_onglet_trames_table').style.display = 'none';
+
                 // Récupérer les trames
-                try {
-                    console.log('Chargement des trames...');
-                    displayTrames();
-                } catch (error) {
-                    console.error('Erreur lors du chargement des trames:', error);
-                    sendMailNotification(userEmail, 'Erreur lors du chargement des trames', 'Une erreur est survenue lors du chargement des trames. Veuillez réessayer plus tard. Contenu de l\'erreur: ' + error);
-                }
+                displayTrames();
             });
 
             // Récupérer et afficher toutes les trames
@@ -1257,7 +1251,7 @@
                                 // console.log(data);
                                 let trames = data;
                                 all_trames = data; // Enregistrer la liste des trames
-                                const tbody = document.getElementById('onglet_files_display_all_files');
+                                const tbody = document.querySelector('#fichiers_onglet_files_display_all_files body'); // Tableau des trames
                                 tbody.innerHTML = '';
                                 var is_image = new Array(trames.length).fill(false); // Tableau pour vérifier si le fichier est une image
                                 var file_type = new Array(trames.length).fill(''); // Tableau pour enregistrer le type de fichier
@@ -1872,143 +1866,58 @@
                     .catch(error => console.error(error));
 
                 
-            }
-
+            } 
+            
             console.log('Fin de l\'affichage des trames.');
-
-            try {
-                // Ajouter un évènement pour afficher tout les fichiers et dossiers
-            } catch (error) {
-                console.error('Erreur lors de l\'ajout de l\'évènement pour afficher tout les fichiers et dossiers:', error);
-            }
-            
-            try {
-                // Ajouter un évènement pour afficher les trames
-                
-            } catch (error) {
-                console.error('Erreur lors de l\'ajout de l\'évènement pour afficher les trames:', error);
-            }
-            
-            try {
-                // Afficher le formulaire de création de dossier
-            } catch (error) {
-                console.error('Erreur lors de l\'ajout de l\'évènement pour afficher le formulaire de création de dossier:', error);
-            }
-
-            
-            try {
-            // Annuler la création de dossier
-            } catch (error) {
-                console.error('Erreur lors de l\'ajout de l\'évènement pour annuler la création de dossier:', error);
-            }
-            
-            
-
-            try {
-            // Afficher le formulaire de création de trame
-            } catch (error) {
-                console.error('Erreur lors de l\'ajout de l\'évènement pour afficher le formulaire de création de trame:', error);
-            }
             /*
-            try {
-            // Annuler la création de trame
-            document.getElementById('onglet_trame_cancel').addEventListener('click', function (e) {
+            // Ajouter un évènement pour afficher tout les fichiers et dossiers(onglet_files_all_files)
+            document.getElementById('fichiers_onglet_files_all_files').addEventListener('click', function (e) { // Bouton pour afficher tout les fichiers et dossiers
                 e.preventDefault();
+                
+                document.getElementById('fichiers_onglet_files_all_files').style.color = '#29A6A7';
+                document.getElementById('fichiers_onglet_files_all_files').style.borderBottom = '2px solid #29A6A7';
+                document.getElementById('fichiers_onglet_files_all_files_table').style.display = 'block';
 
-                // Masquer le formulaire de création de trame
-                document.getElementById('_new_trame_form_').style.display = 'none';
-
-                document.getElementById('onglet_files_create_trame').innerHTML = ' <img src="https://img.icons8.com/?size=100&id=16745&format=png&color=9F9F9F" style="width: 20px; height: 20px;" alt="">';
-
-                // Vider les champs du formulaire
-                document.getElementById('trame_file_1').value = '';
+                document.getElementById('fichiers_onglet_files_trames').style.color = 'gray';
+                document.getElementById('fichiers_onglet_files_trames').style.borderBottom = '2px solid white';
+                document.getElementById('fichiers_onglet_trames_table').style.display = 'none';
             });
-            } catch (error) {
-                console.error('Erreur lors de l\'ajout de l\'évènement pour annuler la création de trame:', error);
-            }
-            try {
-            // Envoyer la trame
-            document.getElementById('onglet_trame_send').addEventListener('click', function (e) {
+            
+            // Ajouter un évènement pour afficher les trames
+            document.getElementById('fichiers_onglet_files_trames').addEventListener('click', function (e) { // Bouton pour afficher les trames
                 e.preventDefault();
+                
+                document.getElementById('fichiers_onglet_files_trames').style.color = '#29A6A7';
+                document.getElementById('fichiers_onglet_files_trames').style.borderBottom = '2px solid #29A6A7';
+                document.getElementById('fichiers_onglet_trames_table').style.display = 'block';
 
-                // Récupérer le premier fichier
-                let trame_file = document.getElementById('trame_file_1').files[0];
-                let trame_file_name = trame_file.name;
-                let trame_file_type = trame_file.type;
-                let trame_file_size = trame_file.size;
+                document.getElementById('fichiers_onglet_files_all_files').style.color = 'gray';
+                document.getElementById('fichiers_onglet_files_all_files').style.borderBottom = '2px solid white';
+                document.getElementById('fichiers_onglet_files_all_files_table').style.display = 'none';
+            });*/
+            
+            /*
+            // Afficher le formulaire de création de dossier
+            document.getElementById('fichiers_onglet_files_create_folder').addEventListener('click', function (e) {
+                e.preventDefault();
+                var icon_src = document.getElementById('fichiers_onglet_files_create_folder_img');
+            }); */
+            
+            // Afficher le formulaire de création de trame
+            document.getElementById('fichiers_onglet_files_create_trame_img').addEventListener('click', function (e) {
+                e.preventDefault();
+                var button_new_file = document.getElementById('fichiers_onglet_files_create_trame_img');
+                var form_new_file = document.getElementById('fichiers__new_trame_form_');
 
-                // Récupérer l'adresse email de l'utilisateur connecté
-                let userEmail = current_user_data.email;
-
-                // Vérifier si les champs sont vides
-                if (trame_file.length === 0) {
-                    alert('Veuillez ajouter un fichier.');
-                    return;
+                if (document.getElementById('fichiers__new_trame_form_').style.display === 'none') {
+                    document.getElementById('fichiers__new_trame_form_').style.display = 'block';
+                    button_new_file.src = 'https://img.icons8.com/ios/50/29A6A7/download.png';
+                } else {
+                    document.getElementById('fichiers__new_trame_form_').style.display = 'none';
+                    button_new_file.src = 'https://img.icons8.com/?size=100&id=16745&format=png&color=9F9F9F';
                 }
-
-                // Afficher l'avancement du chargement
-                document.getElementById('loading').style.display = 'block';
-
-                // Créer un objet FormData
-                let formData = new FormData();
-                formData.append('file', trame_file);
-                formData.append('action', 'handle_file_upload');
-
-                // Envoyer le fichier
-                fetch(ajaxurl, {
-                    method: 'POST',
-                    body: formData,
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            //#region Envoi des données de la trame
-                            fetch('https://lab.padem.org/wp-json/mo/v1/createProjectFile', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                },
-                                body: JSON.stringify({
-                                    file_name: ((data.data.url).split('/')).pop(), // Nom du fichier
-                                    file_type: trame_file_type, 
-                                    file_link: data.data.url, // Lien du fichier
-                                    file_size: trame_file_size,
-                                    author_email: userEmail,
-                                    is_trame: true,
-                                    created_at: new Date(Date.now()) // Date de création
-                                }),
-                            })
-                                .then((response) => response.json())
-                                .then((data) => {
-                                    // Masquer l'avancement du chargement
-                                    document.getElementById('loading').style.display = 'none';
-                                    // Recharger les trames
-                                    displayTrames();
-                                    
-                                    // Vider les champs du formulaire
-                                    document.getElementById('trame_file_1').value = '';
-                                })
-                                .catch((error) => {
-                                    console.error('Error:', error);
-                                    // Masquer l'avancement du chargement
-                                    document.getElementById('loading').style.display = 'none';
-                                });
-                            //#endregion
-                        } else {
-                            console.log('Error:', data.data);
-                            // Masquer l'avancement du chargement
-                            document.getElementById('loading').style.display = 'none';
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        // Masquer l'avancement du chargement
-                        document.getElementById('loading').style.display = 'none';
-                    });
             });
-            } catch (error) {
-                console.error('Erreur lors de l\'ajout de l\'évènement pour envoyer la trame:', error);
-            }*/
+
         </script>
     </body>
 <!--#endregion -->
@@ -2028,11 +1937,19 @@
     </div>
     <div class="container" style="display: flex; justify-content: flex-end;">
         <!-- Bouton pour créer un nouveau fichier -->
-        <button type="button" class="btn btn-light" id="onglet_files_create_file" style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px; border: 1px solid lightgray; margin: 5px; padding: 5px;">
-            <img src="https://img.icons8.com/ios/50/9F9F9F/add-file.png" style="width: 20px; height: 20px;" alt=""> Nouveau fichier</button>
+        <button type="button" class="btn btn-light" id="onglet_files_create_file" style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 50%; border: 1px solid lightgray; margin: 5px; padding: 5px;">
+            <img src="https://img.icons8.com/ios/50/9F9F9F/add-file.png" style="width: 30px; height: 30px; margin: 5px;" alt="Nouveau fichier">
+        </button>
         <!-- Bouton pour créer un nouveau dossier -->
-        <button type="button" class="btn btn-light" id="onglet_files_create_folder" style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px; border: 1px solid lightgray; margin: 5px; padding: 5px;">
-            <img src="https://img.icons8.com/?size=100&id=16745&format=png&color=9F9F9F" style="width: 20px; height: 20px;" alt=""> Nouveau dossier</button>
+        <button type="button" class="btn btn-light box-clicable" id="onglet_files_create_folder" style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 50%; border: 1px solid lightgray; margin: 5px; padding: 5px;">
+            <img src="https://img.icons8.com/?size=100&id=16745&format=png&color=9F9F9F" style="width: 30px; height: 30px; margin: 5px" alt="Nouveau dossier">
+        </button>
+        <button type="button" class="btn btn-light box-clicable" id="onglet_files_display_trames" style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px; border: 1px solid lightgray; margin: 5px; padding: 5px;">
+            <img src="https://img.icons8.com/?size=100&id=42415&format=png&color=9F9F9F" style="width: 25px; height: 25px; margin: 5px" alt=""> 
+            Trames </button>
+        <button type="button" class="btn btn-light box-clicable" id="onglet_files_display_all_files" style="width: fit-content; color: #29A6A7; background-color: white; align-self: center; border-radius: 15px; border: 1px solid lightgray; margin: 5px; padding: 5px;">
+            <img src="https://img.icons8.com/?size=100&id=20440&format=png&color=9F9F9F" style="width: 22px; height: 22px; margin: 5px" alt=""> 
+            Tous les fichiers </button>
     </div>
 </div>
 
@@ -2043,6 +1960,25 @@
             <!--#region Upload de fichiers un ou plusieurs fichiers (pdf, word, excel, powerpoint) un à la fois avec un bouton d'ajout et un bouton de suppression -->
             <div style="display: column; justify-content: space-between; padding: 10px;" id="onglet_files_container" class="card-body">
                 <div style="height: 10px;"></div>
+                <!-- Sélectionner le type de fichier (Trame ou autre) -->
+                <div class="col-md-12">
+                    <label style="font-size: 14px; font-weight: lighter; color: gray;">
+                        <img src="https://img.icons8.com/?size=100&id=77&format=png&color=9F9F9F" style="width: 20px; height: 20px;" alt="">
+                        Type de fichier <span style="color: red;">*</span>
+                    </label>
+                    <div style="display: flex; justify-content: flex-start;">
+                        <input type="checkbox" class="form-control" id="files_type_trame" name="files_type" style="width: 100%; border-radius: 20px; border: 1px solid lightgray; padding: 5px; font-size: 14px; color: gray;" required> 
+                        <img src="https://img.icons8.com/?size=100&id=42415&format=png&color=9F9F9F" style="width: 20px; height: 20px;" alt=""> Trame
+                    </div>
+                    <div style="display: flex; justify-content: flex-start;">
+                        <div style="width: 10px;"></div>
+                        <input type="checkbox" class="form-control" id="files_type_other" name="files_type" style="width: 100%; border-radius: 20px; border: 1px solid lightgray; padding: 5px; font-size: 14px; color: gray;" required> 
+                        <img src="https://img.icons8.com/ios/50/9F9F9F/file.png" style="width: 20px; height: 20px;" alt=""> Autre 
+                    </div>
+                    <div style="height: 10px;"></div>
+                </div>
+                <!-- Choisir un fichier -->
+                <div style="height: 10px;"></div>
                 <div class="col-md-12" id="files_file_1_">
                     <input type="file" id="files_file_1" name="files_file_1" class="form-control" style="width: 100%; border-radius: 20px; border: 1px solid lightgray; padding: 5px;">
                     <div style="height: 10px;"></div>
@@ -2051,7 +1987,7 @@
                 <!-- Choisir un dossier de destination -->
                 <div class="col-md-12" id="files_folder_1_">
                     <select class="form-control" id="files_folder_1" name="files_folder_1" style="width: 100%; border-radius: 20px; border: 1px solid lightgray; padding: 5px; font-size: 14px; color: gray;">
-                        <option value="0">Choisir un dossier de destination</option>
+                        <option value="0">Dossier de destination</option>
                     </select>
                     <div style="height: 10px;"></div>
                 </div>
@@ -2082,6 +2018,13 @@
                     <div style="height: 10px;"></div>
                 </div>
                 <div style="height: 10px;"></div>
+                <!-- Choisir un dossier de destination -->
+                <div class="col-md-12" id="files_folder_2_">
+                    <select class="form-control" id="files_folder_2" name="files_folder_2" style="width: 100%; border-radius: 20px; border: 1px solid lightgray; padding: 5px; font-size: 14px; color: gray;">
+                        <option value="0">Dossier de destination</option>
+                    </select>
+                    <div style="height: 10px;"></div>
+                </div>
             </div>
             <div class="action-buttons col-md-12" style="display: flex; justify-content: flex-end;">
                 <button type="button" class="btn btn-secondary" style="color: white; width: fit-content; border-radius: 20px;" id="onglet_files_folder_cancel">
@@ -2115,19 +2058,347 @@
             </tbody>
         </table>
     </div>
+    <!-- Tableau des Trames -->
+    <div class="container" id="onglet_files_trames_table" style="display: none;">
+        <table>
+            <thead style="font-size: 12px; font-weight: lighter; color: gray;">
+                <tr>
+                    <th scope="col" id="onglet_files_trame_name">Nom <img
+                            src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 15px; height: 15px;" alt=""></th>
+                    <th scope="col" id="onglet_files_trame_author">Auteur <img
+                            src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 15px; height: 15px;" alt=""></th>
+                    <th scope="col" id="onglet_files_trame_date">Date de création <img
+                            src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 15px; height: 15px;" alt=""></th>
+                    <th scope="col" id="onglet_files_trame_type">Type <img
+                            src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 15px; height: 15px;" alt=""></th>
+                    <th scope="col" id="onglet_files_trame_size">Taille <img
+                            src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 15px; height: 15px;" alt=""></th> <!-- pdf, word, excel, powerpoint -->
+                    <th scope="col" id="onglet_files_trame_action">Action</th>
+                </tr>
+            </thead>
+            <tbody id="onglet_display_trames" style="height: 500px;" class="main-group-scroll">
+            </tbody>
+        </table>
+    </div>
 
     <script>
 
         // Chargement de la page
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function (e) {
+            e.preventDefault();
+
+            // États initial des onglets
+            document.getElementById('onglet_files_display_all_files').style.color = '#29A6A7';
+            document.getElementById('onglet_files_display_trames').style.color = 'gray';
+
+            document.getElementById('onglet_files_table').style.display = 'block';
+            document.getElementById('onglet_files_trames_table').style.display = 'none';
             // Afficher les fichiers
             displayFiles();
         });
 
-        // Fonction pour afficher les fichiers
+        // Fonction pour afficher les fichiers et dossiers
         function displayFiles() {
+            // Récupérer les utilisateurs
+            fetch('https://lab.padem.org/wp-json/mo/v1/getAllMembers')
+                    .then(response => response.json())
+                    .then(data => {
+                        var all_users_names = [];
+                        if (data.length > 0) {
+                            data.forEach(user => {
+                                all_users_names.push({
+                                    user_email: user.user_email,
+                                    user_name: user.display_name
+                                });
+                            });
+                        } else {
+                            console.log('Aucun utilisateur trouvé.');
+                        }
+                        // Récupérer les fichiers
+                        fetch('https://lab.padem.org/wp-json/mo/v1/getProjectFile')
+                            .then(response => response.json())
+                            .then(data => {
+                                var tbody = document.getElementById('onglet_display_all_files');
+                                var tbody_trames = document.getElementById('onglet_display_trames');
+                                tbody.innerHTML = '';
+                                var is_image = new Array(data.length).fill(false); // Tableau pour vérifier si le fichier est une image
+                                var file_type = new Array(data.length).fill(''); // Tableau pour enregistrer le type de fichier
+                                var is_folder = new Array(data.length).fill(false); // Tableau pour vérifier si le fichier est un dossier
+                                var is_trame = new Array(data.length).fill(false); // Tableau pour vérifier si le fichier est une trame
+
+                                if (data.length > 0) {
+                                    data.forEach((file, index) => {
+                                        if (!file.is_trame) { // Si le fichier n'est pas une trame
+
+                                            //#region Formater la taille du fichier
+                                            var fileSize = '';
+                                            if (file.file_size) { // Si la taille du fichier est définie
+
+                                                var unformattedFileSize = parseInt(file.file_size); // Convertir la taille en entier
+
+                                                if (unformattedFileSize < 1024) {
+                                                    fileSize = unformattedFileSize + ' octets';
+                                                } 
+                                                else if (unformattedFileSize < 1048576) {
+                                                    fileSize = (unformattedFileSize / 1024).toFixed(2) + ' Ko';
+                                                } 
+                                                else if (unformattedFileSize < 1073741824) {
+                                                    fileSize = (unformattedFileSize / 1048576).toFixed(2) + ' Mo';
+                                                } 
+                                                else {
+                                                    fileSize = (unformattedFileSize / 1073741824).toFixed(2) + ' Go';
+                                                }
+                                            } else {
+                                                fileSize = '---';
+                                            }
+                                            //#endregion
+
+                                            //#region Afficher une icone à côté du nom du fichier selon son type
+                                            var fileIcon = '';
+                                            if (file.file_type) {
+                                                if ((file.file_type).includes('pdf')) {
+                                                    fileIcon = 'https://img.icons8.com/ios/50/FF0000/pdf.png';
+                                                } else if ((file.file_type).includes('word')) {
+                                                    fileIcon = 'https://img.icons8.com/ios/50/2E86C1/ms-word.png';
+                                                } else if ((file.file_type).includes('excel')) {
+                                                    fileIcon = 'https://img.icons8.com/ios/50/1ABC9C/ms-excel.png';
+                                                } else if ((file.file_type).includes('powerpoint')) {
+                                                    fileIcon = 'https://img.icons8.com/ios/50/FFA500/ms-powerpoint.png';
+                                                } else if ((file.file_type).includes('image')) {
+                                                    fileIcon = 'https://img.icons8.com/ios/50/FFA500/image.png';
+                                                    is_image[index] = true;
+                                                } else if((file.file_type).includes('audio')) {
+                                                    fileIcon = 'https://img.icons8.com/ios/50/FFA500/audio.png';
+                                                } else if((file.file_type).includes('video')) {
+                                                    fileIcon = 'https://img.icons8.com/ios/50/FFA500/video.png';
+                                                } else if((file.file_type).includes('folder')) {
+                                                    fileIcon = 'https://img.icons8.com/?size=100&id=EoxnfFDqfEyw&format=png&color=29A6A7';
+                                                    is_folder[index] = true;
+                                                } else {
+                                                    fileIcon = 'https://img.icons8.com/ios/50/9F9F9F/file.png';
+                                                }
+                                            } else {
+                                                fileIcon = 'https://img.icons8.com/ios/50/9F9F9F/file.png';
+                                            }
+                                            //#endregion
+                        
+                                            //#region formatage de la date
+                                            let date = new Date(file.created_at);
+                                            let day = date.getDate();
+                                            let month = date.getMonth() + 1;
+                                            let year = date.getFullYear();
+                                            let created_at = `${day} ${getMonthName(month)} ${year}`;
+                                            //#endregion
+                                            
+                                            //#region Récupérer le nom de l'auteur
+                                            var author_email = trame.author_email;
+                                            var author = all_users_names.find(user => user.user_email === author_email) || '';
+                                            var author_name = author.user_name || '---';
+                                            //#endregion
+
+                                            //#region Créer une ligne pour chaque trame
+                                            var tr = document.createElement('tr');
+                                            tr.style.border = '1px solid lightgray';
+                                            tr.style.borderRadius = '25px';
+                                            tr.style.backgroundColor = 'white';
+                                            tr.title = file.file_name ? file.file_name : '---';
+                                            tr.style.margin = '5px';
+                                            tr.style.padding = '8px';
+                                            tr.style.paddingRight = '10px';
+                                            tr.style.marginBottom = '0px';
+                                            tr.id = parseInt(file.id);
+                                            //#endregion
+
+                                            // Changement de couleur de la ligne au survol
+                                            tr.addEventListener('mouseover', function (e) {
+                                                tr.style.border = '1px solid #6CE8E8';
+                                                //document.getElementById('move_file_icon_' + trame.id).style.display = 'flex'; // Afficher l'icone de déplacement de fichier
+                                            });
+                                            tr.addEventListener('mouseout', function (e) {
+                                                tr.style.border = '1px solid lightgray';
+                                                //document.getElementById('move_file_icon_' + trame.id).style.display = 'none';
+                                            });
+
+                                            tr.innerHTML = `
+                                                <td>${file.file_name}</td>
+                                                <td>${author_name}</td>
+                                                <td>${created_at}</td>
+                                                <td>${file.file_type}</td>
+                                                <td>${fileSize}</td>
+                                                <td>
+                                                    <button type="button" class="btn btn-light" id="display_menu_${file.id}" style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 50%; border: 1px solid lightgray; margin: 5px; padding: 5px;">
+                                                        <img src="https://img.icons8.com/ios/50/9F9F9F/menu.png" style="width: 30px; height: 30px; margin: 5px" alt="">
+                                                    </button>
+                                                    <div id="file_menu_${file.id}" style="display: none; position: absolute; background-color: white; border-radius: 10px; border: 1px solid lightgray; padding: 5px;">
+                                                        <button type="button" class="btn btn-light box-clicable" id="download_file_${file.id}" style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 50%; border: 1px solid lightgray; margin: 5px; padding: 5px;">
+                                                            <img src="https://img.icons8.com/ios/50/9F9F9F/download.png" style="width: 30px; height: 30px; margin: 5px" alt="">
+                                                        </button>
+                                                        <button type="button" class="btn btn-light box-clicable" id="delete_file_${file.id}" style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 50%; border: 1px solid lightgray; margin: 5px; padding: 5px;">
+                                                            <img src="https://img.icons8.com/ios/50/9F9F9F/trash.png" style="width: 30px; height: 30px; margin: 5px" alt="delete_file"> 
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            `;
+                                            tbody.appendChild(tr);
+
+                                            // Ajouter un évènement pour afficher le menu du fichier
+                                            document.getElementById(`display_menu_${file.id}`).addEventListener('click', function (e) {
+                                                e.preventDefault();
+                                                document.getElementById(`file_menu_${file.id}`).style.display = 'block';
+                                                document.getElementById(file.id).style.border = '1px solid lightgray'; // Changer la couleur de la ligne
+                                            });
+
+                                            // Ajouter un évènement pour télécharger le document
+                                            document.getElementById(`download_file_${file.id}`).addEventListener('click', function (e) {
+                                                e.preventDefault();
+                                                downloadFile(file.file_link);
+                                            });
+
+                                            // Fonction pour télécharger un fichier
+                                            function downloadFile(file_url) {
+                                                var link = document.createElement('a');
+                                                link.href = file_url;
+                                                link.download = file_url.substr(file_url.lastIndexOf('/') + 1);
+                                                link.click();
+                                            }
+    
+                                            // Ajouter un évènement pour supprimer le document
+                                            document.getElementById(`delete_file_${file.id}`).addEventListener('click', function (e) {
+                                                e.preventDefault();
+    
+                                                // Afficher l'animation de chargement
+                                                //document.getElementById(`loading_delete_${file.id}`).style.display = 'block';
+    
+                                                // Supprimer le document du serveur
+                                                fetch(ajaxurl, {
+                                                    method: 'POST',
+                                                    body: new URLSearchParams({
+                                                        action: 'delete_file', 
+                                                        file_url: file.file_link, // Lien du fichier à supprimer
+                                                    }),
+                                                })
+                                                .then(response => response.json())
+                                                .then(data => {
+                                                    if (data.success) {
+                                                        console.log('Success:', data);
+                                                    } else {
+                                                        console.log('Error:', data.data);
+                                                    }
+                                                })
+                                                .catch(error => console.error('Error:', error));
+    
+                                                // Supprimer le document de la base de données
+                                                fetch('https://lab.padem.org/wp-json/mo/v1/removeProjectFile', {
+                                                    method: 'DELETE',
+                                                    headers: {
+                                                        'Content-Type': 'application/json',
+                                                    },
+                                                    body: JSON.stringify({
+                                                        column_param1: file.id,
+                                                    }),
+                                                })
+                                                    .then((response) => response.json())
+                                                    .then((data) => {
+                                                        console.log('Success:', data);
+                                                        // Masquer l'animation de chargement
+                                                        //document.getElementById(`loading_delete_${file.id}`).style.display = 'none';
+                                                        // Recharger les fichiers
+                                                        displayFiles();
+                                                    })
+                                                    .catch((error) => {
+                                                        console.error('Error:', error);
+                                                        // Masquer l'animation de chargement
+                                                        //document.getElementById(`loading_delete_${file.id}`).style.display = 'none';
+                                                    });
+                                            });
+                                            
+                                        } else { // Si le fichier est une trame
+                                            is_trame[index] = true;
+                                            var created_at = '';
+                                            var tr = document.createElement('tr');
+                                            tr.style.border = '1px solid lightgray';
+                                            tr.style.borderRadius = '25px';
+                                            tr.style.backgroundColor = 'white';
+                                            tr.title = file.file_name ? file.file_name : '---';
+                                            tr.style.margin = '5px';
+                                            tr.style.padding = '8px';
+                                            tr.style.paddingRight = '10px';
+                                            tr.style.marginBottom = '0px';
+                                            tr.id = parseInt(file.id);
+                                            id.addEventListener('mouseover', function (e) {
+                                                tr.style.border = '1px solid #6CE8E8';
+                                            });
+                                            tr.addEventListener('mouseout', function (e) {
+                                                tr.style.border = '1px solid lightgray';
+                                            });
+                                            tr.innerHTML = `
+                                                <td>${file.file_name}</td>
+                                                <td>${author_name}</td>
+                                                <td>${}</td>
+                                                <td>${file.file_type}</td>
+                                                <td>${fileSize}</td>
+                                                <td>
+                                                    <button type="button" class="btn btn-light" id="display_menu_${file.id}" style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 50%; border: 1px solid lightgray; margin: 5px; padding: 5px;">
+                                                        <img src="https://img.icons8.com/ios/50/9F9F9F/menu.png" style="width: 30px; height: 30px; margin: 5px" alt="">
+                                                    </button>
+                                                    <div id="file_menu_${file.id}" style="display: none; position: absolute; background-color: white; border-radius: 10px; border: 1px solid lightgray; padding: 5px;">
+                                                        <button type="button" class="btn btn-light box-clicable" id="download_file_${file.id}" style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 50%; border: 1px solid lightgray; margin: 5px; padding: 5px;">
+                                                            <img src="https://img.icons8.com/ios/50/9F9F9F/download.png" style="width: 30px; height: 30px; margin: 5px" alt="">
+                                                        </button>
+                                                        <button type="button" class="btn btn-light box-clicable" id="delete_file_${file.id}" style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 50%; border: 1px solid lightgray; margin: 5px; padding: 5px;">
+                                                            <img src="https://img.icons8.com/ios/50/9F9F9F/trash.png" style="width: 30px; height: 30px; margin: 5px" alt="delete_file"> 
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            `;
+                                            tbody_trames.appendChild(tr);
+                                        }
+                                    });
+                                } else {
+                                    let tr = document.createElement('tr');
+                                    tr.innerHTML = `
+                                        <td colspan="6" style="text-align: center; color: gray;"> <img src="https://img.icons8.com/?size=100&id=3574&format=png&color=9F9F9F" style="width: 20px; height: 20px;" alt="">
+                                            Aucun document trouvé.</td>
+                                    `;
+                                    tbody.appendChild(tr);
+                                }
+                            })
+                            .catch(error => console.error(error));
+                    })
+        }
+
+        // Fonction pour afficher les trames
+        function displayAllTrames() {
 
         }
+
+        // Fonction pour afficher le tableau de tout les fichiers et dossiers
+        document.getElementById('onglet_files_display_all_files').addEventListener('click', function (e) {
+            e.preventDefault();
+
+            document.getElementById('onglet_files_display_all_files').style.color = '#29A6A7';
+            document.getElementById('onglet_files_table').style.display = 'block';
+
+            document.getElementById('onglet_files_display_trames').style.color = 'gray';
+            document.getElementById('onglet_files_trames_table').style.display = 'none';
+
+            // Afficher les fichiers
+            displayFiles();
+        });
+
+        // Fonction pour afficher les trames
+        document.getElementById('onglet_files_display_trames').addEventListener('click', function (e) {
+            e.preventDefault();
+
+            document.getElementById('onglet_files_display_trames').style.color = '#29A6A7';
+            document.getElementById('onglet_files_trames_table').style.display = 'block';
+
+            document.getElementById('onglet_files_display_all_files').style.color = 'gray';
+            document.getElementById('onglet_files_table').style.display = 'none';
+
+            // Afficher les trames
+            displayAllTrames();
+        });
 
         // Ajouter un évènement pour afficher le formulaire de création de dossier
         document.getElementById('onglet_files_create_folder').addEventListener('click', function (e) {
@@ -2136,18 +2407,18 @@
             // Afficher le formulaire de création de dossier
             if (document.getElementById('container_onglet_files_create_folder').style.display === 'block') {
                 document.getElementById('container_onglet_files_create_folder').style.display = 'none';
-                document.getElementById('onglet_files_create_folder').innerHTML = '<img src="https://img.icons8.com/?size=100&id=16745&format=png&color=9F9F9F" style="width: 20px; height: 20px;" alt=""> Nouveau dossier';
+                document.getElementById('onglet_files_create_folder').innerHTML = '<img src="https://img.icons8.com/?size=100&id=16745&format=png&color=9F9F9F" style="width: 30px; height: 30px; margin: 5px;" alt="Nouveau dossier">';
                 document.getElementById('onglet_files_create_folder').style.color = 'gray';
 
                 // Vider les champs du formulaire
                 document.getElementById('files_new_folder').value = '';
             } else {
                 document.getElementById('container_onglet_files_create_folder').style.display = 'block';
-                document.getElementById('onglet_files_create_folder').innerHTML = '<img src="https://img.icons8.com/?size=100&id=6483&format=png&color=29A6A7" style="width: 20px; height: 20px;" alt=""> Terminer';
+                document.getElementById('onglet_files_create_folder').innerHTML = '<img src="https://img.icons8.com/?size=100&id=6483&format=png&color=29A6A7" style="width: 30px; height: 30px; margin: 5px;" alt="Terminer">';
                 document.getElementById('onglet_files_create_folder').style.color = '#29A6A7';
 
                 document.getElementById('onglet_files_create_file').style.color = 'gray';
-                document.getElementById('onglet_files_create_file').innerHTML = ' <img src="https://img.icons8.com/ios/50/9F9F9F/add-file.png" style="width: 20px; height: 20px;" alt=""> Nouveau fichier';
+                document.getElementById('onglet_files_create_file').innerHTML = ' <img src="https://img.icons8.com/ios/50/9F9F9F/add-file.png" style="width: 30px; height: 30px; margin: 5px;" alt="Nouveau fichier">';
                 document.getElementById('container_onglet_files_create_file').style.display = 'none';
             }
         });
@@ -2161,10 +2432,11 @@
 
             // Changer la couleur du bouton
             document.getElementById('onglet_files_create_folder').style.color = 'gray';
-            document.getElementById('onglet_files_create_folder').innerHTML = '<img src="https://img.icons8.com/ios/50/9F9F9F/folder-invoices.png" style="width: 20px; height: 20px;" alt=""> Nouveau dossier';
+            document.getElementById('onglet_files_create_folder').innerHTML = '<img src="https://img.icons8.com/ios/50/9F9F9F/folder-invoices.png" style="width: 30px; height: 30px; margin: 5px;" alt="Nouveau dossier">';
 
             // Vider les champs du formulaire
             document.getElementById('files_new_folder').value = '';
+            document.getElementById('files_folder_2').value = '0';
         });
 
         // Envoyer le dossier
@@ -2220,18 +2492,18 @@
             // Afficher le formulaire de création de fichier
             if (document.getElementById('container_onglet_files_create_file').style.display === 'block') {
                 document.getElementById('container_onglet_files_create_file').style.display = 'none';
-                document.getElementById('onglet_files_create_file').innerHTML = ' <img src="https://img.icons8.com/ios/50/9F9F9F/add-file.png" style="width: 20px; height: 20px;" alt=""> Nouveau fichier';
+                document.getElementById('onglet_files_create_file').innerHTML = ' <img src="https://img.icons8.com/ios/50/9F9F9F/add-file.png" style="width: 30px; height: 30px; margin: 5px;" alt="Nouveau fichier">';
                 document.getElementById('onglet_files_create_file').style.color = 'gray';
 
                 // Vider les champs du formulaire
                 document.getElementById('files_file_1').value = '';
             } else {
                 document.getElementById('container_onglet_files_create_file').style.display = 'block';
-                document.getElementById('onglet_files_create_file').innerHTML = ' <img src="https://img.icons8.com/?size=100&id=6483&format=png&color=29A6A7" style="width: 20px; height: 20px;" alt=""> Terminer';
+                document.getElementById('onglet_files_create_file').innerHTML = ' <img src="https://img.icons8.com/?size=100&id=6483&format=png&color=29A6A7" style="width: 30px; height: 30px; margin: 5px;" alt="Nouveau fichier">';
                 document.getElementById('onglet_files_create_file').style.color = '#29A6A7';
 
                 document.getElementById('onglet_files_create_folder').style.color = 'gray';
-                document.getElementById('onglet_files_create_folder').innerHTML = '<img src="https://img.icons8.com/?size=100&id=16745&format=png&color=9F9F9F" style="width: 20px; height: 20px;" alt=""> Nouveau dossier';
+                document.getElementById('onglet_files_create_folder').innerHTML = '<img src="https://img.icons8.com/?size=100&id=16745&format=png&color=9F9F9F" style="width: 30px; height: 30px; margin: 5px;" alt="Nouveau dossier">';
                 document.getElementById('container_onglet_files_create_folder').style.display = 'none';
             }
         });
@@ -2245,21 +2517,29 @@
 
             // Changer la couleur du bouton
             document.getElementById('onglet_files_create_file').style.color = 'gray';
-            document.getElementById('onglet_files_create_file').innerHTML = ' <img src="https://img.icons8.com/ios/50/9F9F9F/add-file.png" style="width: 20px; height: 20px;" alt=""> Nouveau fichier';
+            document.getElementById('onglet_files_create_file').innerHTML = ' <img src="https://img.icons8.com/ios/50/9F9F9F/add-file.png" style="width: 30px; height: 30px; margin: 5px;" alt="Nouveau fichier">';
 
             // Vider les champs du formulaire
             document.getElementById('files_file_1').value = '';
+            document.getElementById('files_folder_1').value = '0';
         });
 
         // Envoyer le fichier
         document.getElementById('onglet_files_send').addEventListener('click', function (e) {
             e.preventDefault();
 
+            // Récupérer le type de fichier
+            let files_type_trame = document.getElementById('files_type_trame').checked;
+            let files_type_other = document.getElementById('files_type_other').checked;
+
             // Récupérer le premier fichier
             let fichier_file = document.getElementById('files_file_1').files[0];
             let fichier_file_name = fichier_file.name;
             let fichier_file_type = fichier_file.type;
             let fichier_file_size = fichier_file.size;
+
+            // Récupérer le dossier de destination
+            let files_folder_1 = document.getElementById('files_folder_1').value;
 
             // Récupérer l'adresse email de l'utilisateur connecté
             let userEmail = current_user_data.email;
@@ -2299,7 +2579,11 @@
                                 file_link: data.data.url, // Lien du fichier
                                 file_size: fichier_file_size,
                                 author_email: userEmail,
-                                is_trame: false,
+                                folder_name: files_folder_1 !== '0' ? files_folder_1 : '', // Dossier de destination
+                                is_folder: false,
+                                is_in_folder: files_folder_1 !== '0' ? true : false,
+                                folder_link: '',
+                                is_trame: files_type_trame ? true : false,
                                 created_at: new Date(Date.now()) // Date de création
                             }),
                         })
