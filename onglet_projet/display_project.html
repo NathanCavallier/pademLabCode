@@ -20,8 +20,8 @@
 
         <!-- Bouton Mes projets -->
         <button type="button" class="box-clicable" id="myProjects"
-            style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px; border: 1px solid lightgray; margin: 5px; padding: 5px;">
-            <!-- icone profil -->
+            style="display: none; width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px; border: 1px solid lightgray; margin: 5px; padding: 5px;">
+            <!-- icone profile -->
             <img src="https://img.icons8.com/ios/50/9F9F9F/user.png"
                 style="width: 20px; height: 20px; margin-right: 5px;" alt="">
             Mes projets
@@ -29,7 +29,7 @@
 
         <!-- Bouton Archives -->
         <button type="button" class="box-clicable" id="archives_projects"
-            style="width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px; border: 1px solid lightgray; margin: 5px; padding: 5px;">
+            style="display: none; width: fit-content; color: gray; background-color: white; align-self: center; border-radius: 15px; border: 1px solid lightgray; margin: 5px; padding: 5px;">
             <!-- icone archive -->
             <img src="https://img.icons8.com/ios/50/9F9F9F/archive-folder.png"
                 style="width: 20px; height: 20px; margin-right: 5px;" alt="">
@@ -273,6 +273,9 @@
     
                 document.getElementById('all_Reports').style.color = '#29A6A7';
 
+                // Afficher les rapports
+                displayReports();
+
                 if(userRole.includes('administrator')) {
                     // Afficher les boutons 
                     document.getElementById('onglet_reports_buttons').style.justifyContent = 'space-between';
@@ -382,6 +385,72 @@
             document.getElementById('archives_Reports').style.color = '#29A6A7';
         });
         //#endregion
+
+        //#region Annuler la création de rapport
+        document.getElementById('onglet_report_cancel').addEventListener('click', function (e) {
+            e.preventDefault();
+
+            // Masquer le formulaire de création de rapport
+            document.getElementById('new_report_form').style.display = 'none';
+            // Afficher le tableau des rapports
+            document.getElementById('all_reports_table').style.display = 'block';
+            // Masquer le tableau de mes rapports
+            document.getElementById('onglet_my_reports_table').style.display = 'none';
+            // Masquer le tableau des archives
+            document.getElementById('onglet_archives_reports_table').style.display = 'none';
+
+            // Changer la couleur du bouton
+            document.getElementById('create_Report').style.color = 'gray';
+            document.getElementById('all_Reports').style.color = '#29A6A7';
+            document.getElementById('my_Reports').style.color = 'gray';
+            document.getElementById('archives_Reports').style.color = 'gray';
+        });
+        //#endregion
+
+        // Afficher les rapports
+        function displayReports() {
+            // Récupérer les rapports
+            fetch('https://lab.padem.org/api/v1/getReports', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    // Afficher les rapports
+                    data.forEach(report => {
+                        // Créer une ligne
+                        let tr = document.createElement('tr');
+                        // Ajouter le titre du rapport
+                        let tdTitle = document.createElement('td');
+                        tdTitle.innerHTML = report.title;
+                        tr.appendChild(tdTitle);
+                        // Ajouter le projet
+                        let tdProject = document.createElement('td');
+                        tdProject.innerHTML = report.project;
+                        tr.appendChild(tdProject);
+                        // Ajouter l'auteur
+                        let tdAuthor = document.createElement('td');
+                        tdAuthor.innerHTML = report.author;
+                        tr.appendChild(tdAuthor);
+                        // Ajouter le type de rapport
+                        let tdType = document.createElement('td');
+                        tdType.innerHTML = report.type;
+                        tr.appendChild(tdType);
+                        // Ajouter le statut
+                        let tdStatus = document.createElement('td');
+                        tdStatus.innerHTML = report.status;
+                        tr.appendChild(tdStatus);
+                        // Ajouter la ligne au tableau
+                        document.getElementById('onglet_display_reports').appendChild(tr);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
     </script>
 </body>
 <!--#endregion -->
@@ -2781,6 +2850,8 @@
                                                         // Supprimer le document de la table
                                                         document.getElementById(file_id).remove(); // Supprimer la ligne de la table
                                                         document.getElementById('loading_delete_' + file_id).style.display = 'none'; // Cacher l'animation de chargement
+                                                        // Afficher les fichiers et dossiers
+                                                        displayFiles();
                                                     }
                                                 })
                                                 .catch(error => console.error(error));
@@ -3231,7 +3302,7 @@
                                 is_folder: false,
                                 is_in_folder: files_folder_1 !== '0' ? true : false,
                                 folder_link: '',
-                                is_trame: files_type_trame === '2' ? true : false,
+                                is_trame: files_type_trame === '1' ? true : false,
                                 created_at: new Date(Date.now()) // Date de création
                             }),
                         })
@@ -3287,63 +3358,80 @@
 <body>
     <!--#region Formulaire de création de projet -->
     <div class="container" id="new_project_form" style="display: none;" class="main-group-scroll">
-        <form id="projectForm" class="card" style="border-radius: 15px; background-color: white; margin: 5px; padding: 5px;" method="post" enctype="multipart/form-data">
-            <div  class="card-body" style="border-radius: 15px; padding: 10px; background: none; margin: 10px;">
+        <form id="projectForm" class="card"
+            style="border-radius: 15px; background-color: white; margin: 5px; padding: 5px;" method="post"
+            enctype="multipart/form-data">
+            <div class="card-body" style="border-radius: 15px; padding: 10px; background: none; margin: 10px;">
                 <div class="row">
                     <div class="col-md-6">
                         <label for="projectTitle" style="color: gray;">
-                            <img src="https://img.icons8.com/?size=100&id=h88n73Ss5iTI&format=png&color=9F9F9F" alt="Projet" style="width: 20px; height: 20px;">
+                            <img src="https://img.icons8.com/?size=100&id=h88n73Ss5iTI&format=png&color=9F9F9F"
+                                alt="Projet" style="width: 20px; height: 20px;">
                             Titre du projet: <span style="color: red;">*</span></label>
-                        <input type="text" id="projectTitle" name="projectTitle" class="form-control" style="border-radius: 20px;" required>
+                        <input type="text" id="projectTitle" name="projectTitle" class="form-control"
+                            style="border-radius: 20px;" required>
                     </div>
                     <div class="col-md-6">
                         <label for="projectType" style="color: gray;">
-                            <img src="https://img.icons8.com/?size=100&id=364&format=png&color=9F9F9F" alt="Type de projet" style="width: 20px; height: 20px;">
+                            <img src="https://img.icons8.com/?size=100&id=364&format=png&color=9F9F9F"
+                                alt="Type de projet" style="width: 20px; height: 20px;">
                             Type de projet: <span style="color: red;">*</span></label>
-                        <input type="text" id="projectType" name="projectType" class="form-control" style="border-radius: 20px;" required>
+                        <input type="text" id="projectType" name="projectType" class="form-control"
+                            style="border-radius: 20px;" required>
                     </div>
                 </div>
                 <div style="height: 10px;"></div>
                 <div class="row">
                     <div class="col-md-6">
                         <label for="projectDate" style="color: gray;">
-                            <img src="https://img.icons8.com/?size=100&id=1072&format=png&color=9F9F9F" alt="Date de début" style="width: 20px; height: 20px;">
+                            <img src="https://img.icons8.com/?size=100&id=1072&format=png&color=9F9F9F"
+                                alt="Date de début" style="width: 20px; height: 20px;">
                             Date de début prévisionnelle: <span style="color: red;">*</span></label>
-                        <input type="date" id="projectDate" name="projectDate" class="form-control" style="border-radius: 20px;" required>
+                        <input type="date" id="projectDate" name="projectDate" class="form-control"
+                            style="border-radius: 20px;" required>
                     </div>
                     <div class="col-md-6">
                         <label for="projectEndDate2" style="color: gray;">
-                            <img src="https://img.icons8.com/?size=100&id=1070&format=png&color=9F9F9F" alt="Date de fin" style="width: 20px; height: 20px;">
+                            <img src="https://img.icons8.com/?size=100&id=1070&format=png&color=9F9F9F"
+                                alt="Date de fin" style="width: 20px; height: 20px;">
                             Date de fin prévisionnelle: <span style="color: red;">*</span></label>
-                        <input type="date" id="projectEndDate2" name="projectEndDate2" class="form-control" style="border-radius: 20px;" required>
+                        <input type="date" id="projectEndDate2" name="projectEndDate2" class="form-control"
+                            style="border-radius: 20px;" required>
                     </div>
                 </div>
                 <div style="height: 10px;"></div>
                 <div class="row">
                     <div class="col-md-6">
                         <label for="projectReferent" style="color: gray;">
-                            <img src="https://img.icons8.com/?size=100&id=11164&format=png&color=9F9F9F" alt="Référent" style="width: 20px; height: 20px;">
+                            <img src="https://img.icons8.com/?size=100&id=11164&format=png&color=9F9F9F" alt="Référent"
+                                style="width: 20px; height: 20px;">
                             Référent du projet: <span style="color: red;">*</span></label>
-                        <input type="text" id="projectReferent" name="projectReferent" class="form-control" style="border-radius: 20px;" required>
+                        <input type="text" id="projectReferent" name="projectReferent" class="form-control"
+                            style="border-radius: 20px;" required>
                     </div>
                     <div class="col-md-6">
                         <label for="projectReferentEmail" style="color: gray;">
-                            <img src="https://img.icons8.com/?size=100&id=77&format=png&color=9F9F9F" alt="Email" style="width: 20px; height: 20px;">
+                            <img src="https://img.icons8.com/?size=100&id=77&format=png&color=9F9F9F" alt="Email"
+                                style="width: 20px; height: 20px;">
                             Email du référent du projet: <span style="color: red;">*</span></label>
-                        <input type="email" id="projectReferentEmail" name="projectReferentEmail" class="form-control" style="border-radius: 20px;" required>
+                        <input type="email" id="projectReferentEmail" name="projectReferentEmail" class="form-control"
+                            style="border-radius: 20px;" required>
                     </div>
                 </div>
                 <div style="height: 10px;"></div>
                 <div class="row">
                     <div class="col-md-6">
                         <label for="projectLocation" style="color: gray;">
-                            <img src="https://img.icons8.com/?size=100&id=60425&format=png&color=9F9F9F" alt="Pays" style="width: 20px; height: 20px;">
+                            <img src="https://img.icons8.com/?size=100&id=60425&format=png&color=9F9F9F" alt="Pays"
+                                style="width: 20px; height: 20px;">
                             Pays de réalisation du projet: <span style="color: red;">*</span></label>
-                        <input type="text" id="projectLocation" name="projectLocation" class="form-control" style="border-radius: 20px;" required>
+                        <input type="text" id="projectLocation" name="projectLocation" class="form-control"
+                            style="border-radius: 20px;" required>
                     </div>
                     <div class="col-md-6">
                         <label for="projectDescription" style="color: gray;">
-                            <img src="https://img.icons8.com/?size=100&id=1074&format=png&color=9F9F9F" alt="Description" style="width: 20px; height: 20px;">
+                            <img src="https://img.icons8.com/?size=100&id=77&format=png&color=9F9F9F" alt="Description"
+                                style="width: 20px; height: 20px;">
                             Description du projet: <span style="color: red;">*</span></label>
                         <textarea id="projectDescription" name="projectDescription" rows="4" cols="50"
                             class="form-control" style="border-radius: 20px;"></textarea>
@@ -3353,9 +3441,11 @@
                 <div class="row">
                     <div class="col-md-6">
                         <label for="projectStatus" style="color: gray;">
-                            <img src="https://img.icons8.com/?size=100&id=59145&format=png&color=9F9F9F" alt="Statut" style="width: 20px; height: 20px;">
+                            <img src="https://img.icons8.com/?size=100&id=59145&format=png&color=9F9F9F" alt="Statut"
+                                style="width: 20px; height: 20px;">
                             Statut du projet: <span style="color: red;">*</span></label>
-                        <select id="projectStatus" name="projectStatus" class="form-control" style="border-radius: 20px;" required>
+                        <select id="projectStatus" name="projectStatus" class="form-control"
+                            style="border-radius: 20px;" required>
                             <option value="En cours">En cours</option>
                             <option value="Terminé">Terminé</option>
                             <option value="En attente">En attente</option>
@@ -3363,38 +3453,46 @@
                     </div>
                     <div class="col-md-6">
                         <label for="projectAssociation" style="color: gray;">
-                            <img src="https://img.icons8.com/?size=100&id=779&format=png&color=9F9F9F" alt="Association" style="width: 20px; height: 20px;">
+                            <img src="https://img.icons8.com/?size=100&id=779&format=png&color=9F9F9F" alt="Association"
+                                style="width: 20px; height: 20px;">
                             Association partenaire: <span style="color: red;">*</span></label>
-                        <input type="text" id="projectAssociation" name="projectAssociation" class="form-control" style="border-radius: 20px;" required>
+                        <input type="text" id="projectAssociation" name="projectAssociation" class="form-control"
+                            style="border-radius: 20px;" required>
                     </div>
                 </div>
                 <div style="height: 10px;"></div>
-                <div class="row">
-                    <div class="col-md-12" id="add_trames_to_this_project">
+                <div class="col-md-12" id="add_trames_to_this_project">
+                    <div class="row">
                         <label for="upload_trames_1" style="color: gray;">
-                            <img src="https://img.icons8.com/?size=100&id=iBeRV9QTCIH8&format=png&color=9F9F9F" alt="Trames" style="width: 20px; height: 20px;">
-                            Ajouter des trames à ce projet (1):  </label>
-                        <input type="file" id="upload_trames_1" name="upload_trames_1" class="form-control-file" style="border-radius: 20px;">
+                            <img src="https://img.icons8.com/?size=100&id=iBeRV9QTCIH8&format=png&color=9F9F9F"
+                                alt="Trames" style="width: 20px; height: 20px;">
+                            Ajouter des trames à ce projet (1): </label>
+                        <input type="file" id="upload_trames_1" name="upload_trames_1" class="form-control-file"
+                            style="border-radius: 20px;">
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-12">
+                <div class="col-md-12">
+                    <div class="row">
                         <label for="upload_trames_2" style="color: gray;">
-                            <img src="https://img.icons8.com/?size=100&id=iBeRV9QTCIH8&format=png&color=9F9F9F" alt="Trames" style="width: 20px; height: 20px;">
-                            Ajouter des trames à ce projet (2):  </label>
-                        <input type="file" id="upload_trames_2" name="upload_trames_2" class="form-control-file" style="border-radius: 20px;">
+                            <img src="https://img.icons8.com/?size=100&id=iBeRV9QTCIH8&format=png&color=9F9F9F"
+                                alt="Trames" style="width: 20px; height: 20px;">
+                            Ajouter des trames à ce projet (2): </label>
+                        <input type="file" id="upload_trames_2" name="upload_trames_2" class="form-control-file"
+                            style="border-radius: 20px;">
                     </div>
                 </div>
             </div>
             <div style="height: 10px;"></div>
             <div class="col-md-12">
                 <div class="action-buttons" style="display: flex; justify-content: flex-end;">
-                    <button type="button" class="btn btn-secondary" style="width: fit-content;" id="cancel_project_form">
+                    <button type="button" class="btn btn-secondary" style="width: fit-content;"
+                        id="cancel_project_form">
                         Annuler
                         <img src="https://lab.padem.org/wp-content/uploads/Annuler.png" alt="cancel"
                             style="width: 35px; height: 35px;">
                     </button>
-                    <button type="button" onclick="saveFormData()" class="btn btn-primary" style="color: white; width: fit-content;" id="save_project_form">
+                    <button type="button" onclick="saveFormData()" class="btn btn-primary"
+                        style="color: white; width: fit-content;" id="save_project_form">
                         Enregistrer
                         <img src="https://lab.padem.org/wp-content/uploads/save_black.png" alt="save"
                             style="width: 35px; height: 35px;">
@@ -3411,17 +3509,21 @@
             <table>
                 <thead style="font-size: 12px; font-weight: lighter; color: gray;">
                     <tr>
-                        <th scope="col" id="project_tite" style="cursor: pointer;">Titre <img src="https://img.icons8.com/ios/50/000000/sort.png"
-                                style="width: 15px; height: 15px;" alt=""></th>
-                        <th scope="col" id="country_name" style="cursor: pointer;">Pays <img src="https://img.icons8.com/ios/50/000000/sort.png"
-                                style="width: 15px; height: 15px;" alt=""></th>
+                        <th scope="col" id="project_tite" style="cursor: pointer;">Titre <img
+                                src="https://img.icons8.com/ios/50/000000/sort.png" style="width: 15px; height: 15px;"
+                                alt=""></th>
+                        <th scope="col" id="country_name" style="cursor: pointer;">Pays <img
+                                src="https://img.icons8.com/ios/50/000000/sort.png" style="width: 15px; height: 15px;"
+                                alt=""></th>
                         <th scope="col" id="association_name" style="cursor: pointer;">Association <img
                                 src="https://img.icons8.com/ios/50/000000/sort.png" style="width: 15px; height: 15px;"
                                 alt=""></th>
-                        <th scope="col" id="theme_name" style="cursor: pointer;">Thématique <img src="https://img.icons8.com/ios/50/000000/sort.png"
-                                style="width: 15px; height: 15px;" alt=""></th>
-                        <th scope="col" id="status_name" style="cursor: pointer;">Statut <img src="https://img.icons8.com/ios/50/000000/sort.png"
-                                style="width: 15px; height: 15px;" alt=""></th>
+                        <th scope="col" id="theme_name" style="cursor: pointer;">Thématique <img
+                                src="https://img.icons8.com/ios/50/000000/sort.png" style="width: 15px; height: 15px;"
+                                alt=""></th>
+                        <th scope="col" id="status_name" style="cursor: pointer;">Statut <img
+                                src="https://img.icons8.com/ios/50/000000/sort.png" style="width: 15px; height: 15px;"
+                                alt=""></th>
                     </tr>
                 </thead>
                 <tbody id="display_projects" class="main-group-scroll" style="height: 500px;">
@@ -3441,18 +3543,21 @@
         <table>
             <thead style="font-size: 12px; font-weight: lighter; color: gray;">
                 <tr>
-                    <th scope="col" id="my_project_tite" style="cursor: pointer;">Titre <img src="https://img.icons8.com/ios/50/000000/sort.png"
-                            style="width: 15px; height: 15px;" alt=""></th>
-                    <th scope="col" id="my_country_name" style="cursor: pointer;">Pays <img src="https://img.icons8.com/ios/50/000000/sort.png"
-                            style="width: 15px; height: 15px;" alt=""></th>
+                    <th scope="col" id="my_project_tite" style="cursor: pointer;">Titre <img
+                            src="https://img.icons8.com/ios/50/000000/sort.png" style="width: 15px; height: 15px;"
+                            alt=""></th>
+                    <th scope="col" id="my_country_name" style="cursor: pointer;">Pays <img
+                            src="https://img.icons8.com/ios/50/000000/sort.png" style="width: 15px; height: 15px;"
+                            alt=""></th>
                     <th scope="col" id="my_association_name" style="cursor: pointer;">Association <img
                             src="https://img.icons8.com/ios/50/000000/sort.png" style="width: 15px; height: 15px;"
                             alt=""></th>
                     <th scope="col" id="my_theme_name" style="cursor: pointer;">Thématique <img
                             src="https://img.icons8.com/ios/50/000000/sort.png" style="width: 15px; height: 15px;"
                             alt=""></th>
-                    <th scope="col" id="my_status_name" style="cursor: pointer;">Statut <img src="https://img.icons8.com/ios/50/000000/sort.png"
-                            style="width: 15px; height: 15px;" alt=""></th>
+                    <th scope="col" id="my_status_name" style="cursor: pointer;">Statut <img
+                            src="https://img.icons8.com/ios/50/000000/sort.png" style="width: 15px; height: 15px;"
+                            alt=""></th>
                     <th scope="col">Actions</th>
                 </tr>
             </thead>
@@ -3463,34 +3568,34 @@
     <!--#endregion -->
 
     <!--#region Archives -->
-        <div class="container" id="archives_projects_table" style="display: none;" class="main-group-scroll">
-            <table>
-                <thead style="font-size: 12px; font-weight: lighter; color: gray;">
-                    <tr>
-                        <th scope="col" id="archives_project_tite" style="cursor: pointer;">Titre <img
-                                src="https://img.icons8.com/ios/50/000000/sort.png" style="width: 15px; height: 15px;"
-                                alt=""></th>
-                        <th scope="col" id="archives_country_name" style="cursor: pointer;">Pays <img
-                                src="https://img.icons8.com/ios/50/000000/sort.png" style="width: 15px; height: 15px;"
-                                alt=""></th>
-                        <th scope="col" id="archives_association_name" style="cursor: pointer;">Association <img
-                                src="https://img.icons8.com/ios/50/000000/sort.png" style="width: 15px; height: 15px;"
-                                alt=""></th>
-                        <th scope="col" id="archives_theme_name" style="cursor: pointer;">Thématique <img
-                                src="https://img.icons8.com/ios/50/000000/sort.png" style="width: 15px; height: 15px;"
-                                alt=""></th>
-                        <th scope="col" id="archives_status_name" style="cursor: pointer;">Statut <img
-                                src="https://img.icons8.com/ios/50/000000/sort.png" style="width: 15px; height: 15px;"
-                                alt=""></th>
-                        <th scope="col">Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="display_archives_projects">
-                </tbody>
-            </table>
-        </div>
-        <!--#endregion -->
-    
+    <div class="container" id="archives_projects_table" style="display: none;" class="main-group-scroll">
+        <table>
+            <thead style="font-size: 12px; font-weight: lighter; color: gray;">
+                <tr>
+                    <th scope="col" id="archives_project_tite" style="cursor: pointer;">Titre <img
+                            src="https://img.icons8.com/ios/50/000000/sort.png" style="width: 15px; height: 15px;"
+                            alt=""></th>
+                    <th scope="col" id="archives_country_name" style="cursor: pointer;">Pays <img
+                            src="https://img.icons8.com/ios/50/000000/sort.png" style="width: 15px; height: 15px;"
+                            alt=""></th>
+                    <th scope="col" id="archives_association_name" style="cursor: pointer;">Association <img
+                            src="https://img.icons8.com/ios/50/000000/sort.png" style="width: 15px; height: 15px;"
+                            alt=""></th>
+                    <th scope="col" id="archives_theme_name" style="cursor: pointer;">Thématique <img
+                            src="https://img.icons8.com/ios/50/000000/sort.png" style="width: 15px; height: 15px;"
+                            alt=""></th>
+                    <th scope="col" id="archives_status_name" style="cursor: pointer;">Statut <img
+                            src="https://img.icons8.com/ios/50/000000/sort.png" style="width: 15px; height: 15px;"
+                            alt=""></th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="display_archives_projects">
+            </tbody>
+        </table>
+    </div>
+    <!--#endregion -->
+
     <script>
         //#region Initialisation des variables
         var projects = [];
@@ -3552,7 +3657,7 @@
                 //#region Vérifier si l'utilisateur connecté est un administrateur, un membre privilégié ou un abonné(subscriber)
                 if (userRole.includes('administrator')) {
                     // Afficher tout les boutons
-                    document.getElementById('onglet_projects_buttons').style.justifyContent = 'space-between'; 
+                    document.getElementById('onglet_projects_buttons').style.justifyContent = 'space-between';
                     // Afficher le bouton Créer un Projet
                     document.getElementById('createProject').style.display = 'block';
                     // Afficher le bouton Mes projets
@@ -3757,7 +3862,229 @@
         });
         //#endregion
 
+        //#region Ajouter écouteur d'événement pour le bouton Annuler
+        document.getElementById('cancel_project_form').addEventListener('click', function (e) {
+            e.preventDefault();
 
+            // Vider les champs du formulaire
+            document.getElementById('projectTitle').value = '';
+            document.getElementById('projectType').value = '';
+            document.getElementById('projectDate').value = '';
+            document.getElementById('projectEndDate2').value = '';
+            document.getElementById('projectReferent').value = '';
+            document.getElementById('projectReferentEmail').value = '';
+            document.getElementById('projectLocation').value = '';
+            document.getElementById('projectDescription').value = '';
+            document.getElementById('projectStatus').value = '';
+            document.getElementById('projectAssociation').value = '';
+            document.getElementById('upload_trames_1').value = '';
+            document.getElementById('upload_trames_2').value = '';
+        });
+        //#endregion
+
+        //#region Ajouter écouteur d'événement pour le bouton Enregistrer (créer un projet)
+        document.getElementById('save_project_form').addEventListener('click', function (e) {
+            e.preventDefault();
+
+            // Récupérer les données du formulaire
+            var projectTitle = document.getElementById('projectTitle').value;
+            var projectType = document.getElementById('projectType').value;
+            var projectDate = document.getElementById('projectDate').value;
+            var projectEndDate2 = document.getElementById('projectEndDate2').value;
+            var projectReferent = document.getElementById('projectReferent').value;
+            var projectReferentEmail = document.getElementById('projectReferentEmail').value;
+            var projectLocation = document.getElementById('projectLocation').value;
+            var projectDescription = document.getElementById('projectDescription').value;
+            var projectStatus = document.getElementById('projectStatus').value;
+            var projectAssociation = document.getElementById('projectAssociation').value;
+            var upload_trames_1 = document.getElementById('upload_trames_1').files[0];
+            var upload_trames_2 = document.getElementById('upload_trames_2').files[0];
+
+            // Vérifier si les champs obligatoires sont remplis
+            if (projectTitle === '' || projectType === '' || projectDate === '' || projectEndDate2 === '' || projectReferent === '' || projectReferentEmail === '' || projectLocation === '' || projectDescription === '' || projectStatus === '' || projectAssociation === '') {
+                alert('Veuillez remplir tous les champs obligatoires.');
+                return;
+            }
+
+            // Afficher l'animation de chargement
+            document.getElementById('loading').style.display = 'block';
+
+            // Récupérer les projets
+            fetch('https://lab.padem.org/wp-json/mo/v1/getProjectData')
+                .then(response => response.json())
+                .then(data => {
+                    // Récupérer l'id du projet ayant la plus grande valeur
+                    var project_id = data.length > 0 ? projects[projects.length - 1].id + 1 : 1;
+
+                    // Créer un objet FormData
+                    if (upload_trames_1) {
+                        var formData = new FormData();
+                        formData.append('upload_trames_1', upload_trames_1);
+                        formData.append('action', 'handle_file_upload');
+
+                        // Envoyer le fichier au serveur
+                        fetch(ajaxurl, {
+                            method: 'POST',
+                            body: formData
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                console.log('Success:', data);
+                                // Récupérer le lien du fichier
+                                //#region Envoi des données du fichier à la base de données
+                                fetch('https://lab.padem.org/wp-json/mo/v1/createProjectFile', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                    body: JSON.stringify({
+                                        project_id: project_id,
+                                        file_name: ((data.data.url).split('/')).pop(), // Nom du fichier
+                                        file_type: upload_trames_1.type, // Type du fichier
+                                        file_link: data.data.url, // Lien du fichier
+                                        file_size: upload_trames_1.size, // Taille du fichier
+                                        author_email: userEmail,
+                                        folder_name: '', // Dossier de destination
+                                        is_folder: false,
+                                        is_in_folder: false,
+                                        folder_link: '',
+                                        is_trame: true,
+                                        created_at: new Date(Date.now()) // Date de création
+                                    }),
+                                })
+                                    .then((response) => response.json())
+                                    .then((data) => {
+                                        // Recharger les fichiers
+                                        displayFiles();
+                                        displayProjectDocuments();
+                                    })
+                                    .catch((error) => {
+                                        console.error('Error:', error);
+                                        // Masquer l'avancement du chargement
+                                        document.getElementById('loading').style.display = 'none';
+                                    });
+                                //#endregion
+                            })
+                            .catch((error) => {
+                                console.error('Error:', error);
+                            });
+                    }
+                    if (upload_trames_2) {
+                        var formData = new FormData();
+                        formData.append('upload_trames_2', upload_trames_2);
+                        formData.append('action', 'handle_file_upload');
+
+                        // Envoyer le fichier au serveur
+                        fetch(ajaxurl, {
+                            method: 'POST',
+                            body: formData
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                console.log('Success:', data);
+                                // Récupérer le lien du fichier
+                                var fileLink = data.data.url;
+                                //#region Envoi des données du fichier à la base de données
+                                fetch('https://lab.padem.org/wp-json/mo/v1/createProjectFile', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                    body: JSON.stringify({
+                                        project_id: project_id,
+                                        file_name: ((data.data.url).split('/')).pop(), // Nom du fichier
+                                        file_type: upload_trames_2.type, // Type du fichier
+                                        file_link: data.data.url, // Lien du fichier
+                                        file_size: upload_trames_2.size, // Taille du fichier
+                                        author_email: userEmail,
+                                        folder_name: '', // Dossier de destination
+                                        is_folder: false,
+                                        is_in_folder: false,
+                                        folder_link: '',
+                                        is_trame: true,
+                                        created_at: new Date(Date.now()) // Date de création
+                                    }),
+                                })
+                                    .then((response) => response.json())
+                                    .then((data) => {
+                                        // Recharger les fichiers
+                                        displayFiles();
+                                        displayProjectDocuments();
+                                    })
+                                    .catch((error) => {
+                                        console.error('Error:', error);
+                                        // Masquer l'avancement du chargement
+                                        document.getElementById('loading').style.display = 'none';
+                                    });
+                                //#endregion
+                            })
+                            .catch((error) => {
+                                console.error('Error:', error);
+                            });
+                    }
+
+                    // Envoyer les données du formulaire à la base de données
+                    fetch('https://lab.padem.org/wp-json/mo/v1/createProjectData', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            project_id: project_id,
+                            project_title: projectTitle,
+                            project_type: projectType,
+                            start_date: projectDate,
+                            end_date: projectEndDate2,
+                            project_referent: projectReferent,
+                            project_referent_email: projectReferentEmail,
+                            project_location: projectLocation,
+                            project_description: projectDescription,
+                            project_status: projectStatus,
+                            association: projectAssociation,
+                        })
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            // Masquer l'animation de chargement
+                            document.getElementById('loading').style.display = 'none';
+                            // Masquer le formulaire
+                            document.getElementById('new_project_form').style.display = 'none';
+                            // Afficher le tableau des projets
+                            document.getElementById('all_projects_details_container').style.display = 'block';
+
+                            //#region Vider les champs du formulaire
+                            document.getElementById('projectTitle').value = '';
+                            document.getElementById('projectType').value = '';
+                            document.getElementById('projectDate').value = '';
+                            document.getElementById('projectEndDate2').value = '';
+                            document.getElementById('projectReferent').value = '';
+                            document.getElementById('projectReferentEmail').value = '';
+                            document.getElementById('projectLocation').value = '';
+                            document.getElementById('projectDescription').value = '';
+                            document.getElementById('projectStatus').value = '';
+                            document.getElementById('projectAssociation').value = '';
+                            document.getElementById('upload_trames_1').value = '';
+                            document.getElementById('upload_trames_2').value = '';
+                            //#endregion
+
+                            // Afficher un message de succès
+                            alert('Projet créé avec succès.');
+                            // Récupérer les projets
+                            getProjects('title');
+                        })
+                        .catch(error => {
+                            console.error('Erreur création du projet:', error);
+                            // Masquer l'animation de chargement
+                            document.getElementById('loading').style.display = 'none';
+                            // Afficher un message d'erreur
+                        });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    // Masquer l'avancement du chargement
+                    document.getElementById('loading').style.display = 'none';
+                });
+        });
         //#region Récupération des utilisateurs
         function getUsers() {
             fetch('https://api.ynov.jcatania.io/user')
@@ -3783,7 +4110,7 @@
                     // Masquer l'animation de chargement
                     document.getElementById('loading').style.display = 'none';
                 })
-                .catch(error => { 
+                .catch(error => {
                     console.error('Erreur récupération des projets:', error)
                     // Masquer l'animation de chargement
                     document.getElementById('loading').style.display = 'none';
@@ -3810,7 +4137,7 @@
             var displayArchivesProjects = document.getElementById('display_archives_projects');
             displayArchivesProjects.innerHTML = '';
             displayProjects.innerHTML = '';
-            
+
             // Tableau des status du projet
             var status_list = {
                 'En cours': 'lightgreen',
@@ -3826,45 +4153,35 @@
                     'Content-Type': 'application/json',
                 },
             })
-            .then((response) => response.json())
-            .then((data) => {
-                let workingTable = data;
-                let project_list = [];
-                
-                // Get Projects Ids and Status
-                workingTable.forEach((element) => {
-                    projects.forEach((project) => {
-                        if (element.project_id === project.project_id) {
-                            project.project_state = element.project_state ? element.project_state : 'En attente';
-                            project_list.push(project);
-                        }
-                    });
-                });
+                .then((response) => response.json())
+                .then((data) => {
+                    let workingTable = data;
+                    let project_list = [];
 
-                project_list.forEach(project => {
-                    if (project.project_state !== 'Archivé') {
-                        let tr = document.createElement('tr');
-                        tr.style.border = '1px solid lightgray';
-                        tr.style.borderRadius = '25px';
-                        tr.style.backgroundColor = 'white';
-                        tr.style.cursor = 'pointer';
-                        tr.style.margin = '5px';
-                        tr.style.padding = '8px';
-                        tr.style.paddingRight = '10px';
-                        tr.style.marginBottom = '0px';
-                        tr.id = project.project_id;
-                        tr.addEventListener('click', function () { // Afficher les détails du projet
-                            document.getElementById('all_projects_table').style.display = 'none';
-                            document.getElementById('project_details').style.display = 'block';
-                            displayProject(project.project_id);
-                        });
-                        tr.addEventListener('mouseover', function () {
-                            tr.style.border = '1px solid #6CE8E8';
-                        });
-                        tr.addEventListener('mouseout', function () {
+                    projects.forEach(project => {
+                        if (project.project_status !== 'Archivé' || project.is_archive !== '1') {
+                            let tr = document.createElement('tr');
                             tr.style.border = '1px solid lightgray';
-                        });
-                        tr.innerHTML = `
+                            tr.style.borderRadius = '25px';
+                            tr.style.backgroundColor = 'white';
+                            tr.style.cursor = 'pointer';
+                            tr.style.margin = '5px';
+                            tr.style.padding = '8px';
+                            tr.style.paddingRight = '10px';
+                            tr.style.marginBottom = '0px';
+                            tr.id = project.project_id;
+                            tr.addEventListener('click', function () { // Afficher les détails du projet
+                                document.getElementById('all_projects_table').style.display = 'none';
+                                document.getElementById('project_details').style.display = 'block';
+                                displayProject(project.project_id);
+                            });
+                            tr.addEventListener('mouseover', function () {
+                                tr.style.border = '1px solid #6CE8E8';
+                            });
+                            tr.addEventListener('mouseout', function () {
+                                tr.style.border = '1px solid lightgray';
+                            });
+                            tr.innerHTML = `
                             <th style="color: #29A6A7; margin-left: 5px; margin-top: 15px;">${project.project_title ? project.project_title : '---'}</th>
                             <th style="font-weight: lighter; color: black; display: flex; justify-content: flex-start; margin-top: 10px;">${project.project_location ? project.project_location : '---'}</th>
                             <th style="font-weight: lighter; color: black; display: flex; justify-content: flex-start; margin-top: 10px;">${project.association ? project.association : '---'}</th>
@@ -3873,28 +4190,28 @@
                                 <p style="color: ${project.project_state === 'En cours' ? 'green' : project.project_state === 'Terminé' ? 'red' : 'gray'}; margin-bottom: -2px;">${project.project_state ? project.project_state : '---'}</p>
                             </th>
                         `;
-                        displayProjects.appendChild(tr);
-                    } else {
-                        let tr = document.createElement('tr');
-                        tr.style.border = '1px solid lightgray';
-                        tr.style.borderRadius = '25px';
-                        tr.style.backgroundColor = 'white';
-                        tr.style.margin = '6px';
-                        tr.style.padding = '15px';
-                        tr.style.cursor = 'pointer';
-                        tr.id = project.project_id;
-                        tr.addEventListener('click', function () { // Afficher les détails du projet
-                            document.getElementById('all_projects_table').style.display = 'none';
-                            document.getElementById('project_details').style.display = 'block';
-                            displayProject(project.project_id);
-                        });
-                        tr.addEventListener('mouseover', function () {
-                            tr.style.border = '1px solid #6CE8E8';
-                        });
-                        tr.addEventListener('mouseout', function () {
+                            displayProjects.appendChild(tr);
+                        } else {
+                            let tr = document.createElement('tr');
                             tr.style.border = '1px solid lightgray';
-                        });
-                        tr.innerHTML = `
+                            tr.style.borderRadius = '25px';
+                            tr.style.backgroundColor = 'white';
+                            tr.style.margin = '6px';
+                            tr.style.padding = '15px';
+                            tr.style.cursor = 'pointer';
+                            tr.id = project.project_id;
+                            tr.addEventListener('click', function () { // Afficher les détails du projet
+                                document.getElementById('all_projects_table').style.display = 'none';
+                                document.getElementById('project_details').style.display = 'block';
+                                displayProject(project.project_id);
+                            });
+                            tr.addEventListener('mouseover', function () {
+                                tr.style.border = '1px solid #6CE8E8';
+                            });
+                            tr.addEventListener('mouseout', function () {
+                                tr.style.border = '1px solid lightgray';
+                            });
+                            tr.innerHTML = `
                             <th style="color: #29A6A7; margin-left: 5px; margin-top: 15px;">${project.project_title ? project.project_title : '---'}</th>
                             <th style="font-weight: lighter; color: black; display: flex; justify-content: flex-start; margin-top: 10px;">${project.project_location ? project.project_location : '---'}</th>
                             <th style="font-weight: lighter; color: black; display: flex; justify-content: flex-start; margin-top: 10px;">${project.association ? project.association : '---'}</th>
@@ -3903,13 +4220,13 @@
                                 <p style="color: ${project.project_status === 'En cours' ? 'green' : project.project_status === 'Terminé' ? 'red' : 'gray'}; margin-bottom: -2px;">${project.project_status ? project.project_status : '---'}</p>
                             </th>
                         `;
-                        displayArchivesProjects.appendChild(tr);
-                    }
+                            displayArchivesProjects.appendChild(tr);
+                        }
+                    });
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
                 });
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
         }
         //#endregion
 
@@ -4080,7 +4397,7 @@
                 folders: projectDocuments,
             };
 
-            fetch('https://lab.padem.org/wp-json/mo/v1/addProject', {
+            fetch('https://lab.padem.org/wp-json/mo/v1/createProjectData', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -4126,30 +4443,7 @@
                     });
             }
         }
-        // Fonction pour ajouter un document à un projet
-        function addDocumentToProject(projectId) {
-            var project = projects.find(project => project.project_id === projectId);
-            var documents = project.documents;
-            var document = prompt('Saisir le nom du document à ajouter au projet:');
-            if (document !== null) {
-                documents.push(document);
-                fetch('https://lab.padem.org/wp-json/mo/v1/updateProject', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ project_id: projectId, documents: documents }),
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log('Success:', data);
-                        getProjects();
-                    })
-                    .catch((error) => {
-                        console.error('Error:', error);
-                    });
-            }
-        }
+
         // Fonction pour ajouter un rapport à un projet
         function addReportToProject(projectId) {
             var project = projects.find(project => project.project_id === projectId);
@@ -4174,62 +4468,13 @@
                     });
             }
         }
-        // Fonction pour éditer un projet
-        function editProject(projectId) {
-            var project = projects.find(project => project.project_id === projectId);
-            var projectTitle = prompt('Saisir le nouveau titre du projet:', project.project_title);
-            var projectType = prompt('Saisir le nouveau type du projet:', project.project_type);
-            var projectDate = prompt('Saisir la nouvelle date de début du projet:', project.start_date);
-            var projectEndDate2 = prompt('Saisir la nouvelle date de fin du projet:', project.end_date);
-            var projectLocation = prompt('Saisir la nouvelle localisation du projet:', project.project_location);
-            var pademResponsible = prompt('Saisir le nouveau responsable du projet:', project.padem_responsible);
-            var pademResponsibleEmail = prompt('Saisir le nouvel email du responsable du projet:', project.padem_responsible_email);
-            var projectReferent = prompt('Saisir le nouveau référent du projet:', project.project_referent);
-            var projectReferentEmail = prompt('Saisir le nouvel email du référent du projet:', project.project_referent_email);
-            var projectDescription = prompt('Saisir la nouvelle description du projet:', project.project_description);
-            var projectDocuments = prompt('Saisir les nouveaux documents du projet:', project.folders);
 
-            var updatedProject = {
-                project_title: projectTitle,
-                project_type: projectType,
-                start_date: projectDate,
-                end_date: projectEndDate2,
-                updated_date: new Date(),
-                project_location: projectLocation,
-                project_status: project.project_status,
-                padem_responsible: pademResponsible,
-                padem_responsible_email: pademResponsibleEmail,
-                project_referent: projectReferent,
-                project_referent_email: projectReferentEmail,
-                project_description: projectDescription,
-                background_image_link: project.background_image_link,
-                folders: projectDocuments,
-            };
-
-            fetch('https://lab.padem.org/wp-json/mo/v1/updateProject', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ project_id: projectId, project: updatedProject }),
-            })
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Success:', data);
-                    getProjects();
-                    document.getElementById('all_projects_table').style.display = 'block';
-                    document.getElementById('project_details').style.display = 'none';
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
-                });
-        }
         // Fonction pour archiver un projet
         function archiveProject(projectId) {
             var project = projects.find(project => project.project_id === projectId);
 
             //#region Mettre à jour le projet
-            fetch('https://lab.padem.org/wp-json/mo/v1/updateProject', {
+            fetch('https://lab.padem.org/wp-json/mo/v1/createProjectData', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -4256,8 +4501,6 @@
             })
                 .then(response => response.json())
                 .then(data => {
-                    console.log('Success:', data);
-
                     //#region Supprimer le projet de la liste des projets
                     fetch('https://lab.padem.org/wp-json/mo/v1/removeProjectData', {
                         method: 'DELETE',
@@ -4268,7 +4511,6 @@
                     })
                         .then(response => response.json())
                         .then(data => {
-                            console.log('Success:', data);
                             getProjects();
                             document.getElementById('all_projects_table').style.display = 'block';
                             document.getElementById('project_details').style.display = 'none';
@@ -4289,11 +4531,11 @@
             var projectMembers = project.users;
             var subject = 'Padem Lab Notifications: ' + 'Archivage du projet ' + project.project_title;
             var message = 'Bonjour, \n\nLe projet ' + project.project_title + ' a été archivé. \n\nCordialement, \n\nL\'équipe PADEM';
-            
+
             // Envoyer un email à chaque membre du projet
             project.users.forEach(user => {
                 var userEmail = users.find(u => u.ID === user).user_email;
-                
+
                 sendMailNotification(userEmail, subject, message);
             });
         }
@@ -4433,57 +4675,87 @@
                             </div>
                         </div>
                         <!-- Formulaire pour modifier les détails du projet -->
-                        <div id="update_all_project_details_container_" style="display: none;">
-                            <div style="display: flex; justify-content: space-between; margin: 5px; padding: 5px;">
-                                <div class="card-body" style="display: column; justify-content: flex-start;">
-                                    <div style="display: flex; justify-content: flex-start;">
-                                        <p style="color: gray;"> <!-- icone Bailleur de fonds --> <img src="https://img.icons8.com/?size=100&id=Iv2ecGx6KYqh&format=png&color=9F9F9F" style="width: 20px; height: 20px;" alt=""> Bailleur: </p>
-                                        <input type="text" id="update_funder_${project.project_id}" value="${project.funder ? project.funder : '---'}" style="color: gray; margin-left: 5px; background-color: white; margin-top: -5px; border: 1px solid lightgray; border-radius: 25px;">
+                        <form class="card" id="update_all_project_details_container_" style="display: none;" method="POST">
+                            <div class="card-body" style="margin: 5px; padding: 5px; border: none;">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label for="update_funder_${project.project_id}" style="color: gray;"> <!-- icone Bailleur de fonds --> 
+                                            <img src="https://img.icons8.com/?size=100&id=Iv2ecGx6KYqh&format=png&color=9F9F9F" style="width: 20px; height: 20px;" alt=""> 
+                                            Bailleur:  <span style="color: red;">*</span></label>
+                                        <input type="text" id="update_funder_${project.project_id}" class="form-control" value="${project.funder ? project.funder : '---'}" style="color: gray; margin-left: 5px; background-color: white; margin-top: -5px; border: 1px solid lightgray; border-radius: 25px;">
                                     </div>
                                     <div style="margin: 10px;"></div>
-                                    <div style="display: flex; justify-content: flex-start;">
-                                        <p style="color: gray;"> <!-- icone Groupe --> <img src="https://img.icons8.com/?size=100&id=779&format=png&color=9F9F9F" style="width: 20px; height: 20px;" alt=""> Association: </p>
-                                        <input type="text" id="update_association_${project.project_id}" value="${project.association ? project.association : '---'}" style="color: gray; margin-left: 5px; background-color: white; margin-top: -5px; border: 1px solid lightgray; border-radius: 25px;">
-                                    </div>
-                                    <div style="margin: 10px;"></div>
-                                    <div style="display: flex; justify-content: flex-start;">
-                                        <p style="color: gray;"> <!-- icone Thématique --> <img src="https://img.icons8.com/?size=100&id=22798&format=png&color=9F9F9F" style="width: 20px; height: 20px;" alt=""> Thématique: </p>
-                                        <input type="text" id="update_project_type_${project.project_id}" value="${project.project_type ? project.project_type : '---'}" style="color: gray; margin-left: 5px; background-color: white; margin-top: -5px; border: 1px solid lightgray; border-radius: 25px;">
-                                    </div>
-                                    <div style="margin: 10px;"></div>
-                                    <div style="display: flex; justify-content: flex-start;">
-                                        <p style="color: gray;"> <!-- icone pays --> <img src="https://img.icons8.com/?size=100&id=17548&format=png&color=9F9F9F" style="width: 20px; height: 20px;" alt=""> Pays: </p>
-                                        <input type="text" id="update_project_location_${project.project_id}" value="${project.project_location ? project.project_location : '---'}" style="color: gray; margin-left: 5px; background-color: white; margin-top: -5px; border: 1px solid lightgray; border-radius: 25px;">
+                                    <div class="col-md-6">
+                                        <label for="update_association_${project.project_id}" style="color: gray;"> <!-- icone Groupe --> 
+                                            <img src="https://img.icons8.com/?size=100&id=779&format=png&color=9F9F9F" style="width: 20px; height: 20px;" alt=""> 
+                                            Association: <span style="color: red;">*</span></label>
+                                        <input type="text" id="update_association_${project.project_id}" class="form-control" value="${project.association ? project.association : '---'}" style="color: gray; margin-left: 5px; background-color: white; margin-top: -5px; border: 1px solid lightgray; border-radius: 25px;">
                                     </div>
                                 </div>
-                                <div class="card-body" style="display: column; justify-content: flex-start;">
-                                    <div style="display: flex; justify-content: flex-start;">
-                                        <p style="color: gray;"> <!-- icone Responsable --> <img src="https://img.icons8.com/?size=100&id=21996&format=png&color=9F9F9F" style="width: 20px; height: 20px;" alt=""> Référent: </p>
-                                        <input type="text" id="update_project_referent_${project.project_id}" value="${project.project_referent ? project.project_referent : '---'}" style="color: gray; margin-left: 5px; background-color: white; margin-top: -5px; border: 1px solid lightgray; border-radius: 25px;">
+                                <div class="row">
+                                    <div style="margin: 10px;"></div>
+                                    <div class="col-md-6">
+                                        <label for="update_project_type_${project.project_id}" style="color: gray;"> <!-- icone Thématique --> 
+                                            <img src="https://img.icons8.com/?size=100&id=22798&format=png&color=9F9F9F" style="width: 20px; height: 20px;" alt=""> 
+                                            Thématique: <span style="color: red;">*</span></label>
+                                        <input type="text" id="update_project_type_${project.project_id}" class="form-control" value="${project.project_type ? project.project_type : '---'}" style="color: gray; margin-left: 5px; background-color: white; margin-top: -5px; border: 1px solid lightgray; border-radius: 25px;">
                                     </div>
                                     <div style="margin: 10px;"></div>
-                                    <div style="display: flex; justify-content: flex-start;">
-                                        <p style="color: gray;"> <!-- icone date de début --> <img src="https://img.icons8.com/?size=100&id=1072&format=png&color=9F9F9F" style="width: 20px; height: 20px;" alt=""> Date de début: </p>
-                                        <input type="date" id="update_start_date_${project.project_id}" value="${project.start_date ? project.start_date : '---'}" style="color: gray; margin-left: 5px; background-color: white; margin-top: -5px; border: 1px solid lightgray; border-radius: 25px;">
+                                    <div class="col-md-6">
+                                        <label for="update_project_location_${project.project_id}" style="color: gray;"> <!-- icone pays --> 
+                                            <img src="https://img.icons8.com/?size=100&id=17548&format=png&color=9F9F9F" style="width: 20px; height: 20px;" alt=""> 
+                                            Pays: <span style="color: red;">*</span></label>
+                                        <input type="text" id="update_project_location_${project.project_id}" class="form-control" value="${project.project_location ? project.project_location : '---'}" style="color: gray; margin-left: 5px; background-color: white; margin-top: -5px; border: 1px solid lightgray; border-radius: 25px;">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label for="update_project_referent_${project.project_id}" style="color: gray;"> <!-- icone Responsable --> 
+                                            <img src="https://img.icons8.com/?size=100&id=21996&format=png&color=9F9F9F" style="width: 20px; height: 20px;" alt=""> 
+                                            Référent: <span style="color: red;">*</span></label>
+                                        <input type="text" id="update_project_referent_${project.project_id}" class="form-control" value="${project.project_referent ? project.project_referent : '---'}" style="color: gray; margin-left: 5px; background-color: white; margin-top: -5px; border: 1px solid lightgray; border-radius: 25px;">
                                     </div>
                                     <div style="margin: 10px;"></div>
-                                    <div style="display: flex; justify-content: flex-start;">
-                                        <p style="color: gray;"> <!-- icone date de fin --> <img src="https://img.icons8.com/?size=100&id=1070&format=png&color=9F9F9F" style="width: 20px; height: 20px;" alt=""> Date de fin: </p>
-                                        <input type="date" id="update_end_date_${project.project_id}" value="${project.end_date ? project.end_date : '---'}" style="color: gray; margin-left: 5px; background-color: white; margin-top: -5px; border: 1px solid lightgray; border-radius: 25px;">
+                                    <!-- Adresse email du référent -->
+                                    <div class="col-md-6">
+                                        <label for="update_project_referent_email_${project.project_id}" style="color: gray;"> <!-- icone Responsable --> 
+                                            <img src="https://img.icons8.com/?size=100&id=21996&format=png&color=9F9F9F" style="width: 20px; height: 20px;" alt=""> 
+                                            Email du référent: <span style="color: red;">*</span></label>
+                                        <input type="email" id="update_project_referent_email_${project.project_id}" class="form-control" value="${project.project_referent_email ? project.project_referent_email : '---'}" style="color: gray; margin-left: 5px; background-color: white; margin-top: -5px; border: 1px solid lightgray; border-radius: 25px;">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label for="update_start_date_${project.project_id}" style="color: gray;"> <!-- icone date de début --> 
+                                            <img src="https://img.icons8.com/?size=100&id=1072&format=png&color=9F9F9F" style="width: 20px; height: 20px;" alt=""> 
+                                            Date de début: <span style="color: red;">*</span></label>
+                                        <input type="date" id="update_start_date_${project.project_id}" class="form-control" value="${project.start_date ? project.start_date : '---'}" style="color: gray; margin-left: 5px; background-color: white; margin-top: -5px; border: 1px solid lightgray; border-radius: 25px;">
                                     </div>
                                     <div style="margin: 10px;"></div>
-                                    <div style="display: flex; justify-content: flex-start;">
-                                        <p style="color: gray;"> <!-- icone Responsable --> <img src="https://img.icons8.com/?size=100&id=77&format=png&color=9F9F9F" style="width: 20px; height: 20px;" alt=""> Description: </p>
-                                        <textarea id="update_project_description_${project.project_id}" style="color: gray; margin-left: 5px; width: fit-content; border: 1px solid lightgray; border-radius: 15px;" row="5">${project.project_description ? project.project_description : '---'}</textarea>
+                                    <div class="col-md-6">
+                                        <label for="update_end_date_${project.project_id}" style="color: gray;"> <!-- icone date de fin --> 
+                                            <img src="https://img.icons8.com/?size=100&id=1070&format=png&color=9F9F9F" style="width: 20px; height: 20px;" alt=""> 
+                                            Date de fin: <span style="color: red;">*</span></label>
+                                        <input type="date" id="update_end_date_${project.project_id}" class="form-control" value="${project.end_date ? project.end_date : '---'}" style="color: gray; margin-left: 5px; background-color: white; margin-top: -5px; border: 1px solid lightgray; border-radius: 25px;">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <label for="update_project_description_${project.project_id}" style="color: gray;"> <!-- icone Responsable --> 
+                                            <img src="https://img.icons8.com/?size=100&id=77&format=png&color=9F9F9F" style="width: 20px; height: 20px;" alt=""> 
+                                            Description: <span style="color: red;">*</span></label>
+                                        <textarea id="update_project_description_${project.project_id}" class="form-control" style="color: gray; margin-left: 5px; width: fit-content; border: 1px solid lightgray; border-radius: 15px;" rows="5">${project.project_description ? project.project_description : '---'}</textarea>
                                     </div>
                                 </div>
                             </div>
-                            <div style="display: flex; justify-content: flex-end; margin: 5px; padding: 5px;">
-                                <button type="button" id="update_all_project_details_button_${project.project_id}" style="width: fit-content; background-color: #29A6A7; border-radius: 25px; color: white; font-size: 12px;" title="valider"> <!-- icone valider --> <img src="https://img.icons8.com/?size=100&id=11658&format=png&color=FFFFFF" style="width: 20px; height: 20px;" alt=""> Valider</button>
-                                <div style="margin: 5px;"></div>
-                                <button type="button" id="cancel_update_all_project_details_${project.project_id}" style="width: fit-content; background-color: red; border-radius: 25px; color: white; font-size: 12px;" title="annuler"> <!-- icone annuler --> <img src="https://img.icons8.com/?size=100&id=3062&format=png&color=FFFFFF" style="width: 20px; height: 20px;" alt=""> Annuler</button>
+                            <div class="col-md-12">
+                                <div style="display: flex; justify-content: flex-end; margin: 5px; padding: 5px;">
+                                    <button type="button" id="update_all_project_details_button_${project.project_id}" style="width: fit-content; background-color: #29A6A7; border-radius: 25px; color: white; font-size: 12px;" title="valider"> <!-- icone valider --> <img src="https://img.icons8.com/?size=100&id=11658&format=png&color=FFFFFF" style="width: 20px; height: 20px;" alt=""> Valider</button>
+                                    <div style="margin: 5px;"></div>
+                                    <button type="button" id="cancel_update_all_project_details_${project.project_id}" style="width: fit-content; background-color: red; border-radius: 25px; color: white; font-size: 12px;" title="annuler"> <!-- icone annuler --> <img src="https://img.icons8.com/?size=100&id=3062&format=png&color=FFFFFF" style="width: 20px; height: 20px;" alt=""> Annuler</button>
+                                </div>
                             </div>
-                        </div>
+                        </form>
                     </div>
                     <div class="card-body" style="margin: 5px; padding: 5px; min-height: 300px; width: 100%;"">
                         <!-- Menu initial -->
@@ -4580,10 +4852,10 @@
                                     <!-- Sélectionner le type de fichier (Trame ou autre) -->
                                     <label for="files_file_type_${project.project_id}" style="font-size: 14px; font-weight: lighter; color: gray;">
                                         <img src="https://img.icons8.com/ios/50/9F9F9F/folder-invoices.png" style="width: 20px; height: 20px;" alt="">
-                                        Type de fichier <span style="color: red;">*</span>
+                                        Type de document à ajouter au projet <span style="color: red;">*</span>
                                     </label>
                                     <select class="form-control" id="files_file_type_${project.project_id}" name="files_file_type_" style="width: 100%; border-radius: 20px; border: 1px solid lightgray; padding: 5px; font-size: 14px; color: gray;">
-                                        <option value="0">Type de fichier</option>
+                                        <option value="0">Sélectionner</option>
                                         <option value="1">Trame</option>
                                         <option value="2">Autre</option>
                                     </select>
@@ -4615,7 +4887,7 @@
                                         <div class="col-md-6">
                                             <label for="report_title_${project.project_id}" style="color: gray;">
                                                 <img src="https://img.icons8.com/ios/50/9F9F9F/title.png" style="width: 20px; height: 20px;" alt="">
-                                                Titre</label>
+                                                Titre du rapport</label>
                                             <input type="text" class="form-control" id="report_title_${project.project_id}" name="report_title" style="width: 100%; border-radius: 20px; border: 1px solid lightgray; padding: 5px;">
                                         </div>
                                         <!-- type de rapport -->
@@ -4658,7 +4930,7 @@
                                         </div>
                                         <div class="col-md-6">
                                             <label for="report_comments_${project.project_id}" style="color: gray;">
-                                                <img src="https://img.icons8.com/ios/50/9F9F9F/feedback.png" style="width: 20px; height: 20px;" alt="">
+                                                <img src="https://img.icons8.com/?size=100&id=118377&format=png&color=9F9F9F" style="width: 20px; height: 20px;" alt="">
                                                 Commentaires</label>
                                             <textarea class="form-control" id="report_comments_${project.project_id}" name="report_comments_" rows="5" style="border-radius: 20px; border: 1px solid lightgray; padding: 5px;">
                                                 </textarea>
@@ -4727,7 +4999,7 @@
                 }
             });
 
-            if(userRole.includes('administrator')) {
+            if (userRole.includes('administrator')) {
                 //#region Ajouter écouteur d'événement pour le bouton "Modifier les détails du projet"
                 document.getElementById('update_all_project_details').addEventListener('click', function () {
                     document.getElementById('update_all_project_details_container_').style.display = 'block';
@@ -4737,88 +5009,113 @@
                 });
                 //#region Ajouter écouteur d'événement pour le bouton "Valider"
                 document.getElementById('update_all_project_details_button_' + project.project_id).addEventListener('click', function () {
-                    // Afficher le bouton "Modifier les détails du projet"
-                    document.getElementById('hide_show_details_container_' + project.project_id).style.display = 'block';
-    
-                    var funder = document.getElementById('update_funder' + project.project_id).value;
-                    var association = document.getElementById('update_association' + project.project_id).value;
-                    var project_type = document.getElementById('update_project_type' + project.project_id).value;
-                    var project_location = document.getElementById('update_project_location' + project.project_id).value;
-                    var project_referent = document.getElementById('update_project_referent' + project.project_id).value;
-                    var start_date = document.getElementById('update_start_date' + project.project_id).value;
-                    var end_date = document.getElementById('update_end_date' + project.project_id).value;
-                    var project_description = document.getElementById('update_project_description' + project.project_id).value;
-    
-                    // Vérifier si les champs sont vides
-                    if (funder === '' || association === '' || project_type === '' || project_location === '' || project_referent === '' || start_date === '' || end_date === '' || project_description === '') {
-                        alert('Veuillez completer tous les champs.');
-                    } else {
-                        // Mettre à jour les détails du projet (https://lab.padem.org/wp-json/mo/v1/createProjectData)
-                        fetch('https://lab.padem.org/wp-json/mo/v1/updateProjectData', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({
-                                project_id: project.project_id,
-                                funder: funder,
-                                association: association,
-                                project_type: project_type,
-                                project_location: project_location,
-                                project_referent: project_referent,
-                                start_date: start_date,
-                                end_date: end_date,
-                                project_description: project_description
-                            }),
-                        })
-                            .then(response => response.json())
-                            .then(data => {
-                                if (data.status === 'success') {
-                                    alert('Les détails du projet ont été mis à jour avec succès.');
-                                    document.getElementById('update_all_project_details_container_').style.display = 'none';
-                                    document.getElementById('project_details_container_').style.display = 'block';
-                                    // Mettre à jour les détails du projet
-                                    document.getElementById('funder_' + project.project_id).innerHTML = funder;
-                                    document.getElementById('association_' + project.project_id).innerHTML = association;
-                                    document.getElementById('project_type_' + project.project_id).innerHTML = project_type;
-                                    document.getElementById('project_location_' + project.project_id).innerHTML = project_location;
-                                    document.getElementById('project_referent_' + project.project_id).innerHTML = project_referent;
-                                    document.getElementById('start_date_' + project.project_id).innerHTML = start_date;
-                                    document.getElementById('end_date_' + project.project_id).innerHTML = end_date;
-                                    document.getElementById('project_description_' + project.project_id).innerHTML = project_description;
 
-                                    // Supprimer l'ancien contenu
-                                    fetch('https://lab.padem.org/wp-json/mo/v1/removeProjectData', {
-                                        method: 'DELETE',
+                    // Récupérer les infos du projet
+                    fetch('https://lab.padem.org/wp-json/mo/v1/getProjectData', {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                    })
+                        .then(response => response.json())
+                        .then(this_data => {
+                            var this_project = this_data.find(p => p.project_id === project.project_id);
+                            if (this_project) {
+                                // Afficher le bouton "Modifier les détails du projet"
+                                document.getElementById('hide_show_details_container_' + project.project_id).style.display = 'block';
+
+                                var funder = document.getElementById('update_funder_' + project.project_id).value;
+                                var association = document.getElementById('update_association_' + project.project_id).value;
+                                var project_type = document.getElementById('update_project_type_' + project.project_id).value;
+                                var project_location = document.getElementById('update_project_location_' + project.project_id).value;
+                                var project_referent = document.getElementById('update_project_referent_' + project.project_id).value;
+                                var project_referent_email = document.getElementById('update_project_referent_email_' + project.project_id).value;
+                                var start_date = document.getElementById('update_start_date_' + project.project_id).value;
+                                var end_date = document.getElementById('update_end_date_' + project.project_id).value;
+                                var project_description = document.getElementById('update_project_description_' + project.project_id).value;
+
+                                // Vérifier si les champs sont vides
+                                if (funder === '' || association === '' || project_type === '' || project_location === '' || project_referent === '' || start_date === '' || end_date === '') {
+                                    alert('Veuillez completer tous les champs obligatoires.');
+                                } else {
+                                    // Mettre à jour les détails du projet (https://lab.padem.org/wp-json/mo/v1/createProjectData)
+                                    fetch('https://lab.padem.org/wp-json/mo/v1/createProjectData', {
+                                        method: 'POST',
                                         headers: {
                                             'Content-Type': 'application/json',
                                         },
                                         body: JSON.stringify({
-                                            column_param1: project.project_id // à modifier
+                                            project_id: project.project_id,
+                                            project_title: this_project.project_title,
+                                            is_archive: this_project.is_archive,
+                                            funder: funder,
+                                            association: association,
+                                            project_type: project_type,
+                                            project_location: project_location,
+                                            project_status: this_project.project_status,
+                                            project_referent: project_referent,
+                                            project_referent_email: this_project.project_referent_email,
+                                            start_date: start_date,
+                                            end_date: end_date,
+                                            project_description: project_description,
+                                            updated_date: new Date().toISOString().slice(0, 19).replace('T', ' '),
                                         }),
                                     })
                                         .then(response => response.json())
                                         .then(data => {
-                                            if (data.status === 'success') {
-                                                console.log('Les anciennes données du projet ont été supprimées avec succès.');
+                                            if (data.success) {
+                                                alert('Les détails du projet ont été mis à jour avec succès.');
+                                                document.getElementById('update_all_project_details_container_').style.display = 'none';
+                                                document.getElementById('project_details_container_').style.display = 'block';
+
+                                                //#region Mettre à jour les détails du projet
+                                                document.getElementById('funder_' + project.project_id).innerHTML = document.getElementById('update_funder_' + project.project_id).value;
+                                                document.getElementById('association_' + project.project_id).innerHTML = document.getElementById('update_association_' + project.project_id).value;
+                                                document.getElementById('project_type_' + project.project_id).innerHTML = document.getElementById('update_project_type_' + project.project_id).value;
+                                                document.getElementById('project_location_' + project.project_id).innerHTML = document.getElementById('update_project_location_' + project.project_id).value;
+                                                document.getElementById('project_referent_' + project.project_id).innerHTML = document.getElementById('update_project_referent_' + project.project_id).value;
+                                                document.getElementById('start_date_' + project.project_id).innerHTML = document.getElementById('update_start_date_' + project.project_id).value;
+                                                document.getElementById('end_date_' + project.project_id).innerHTML = document.getElementById('update_end_date_' + project.project_id).value;
+                                                document.getElementById('project_description_' + project.project_id).innerHTML = document.getElementById('update_project_description_' + project.project_id).value;
+                                                //#endregion
+
+                                                // Supprimer l'ancien contenu
+                                                fetch('https://lab.padem.org/wp-json/mo/v1/removeProjectData', {
+                                                    method: 'DELETE',
+                                                    headers: {
+                                                        'Content-Type': 'application/json',
+                                                    },
+                                                    body: JSON.stringify({
+                                                        column_param1: this_project.id, // Supprimer les anciennes données du projet
+                                                    }),
+                                                })
+                                                    .then(response => response.json())
+                                                    .then(data => {
+                                                        if (data.status === 'success') {
+                                                            console.log('Les anciennes données du projet ont été supprimées avec succès.');
+                                                        } else {
+                                                            alert('Une erreur s\'est produite lors de la suppression des anciennes données du projet.');
+                                                        }
+                                                    })
+                                                    .catch((error) => {
+                                                        console.error('Error:', error);
+                                                    });
                                             } else {
-                                                alert('Une erreur s\'est produite lors de la suppression des anciennes données du projet.');
+                                                alert('Une erreur s\'est produite lors de la mise à jour des détails du projet.');
                                             }
                                         })
                                         .catch((error) => {
                                             console.error('Error:', error);
                                         });
-                                } else {
-                                    alert('Une erreur s\'est produite lors de la mise à jour des détails du projet.');
                                 }
-                            })
-                            .catch((error) => {
-                                console.error('Error:', error);
-                            });
-                    }
+                            }
+                        })
+                        .catch((error) => {
+                            console.error('Error:', error);
+                        });
                 });
                 //#endregion
-    
+
                 //#region Ajouter écouteur d'événement pour le bouton "Annuler"
                 document.getElementById('cancel_update_all_project_details_' + project.project_id).addEventListener('click', function () {
                     document.getElementById('update_all_project_details_container_').style.display = 'none';
@@ -4866,7 +5163,7 @@
             //#region Ajouter écouteur d'événement pour le bouton Retour aux projets
             document.getElementById('back_To_All_Projects').addEventListener('click', function (e) {
                 e.preventDefault();
-                
+
                 // Masquer tout les autres éléments
                 document.getElementById('project_details').style.display = 'none';
                 // Afficher le tableau des projets
@@ -5038,13 +5335,13 @@
 
                                                 if (unformattedFileSize < 1024) {
                                                     fileSize = unformattedFileSize + ' octets';
-                                                } 
+                                                }
                                                 else if (unformattedFileSize < 1048576) {
                                                     fileSize = (unformattedFileSize / 1024).toFixed(2) + ' Ko';
-                                                } 
+                                                }
                                                 else if (unformattedFileSize < 1073741824) {
                                                     fileSize = (unformattedFileSize / 1048576).toFixed(2) + ' Mo';
-                                                } 
+                                                }
                                                 else {
                                                     fileSize = (unformattedFileSize / 1073741824).toFixed(2) + ' Go';
                                                 }
@@ -5080,14 +5377,14 @@
                                                     fileIcon = 'https://img.icons8.com/ios/50/FFA500/image.png';
                                                     is_image[index] = true;
                                                     is_folder[index] = false;
-                                                    is_other[index] = false;  
-                                                } else if((file.file_type).includes('audio')) {
+                                                    is_other[index] = false;
+                                                } else if ((file.file_type).includes('audio')) {
                                                     fileIcon = 'https://img.icons8.com/ios/50/FFA500/audio.png';
                                                     is_other[index] = true;
-                                                } else if((file.file_type).includes('video')) {
+                                                } else if ((file.file_type).includes('video')) {
                                                     fileIcon = 'https://img.icons8.com/ios/50/FFA500/video.png';
                                                     is_other[index] = true;
-                                                } else if((file.file_type).includes('folder')) {
+                                                } else if ((file.file_type).includes('folder')) {
                                                     fileIcon = 'https://img.icons8.com/?size=100&id=EoxnfFDqfEyw&format=png&color=29A6A7';
                                                     is_folder[index] = true;
                                                     is_image[index] = false;
@@ -5099,7 +5396,7 @@
                                                 fileIcon = 'https://img.icons8.com/ios/50/9F9F9F/file.png';
                                             }
                                             //#endregion
-                        
+
                                             //#region formatage de la date
                                             let date = new Date(file.created_at);
                                             let day = date.getDate();
@@ -5107,7 +5404,7 @@
                                             let year = date.getFullYear();
                                             let created_at = `${day} ${getMonthName(month)} ${year}`;
                                             //#endregion
-                                            
+
                                             //#region Récupérer le nom de l'auteur
                                             var author_email = file.author_email;
                                             var author = all_users_names.find(user => user.user_email === author_email) || '';
@@ -5126,7 +5423,7 @@
                                             tr.style.marginBottom = '0px';
                                             tr.id = file.id + '_file';
                                             //#endregion
-                                            
+
                                             // Changement de couleur de la ligne au survol
                                             tr.addEventListener('mouseover', function (e) {
                                                 if (is_folder[index]) { // Si le fichier est un dossier
@@ -5170,19 +5467,19 @@
                                                 <!-- Bouton pour télécharger le document et bouton pour supprimer le document -->
                                                 <th style="color: #29A6A7; width: 100%; display: flex; justify-content: flex-end; margin-left: 15px; margin-right: 3px;">
                                                     <!-- Afficher l'animation de chargement -->
-                                                    <div id="this_loading_delete_${file.id}" style="display: none; background: none;">
+                                                    <div id="this_loading_delete_${file.id}" style="display: none; background: none; margin-top: 5px;">
                                                         <img src="https://lab.padem.org/wp-content/uploads/Spin@1x-1.0s-200px-200px.gif" style="width: 30px; height: 30px" alt="Suppression...">
                                                     </div>
                                                     <div style="width: 10px;"></div>
-                                                    <a href="${file.file_link}" id="this_download_trame_${file.id}" download="${file.file_name}" style="display: ${is_folder[index] ? 'none' : 'flex'}; justify-content: space-between; text-decoration: none; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; background-color: #D6D6D641; align-self: center;" title="Télécharger">
+                                                    <div id="this_download_trame_${file.id}" download="${file.file_name}" style="display: ${is_folder[index] ? 'none' : 'flex'}; justify-content: space-between; text-decoration: none; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; background-color: #D6D6D641; align-self: center;" title="Télécharger">
                                                         <img src="https://img.icons8.com/ios/50/29A6A7/download.png" style="margin-left: 15px; width: 20px; height: 20px; cursor: pointer; align-self: center;" alt="Télécharger">
-                                                    </a>
+                                                    </div>
                                                     <div style="width: 10px;"></div>
                                                     <div style="display: flex; justify-content: space-between; width: 50px; height: 50px; border-radius: 50%; background-color: #D6D6D641; align-self: center;" id="this_this_file_menu_icon_${file.id}" title="Détails">
                                                         <img src="https://img.icons8.com/ios/50/9F9F9F/menu.png" style="margin-left: 15px; width: 20px; height: 20px; cursor: pointer; align-self: center;" alt="Détails" id="this_display_menu_${file.id}">
                                                     </div>
                                                     <!-- Menu de l'action à effectuer sur le document -->
-                                                    <div  class="dropdown-menu" id="this_file_menu_${file.id}" style="display: none ; position: absolute; background-color: white; border-radius: 20px; padding: 5px; margin-top: 10px; margin-right: 10px; width: fit-content; align-self: center;">
+                                                    <div  class="dropdown-menu" id="this_file_menu_${file.id}" style="display: none; position: absolute; background-color: white; border-radius: 20px; padding: 5px; margin-top: 10px; margin-right: 10px; width: fit-content; align-self: center;">
                                                         <div style="display: flex; justify-content: space-between; width: fit-content; border-radius: 15px; cursor: pointer; align-self: center; margin-left: 20px; margin: 5px; padding: 5px;" id="this_display_file_${file.id}" title="Afficher">
                                                             <img src="https://img.icons8.com/ios/50/9F9F9F/visible.png" style="width: 20px; height: 20px; cursor: pointer; margin-top: 10px;" alt="Afficher dans un nouvel onglet">
                                                             <div style="width: 10px;"></div>
@@ -5213,12 +5510,12 @@
                                             tbody.appendChild(tr);
 
                                             // Changer la couleur de fond du bouton télécharger au survole de la souris
-                                            document.getElementById('this_download_trame_' + file.id).addEventListener('mouseenter', function(e) {
+                                            document.getElementById('this_download_trame_' + file.id).addEventListener('mouseenter', function (e) {
                                                 document.getElementById('this_download_trame_' + file.id).style.backgroundColor = '#29A7A73E';
                                             });
-                                            
+
                                             // Remettre la couleur de fond du bouton télécharger à sa couleur initiale
-                                            document.getElementById('this_download_trame_' + file.id).addEventListener('mouseleave', function(e) {
+                                            document.getElementById('this_download_trame_' + file.id).addEventListener('mouseleave', function (e) {
                                                 document.getElementById('this_download_trame_' + file.id).style.backgroundColor = '#D6D6D641';
                                             });
 
@@ -5250,7 +5547,15 @@
                                                     window.open(file.file_link, '_blank');
                                                 }
                                             });
-                                            
+
+                                            // Télécharger un document
+                                            document.getElementById('this_download_trame_' + file.id).addEventListener('click', function (e) {
+                                                e.preventDefault();
+                                                if (!is_folder[index]) {
+                                                    downloadFile(file.file_link, file.file_name);
+                                                }
+                                            });
+
                                         } else if (file.is_trame === '1' && file.project_id === project.project_id) { // Si le fichier est une trame et appartient au projet
 
                                             //#region Formater la taille du fichier
@@ -5261,13 +5566,13 @@
 
                                                 if (unformattedFileSize < 1024) {
                                                     fileSize = unformattedFileSize + ' octets';
-                                                } 
+                                                }
                                                 else if (unformattedFileSize < 1048576) {
                                                     fileSize = (unformattedFileSize / 1024).toFixed(2) + ' Ko';
-                                                } 
+                                                }
                                                 else if (unformattedFileSize < 1073741824) {
                                                     fileSize = (unformattedFileSize / 1048576).toFixed(2) + ' Mo';
-                                                } 
+                                                }
                                                 else {
                                                     fileSize = (unformattedFileSize / 1073741824).toFixed(2) + ' Go';
                                                 }
@@ -5304,13 +5609,13 @@
                                                     is_image[index] = true;
                                                     is_folder[index] = false;
                                                     is_other[index] = false;
-                                                } else if((file.file_type).includes('audio')) {
+                                                } else if ((file.file_type).includes('audio')) {
                                                     fileIcon = 'https://img.icons8.com/ios/50/FFA500/audio.png';
                                                     is_other[index] = true;
-                                                } else if((file.file_type).includes('video')) {
+                                                } else if ((file.file_type).includes('video')) {
                                                     fileIcon = 'https://img.icons8.com/ios/50/FFA500/video.png';
                                                     is_other[index] = true;
-                                                } else if((file.file_type).includes('folder')) {
+                                                } else if ((file.file_type).includes('folder')) {
                                                     fileIcon = 'https://img.icons8.com/?size=100&id=EoxnfFDqfEyw&format=png&color=29A6A7';
                                                     is_folder[index] = true;
                                                     is_image[index] = false;
@@ -5322,7 +5627,7 @@
                                                 fileIcon = 'https://img.icons8.com/ios/50/9F9F9F/file.png';
                                             }
                                             //#endregion
-                                        
+
                                             //#region formatage de la date
                                             let date = new Date(file.created_at);
                                             let day = date.getDate();
@@ -5399,9 +5704,9 @@
                                                         <img src="https://lab.padem.org/wp-content/uploads/Spin@1x-1.0s-200px-200px.gif" style="width: 30px; height: 30px" alt="Suppression...">
                                                     </div>
                                                     <div style="width: 10px;"></div>
-                                                    <a href="${file.file_link}" id="this_download_trame_${file.id}" download="${file.file_name}" style="display: ${is_folder[index] ? 'none' : 'flex'}; justify-content: space-between; text-decoration: none; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; background-color: #D6D6D641; align-self: center;" title="Télécharger">
+                                                    <div id="this_download_trame_${file.id}" download="${file.file_name}" style="display: ${is_folder[index] ? 'none' : 'flex'}; justify-content: space-between; text-decoration: none; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; background-color: #D6D6D641; align-self: center;" title="Télécharger">
                                                         <img src="https://img.icons8.com/ios/50/29A6A7/download.png" style="margin-left: 15px; width: 20px; height: 20px; cursor: pointer; align-self: center;" alt="Télécharger">
-                                                    </a>
+                                                    </div>
                                                     <div style="width: 10px;"></div>
                                                     <div style="display: flex; justify-content: space-between; width: 50px; height: 50px; border-radius: 50%; background-color: #D6D6D641; align-self: center;" id="this_this_file_menu_icon_${file.id}" title="Détails">
                                                         <img src="https://img.icons8.com/ios/50/9F9F9F/menu.png" style="margin-left: 15px; width: 20px; height: 20px; cursor: pointer; align-self: center;" alt="Détails" id="this_display_menu_${file.id}">
@@ -5438,12 +5743,12 @@
                                             tbody_trames.appendChild(tr); // Ajouter la ligne à la table
 
                                             // Changer la couleur de fond du bouton télécharger au survole de la souris
-                                            document.getElementById('this_download_trame_' + file.id).addEventListener('mouseenter', function(e) {
+                                            document.getElementById('this_download_trame_' + file.id).addEventListener('mouseenter', function (e) {
                                                 document.getElementById('this_download_trame_' + file.id).style.backgroundColor = '#29A7A73E';
                                             });
 
                                             // Remettre la couleur de fond du bouton télécharger à sa couleur initiale
-                                            document.getElementById('this_download_trame_' + file.id).addEventListener('mouseleave', function(e) {
+                                            document.getElementById('this_download_trame_' + file.id).addEventListener('mouseleave', function (e) {
                                                 document.getElementById('this_download_trame_' + file.id).style.backgroundColor = '#D6D6D641';
                                             });
 
@@ -5475,6 +5780,30 @@
                                                     window.open(file.file_link, '_blank');
                                                 }
                                             });
+
+                                            // Télécharger un document
+                                            document.getElementById('this_download_trame_' + file.id).addEventListener('click', function (e) {
+                                                e.preventDefault();
+                                                if (!is_folder[index]) {
+                                                    downloadFile(file.file_link, file.file_name);
+                                                }
+                                            });
+                                        }
+
+                                        // Fonction pour télécharger un document
+                                        function downloadFile(file_link, file_name) {
+                                            fetch(file_link)
+                                                .then(response => response.blob())
+                                                .then(blob => {
+                                                    const url = window.URL.createObjectURL(new Blob([blob]));
+                                                    const a = document.createElement('a');
+                                                    a.href = url;
+                                                    a.download = file_name;
+                                                    document.body.appendChild(a);
+                                                    a.click();
+                                                    window.URL.revokeObjectURL(url);
+                                                })
+                                                .catch(error => console.error(error));
                                         }
 
                                         // fonction pour supprimer un document
@@ -5485,12 +5814,12 @@
 
                                             // Supprimer le document du serveur
                                             fetch(ajaxurl, {
-                                                    method: 'POST',
-                                                    body: new URLSearchParams({
-                                                        action: 'delete_file_callback', 
-                                                        file_url: file_link, // Lien du fichier à supprimer
-                                                    }),
-                                                })
+                                                method: 'POST',
+                                                body: new URLSearchParams({
+                                                    action: 'delete_file_callback',
+                                                    file_url: file_link, // Lien du fichier à supprimer
+                                                }),
+                                            })
                                                 .then(response => response.json())
                                                 .then(data => {
                                                     if (data.success) {
@@ -5523,9 +5852,9 @@
                                                     document.getElementById('this_loading_delete_' + file_id).style.display = 'none'; // Cacher l'animation de chargement
                                                 });
                                         }
-                                        
+
                                     });
-                                    if(tbody.innerHTML === '') { // Si aucun document trouvé
+                                    if (tbody.innerHTML === '') { // Si aucun document trouvé
                                         let tr = document.createElement('tr');
                                         tr.innerHTML = `
                                             <td colspan="6" style="text-align: center; color: gray;"> <img src="https://img.icons8.com/?size=100&id=3574&format=png&color=9F9F9F" style="width: 20px; height: 20px;" alt="">
@@ -5533,7 +5862,7 @@
                                         `;
                                         tbody.appendChild(tr);
                                     }
-                                    if(tbody_trames.innerHTML === '') { // Si aucun document trame n'est trouvé
+                                    if (tbody_trames.innerHTML === '') { // Si aucun document trame n'est trouvé
                                         let tr = document.createElement('tr');
                                         tr.innerHTML = `
                                             <td colspan="6" style="text-align: center; color: gray;"> <img src="https://img.icons8.com/?size=100&id=3574&format=png&color=9F9F9F" style="width: 20px; height: 20px;" alt="">
@@ -5561,7 +5890,7 @@
                                 tbody_trames.appendChild(tr);
                             });
                     })
-                    .catch(error => console.error(error));  
+                    .catch(error => console.error(error));
             }
             //#endregion
 
@@ -5572,7 +5901,7 @@
                 fetch('https://lab.padem.org/wp-json/mo/v1/getLocalUser')
                     .then(response => response.json())
                     .then(data => {
-                        if(data.length > 0) {
+                        if (data.length > 0) {
                             var _IDs = new Array(data.length);
                             var _IDs_location = new Array(data.length);
                             var _roles = new Array(data.length);
@@ -5592,6 +5921,7 @@
                                 } else if (user.meta_key === 'locale') {
                                     _IDs_location.push(user.ID);
                                     _locations.push(user.meta_value);
+                                    
                                 }
                             });
                             if (_IDs.length > 0) {
@@ -5606,60 +5936,60 @@
                         }
                         // Get members of the project from WordPress REST API(https://lab.padem.org/wp-json/mo/v1/getWorkingTable)
                         fetch('https://lab.padem.org/wp-json/mo/v1/getWorkingTable',
-                        {
-                            method: 'GET',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            }
-                        })
-                        .then(response => response.json())
-                        .then(project_members => {
-                            var project_members_list = [];
-                            var working_table_id ='';
-                            project_members.forEach(member => {
-                                // Récupérer les membres du projet
-                                if (member.project_id === project.project_id) { 
-                                    working_table_id = member.Working_Table_Id;
-                                    project_members_list.push(JSON.parse(member.users_emails_list)); // Récupérer les membres du projet
-                                }
-                            });
-
-                            // Get members of the project from WordPress REST API(https://lab.padem.org/wp-json/mo/v1/getAllMembers)
-                            //#region Récupérer les membres du projet
-                            var project_id = project.project_id;
-                            var url = 'https://lab.padem.org/wp-json/mo/v1/getAllMembers';
-                            var options = {
+                            {
                                 method: 'GET',
                                 headers: {
                                     'Content-Type': 'application/json',
                                 }
-                            };
-                            fetch(url, options)
-                                .then(response => response.json())
-                                .then(data => {
-                                    var display_project_members = document.getElementById('this_display_project_members_' + project.project_id); // Afficher les membres du projet
-                                    display_project_members.innerHTML = '';
-                                    members.forEach(member => {
-                                        var tr = document.createElement('tr');
-                                        var member_id = member.ID;
-                                        var member_name = member.display_name ? member.display_name : '----';
-                                        var member_mail = member.user_email ? member.user_email : '----';
-                                        var member_country = user_role_and_location.find(user => user.ID === member_id).location ?? '----';  // Récupérer le pays de l'utilisateur
-                                        var member_association = member.member_association ? member.member_association : '----';
-                                        var member_role = user_role_and_location.find(user => user.ID === member_id).role ?? '----'; // Récupérer le rôle de l'utilisateur 
-                                        tr.id = 'member_' + member_id;
-                                        tr.style.fontSize = '12px';
-                                        tr.style.fontWeight = 'lighter';
-                                        tr.style.color = 'gray';
-                                        tr.style.borderBottom = '1px solid #f2f2f2';
-                                        tr.addEventListener('mouseover', function () {
-                                            tr.style.backgroundColor = '#f2f2f2';
-                                        });
-                                        tr.addEventListener('mouseout', function () {
-                                            tr.style.backgroundColor = 'white';
-                                        });
-                                        display_project_members.appendChild(tr);
-                                        tr.innerHTML = `
+                            })
+                            .then(response => response.json())
+                            .then(project_members => {
+                                var project_members_list = [];
+                                var working_table_id = '';
+                                project_members.forEach(member => {
+                                    // Récupérer les membres du projet
+                                    if (member.project_id === project.project_id) {
+                                        working_table_id = member.Working_Table_Id;
+                                        project_members_list.push(JSON.parse(member.users_emails_list)); // Récupérer les membres du projet
+                                    }
+                                });
+
+                                // Get members of the project from WordPress REST API(https://lab.padem.org/wp-json/mo/v1/getAllMembers)
+                                //#region Récupérer les membres du projet
+                                var project_id = project.project_id;
+                                var url = 'https://lab.padem.org/wp-json/mo/v1/getAllMembers';
+                                var options = {
+                                    method: 'GET',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    }
+                                };
+                                fetch(url, options)
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        var display_project_members = document.getElementById('this_display_project_members_' + project.project_id); // Afficher les membres du projet
+                                        display_project_members.innerHTML = '';
+                                        members.forEach(member => {
+                                            var tr = document.createElement('tr');
+                                            var member_id = member.ID;
+                                            var member_name = member.display_name ? member.display_name : '----';
+                                            var member_mail = member.user_email ? member.user_email : '----';
+                                            var member_country = user_role_and_location.find(user => user.ID === member_id).location ?? '----';  // Récupérer le pays de l'utilisateur
+                                            var member_association = member.member_association ? member.member_association : '----';
+                                            var member_role = user_role_and_location.find(user => user.ID === member_id).role ?? '----'; // Récupérer le rôle de l'utilisateur 
+                                            tr.id = 'member_' + member_id;
+                                            tr.style.fontSize = '12px';
+                                            tr.style.fontWeight = 'lighter';
+                                            tr.style.color = 'gray';
+                                            tr.style.borderBottom = '1px solid #f2f2f2';
+                                            tr.addEventListener('mouseover', function () {
+                                                tr.style.backgroundColor = '#f2f2f2';
+                                            });
+                                            tr.addEventListener('mouseout', function () {
+                                                tr.style.backgroundColor = 'white';
+                                            });
+                                            display_project_members.appendChild(tr);
+                                            tr.innerHTML = `
                                             <tr>
                                                 <td>${member_name}</td>
                                                 <td>${member_mail}</td>
@@ -5681,119 +6011,119 @@
                                             </tr>
                                         `;
 
-                                        // Ajouter un membre au projet
-                                        document.getElementById('add_member_to_this_project_' + member_id).addEventListener('click', function () {
+                                            // Ajouter un membre au projet
+                                            document.getElementById('add_member_to_this_project_' + member_id).addEventListener('click', function () {
 
-                                            // Animation de chargement
-                                            document.getElementById('loading_' + member_id + '_').style.display = 'block';
-                                            
-                                            // Ajouter le membre au projet
-                                            fetch('https://lab.padem.org/wp-json/mo/v1/createWorkingTable',
-                                            {
-                                                method: 'POST',
-                                                headers: {
-                                                    'Content-Type': 'application/json',
-                                                },
-                                                body: JSON.stringify({
-                                                    project_id: project.project_id,
-                                                    users_emails_list: JSON.stringify(project_members_list.push(member_mail))
-                                                })
-                                            })
-                                            .then(response => response.json())
-                                            .then(data => {
-                                                console.log('Success:', data);
-                                                // Supprimer l'ancienne version de la liste des membres du projet
-                                                fetch('https://lab.padem.org/wp-json/mo/v1/removeWorkingTable',
-                                                {
-                                                    method: 'DELETE',
-                                                    headers: {
-                                                        'Content-Type': 'application/json',
-                                                    },
-                                                    body: JSON.stringify({
-                                                        column_param1: parseInt(working_table_id) // Supprimer l'ancienne version de la liste des membres du projet
+                                                // Animation de chargement
+                                                document.getElementById('loading_' + member_id + '_').style.display = 'block';
+
+                                                // Ajouter le membre au projet
+                                                fetch('https://lab.padem.org/wp-json/mo/v1/createWorkingTable',
+                                                    {
+                                                        method: 'POST',
+                                                        headers: {
+                                                            'Content-Type': 'application/json',
+                                                        },
+                                                        body: JSON.stringify({
+                                                            project_id: project.project_id,
+                                                            users_emails_list: JSON.stringify(project_members_list.push(member_mail))
+                                                        })
                                                     })
-                                                })
-                                                .then(response => response.json())
-                                                .then(data => {
-                                                    if(data.success) {
-                                                        // Masquer l'animation de chargement
-                                                        document.getElementById('loading_' + member_id + '_').style.display = 'none';
+                                                    .then(response => response.json())
+                                                    .then(data => {
+                                                        console.log('Success:', data);
+                                                        // Supprimer l'ancienne version de la liste des membres du projet
+                                                        fetch('https://lab.padem.org/wp-json/mo/v1/removeWorkingTable',
+                                                            {
+                                                                method: 'DELETE',
+                                                                headers: {
+                                                                    'Content-Type': 'application/json',
+                                                                },
+                                                                body: JSON.stringify({
+                                                                    column_param1: parseInt(working_table_id) // Supprimer l'ancienne version de la liste des membres du projet
+                                                                })
+                                                            })
+                                                            .then(response => response.json())
+                                                            .then(data => {
+                                                                if (data.success) {
+                                                                    // Masquer l'animation de chargement
+                                                                    document.getElementById('loading_' + member_id + '_').style.display = 'none';
+                                                                }
+                                                            })
+                                                            .catch(error => {
+                                                                console.error('Erreur:', error);
+                                                                // Masquer l'animation de chargement
+                                                                document.getElementById('loading_' + member_id + '_').style.display = 'none';
+                                                            });
+                                                    });
+                                            });
+
+                                            // Supprimer un membre du projet
+                                            document.getElementById('remove_member_from_this_project_' + member_id).addEventListener('click', function () {
+
+                                                // Animation de chargement
+                                                document.getElementById('loading_' + member_id + '_').style.display = 'block';
+                                                var new_members_list = [];
+                                                project_members_list.forEach(member => {
+                                                    if (member !== member_mail) {
+                                                        new_members_list.push(member);
                                                     }
-                                                })
-                                                .catch(error => {
-                                                    console.error('Erreur:', error);
-                                                    // Masquer l'animation de chargement
-                                                    document.getElementById('loading_' + member_id + '_').style.display = 'none';
                                                 });
+
+                                                // Supprimer le membre du projet
+                                                fetch('https://lab.padem.org/wp-json/mo/v1/createWorkingTable',
+                                                    {
+                                                        method: 'POST',
+                                                        headers: {
+                                                            'Content-Type': 'application/json',
+                                                        },
+                                                        body: JSON.stringify({
+                                                            project_id: project.project_id,
+                                                            users_emails_list: JSON.stringify(new_members_list)
+                                                        })
+                                                    })
+                                                    .then(response => response.json())
+                                                    .then(data => {
+                                                        console.log('Success:', data);
+                                                        // Supprimer l'ancienne version de la liste des membres du projet
+                                                        fetch('https://lab.padem.org/wp-json/mo/v1/removeWorkingTable',
+                                                            {
+                                                                method: 'DELETE',
+                                                                headers: {
+                                                                    'Content-Type': 'application/json',
+                                                                },
+                                                                body: JSON.stringify({
+                                                                    column_param1: parseInt(working_table_id) // Supprimer l'ancienne version de la liste des membres du projet
+                                                                })
+                                                            })
+                                                            .then(response => response.json())
+                                                            .then(data => {
+                                                                if (data.success) {
+                                                                    // Masquer l'animation de chargement
+                                                                    document.getElementById('loading_' + member_id + '_').style.display = 'none';
+                                                                }
+                                                            })
+                                                            .catch(error => {
+                                                                console.error('Erreur:', error);
+                                                                // Masquer l'animation de chargement
+                                                                document.getElementById('loading_' + member_id + '_').style.display = 'none';
+                                                            });
+                                                    });
                                             });
                                         });
-
-                                        // Supprimer un membre du projet
-                                        document.getElementById('remove_member_from_this_project_' + member_id).addEventListener('click', function () {
-
-                                            // Animation de chargement
-                                            document.getElementById('loading_' + member_id + '_').style.display = 'block';
-                                            var new_members_list = [];
-                                            project_members_list.forEach(member => {
-                                                if (member !== member_mail) {
-                                                    new_members_list.push(member);
-                                                }
-                                            });
-
-                                            // Supprimer le membre du projet
-                                            fetch('https://lab.padem.org/wp-json/mo/v1/createWorkingTable',
-                                            {
-                                                method: 'POST',
-                                                headers: {
-                                                    'Content-Type': 'application/json',
-                                                },
-                                                body: JSON.stringify({
-                                                    project_id: project.project_id,
-                                                    users_emails_list: JSON.stringify(new_members_list)
-                                                })
-                                            })
-                                            .then(response => response.json())
-                                            .then(data => {
-                                                console.log('Success:', data);
-                                                // Supprimer l'ancienne version de la liste des membres du projet
-                                                fetch('https://lab.padem.org/wp-json/mo/v1/removeWorkingTable',
-                                                {
-                                                    method: 'DELETE',
-                                                    headers: {
-                                                        'Content-Type': 'application/json',
-                                                    },
-                                                    body: JSON.stringify({
-                                                        column_param1: parseInt(working_table_id) // Supprimer l'ancienne version de la liste des membres du projet
-                                                    })
-                                                })
-                                                .then(response => response.json())
-                                                .then(data => {
-                                                    if(data.success) {
-                                                        // Masquer l'animation de chargement
-                                                        document.getElementById('loading_' + member_id + '_').style.display = 'none';
-                                                    }
-                                                })
-                                                .catch(error => {
-                                                    console.error('Erreur:', error);
-                                                    // Masquer l'animation de chargement
-                                                    document.getElementById('loading_' + member_id + '_').style.display = 'none';
-                                                });
-                                            });
-                                        });
+                                    })
+                                    .catch(error => {
+                                        console.error('Erreur:', error);
+                                        // Masquer l'animation de chargement
+                                        document.getElementById('loading_' + member_id + '_').style.display = 'none';
                                     });
-                                })
-                                .catch(error => {
-                                    console.error('Erreur:', error);
-                                    // Masquer l'animation de chargement
-                                    document.getElementById('loading_' + member_id + '_').style.display = 'none';
-                                });
                                 //#endregion
-                                
-                        })
-                        .catch(error => {
-                            console.error('Erreur:', error);
-                        });
-                        })
+
+                            })
+                            .catch(error => {
+                                console.error('Erreur:', error);
+                            });
+                    })
                     .catch(error => {
                         console.error('Erreur:', error);
                     });
@@ -5885,12 +6215,84 @@
                 document.getElementById('_menu_add_document_' + project.project_id).style.display = 'none';
                 document.getElementById('_menu_add_report_' + project.project_id).style.display = 'none';
             });
-            
+
             if (userRole.includes('administrator')) {
                 document.getElementById('archive_Project_').addEventListener('click', function (e) {
                     e.preventDefault();
+                    // Afficher l'anime de chargement
+                    document.getElementById('loading').style.display = 'block';
                     // Archiver le projet
-                    archiveProject(project.project_id);
+                    // Get Projet ID
+                    fetch('https://lab.padem.org/wp-json/mo/v1/getProjectData',
+                        {
+                            method: 'GET',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            var projectId = data.find(_project => _project.project_id === project.project_id).id;
+                            // Mettre à jour le projet
+                            fetch('https://lab.padem.org/wp-json/mo/v1/createProjectData',
+                                {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                    body: JSON.stringify({
+                                        project_id: projectId,
+                                        project_title: project.project_title,
+                                        project_type: project.project_type,
+                                        start_date: project.start_date,
+                                        end_date: project.end_date,
+                                        is_archive: 1, // Archiver le projet
+                                        updated_date: new Date(),
+                                        project_location: project.project_location,
+                                        project_status: 'Archivé',
+                                        project_referent: project.project_referent,
+                                        project_referent_email: project.project_referent_email,
+                                        project_description: project.project_description,
+                                        background_image_link: project.background_image_link,
+                                        users: project.users,
+                                        reports: project.reports,
+                                        folders: project.folders,
+                                        divers: project.divers,
+                                    })
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    // Supprimer le projet de la liste des projets
+                                    fetch('https://lab.padem.org/wp-json/mo/v1/removeProjectData',
+                                        {
+                                            method: 'DELETE',
+                                            headers: {
+                                                'Content-Type': 'application/json',
+                                            },
+                                            body: JSON.stringify({ column_param1: project.id })
+                                        })
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            getProjects();
+                                            displayAllArchivesProjects();
+                                            displayArchivesReports();
+                                            document.getElementById('all_projects_table').style.display = 'block';
+                                            document.getElementById('project_details').style.display = 'none';
+                                            // Masquer l'anime de chargement
+                                            document.getElementById('loading').style.display = 'none';
+                                        })
+                                        .catch((error) => {
+                                            console.error('Error:', error);
+                                            // Masquer l'anime de chargement
+                                            document.getElementById('loading').style.display = 'none';
+                                        });
+                                })
+                                .catch((error) => {
+                                    console.error('Error:', error);
+                                    // Masquer l'anime de chargement
+                                    document.getElementById('loading').style.display = 'none';
+                                });
+                        });
                 });
             }
             //#endregion
@@ -5905,22 +6307,344 @@
             });
             //#endregion
 
-            //#region Ajouter des écouteurs d'événements pour les boutons (Ajouter une association, un membre, un document, un rapport)
+            //#region Pour ajouter un document au projet
+            document.getElementById('onglet_files_send_' + project.project_id).addEventListener('click', function (e) {
+                e.preventDefault();
+
+                // Récupérer le type de fichier (trame ou non)
+                let files_type_trame = document.getElementById('files_file_type_' + project.project_id).value;
+
+                // Récupérer le fichier
+                let fichier_file = document.getElementById('files_file_1_' + project.project_id).files[0];
+                let fichier_file_name = fichier_file.name;
+                let fichier_file_type = fichier_file.type;
+                let fichier_file_size = fichier_file.size;
+
+                // Récupérer l'adresse email de l'utilisateur connecté
+                let userEmail = current_user_data.email;
+
+                // Vérifier si les champs sont vides
+                if (fichier_file.length === 0) {
+                    alert('Veuillez ajouter un fichier.');
+                    return;
+                }
+
+                // Afficher l'avancement du chargement
+                document.getElementById('loading').style.display = 'block';
+
+                // Créer un objet FormData
+                let formData = new FormData();
+                formData.append('file', fichier_file);
+                formData.append('action', 'handle_file_upload');
+
+                // Envoyer le fichier au serveur
+                fetch(ajaxurl, {
+                    method: 'POST',
+                    body: formData,
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            //#region Envoi des données du fichier à la base de données
+                            fetch('https://lab.padem.org/wp-json/mo/v1/createProjectFile', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({
+                                    project_id: project.project_id,
+                                    file_name: ((data.data.url).split('/')).pop(), // Nom du fichier
+                                    file_type: fichier_file_type,
+                                    file_link: data.data.url, // Lien du fichier
+                                    file_size: fichier_file_size,
+                                    author_email: userEmail,
+                                    folder_name: '', // Dossier de destination
+                                    is_folder: false,
+                                    is_in_folder: false,
+                                    folder_link: '',
+                                    is_trame: files_type_trame === '1' ? true : false,
+                                    created_at: new Date(Date.now()) // Date de création
+                                }),
+                            })
+                                .then((response) => response.json())
+                                .then((data) => {
+                                    // Masquer l'avancement du chargement
+                                    document.getElementById('loading').style.display = 'none';
+                                    // Recharger les fichiers
+                                    displayFiles();
+                                    displayProjectDocuments();
+
+                                    // Vider les champs du formulaire
+                                    document.getElementById('files_file_1_' + project.project_id).value = '';
+                                    document.getElementById('files_file_type_' + project.project_id).value = '0';
+                                })
+                                .catch((error) => {
+                                    console.error('Error:', error);
+                                    // Masquer l'avancement du chargement
+                                    document.getElementById('loading').style.display = 'none';
+                                });
+                            //#endregion
+                        } else {
+                            console.log('Error:', data.data);
+                            // Masquer l'avancement du chargement
+                            document.getElementById('loading').style.display = 'none';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        // Masquer l'avancement du chargement
+                        document.getElementById('loading').style.display = 'none';
+                    });
+            });
             //#endregion
 
-            //#region Ajouter des écouteurs d'événements pour les boutons (Ajouter une association, un membre, un document, un rapport)
+            //#region pour annuler l'ajout d'un document
+            document.getElementById('onglet_files_cancel_' + project.project_id).addEventListener('click', function (e) {
+                e.preventDefault();
+                // Vider les champs du formulaire
+                document.getElementById('files_file_1_' + project.project_id).value = '';
+                document.getElementById('files_file_type_' + project.project_id).value = '0';
+            });
             //#endregion
 
-            //#region Afficher les documents du projet
+            //#region pour Ajouter un rapport au projet
+            document.getElementById('this_project_add_report_' + project.project_id).addEventListener('click', function (e) {
+                e.preventDefault();
+
+                // Afficher l'avancement du chargement
+                document.getElementById('loading').style.display = 'block';
+
+                // Récupérer les données du formulaire
+                let report_title = document.getElementById('report_title_' + project.project_id).value;
+                let report_date = document.getElementById('report_date_' + project.project_id).value;
+                let report_type = document.getElementById('report_type_' + project.project_id).value;
+                let report_type_other = document.getElementById('report_type_other_' + project.project_id).value;
+                let report_description = document.getElementById('report_comments_' + project.project_id).value;
+
+                // Récupérer les fichiers du rapport si nécessaire
+                let document_1 = document.getElementById('report_file_1_' + project.project_id).files[0];
+                let document_2 = document.getElementById('report_file_2_' + project.project_id).files[0] ?? '';
+                let document_3 = document.getElementById('report_file_3_' + project.project_id).files[0] ?? '';
+                let document_4 = document.getElementById('report_file_4_' + project.project_id).files[0] ?? '';
+
+                // Vérifier si les champs sont vides
+                if (report_title === '' || report_date === '' || report_type === '0' || document_1 === undefined) {
+                    alert('Veuillez remplir tous les champs obligatoires.');
+                    return;
+                }
+
+                let document_1_name = document_1.name;
+                let document_1_type = document_1.type;
+                let document_1_size = document_1.size;
+
+                // Récupérer l'adresse email de l'utilisateur connecté
+                let userEmail = current_user_data.email;
+
+                // Envoyer les fichiers au serveur
+                let formData = new FormData();
+                formData.append('file_1', document_1);
+                if (document_2 !== '') {
+                    let _formData_2 = new FormData();
+                    _formData_2.append('file_2', document_2);
+                    _formData_2.append('action', 'handle_file_upload');
+
+                    // Envoyer le fichier 2 au serveur
+                    fetch(ajaxurl, {
+                        method: 'POST',
+                        body: _formData_2,
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                console.log('URL:', data.data);
+                                // Envoi des données des fichier à la base de données(Document 2)
+                                fetch('https://lab.padem.org/wp-json/mo/v1/createProjectFile', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                    body: JSON.stringify({
+                                        project_id: project.project_id,
+                                        file_name: ((data.data.url).split('/')).pop(), // Nom du fichier
+                                        file_type: document_2.type,
+                                        file_link: data.data.url, // Lien du fichier
+                                        file_size: document_2.size,
+                                        author_email: userEmail,
+                                        folder_name: '', // Dossier de destination
+                                        is_folder: false,
+                                        is_in_folder: false,
+                                        folder_link: '',
+                                        is_trame: false,
+                                        created_at: new Date(Date.now()) // Date de création
+                                    }),
+                                })
+                                    .then((response) => response.json())
+                                    .then((data) => {
+                                        console.log('Success:', data);
+                                    })
+                                    .catch((error) => {
+                                        console.error('Error:', error);
+                                    });
+                            } else {
+                                console.log('Error:', data.data);
+                            }
+                        })
+                        .catch(error => console.error('Error:', error));
+                }
+                if (document_3 !== '') {
+                    let _formData_3 = new FormData();
+                    _formData_3.append('file_3', document_3);
+                    _formData_3.append('action', 'handle_file_upload');
+
+                    // Envoyer le fichier 3 au serveur
+                    fetch(ajaxurl, {
+                        method: 'POST',
+                        body: _formData_3,
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                console.log('URL:', data.data);
+                                // Envoi des données des fichier à la base de données(Document 3)
+                                fetch('https://lab.padem.org/wp-json/mo/v1/createProjectFile', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                    body: JSON.stringify({
+                                        project_id: project.project_id,
+                                        file_name: ((data.data.url).split('/')).pop(), // Nom du fichier
+                                        file_type: document_3.type,
+                                        file_link: data.data.url, // Lien du fichier
+                                        file_size: document_3.size,
+                                        author_email: userEmail,
+                                        folder_name: '', // Dossier de destination
+                                        is_folder: false,
+                                        is_in_folder: false,
+                                        folder_link: '',
+                                        is_trame: false,
+                                        created_at: new Date(Date.now()) // Date de création
+                                    }),
+                                })
+                                    .then((response) => response.json())
+                                    .then((data) => {
+                                        console.log('Success:', data);
+                                    })
+                                    .catch((error) => {
+                                        console.error('Error:', error);
+                                    });
+                            } else {
+                                console.log('Error:', data.data);
+                            }
+                        })
+                        .catch(error => console.error('Error:', error));
+                }
+                if (document_4 !== '') {
+                    let _formData_4 = new FormData();
+                    _formData_4.append('file_4', document_4);
+                    _formData_4.append('action', 'handle_file_upload');
+
+                    // Envoyer le fichier 4 au serveur
+                    fetch(ajaxurl, {
+                        method: 'POST',
+                        body: _formData_4,
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                console.log('URL:', data.data);
+                                // Envoi des données des fichier à la base de données(Document 4)
+                                fetch('https://lab.padem.org/wp-json/mo/v1/createProjectFile', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                    body: JSON.stringify({
+                                        project_id: project.project_id,
+                                        file_name: ((data.data.url).split('/')).pop(), // Nom du fichier
+                                        file_type: document_4.type,
+                                        file_link: data.data.url, // Lien du fichier
+                                        file_size: document_4.size,
+                                        author_email: userEmail,
+                                        folder_name: '', // Dossier de destination
+                                        is_folder: false,
+                                        is_in_folder: false,
+                                        folder_link: '',
+                                        is_trame: false,
+                                        created_at: new Date(Date.now()) // Date de création
+                                    }),
+                                })
+                                    .then((response) => response.json())
+                                    .then((data) => {
+                                        console.log('Success:', data);
+                                    })
+                                    .catch((error) => {
+                                        console.error('Error:', error);
+                                    });
+                            } else {
+                                console.log('Error:', data.data);
+                            }
+                        })
+                        .catch(error => console.error('Error:', error));
+                }
+
+                // Masquer l'avancement du chargement
+                // Envoi des données du rapport à la base de données
+                fetch('https://lab.padem.org/wp-json/mo/v1/createReport', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        project_id: project.project_id,
+                        report_title: report_title,
+                        report_date: report_date,
+                        report_type: report_type === 'Autre' ? report_type_other : report_type,
+                        report_status: 'En cours',
+                        file_id_list: [], // Liste des fichiers du rapport
+                    }),
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        // Masquer l'avancement du chargement
+                        document.getElementById('loading').style.display = 'none';
+                        // Recharger les rapports
+                        displayReports();
+
+                        //#region Vider les champs du formulaire
+                        document.getElementById('report_title_' + project.project_id).value = '';
+                        document.getElementById('report_date_' + project.project_id).value = '';
+                        document.getElementById('report_type_' + project.project_id).value = '0';
+                        document.getElementById('report_type_other_' + project.project_id).value = '';
+                        document.getElementById('report_comments_' + project.project_id).value = '';
+                        document.getElementById('report_file_1_' + project.project_id).value = '';
+                        document.getElementById('report_file_2_' + project.project_id).value = '';
+                        document.getElementById('report_file_3_' + project.project_id).value = '';
+                        document.getElementById('report_file_4_' + project.project_id).value = '';
+                        //#endregion
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                        // Masquer l'avancement du chargement
+                        document.getElementById('loading').style.display = 'none';
+                    });
+            });
             //#endregion
 
-            //#region Afficher les membres du projet
-            //#endregion
-
-            //#region Afficher les associations du projet
-            //#endregion
-
-            //#region Afficher les rapports du projet
+            //#region Annuler l'ajout d'un rapport
+            document.getElementById('this_project_cancel_add_report_' + project.project_id).addEventListener('click', function (e) {
+                e.preventDefault();
+                // Vider les champs du formulaire
+                document.getElementById('report_title_' + project.project_id).value = '';
+                document.getElementById('report_date_' + project.project_id).value = '';
+                document.getElementById('report_type_' + project.project_id).value = '0';
+                document.getElementById('report_type_other_' + project.project_id).value = '';
+                document.getElementById('report_comments_' + project.project_id).value = '';
+                document.getElementById('report_file_1_' + project.project_id).value = '';
+                document.getElementById('report_file_2_' + project.project_id).value = '';
+                document.getElementById('report_file_3_' + project.project_id).value = '';
+                document.getElementById('report_file_4_' + project.project_id).value = '';
+            });
             //#endregion
         }
         //#endregion
@@ -6185,14 +6909,37 @@
     <div id="archives" style="display: block;">
         <!-- Afficher tous les projets archivés -->
         <div id="display_all_projects_archives" style="display: block;">
-            <ul id="all_projects_archives_list">
-            </ul>
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col" style="cursor: pointer;">Nom <img src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 20px; height: 20px;" alt="">
+                        </th>
+                        <th scope="col" style="cursor: pointer;">Pays <img src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 20px; height: 20px;" alt=""></th>
+                        <th scope="col" style="cursor: pointer;">Association <img src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 20px; height: 20px;" alt=""></th>
+                        <th scope="col" style="cursor: pointer;">Thématique <img src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 20px; height: 20px;" alt=""></th>
+                        <th scope="col" style="cursor: pointer;">Actions <img src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 20px; height: 20px;" alt=""></th>
+                    </tr>
+                </thead>
+                <tbody id="all_projects_archives_list">
+                </tbody>
+            </table>
         </div>
 
         <!-- Afficher tous les rapports archivés -->
         <div id="display_all_reports_archives" style="display: none;">
-            <ul id="all_reports_archives_list">
-            </ul>
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col" style="cursor: pointer;">Type <img src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 20px; height: 20px;" alt="">
+                        </th>
+                        <th scope="col" style="cursor: pointer;">Titre <img src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 20px; height: 20px;" alt=""></th>
+                        <th scope="col" style="cursor: pointer;">Date <img src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 20px; height: 20px;" alt=""></th>
+                        <th scope="col" style="cursor: pointer;">Actions <img src="https://img.icons8.com/ios/50/9F9F9F/sort.png" style="width: 20px; height: 20px;" alt=""></th>
+                    </tr>
+                </thead>
+                <tbody id="all_reports_archives_list">
+                </tbody>
+            </table>
         </div>
     </div>
 
@@ -6256,7 +7003,7 @@
                         .then(response => response.json())
                         .then(workingTable => {
                             // Get Working Table
-                            if(workingTable.length > 0) {
+                            if(1) {
                                 let project_states = [];
                                 workingTable.forEach(project => {
                                     project_states.push({
@@ -6266,31 +7013,42 @@
                                 });
                                 console.log('project_states:', project_states);
                                 data.forEach((project, index) => {
-                                    if(project_states[index].project_state === 'Archivé' || project.project_status === 'Archivé') {
-                                        let li_project = document.createElement('li');
-                                        li_project.style.border = '1px solid lightgray';
-                                        li_project.style.borderRadius = '25px';
-                                        li_project.style.margin = '5px';
-                                        li_project.style.padding = '5px';
-                                        li_project.id = project.project_id;
-                                        li_project.addEventListener('click', function () {
-                                            //displayProject(project.project_id);
+                                    if(project_states[index].project_state === 'Archivé' || project.project_status === 'Archivé' || project.is_archive === '1') {
+                                        let tr = document.createElement('tr');
+                                        tr.style.border = '1px solid lightgray';
+                                        tr.style.borderRadius = '25px';
+                                        tr.style.backgroundColor = 'white';
+                                        tr.style.cursor = 'pointer';
+                                        tr.style.margin = '5px';
+                                        tr.style.padding = '8px';
+                                        tr.style.paddingRight = '10px';
+                                        tr.style.marginBottom = '0px';
+                                        tr.id = project.project_id + '_archive';
+                                        tr.addEventListener('mouseover', function () {
+                                            tr.style.border = '1px solid #6CE8E8';
                                         });
-                                        li_project.innerHTML = `
-                                            <p>${project.project_title}</p>
-                                            <p>${project.project_date}</p>
-                                            <p>${project.project_status}</p>
-                                            <!-- Bouton pour restaurer le projet -->
-                                            <button type="button" class="btn btn-primary" id="restore_forever_Project_${project.project_id}">
-                                                <img src="https://img.icons8.com/ios/50/9F9F9F/restore-page.png" style="width: 20px; height: 20px;" alt="">
-                                                Restaurer</button>
-                                            <!-- Bouton pour supprimer définitivement le projet -->
-                                            <button type="button" class="btn btn-danger" id="delete_forever_Project_${project.project_id}">
-                                                <img src="https://img.icons8.com/ios/50/9F9F9F/delete-forever.png" style="width: 20px; height: 20px;" alt="">
-                                                Supprimer</button>
-                                            <!-- Bouton pour afficher les détails du projet -->
+                                        tr.addEventListener('mouseout', function () {
+                                            tr.style.border = '1px solid lightgray';
+                                        });
+                                        tr.innerHTML = `
+                                            <th style="color: #29A6A7; margin-left: 5px; margin-top: 15px;">${project.project_title}</th>
+                                            <th style="font-weight: lighter; color: black; display: flex; justify-content: flex-start; margin-top: 10px;">${project.project_location}</th>
+                                            <th style="font-weight: lighter; color: black; display: flex; justify-content: flex-start; margin-top: 15px; margin-left: 5px;">${project.association ?? '---'}</th>
+                                            <th style="font-weight: lighter; color: black; display: flex; justify-content: flex-start; margin-top: 10px;">${project.project_type}</th>
+                                            <th style="font-weight: lighter; color: black; display: flex; justify-content: flex-start; margin-top: 5px; margin-left: 5px; width: fit-content;">
+                                                <!-- Bouton pour restaurer le projet -->
+                                                <button type="button" class="btn btn-primary" id="restore_forever_Project_${project.project_id}" title="Restaurer le projet" style="width: 50px;">
+                                                    <img src="https://img.icons8.com/?size=100&id=123452&format=png&color=FFFFFF" style="width: 25px; height: 25px;" alt="">
+                                                    </button>
+                                                <div style="width: 10px;"></div>
+                                                <!-- Bouton pour supprimer définitivement le projet -->
+                                                <button type="button" class="btn btn-danger" id="delete_forever_Project_${project.project_id}" title="Supprimer définitivement le projet" style="width: 50px;">
+                                                    <img src="https://img.icons8.com/?size=100&id=11705&format=png&color=FFFFFF" style="width: 25px; height: 25px;" alt="">
+                                                    </button>
+                                                <!-- Bouton pour afficher les détails du projet -->
+                                            </th>
                                         `;
-                                        allProjectsArchives.appendChild(li_project);
+                                        allProjectsArchives.appendChild(tr);
 
                                         // Ajouter des écouteurs d'événements pour les boutons
                                         document.getElementById(`restore_forever_Project_${project.project_id}`).addEventListener('click', function (e) {
@@ -6309,15 +7067,27 @@
                                             let restored_project = {
                                                 project_id: project.project_id,
                                                 report_id: project.report_id,
-                                                project_state: 'En cours',
+                                                project_status: 'En cours',
                                                 users_emails_list: project.users_emails_list,
+                                                project_title: project.project_title,
+                                                start_date: project.start_date,
+                                                end_date: project.end_date,
+                                                is_archive: false,
+                                                project_location: project.project_location,
+                                                project_description: project.project_description,
+                                                association: project.association,
+                                                funder: project.funder,
+                                                project_type: project.project_type,
+                                                project_referent: project.project_referent,
+                                                project_referent_email: project.project_referent_email,
+                                                updated_date: new Date(Date.now()), // Date de mise à jour
                                             };
 
                                             // Afficher l'animation de chargement
                                             document.getElementById('loading').style.display = 'block';
 
                                             // Restaurer le projet
-                                            fetch(`https://lab.padem.org/wp-json/mo/v1/createWorkingTable`,
+                                            fetch(`https://lab.padem.org/wp-json/mo/v1/createProjectData`,
                                                 {
                                                     method: 'POST',
                                                     headers: {
@@ -6327,13 +7097,17 @@
                                                 })
                                                 .then(response => response.json())
                                                 .then(data => {
+                                                    // Masquer l'animation de chargement
+                                                    document.getElementById('loading').style.display = 'none';
+                                                    displayAllArchivesProjects();
+                                                    getProjects();
                                                     // Supprimer l'ancienne version du projet
-                                                    fetch(`https://lab.padem.org/wp-json/mo/v1/removeWorkingTable`, {
+                                                    fetch(`https://lab.padem.org/wp-json/mo/v1/removeProjectData`, {
                                                         method: 'DELETE',
                                                         headers: {
                                                             'Content-Type': 'application/json',
                                                         },
-                                                        body: JSON.stringify({ column_param1: projectId }),
+                                                        body: JSON.stringify({ column_param1: project.id }),
                                                     })
                                                     .then(response => response.json())
                                                     .then(data => {
@@ -6342,14 +7116,17 @@
                                                             // Masquer l'animation de chargement
                                                             document.getElementById('loading').style.display = 'none';
                                                             displayAllArchivesProjects();
+                                                            getProjects();
                                                         }
                                                     })
-                                                    .catch(error => {console.error('Erreur restauration du projet:', error);
+                                                    .catch(error => {
+                                                        console.error('Erreur restauration du projet:', error);
                                                         // Masquer l'animation de chargement
                                                         document.getElementById('loading').style.display = 'none';
                                                     });
                                                 })
-                                                .catch(error => {console.error('Erreur restauration du projet:', error);
+                                                .catch(error => {
+                                                    console.error('Erreur restauration du projet:', error);
                                                     // Masquer l'animation de chargement
                                                     document.getElementById('loading').style.display = 'none';
                                                 });
@@ -6357,29 +7134,34 @@
 
                                         // Fonction pour supprimer définitivement un projet
                                         function deleteProject(projectId) {
-                                            fetch(`https://lab.padem.org/wp-json/mo/v1/removeWorkingTable`, {
+                                            // Afficher l'animation de chargement
+                                            document.getElementById('loading').style.display = 'block';
+
+                                            fetch(`https://lab.padem.org/wp-json/mo/v1/removeProjectData`, {
                                                 method: 'DELETE',
                                                 headers: {
                                                     'Content-Type': 'application/json',
                                                 },
-                                                body: JSON.stringify({ column_param1: projectId }),
+                                                body: JSON.stringify({ column_param1: project.id }),
                                             })
                                             .then(response => response.json())
                                             .then(data => {
-                                                if (data.success) {
-                                                    //alert('Projet supprimé définitivement avec succès !');
-                                                    displayAllArchivesProjects();
-                                                }
+                                                displayAllArchivesProjects();
+                                                // Masquer l'animation de chargement
+                                                document.getElementById('loading').style.display = 'none';
                                             })
-                                            .catch(error => console.error('Erreur suppression du projet:', error));
+                                            .catch(error => {
+                                                console.error('Erreur suppression du projet:', error);
+                                                // Masquer l'animation de chargement
+                                                document.getElementById('loading').style.display = 'none';
+                                            });
                                         }
-                                    } else {
-                                        allProjectsArchives.innerHTML = '<p>Aucun projet archivé.</p>';
                                     }
                                 });
-                            } else {
-                                allProjectsArchives.innerHTML = '<p>Aucun projet archivé.</p>';
-                            }
+                                if (allProjectsArchives.innerHTML === '') {
+                                    allProjectsArchives.innerHTML = '<p>Aucun projet archivé.</p>';
+                                }
+                            } 
                         })
                         .catch(error => console.error('Erreur récupération de la table de travail:', error));
                 })
@@ -6401,29 +7183,39 @@
                         document.getElementById('loading').style.display = 'none';
                         data.forEach(report => {
                             if (report.report_status === 'Archivé') {
-                                let li_report = document.createElement('li');
-                                li_report.style.border = '1px solid lightgray';
-                                li_report.style.borderRadius = '25px';
-                                li_report.style.margin = '5px';
-                                li_report.style.padding = '5px';
-                                li_report.id = report.report_id;
-                                li_report.addEventListener('click', function () {
-                                    //displayReport(report.report_id);
+                                let tr = document.createElement('li');
+                                tr.style.border = '1px solid lightgray';
+                                tr.style.borderRadius = '25px';
+                                tr.style.backgroundColor = 'white';
+                                tr.style.cursor = 'pointer';
+                                tr.style.margin = '5px';
+                                tr.style.padding = '8px';
+                                tr.style.paddingRight = '10px';
+                                tr.style.marginBottom = '0px';
+                                tr.id = report.report_id + '_archive';
+                                tr.addEventListener('mouseover', function () {
+                                    tr.style.border = '1px solid #6CE8E8';
                                 });
-                                li_report.innerHTML = `
-                                    <p>${report.report_type ? report.report_type : '-- Rapport --'}</p>
-                                    <p>${report.report_title ? report.report_title : '----'}</p>
-                                    <p>${report.report_date ? report.report_date : '----'}</p>
-                                    <!-- Bouton pour restaurer le rapport -->
-                                    <button type="button" class="btn btn-primary" id="restore_forever_Report_${report.report_id}">
-                                        <img src="https://img.icons8.com/ios/50/9F9F9F/restore-page.png" style="width: 20px; height: 20px;" alt="">
-                                        Restaurer</button>
-                                    <!-- Bouton pour supprimer définitivement le rapport -->
-                                    <button type="button" class="btn btn-danger" id="delete_forever_Report_${report.report_id}">
-                                        <img src="https://img.icons8.com/ios/50/9F9F9F/delete-forever.png" style="width: 20px; height: 20px;" alt="">
-                                        Supprimer</button>
+                                tr.addEventListener('mouseout', function () {
+                                    tr.style.border = '1px solid lightgray';
+                                });
+                                tr.innerHTML = `
+                                    <th style="color: #29A6A7; margin-left: 5px; margin-top: 15px;">${report.report_type ? report.report_type : '-- Rapport --'}</th>
+                                    <th style="font-weight: lighter; color: black; display: flex; justify-content: flex-start; margin-top: 10px;">${report.report_title ? report.report_title : '----'}</th>
+                                    <th style="font-weight: lighter; color: black; display: flex; justify-content: flex-start; margin-top: 10px;">${report.report_date ? report.report_date : '----'}</th>
+                                    <th style="font-weight: lighter; color: black; display: flex; justify-content: flex-start; margin-top: 5px; width: fit-content;">
+                                        <!-- Bouton pour restaurer le rapport -->
+                                        <button type="button" class="btn btn-primary" id="restore_forever_Report_${report.report_id}" title="Restaurer le rapport" style="width: 50px;">
+                                            <img src="https://img.icons8.com/?size=100&id=123452&format=png&color=FFFFFF" style="width: 25px; height: 25px;" alt="">
+                                            </button>
+                                            <div style="width: 10px;"></div>
+                                        <!-- Bouton pour supprimer définitivement le rapport -->
+                                        <button type="button" class="btn btn-danger" id="delete_forever_Report_${report.report_id}" title="Supprimer définitivement le rapport" style="width: 50px;">
+                                            <img src="https://img.icons8.com/?size=100&id=11705&format=png&color=FFFFFF" style="width: 25px; height: 25px;" alt="">
+                                            </button>
+                                    </th>
                                 `;
-                                allReportsArchives.appendChild(li_report);
+                                allReportsArchives.appendChild(tr);
 
                                 // Ajouter des écouteurs d'événements pour les boutons
                                 document.getElementById(`restore_forever_Report_${report.report_id}`).addEventListener('click', function (e) {
@@ -6433,6 +7225,9 @@
 
                                 document.getElementById(`delete_forever_Report_${report.report_id}`).addEventListener('click', function (e) {
                                     e.preventDefault();
+                                    // Afficher l'animation de chargement
+                                    document.getElementById('loading').style.display = 'block';
+                                    // Supprimer définitivement le rapport
                                     deleteReport(report.report_id);
                                 });
 
@@ -6520,13 +7315,12 @@
                                     .catch(error => console.error('Erreur suppression du rapport:', error));
                                 }
                                 
-                            } else {
-                                allReportsArchives.innerHTML = '<p>Aucun rapport archivé.</p>';
                             }
                         });
-                    } else {
-                        allReportsArchives.innerHTML = '<p>Aucun rapport archivé.</p>';
-                    }
+                        if (allReportsArchives.innerHTML === '') {
+                            allReportsArchives.innerHTML = '<p>Aucun rapport archivé.</p>';
+                        }
+                    } 
                 })
                 .catch(error => console.error('Erreur récupération des rapports archivés:', error));
         }
